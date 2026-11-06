@@ -153,10 +153,10 @@ export const Magnetic = forwardRef<HTMLElement, MagneticProps>(({
       ref={setElementRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className={`relative inline-flex items-center justify-center will-change-transform ${className}`}
+      className={`relative inline-flex items-center justify-center ${className}`}
       {...props}
     >
-      <span ref={textRef} className="inline-flex items-center gap-1.5 will-change-transform pointer-events-none w-full justify-center">
+      <span ref={textRef} className="inline-flex items-center gap-1.5 pointer-events-none w-full justify-center">
         {children}
       </span>
     </Component>
