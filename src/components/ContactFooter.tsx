@@ -392,7 +392,7 @@ export const ContactFooter: React.FC = () => {
         className="relative z-[1] min-h-[85vh] lg:min-h-[90vh] pt-16 pb-16 md:pt-24 md:pb-20 bg-obsidian-darker/95 overflow-hidden border-t border-white/10"
         aria-label="Contact and conversion footer"
       >
-        <div ref={footerInnerRef} className="w-full h-full will-change-transform">
+        <div ref={footerInnerRef} className="w-full h-full">
         {/* Ambient background glow accents */}
         <div
           className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-b from-cyan-mint/10 to-transparent blur-[120px] rounded-full"
@@ -457,7 +457,7 @@ export const ContactFooter: React.FC = () => {
                   {word.split('').map((char, cIdx) => (
                     <span
                       key={cIdx}
-                      className="iconic-char inline-block will-change-transform transform-gpu"
+                      className="iconic-char inline-block transform-gpu"
                     >
                       {char}
                     </span>
