@@ -396,7 +396,7 @@ export const Hero: React.FC = () => {
                         style={{ overflow: 'hidden', display: 'inline-block' }}
                       >
                         <span
-                          className={`hero-split-word inline-block will-change-transform transform-gpu ${
+                          className={`hero-split-word inline-block transform-gpu ${
                             line.isAccent
                               ? 'text-accent-coral font-black drop-shadow-[0_0_24px_rgba(223,108,79,0.35)]'
                               : 'text-alabaster font-black'
@@ -516,7 +516,7 @@ export const Hero: React.FC = () => {
       >
         <div
           ref={marqueeTrackRef}
-          className="flex whitespace-nowrap will-change-transform"
+          className="flex whitespace-nowrap"
           style={{ width: 'fit-content' }}
         >
           {/* Track 1 */}
