@@ -481,17 +481,22 @@ export const GithubLab: React.FC = () => {
       gsap.killTweensOf(gridRef.current.children);
       gsap.fromTo(
         gridRef.current.children,
-        { opacity: 0, y: 15, scale: 0.98 },
+        { autoAlpha: 0, y: 15, scale: 0.98, force3D: true },
         {
-          opacity: 1,
+          autoAlpha: 1,
           y: 0,
           scale: 1,
           duration: 0.35,
           stagger: 0.04,
-          ease: 'power2.out'
+          ease: 'power3.out',
         }
       );
     }
+    return () => {
+      if (gridRef.current) {
+        gsap.killTweensOf(gridRef.current.children);
+      }
+    };
   }, [activeFilter, searchQuery]);
 
   return (

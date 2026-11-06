@@ -63,6 +63,10 @@ export const EasterEggPong: React.FC<EasterEggPongProps> = ({
       if (e.key === 'Escape') {
         e.preventDefault();
         onClose();
+        setTimeout(() => {
+          const btn = triggerElementRef?.current || (previousActive && document.contains(previousActive) ? previousActive : null) || document.querySelector<HTMLElement>('button[aria-label="Open retro CRT channel surfing Easter egg"]');
+          btn?.focus();
+        }, 50);
         return;
       }
 
@@ -96,11 +100,8 @@ export const EasterEggPong: React.FC<EasterEggPongProps> = ({
       window.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = prevOverflow;
       setTimeout(() => {
-        if (triggerElementRef?.current) {
-          triggerElementRef.current.focus();
-        } else if (previousActive && document.contains(previousActive)) {
-          previousActive.focus();
-        }
+        const btn = triggerElementRef?.current || (previousActive && document.contains(previousActive) ? previousActive : null) || document.querySelector<HTMLElement>('button[aria-label="Open retro CRT channel surfing Easter egg"]');
+        btn?.focus();
       }, 50);
     };
   }, [isOpen, onClose, triggerElementRef]);

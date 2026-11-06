@@ -81,7 +81,7 @@ export const Preloader: React.FC<PreloaderProps> = ({ onCurtainLifting, onComple
     tl.to(progressObj, {
       count: 100,
       duration: 1.85,
-      ease: 'power2.inOut',
+      ease: 'power4.inOut',
       onUpdate: () => {
         const val = Math.round(progressObj.count);
         const formatted = String(val).padStart(2, '0');
@@ -139,6 +139,14 @@ export const Preloader: React.FC<PreloaderProps> = ({ onCurtainLifting, onComple
 
     // AutoAlpha 0 at timeline end so pointer events pass through cleanly
     tl.set(container, { autoAlpha: 0, pointerEvents: 'none' });
+    tl.call(() => {
+      if (window.__lenis) {
+        window.__lenis.start();
+      }
+      document.body.style.overflow = '';
+      setIsFinished(true);
+      onComplete?.();
+    });
 
     return () => {
       tl.kill();

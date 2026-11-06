@@ -140,21 +140,21 @@ export const RenderPassInspector: React.FC = () => {
         gsap.fromTo(
           clayMat,
           { roughness: 0.2, metalness: 0.3 },
-          { roughness: 0.85, metalness: 0.0, duration: 0.6, ease: 'power2.out' }
+          { roughness: 0.85, metalness: 0.0, duration: 0.6, ease: 'power3.out' }
         );
       } else if (passId === 'transmission') {
         const transMat = targetMat as THREE.MeshPhysicalMaterial;
         gsap.fromTo(
           transMat,
           { transmission: 0.2, thickness: 0.2 },
-          { transmission: 0.95, thickness: 1.2, duration: 0.7, ease: 'power2.out' }
+          { transmission: 0.95, thickness: 1.2, duration: 0.7, ease: 'power3.out' }
         );
       } else if (passId === 'wireframe') {
         const wireMat = targetMat as THREE.MeshBasicMaterial;
         gsap.fromTo(
           wireMat,
           { opacity: 0.3 },
-          { opacity: 1.0, duration: 0.4, ease: 'power2.out' }
+          { opacity: 1.0, duration: 0.4, ease: 'power3.out' }
         );
       } else if (passId === 'beauty') {
         rippleEnergyRef.current = 1.4;
@@ -171,7 +171,7 @@ export const RenderPassInspector: React.FC = () => {
         gsap.fromTo(
           innerCoreRef.current.scale,
           { x: 0.8, y: 0.8, z: 0.8 },
-          { x: 1, y: 1, z: 1, duration: 0.5, ease: 'power2.out' }
+          { x: 1, y: 1, z: 1, duration: 0.5, ease: 'power3.out' }
         );
       }
     }
@@ -513,14 +513,7 @@ export const RenderPassInspector: React.FC = () => {
     // 11. Main 60-120 FPS Animation Loop synchronized via GSAP Ticker
     // Automatically pauses when scrolled completely out of the viewport
     let isVisible = true;
-    const visibilityObserver = new IntersectionObserver(
-      ([entry]) => {
-        isVisible = entry.isIntersecting;
-      },
-      { threshold: 0 }
-    );
-    visibilityObserver.observe(container);
-
+    let isTickerAttached = false;
     let lastTime = performance.now();
 
     const animate = () => {
@@ -589,14 +582,33 @@ export const RenderPassInspector: React.FC = () => {
       renderer.render(scene, camera);
     };
 
+    const visibilityObserver = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+        if (isVisible && !isTickerAttached) {
+          lastTime = performance.now();
+          gsap.ticker.add(animate);
+          isTickerAttached = true;
+        } else if (!isVisible && isTickerAttached) {
+          gsap.ticker.remove(animate);
+          isTickerAttached = false;
+        }
+      },
+      { threshold: 0 }
+    );
+    visibilityObserver.observe(container);
+
     gsap.ticker.add(animate);
+    isTickerAttached = true;
     gsap.ticker.lagSmoothing(0);
 
     // Cleanup on unmount
     return () => {
       resizeObserver.disconnect();
       visibilityObserver.disconnect();
-      gsap.ticker.remove(animate);
+      if (isTickerAttached) {
+        gsap.ticker.remove(animate);
+      }
 
       mainGeometry.dispose();
       coreGeom.dispose();

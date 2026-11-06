@@ -229,7 +229,7 @@ export function useReveal<T extends HTMLElement = HTMLElement>(
         gsap.to(counterState, {
           val: targetNumber,
           duration: 1.4,
-          ease: 'power2.out',
+          ease: 'power3.out',
           scrollTrigger: {
             trigger: el,
             start: options?.start || 'top 88%',

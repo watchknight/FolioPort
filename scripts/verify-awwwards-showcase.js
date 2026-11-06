@@ -132,7 +132,18 @@ async function evalInPage(expression) {
 }
 
 // Wait for preloader & animation hydration
-await new Promise((r) => setTimeout(r, 3600));
+await evalInPage(`
+  new Promise((resolve) => {
+    const isReady = () => !!document.getElementById('work') && !!window.__lenis && !window.__lenis.isStopped && document.body.style.overflow !== 'hidden';
+    const interval = setInterval(() => {
+      if (isReady()) {
+        clearInterval(interval);
+        resolve(true);
+      }
+    }, 100);
+    setTimeout(() => { clearInterval(interval); resolve(false); }, 7000);
+  })
+`);
 
 console.log('====================================================');
 console.log('   AWWWARDS DUAL-MODE SHOWCASE & KINETIC LEDGER QA   ');

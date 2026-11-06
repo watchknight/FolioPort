@@ -315,6 +315,10 @@ const modalTest = await evalInPage(`
     const credBtn = document.querySelector('button[aria-label="View interactive credentials modal"]');
     if (!credBtn) return { error: 'Credentials button not found' };
     
+    credBtn.scrollIntoView({ behavior: 'instant', block: 'center' });
+    await new Promise(r => setTimeout(r, 300));
+    credBtn.focus();
+
     // Click to open
     credBtn.click();
     await new Promise(r => setTimeout(r, 200));
@@ -330,7 +334,6 @@ const modalTest = await evalInPage(`
     const modalAfterEsc = document.querySelector('[role="dialog"]');
     const bodyOverflowAfter = document.body.style.overflow;
     const activeElAfterClose = document.activeElement?.getAttribute('aria-label');
-    
     return {
       modalOpened: !!modal,
       bodyScrollLockedOnOpen: bodyOverflow === 'hidden',

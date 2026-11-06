@@ -300,14 +300,7 @@ export const HeroCanvas: React.FC = () => {
     // Main 60-120 FPS Frame-rate Independent Physics & Render Loop synchronized via GSAP Ticker
     // Automatically pauses when scrolled completely out of the viewport
     let isVisible = true;
-    const visibilityObserver = new IntersectionObserver(
-      ([entry]) => {
-        isVisible = entry.isIntersecting;
-      },
-      { threshold: 0 }
-    );
-    visibilityObserver.observe(canvas);
-
+    let isTickerAttached = false;
     let lastTime = performance.now();
 
     const render = () => {
@@ -658,14 +651,33 @@ export const HeroCanvas: React.FC = () => {
       });
     };
 
+    const visibilityObserver = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+        if (isVisible && !isTickerAttached) {
+          lastTime = performance.now();
+          gsap.ticker.add(render);
+          isTickerAttached = true;
+        } else if (!isVisible && isTickerAttached) {
+          gsap.ticker.remove(render);
+          isTickerAttached = false;
+        }
+      },
+      { threshold: 0 }
+    );
+    visibilityObserver.observe(canvas);
+
     gsap.ticker.add(render);
+    isTickerAttached = true;
     gsap.ticker.lagSmoothing(0);
 
     return () => {
       resizeObserver.disconnect();
       visibilityObserver.disconnect();
       clearTimeout(initialTimer);
-      gsap.ticker.remove(render);
+      if (isTickerAttached) {
+        gsap.ticker.remove(render);
+      }
     };
   }, [triggerRipple]);
 

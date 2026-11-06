@@ -321,15 +321,21 @@ export const ContactFooter: React.FC = () => {
   };
 
   // 6. Accessible Modal Management: Scroll Locking, Tab Trapping, and Focus Restoration
+  const triggerElementRef = useRef<HTMLElement | null>(null);
+
   const openResumeModal = () => {
+    triggerElementRef.current = (document.activeElement as HTMLElement) || credentialsTriggerRef.current;
     setResumeModalOpen(true);
   };
 
   const closeResumeModal = useCallback(() => {
     setResumeModalOpen(false);
-    // Restore focus to triggering button
+    const target = credentialsTriggerRef.current || triggerElementRef.current || document.querySelector<HTMLElement>('button[aria-label="View interactive credentials modal"]');
+    if (target) {
+      target.focus();
+    }
     setTimeout(() => {
-      credentialsTriggerRef.current?.focus();
+      target?.focus();
     }, 50);
   }, []);
 
@@ -381,6 +387,10 @@ export const ContactFooter: React.FC = () => {
       clearTimeout(timer);
       document.body.style.overflow = originalOverflow;
       window.removeEventListener('keydown', handleKeyDown);
+      setTimeout(() => {
+        const target = credentialsTriggerRef.current || triggerElementRef.current || document.querySelector<HTMLElement>('button[aria-label="View interactive credentials modal"]');
+        target?.focus();
+      }, 50);
     };
   }, [resumeModalOpen, closeResumeModal]);
 

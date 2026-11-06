@@ -304,7 +304,12 @@ export const About: React.FC = () => {
       {/* Render Retro CRT Easter Egg Modal */}
       <EasterEggPong
         isOpen={easterEggOpen}
-        onClose={() => setEasterEggOpen(false)}
+        onClose={() => {
+          setEasterEggOpen(false);
+          setTimeout(() => {
+            easterEggTriggerRef.current?.focus();
+          }, 80);
+        }}
         triggerElementRef={easterEggTriggerRef}
       />
     </section>

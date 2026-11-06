@@ -1270,76 +1270,162 @@ export const ProjectsShowcase: React.FC = () => {
   }, [viewMode, transitionActiveProject]);
 
   // --------------------------------------------------------------------------
-  // GSAP 1: Cursor-Bound Floating Media Preview (quickTo Architecture)
+  // GSAP matchMedia: Floating Preview Portal, Velocity Skew & Batched Dividers
   // --------------------------------------------------------------------------
   useEffect(() => {
+    if (!mounted) return;
     const previewEl = previewRef.current;
     const labelEl = labelRef.current;
-    if (!previewEl || !labelEl) return;
+    const section = sectionRef.current;
+    if (!section) return;
 
-    // Check if device supports hover and cursor preview
-    const isTouchOnly = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (isTouchOnly || prefersReducedMotion) return;
+    const mm = gsap.matchMedia();
 
-    // Initialize the container with gsap.set(previewEl, { xPercent: -50, yPercent: -50, scale: 0, autoAlpha: 0, force3D: true })
-    gsap.set(previewEl, { xPercent: -50, yPercent: -50, scale: 0, autoAlpha: 0, force3D: true });
-    gsap.set(labelEl, { xPercent: -50, yPercent: -50, scale: 0, autoAlpha: 0, force3D: true });
+    mm.add(
+      {
+        isDesktop: '(min-width: 800px) and (hover: hover) and (prefers-reduced-motion: no-preference)',
+        isMobileOrTouch: '(max-width: 799px), (hover: none)',
+        reduceMotion: '(prefers-reduced-motion: reduce)',
+      },
+      (context) => {
+        const { isDesktop, reduceMotion } = context.conditions as {
+          isDesktop: boolean;
+          isMobileOrTouch: boolean;
+          reduceMotion: boolean;
+        };
 
-    // Create reusable high-frequency interpolators using quickTo with force3D: true
-    const xTo = gsap.quickTo(previewEl, 'x', { duration: 0.35, ease: 'power3.out', force3D: true });
-    const yTo = gsap.quickTo(previewEl, 'y', { duration: 0.35, ease: 'power3.out', force3D: true });
-    const labelXTo = gsap.quickTo(labelEl, 'x', { duration: 0.2, ease: 'power3.out', force3D: true });
-    const labelYTo = gsap.quickTo(labelEl, 'y', { duration: 0.2, ease: 'power3.out', force3D: true });
-    const setInitX = gsap.quickSetter([previewEl, labelEl], 'x', 'px');
-    const setInitY = gsap.quickSetter([previewEl, labelEl], 'y', 'px');
+        // 1. Reduced Motion Mode
+        if (reduceMotion) {
+          gsap.set('.skew-elem', { skewY: 0 });
+          gsap.set('.ledger-divider', { scaleX: 1, transformOrigin: 'left center' });
+          if (previewEl && labelEl) {
+            gsap.set([previewEl, labelEl], { autoAlpha: 0 });
+          }
+          return;
+        }
 
-    let hasPositioned = false;
+        // 2. Desktop Floating Media Preview (Dennis Snellenberg Style)
+        if (isDesktop && previewEl && labelEl) {
+          gsap.set(previewEl, { xPercent: -50, yPercent: -50, scale: 0, autoAlpha: 0, force3D: true });
+          gsap.set(labelEl, { xPercent: -50, yPercent: -50, scale: 0, autoAlpha: 0, force3D: true });
 
-    // On window mousemove, pipe e.clientX and e.clientY into xTo and yTo without creating new tweens per frame
-    const onMouseMove = (e: MouseEvent) => {
-      if (!hasPositioned) {
-        setInitX(e.clientX);
-        setInitY(e.clientY);
-        hasPositioned = true;
+          const xTo = gsap.quickTo(previewEl, 'x', { duration: 0.35, ease: 'power3.out', force3D: true });
+          const yTo = gsap.quickTo(previewEl, 'y', { duration: 0.35, ease: 'power3.out', force3D: true });
+          const labelXTo = gsap.quickTo(labelEl, 'x', { duration: 0.2, ease: 'power3.out', force3D: true });
+          const labelYTo = gsap.quickTo(labelEl, 'y', { duration: 0.2, ease: 'power3.out', force3D: true });
+          const setInitX = gsap.quickSetter([previewEl, labelEl], 'x', 'px');
+          const setInitY = gsap.quickSetter([previewEl, labelEl], 'y', 'px');
+
+          let hasPositioned = false;
+
+          const onMouseMove = (e: MouseEvent) => {
+            if (!hasPositioned) {
+              setInitX(e.clientX);
+              setInitY(e.clientY);
+              hasPositioned = true;
+            }
+            xTo(e.clientX);
+            yTo(e.clientY);
+            labelXTo(e.clientX);
+            labelYTo(e.clientY);
+          };
+
+          const onWindowLeave = () => {
+            handleLedgerLeave();
+          };
+
+          window.addEventListener('mousemove', onMouseMove, { passive: true });
+          document.addEventListener('mouseleave', onWindowLeave);
+
+          const sectionTrigger = ScrollTrigger.create({
+            trigger: section,
+            start: 'top bottom',
+            end: 'bottom top',
+            onLeave: handleLedgerLeave,
+            onLeaveBack: handleLedgerLeave,
+          });
+
+          context.add(() => {
+            window.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseleave', onWindowLeave);
+            sectionTrigger.kill();
+            document.body.classList.remove('ledger-hover-active');
+          });
+        }
+
+        // 3. Velocity-Dependent Scroll Skew Engine (.skew-elem)
+        if (isDesktop) {
+          gsap.set('.skew-elem', { transformOrigin: 'right center', force3D: true });
+
+          const skewProxy = { skew: 0 };
+          const skewSetter = gsap.quickSetter('.skew-elem', 'skewY', 'deg');
+          const skewTo = gsap.quickTo(skewProxy, 'skew', {
+            duration: 0.6,
+            ease: 'power3.out',
+            onUpdate: () => {
+              skewSetter(skewProxy.skew);
+            },
+          });
+
+          let settleTimer: ReturnType<typeof setTimeout> | null = null;
+
+          const skewTrigger = ScrollTrigger.create({
+            onUpdate: (self) => {
+              const velocity = self.getVelocity();
+              const rawSkew = velocity / -260;
+              const clampedSkew = gsap.utils.clamp(-14, 14, rawSkew);
+              skewTo(clampedSkew);
+
+              if (settleTimer) clearTimeout(settleTimer);
+              settleTimer = setTimeout(() => {
+                skewTo(0);
+              }, 70);
+            },
+          });
+
+          context.add(() => {
+            skewTrigger.kill();
+            if (settleTimer) clearTimeout(settleTimer);
+            gsap.killTweensOf(skewProxy);
+            gsap.set('.skew-elem', { skewY: 0 });
+          });
+        }
+
+        // 4. Batched Ledger Divider Rules ScaleX Entrance Animation
+        if (viewMode === 'ledger') {
+          const dividers = section.querySelectorAll<HTMLElement>('.ledger-divider');
+          if (dividers && dividers.length > 0) {
+            gsap.set(dividers, { scaleX: 0, transformOrigin: 'left center', force3D: true });
+            ScrollTrigger.batch(dividers, {
+              onEnter: (batch) =>
+                gsap.to(batch, {
+                  scaleX: 1,
+                  duration: 0.85,
+                  stagger: 0.05,
+                  ease: 'power3.out',
+                  overwrite: true,
+                }),
+              start: 'top 92%',
+            });
+          }
+        }
       }
-      xTo(e.clientX);
-      yTo(e.clientY);
-      labelXTo(e.clientX);
-      labelYTo(e.clientY);
-    };
+    );
 
-    // Auto-hide when mouse leaves the browser window
-    const onWindowLeave = () => {
-      handleLedgerLeave();
-    };
-
-    window.addEventListener('mousemove', onMouseMove, { passive: true });
-    document.addEventListener('mouseleave', onWindowLeave);
-
-    // ScrollTrigger: automatically dismiss floating preview if #work scrolls out of view
-    const sectionTrigger = sectionRef.current
-      ? ScrollTrigger.create({
-          trigger: sectionRef.current,
-          start: 'top bottom',
-          end: 'bottom top',
-          onLeave: handleLedgerLeave,
-          onLeaveBack: handleLedgerLeave,
-        })
-      : null;
+    const refreshTimer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 150);
 
     return () => {
-      window.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseleave', onWindowLeave);
-      sectionTrigger?.kill();
-      document.body.classList.remove('ledger-hover-active');
+      clearTimeout(refreshTimer);
+      mm.revert();
     };
-  }, [mounted]);
+  }, [mounted, viewMode]);
 
   // Hover handlers for ledger rows
   const handleRowEnter = (idx: number) => {
     if (viewMode !== 'ledger') return;
-    const isTouchOnly = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+    const isTouchOnly = typeof window !== 'undefined' && window.matchMedia('(hover: none) and (pointer: coarse)').matches;
     if (isTouchOnly) return;
 
     setHoveredIndex(idx);
@@ -1389,90 +1475,6 @@ export const ProjectsShowcase: React.FC = () => {
       });
     }
   };
-
-  // --------------------------------------------------------------------------
-  // GSAP 2: Velocity-Dependent Scroll Skew Engine (.skew-elem)
-  // --------------------------------------------------------------------------
-  useEffect(() => {
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) return;
-
-    // Global velocity skew controller targeting all project rows and featured media cards (.skew-elem)
-    gsap.set('.skew-elem', { transformOrigin: 'right center' });
-
-    const skewProxy = { skew: 0 };
-    const skewSetter = gsap.quickSetter('.skew-elem', 'skewY', 'deg');
-    const skewTo = gsap.quickTo(skewProxy, 'skew', {
-      duration: 0.6,
-      ease: 'power3',
-      onUpdate: () => {
-        skewSetter(skewProxy.skew);
-      },
-    });
-
-    let settleTimer: ReturnType<typeof setTimeout> | null = null;
-
-    const skewTrigger = ScrollTrigger.create({
-      onUpdate: (self) => {
-        const velocity = self.getVelocity();
-        const rawSkew = velocity / -260;
-        const clampedSkew = gsap.utils.clamp(-14, 14, rawSkew);
-        skewTo(clampedSkew);
-
-        if (settleTimer) clearTimeout(settleTimer);
-        settleTimer = setTimeout(() => {
-          skewTo(0);
-        }, 70);
-      },
-    });
-
-    return () => {
-      skewTrigger.kill();
-      if (settleTimer) clearTimeout(settleTimer);
-      gsap.killTweensOf(skewProxy);
-      gsap.set('.skew-elem', { skewY: 0 });
-    };
-  }, [viewMode]);
-
-  // --------------------------------------------------------------------------
-  // GSAP 3: 1px Horizontal Divider Rules ScaleX Entrance Animation (Batched)
-  // --------------------------------------------------------------------------
-  useEffect(() => {
-    if (viewMode !== 'ledger') return;
-
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) {
-      gsap.set('.ledger-divider', { scaleX: 1, transformOrigin: 'left center' });
-      return;
-    }
-
-    const ctx = gsap.context(() => {
-      const dividers = sectionRef.current?.querySelectorAll<HTMLElement>('.ledger-divider');
-      if (dividers && dividers.length > 0) {
-        gsap.set(dividers, { scaleX: 0, transformOrigin: 'left center', force3D: true });
-        ScrollTrigger.batch(dividers, {
-          onEnter: (batch) =>
-            gsap.to(batch, {
-              scaleX: 1,
-              duration: 0.85,
-              stagger: 0.05,
-              ease: 'power3.out',
-              overwrite: true,
-            }),
-          start: 'top 92%',
-        });
-      }
-    }, sectionRef);
-
-    const refreshTimer = setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 150);
-
-    return () => {
-      clearTimeout(refreshTimer);
-      ctx.revert();
-    };
-  }, [viewMode]);
 
   const handleJumpToProjectCard = (idx: number) => {
     handleLedgerLeave();
@@ -1610,20 +1612,31 @@ export const ProjectsShowcase: React.FC = () => {
                     aria-label={`${project.title}: ${project.role}, ${project.year}. Press Enter to open case study.`}
                     className="w-full py-8 sm:py-10 md:py-12 px-2 sm:px-4 lg:px-6 flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 cursor-pointer select-none focus:outline-none focus:bg-white/5 transition-colors"
                   >
-                    {/* Left: Zero-Padded Monospace Index + Title */}
-                    <div className="flex items-baseline gap-4 sm:gap-8 flex-1 min-w-0">
-                      <span className="font-mono text-fluid-mono sm:text-lg text-accent-coral font-bold shrink-0">
-                        {project.number}
-                      </span>
-                      <h3
-                        style={{
-                          transform: isHovered ? 'translateX(16px)' : 'translateX(0px)',
-                          opacity: isHovered ? 1 : 0.9,
-                        }}
-                        className="font-display font-extrabold text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-alabaster tracking-tight group-hover:text-accent-coral transition-all duration-300 ease-out"
-                      >
-                        {project.title}
-                      </h3>
+                    {/* Left: Zero-Padded Monospace Index + Title + Mobile Inline Thumbnail */}
+                    <div className="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-8 flex-1 min-w-0">
+                      <div className="flex items-baseline gap-4 sm:gap-8 shrink-0">
+                        <span className="font-mono text-fluid-mono sm:text-lg text-accent-coral font-bold shrink-0">
+                          {project.number}
+                        </span>
+                        <h3
+                          style={{
+                            transform: isHovered ? 'translateX(16px)' : 'translateX(0px)',
+                            opacity: isHovered ? 1 : 0.9,
+                          }}
+                          className="font-display font-extrabold text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-alabaster tracking-tight group-hover:text-accent-coral transition-all duration-300 ease-out"
+                        >
+                          {project.title}
+                        </h3>
+                      </div>
+
+                      {/* Mobile & Touch Viewport Inline Thumbnail Indicator */}
+                      <div className="flex lg:hidden items-center gap-2 font-mono text-[11px] text-muted-light">
+                        <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-accent-coral font-semibold">
+                          {project.category}
+                        </span>
+                        <span className="text-white/20">•</span>
+                        <span className="text-alabaster-dim">{project.coreStack}</span>
+                      </div>
                     </div>
 
                     {/* Right: Surgical Metadata Columns + Interactive External Arrow Indicator */}
