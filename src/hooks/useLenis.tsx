@@ -1,0 +1,135 @@
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
+import Lenis from 'lenis';
+import 'lenis/dist/lenis.css';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
+
+// Global window declaration for programmatic access
+declare global {
+  interface Window {
+    __lenis?: Lenis;
+  }
+}
+
+export interface LenisContextValue {
+  lenis: Lenis | null;
+  scrollTo: (target: string | HTMLElement | number, options?: { offset?: number; immediate?: boolean; duration?: number }) => void;
+}
+
+const LenisContext = createContext<LenisContextValue>({
+  lenis: null,
+  scrollTo: () => {},
+});
+
+let sharedLenis: Lenis | null = null;
+let tickerCallback: ((time: number) => void) | null = null;
+
+/**
+ * Initializes and exposes a single Lenis smooth-scroll instance synchronized
+ * with GSAP's master requestAnimationFrame loop exactly once.
+ */
+export const getOrInitLenis = (): Lenis => {
+  if (typeof window === 'undefined') {
+    return null as unknown as Lenis;
+  }
+
+  if (sharedLenis) {
+    window.__lenis = sharedLenis;
+    return sharedLenis;
+  }
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Single Lenis smooth-scroll instance
+  const lenis = new Lenis({
+    duration: prefersReducedMotion ? 0 : 1.2,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    orientation: 'vertical',
+    gestureOrientation: 'vertical',
+    smoothWheel: !prefersReducedMotion,
+    wheelMultiplier: 0.9,
+    touchMultiplier: 1.8,
+    infinite: false,
+    autoRaf: false, // Disable Lenis's internal RAF so zero competing loops exist
+  });
+
+  sharedLenis = lenis;
+  window.__lenis = lenis;
+
+  // Synchronize Lenis scroll position with GSAP ScrollTrigger exactly once
+  lenis.on('scroll', ScrollTrigger.update);
+
+  // Hook Lenis into GSAP's master ticker RAF loop
+  tickerCallback = (time: number) => {
+    lenis.raf(time * 1000);
+  };
+  gsap.ticker.add(tickerCallback);
+  gsap.ticker.lagSmoothing(0);
+
+  return lenis;
+};
+
+export const LenisProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [lenisInstance, setLenisInstance] = useState<Lenis | null>(() => {
+    if (typeof window !== 'undefined') {
+      return getOrInitLenis();
+    }
+    return null;
+  });
+  const lenisRef = useRef<Lenis | null>(lenisInstance);
+
+  useEffect(() => {
+    const lenis = getOrInitLenis();
+    lenisRef.current = lenis;
+    setLenisInstance(lenis);
+    window.__lenis = lenis;
+  }, []);
+
+  const scrollTo = (target: string | HTMLElement | number, options?: { offset?: number; immediate?: boolean; duration?: number }) => {
+    // Exact numbers default to offset 0; element selectors default to -90 for navbar clearance
+    const defaultOffset = typeof target === 'number' ? 0 : -90;
+    const offset = options?.offset !== undefined ? options.offset : defaultOffset;
+    const activeLenis = window.__lenis || lenisRef.current;
+
+    if (activeLenis) {
+      activeLenis.scrollTo(target, {
+        offset,
+        immediate: options?.immediate ?? false,
+        duration: options?.duration ?? 1.2,
+      });
+    } else {
+      // Native fallback
+      if (typeof target === 'number') {
+        window.scrollTo({
+          top: target + offset,
+          behavior: options?.immediate ? 'auto' : 'smooth',
+        });
+      } else if (typeof target === 'string') {
+        const el = document.querySelector(target);
+        if (el) {
+          const top = (el as HTMLElement).getBoundingClientRect().top + window.scrollY + offset;
+          window.scrollTo({
+            top,
+            behavior: options?.immediate ? 'auto' : 'smooth',
+          });
+        }
+      } else if (target) {
+        const top = target.getBoundingClientRect().top + window.scrollY + offset;
+        window.scrollTo({
+          top,
+          behavior: options?.immediate ? 'auto' : 'smooth',
+        });
+      }
+    }
+  };
+
+  return (
+    <LenisContext.Provider value={{ lenis: lenisInstance, scrollTo }}>
+      {children}
+    </LenisContext.Provider>
+  );
+};
+
+export const useLenis = () => useContext(LenisContext);

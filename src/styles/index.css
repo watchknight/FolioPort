@@ -1,0 +1,269 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root,
+  :root[data-theme="obsidian"] {
+    --bg-obsidian-rgb: 10 10 10;
+    --bg-surface-rgb: 18 18 18;
+    --bg-card-rgb: 22 22 22;
+    --bg-elevated-rgb: 29 29 29;
+    --text-primary-rgb: 244 243 239;
+    --text-dim-rgb: 220 218 210;
+    --text-muted-rgb: 87 91 95;
+    --accent-rust-rgb: 167 64 36;
+    --accent-coral-rgb: 223 108 79;
+    --border-editorial-rgb: 244 243 239;
+
+    --bg-obsidian: #0A0A0A;
+    --bg-carbon: #121212;
+    --bg-surface: #121212;
+    --bg-card: #161616;
+    --surface-alabaster: #F4F3EF;
+    --text-muted: #575B5F;
+    --accent-rust: #A74024;
+    --accent-coral: #DF6C4F;
+    --border-editorial: rgba(244, 243, 239, 0.08);
+  }
+
+  :root[data-theme="alabaster"] {
+    --bg-obsidian-rgb: 244 243 239;
+    --bg-surface-rgb: 234 232 225;
+    --bg-card-rgb: 255 255 255;
+    --bg-elevated-rgb: 224 221 212;
+    --text-primary-rgb: 17 17 17;
+    --text-dim-rgb: 46 45 42;
+    --text-muted-rgb: 104 103 98;
+    --accent-rust-rgb: 17 17 17;
+    --accent-coral-rgb: 167 64 36;
+    --border-editorial-rgb: 17 17 17;
+
+    --bg-obsidian: #F4F3EF;
+    --bg-carbon: #EAE8E1;
+    --bg-surface: #EAE8E1;
+    --bg-card: #FFFFFF;
+    --surface-alabaster: #111111;
+    --text-muted: #686762;
+    --accent-rust: #111111;
+    --accent-coral: #A74024;
+    --border-editorial: rgba(17, 17, 17, 0.1);
+  }
+
+  :root[data-theme="forest"] {
+    --bg-obsidian-rgb: 20 30 25;
+    --bg-surface-rgb: 26 39 33;
+    --bg-card-rgb: 33 50 42;
+    --bg-elevated-rgb: 40 61 51;
+    --text-primary-rgb: 230 237 232;
+    --text-dim-rgb: 194 212 201;
+    --text-muted-rgb: 122 148 134;
+    --accent-rust-rgb: 129 201 149;
+    --accent-coral-rgb: 163 217 177;
+    --border-editorial-rgb: 129 201 149;
+
+    --bg-obsidian: #141E19;
+    --bg-carbon: #1B2922;
+    --bg-surface: #1B2922;
+    --bg-card: #21322A;
+    --surface-alabaster: #E6EDE8;
+    --text-muted: #7E9689;
+    --accent-rust: #81C995;
+    --accent-coral: #A3D9B1;
+    --border-editorial: rgba(129, 201, 149, 0.12);
+  }
+
+  html,
+  body {
+    background-color: var(--bg-obsidian, #0A0A0A);
+    color: var(--surface-alabaster, #F4F3EF);
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 450ms cubic-bezier(0.22, 1, 0.36, 1),
+                color 450ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Transition all CSS custom properties smoothly over 450ms cubic-bezier(0.22, 1, 0.36, 1) */
+  nav, header, main, footer, section, article, div[data-theme-transition] {
+    transition: background-color 450ms cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 450ms cubic-bezier(0.22, 1, 0.36, 1),
+                color 450ms cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 450ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  ::selection {
+    background-color: #A74024;
+    color: #F4F3EF;
+  }
+
+  /* Lenis smooth scrolling reset */
+  html.lenis, html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  .lenis.lenis-scrolling iframe {
+    pointer-events: none;
+  }
+
+  /* Editorial subtle scrollbar */
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #0A0A0A;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #242424;
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #A74024;
+  }
+}
+
+@layer components {
+  /* Restrained Editorial Card */
+  .editorial-card {
+    position: relative;
+    background: rgba(18, 18, 18, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(244, 243, 239, 0.08);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(244, 243, 239, 0.06);
+    transition: border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .editorial-card:hover {
+    border-color: rgba(244, 243, 239, 0.16);
+  }
+
+  /* Retain liquid-glass classes for existing cards with restrained styling */
+  .liquid-glass {
+    position: relative;
+    background: rgba(18, 18, 18, 0.72);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(244, 243, 239, 0.08);
+    box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(244, 243, 239, 0.04);
+    transition: border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .liquid-glass:hover {
+    border-color: rgba(244, 243, 239, 0.18);
+  }
+
+  .liquid-glass-accent {
+    position: relative;
+    background: rgba(18, 18, 18, 0.82);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(167, 64, 36, 0.35);
+    box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.85), inset 0 1px 0 0 rgba(244, 243, 239, 0.1);
+  }
+
+  /* Navigation pill floating bar */
+  .nav-pill-surface {
+    background: rgba(10, 10, 10, 0.82);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(244, 243, 239, 0.08);
+    box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(244, 243, 239, 0.04);
+  }
+
+  /* Subtle editorial grid pattern */
+  .bg-grid-subtle {
+    background-size: 48px 48px;
+    background-image: 
+      linear-gradient(to right, rgba(244, 243, 239, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(244, 243, 239, 0.02) 1px, transparent 1px);
+  }
+
+  /* Editorial word mask for kinetic typography */
+  .editorial-mask {
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: bottom;
+  }
+}
+
+/* Dual-layer Magnetic Cursor hide on pure touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .custom-cursor-container {
+    display: none !important;
+  }
+  body, button, a {
+    cursor: auto !important;
+  }
+}
+
+/* Procedural Web Audio Sound Wave Animation */
+@keyframes sound-wave {
+  0%, 100% { height: 3px; }
+  50% { height: 12px; }
+}
+.animate-sound-bar-1 { animation: sound-wave 0.8s ease-in-out infinite; }
+.animate-sound-bar-2 { animation: sound-wave 0.6s ease-in-out infinite 0.15s; }
+.animate-sound-bar-3 { animation: sound-wave 0.9s ease-in-out infinite 0.3s; }
+.animate-sound-bar-4 { animation: sound-wave 0.7s ease-in-out infinite 0.1s; }
+
+@media (hover: hover) and (pointer: fine) {
+  body.cursor-active,
+  body.cursor-active a,
+  body.cursor-active button,
+  body.cursor-active [role="button"],
+  body.cursor-active input,
+  body.cursor-active textarea,
+  body.cursor-active canvas {
+    cursor: none !important;
+  }
+
+  /* Suppress global custom cursor when Dennis Snellenberg label cursor is active */
+  body.ledger-hover-active .custom-cursor-container {
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+}
+
+/* Accessibility: Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .custom-cursor-container {
+    display: none !important;
+  }
+
+  body.cursor-active,
+  body.cursor-active a,
+  body.cursor-active button,
+  body.cursor-active [role="button"],
+  body.cursor-active input,
+  body.cursor-active textarea,
+  body.cursor-active canvas {
+    cursor: auto !important;
+  }
+}
