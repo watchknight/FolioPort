@@ -98,6 +98,25 @@ describe('SYS.96 Systems UI Architecture Verification: SkillMatrix, GithubLab & 
       expect(html).toContain('MOTHERBOARD PCB BUS');
       expect(html).toContain('viewBox="0 0 1000 32"');
     });
+
+    it('renders unified Cyberdeck Career & Academic BIOS Console with id="experience" and 3 selectable tabs', () => {
+      const html = renderToString(React.createElement(SkillMatrix));
+
+      // Container has id="experience" for anchor link navigation
+      expect(html).toContain('id="experience"');
+
+      // 3 Tab buttons
+      expect(html).toContain('TAB 1: EWU CSE &amp; OFFICIAL BIOS RECORD');
+      expect(html).toContain('TAB 2: FULL-STACK &amp; BROWSER EXTENSIONS');
+      expect(html).toContain('TAB 3: SYSTEMS, KERNEL &amp; GRAPHICS LABS');
+
+      // Default active tab (Tab 1) content
+      expect(html).toContain('ROM PCI/ISA BIOS (2A69KM4B) // MODULAR CSE ARCHITECTURE');
+      expect(html).toContain('East West University (EWU)');
+      expect(html).toContain('Computer Science &amp; Engineering (CSE)');
+      expect(html).toContain('VALGRIND MEM AUDIT');
+      expect(html).toContain('0 LEAKS // CLEAN EXIT');
+    });
   });
 
   describe('2. Retro ROM Cartridge GitHub Explorer (GithubLab.tsx)', () => {
