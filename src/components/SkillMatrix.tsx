@@ -16,8 +16,7 @@ import {
   Activity,
   ShieldCheck,
   Radio,
-  Briefcase,
-  GraduationCap
+  Briefcase
 } from 'lucide-react';
 
 export interface ArchitectureTech {
@@ -1061,9 +1060,9 @@ export const SkillMatrix: React.FC = () => {
         </div>
 
         {/* ========================================================================= */}
-        {/* 5. 90s BIOS HARDWARE VERIFICATION ROM READOUT                             */}
+        {/* 5. UNIFIED CYBERDECK CAREER & ACADEMIC BIOS CONSOLE (INTERACTIVE TABBED)   */}
         {/* ========================================================================= */}
-        <div data-anim className="mb-8">
+        <div id="experience" data-anim className="mb-8 scroll-mt-[68px]">
           <RetroWindow
             title="WATCHKNIGHT_OS // BIOS_ROM_VERIFY.SYS (REV 4.51PG)"
             tag="ROM_BIOS"
@@ -1075,95 +1074,331 @@ export const SkillMatrix: React.FC = () => {
               </div>
             }
           >
-            {/* BIOS Setup Header */}
-            <div className="border-b-2 border-[#2D3645] pb-4 mb-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 font-pixel text-[10px] text-[#4AF626]">
-                <div className="flex items-center gap-2">
-                  <Cpu className="w-4 h-4 text-[#4AF626] animate-pulse" />
-                  <span>ROM PCI/ISA BIOS (2A69KM4B) // MODULAR CSE ARCHITECTURE</span>
-                </div>
-                <span className="text-[#FFCC00]">COPYRIGHT (C) 1996-2026 WATCHKNIGHT_OS SYS.96</span>
-              </div>
-              <div className="font-mono text-[11px] text-[#8E98AA] mt-1">
-                HARDWARE PLATFORM: EAST WEST UNIVERSITY CSE SYSTEMS LAB (DHAKA-BD • 23.7644° N, 90.4252° E • UTC+6)
-              </div>
+            {/* Interactive Console Tabs Bar */}
+            <div className="flex flex-wrap items-center gap-1.5 mb-4 border-b-2 border-[#2D3645] pb-2.5 select-none">
+              <span className="font-pixel text-[8px] text-[#8E98AA] mr-1 shrink-0">SELECT MODULE:</span>
+              {[
+                { id: 0, label: 'TAB 1: EWU CSE & OFFICIAL BIOS RECORD' },
+                { id: 1, label: 'TAB 2: FULL-STACK & BROWSER EXTENSIONS' },
+                { id: 2, label: 'TAB 3: SYSTEMS, KERNEL & GRAPHICS LABS' },
+              ].map((tab) => {
+                const isActive = activeBiosTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => handleBiosTabSwitch(tab.id)}
+                    onMouseEnter={() => chiptuneAudio.playPixelTick()}
+                    className={`font-pixel text-[8px] sm:text-[9px] px-3 py-1.5 border-2 transition-all cursor-pointer ${
+                      isActive
+                        ? 'bg-[#131629] text-[#4AF626] border-[#4AF626] shadow-[0_0_10px_rgba(74,246,38,0.35)] font-bold'
+                        : 'bg-[#070814] text-[#8E98AA] border-[#2D3645] hover:border-[#00F0FF] hover:text-[#00F0FF]'
+                    }`}
+                  >
+                    [ {tab.label} ]
+                  </button>
+                );
+              })}
             </div>
 
-            {/* BIOS Setup Table Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              
-              {/* Left Column: Academic Timeline & Institutional Verification */}
-              <div className="space-y-3 font-mono text-[11px]">
-                <div className="font-pixel text-[9px] text-[#00F0FF] border-b border-[#2D3645] pb-1 uppercase tracking-wider flex items-center justify-between">
-                  <span>[ SYSTEM RECORD: ACADEMIC CREDENTIAL ROM ]</span>
-                  <span className="text-[#4AF626]">VERIFIED</span>
+            {/* Relative Content Frame with 150ms CRT Scanline Wipe Overlay */}
+            <div className="relative overflow-hidden min-h-[300px]">
+              {isBiosWiping && (
+                <div 
+                  className="pointer-events-none absolute inset-0 z-30 bg-gradient-to-b from-[#00F0FF]/25 via-[#4AF626]/35 to-transparent animate-crt-wipe"
+                  style={{ boxShadow: 'inset 0 0 25px rgba(0, 240, 255, 0.4)' }}
+                />
+              )}
+
+              {/* [TAB 1: EWU CSE & OFFICIAL BIOS RECORD] */}
+              {activeBiosTab === 0 && (
+                <div>
+                  {/* BIOS Setup Header */}
+                  <div className="border-b-2 border-[#2D3645] pb-4 mb-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 font-pixel text-[10px] text-[#4AF626]">
+                      <div className="flex items-center gap-2">
+                        <Cpu className="w-4 h-4 text-[#4AF626] animate-pulse" />
+                        <span>ROM PCI/ISA BIOS (2A69KM4B) // MODULAR CSE ARCHITECTURE</span>
+                      </div>
+                      <span className="text-[#FFCC00]">COPYRIGHT (C) 1996-2026 WATCHKNIGHT_OS SYS.96</span>
+                    </div>
+                    <div className="font-mono text-[11px] text-[#8E98AA] mt-1">
+                      HARDWARE PLATFORM: EAST WEST UNIVERSITY CSE SYSTEMS LAB (DHAKA-BD • 23.7644° N, 90.4252° E • UTC+6)
+                    </div>
+                  </div>
+
+                  {/* BIOS Setup Table Grid */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Left Column: Academic Timeline & Institutional Verification */}
+                    <div className="space-y-3 font-mono text-[11px]">
+                      <div className="font-pixel text-[9px] text-[#00F0FF] border-b border-[#2D3645] pb-1 uppercase tracking-wider flex items-center justify-between">
+                        <span>[ SYSTEM RECORD: ACADEMIC CREDENTIAL ROM ]</span>
+                        <span className="text-[#4AF626]">VERIFIED</span>
+                      </div>
+
+                      <div className="bg-[#070814] p-3.5 border border-[#2D3645] space-y-2">
+                        <div className="flex items-start justify-between gap-2">
+                          <span className="text-[#8E98AA] shrink-0 font-pixel text-[9px]">INSTITUTION:</span>
+                          <span className="text-white text-right font-bold">East West University (EWU)</span>
+                        </div>
+                        <div className="flex items-start justify-between gap-2">
+                          <span className="text-[#8E98AA] shrink-0 font-pixel text-[9px]">DEPARTMENT:</span>
+                          <span className="text-[#D6CFC2] text-right">Computer Science &amp; Engineering (CSE)</span>
+                        </div>
+                        <div className="flex items-start justify-between gap-2">
+                          <span className="text-[#8E98AA] shrink-0 font-pixel text-[9px]">TIMELINE:</span>
+                          <span className="text-[#FFCC00] text-right font-pixel text-[10px]">2021 – PRESENT (SENIOR STANDING)</span>
+                        </div>
+                        <div className="flex items-start justify-between gap-2">
+                          <span className="text-[#8E98AA] shrink-0 font-pixel text-[9px]">LOCATION:</span>
+                          <span className="text-[#D6CFC2] text-right">Dhaka, Bangladesh (UTC+6)</span>
+                        </div>
+                        <div className="flex items-start justify-between gap-2">
+                          <span className="text-[#8E98AA] shrink-0 font-pixel text-[9px]">CURRICULUM:</span>
+                          <span className="text-[#00F0FF] text-right text-[10px]">OS Kernel, Algorithms, Distributed DB, Compilers, Physics-II</span>
+                        </div>
+                        <div className="flex items-start justify-between gap-2">
+                          <span className="text-[#8E98AA] shrink-0 font-pixel text-[9px]">CREDENTIALS:</span>
+                          <span className="text-white text-right text-[10px]">Student ID: @watchknight • Academic Standing: Senior / Final Year</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Right Column: SHA-256 Authenticated System Record */}
+                    <div className="space-y-3 font-mono text-[11px]">
+                      <div className="font-pixel text-[9px] text-[#00F0FF] border-b border-[#2D3645] pb-1 uppercase tracking-wider flex items-center justify-between">
+                        <span>[ CRYPTOGRAPHIC ROM TELEMETRY // POST CHECK ]</span>
+                        <span className="text-[#4AF626]">POST 000 OK</span>
+                      </div>
+
+                      <div className="bg-[#070814] p-3.5 border border-[#2D3645] space-y-2">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-[#8E98AA] font-pixel text-[9px]">SYSTEM CHECKSUM:</span>
+                          <span className="font-pixel text-[9px] text-[#4AF626]">SHA-256 AUTHENTICATED</span>
+                        </div>
+                        <div className="p-1.5 bg-[#131629] border border-[#2D3645] font-mono text-[9px] text-[#00F0FF] break-all leading-tight">
+                          SHA-256: 8F4A2B9C7D1E0F3A6B5C4D3E2F1A0B9C8D7E6F5A4B3C2D1E0F9A8B7C6D5E4F3A
+                        </div>
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-[#8E98AA] font-pixel text-[9px]">VALGRIND MEM AUDIT:</span>
+                          <span className="text-[#4AF626] font-bold">0 LEAKS // CLEAN EXIT (0 BYTES / 0 BLOCKS)</span>
+                        </div>
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-[#8E98AA] font-pixel text-[9px]">CANVAS PACING:</span>
+                          <span className="text-[#00F0FF] font-bold">120 FPS STABLE // ZERO JANK</span>
+                        </div>
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-[#8E98AA] font-pixel text-[9px]">OBSIDIAN AST PARITY:</span>
+                          <span className="text-[#FFCC00] font-bold">100% BIDIRECTIONAL SCHEMA SYNC</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* BIOS Security Notice Footnote */}
+                  <div className="mt-4 pt-3 border-t border-[#2D3645] flex flex-col sm:flex-row items-center justify-between gap-2 font-mono text-[10px] text-[#8E98AA]">
+                    <span className="flex items-center gap-1.5">
+                      <ShieldCheck className="w-4 h-4 text-[#4AF626]" />
+                      <span>ROM Hardware Hash signed by East West University CSE workstation node (@watchknight).</span>
+                    </span>
+                    <span className="text-[#4AF626] font-pixel text-[8px]">
+                      BOOT SEQUENCE: FLOPPY (A:) → ROM CARTRIDGE (C:) → POSIX RAM
+                    </span>
+                  </div>
                 </div>
+              )}
 
-                <div className="bg-[#070814] p-3.5 border border-[#2D3645] space-y-2">
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="text-[#8E98AA] shrink-0 font-pixel text-[9px]">INSTITUTION:</span>
-                    <span className="text-white text-right font-bold">East West University (EWU)</span>
+              {/* [TAB 2: FULL-STACK & BROWSER EXTENSIONS] */}
+              {activeBiosTab === 1 && (
+                <div>
+                  {/* Full-Stack & Browser Extensions Header */}
+                  <div className="border-b-2 border-[#2D3645] pb-4 mb-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 font-pixel text-[10px] text-[#00F0FF]">
+                      <div className="flex items-center gap-2">
+                        <Briefcase className="w-4 h-4 text-[#00F0FF] animate-pulse" />
+                        <span>FULL-STACK ARCHITECTURE &amp; BROWSER EXTENSIONS // PRODUCTION MILESTONES</span>
+                      </div>
+                      <span className="text-[#4AF626]">STATUS: PRODUCTION ACTIVE</span>
+                    </div>
+                    <div className="font-mono text-[11px] text-[#8E98AA] mt-1">
+                      INDEPENDENT SYSTEMS &amp; PRODUCTION PLATFORMS (2022 — PRESENT, REMOTE / GLOBAL)
+                    </div>
                   </div>
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="text-[#8E98AA] shrink-0 font-pixel text-[9px]">DEPARTMENT:</span>
-                    <span className="text-[#D6CFC2] text-right">Computer Science &amp; Engineering (CSE)</span>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    {/* Milestone 1: Mental Defrag */}
+                    <div className="bg-[#070814] p-3.5 border border-[#2D3645] hover:border-[#00F0FF] transition-colors space-y-1.5">
+                      <div className="flex items-center justify-between gap-2 font-pixel text-[9px]">
+                        <span className="text-[#00F0FF]">01. MENTAL DEFRAG</span>
+                        <span className="text-[#8E98AA]">SPATIAL ENGINE</span>
+                      </div>
+                      <p className="font-sans text-xs text-[#D6CFC2] leading-relaxed">
+                        Zero-gravity spatial cognitive canvas with local vector embeddings and bi-directional Obsidian .canvas JSON AST parsing. Real-time thought clustering with sub-millisecond node physics.
+                      </p>
+                      <div className="font-mono text-[9px] text-[#8E98AA] pt-1 border-t border-[#2D3645]/60 flex items-center gap-1.5">
+                        <span className="text-[#4AF626]">&gt;</span>
+                        <span>Matter.js • Obsidian AST • React 18 • Vectors</span>
+                      </div>
+                    </div>
+
+                    {/* Milestone 2: DocLensBD */}
+                    <div className="bg-[#070814] p-3.5 border border-[#2D3645] hover:border-[#FFCC00] transition-colors space-y-1.5">
+                      <div className="flex items-center justify-between gap-2 font-pixel text-[9px]">
+                        <span className="text-[#FFCC00]">02. DOCLENSBD</span>
+                        <span className="text-[#4AF626]">14/14 CI/CD PASS</span>
+                      </div>
+                      <p className="font-sans text-xs text-[#D6CFC2] leading-relaxed">
+                        Cloud-backed diagnostic pipeline with real-time Cloud Firestore listeners, automated GitHub Actions staging gates (14/14 automated test suite pass rate), and offline mutation queuing.
+                      </p>
+                      <div className="font-mono text-[9px] text-[#8E98AA] pt-1 border-t border-[#2D3645]/60 flex items-center gap-1.5">
+                        <span className="text-[#4AF626]">&gt;</span>
+                        <span>Cloud Firestore • CI/CD Staging • React 18 • Firebase</span>
+                      </div>
+                    </div>
+
+                    {/* Milestone 3: FocusGuard */}
+                    <div className="bg-[#070814] p-3.5 border border-[#2D3645] hover:border-[#00F0FF] transition-colors space-y-1.5">
+                      <div className="flex items-center justify-between gap-2 font-pixel text-[9px]">
+                        <span className="text-[#00F0FF]">03. FOCUSGUARD</span>
+                        <span className="text-[#00F0FF]">MANIFEST V3</span>
+                      </div>
+                      <p className="font-sans text-xs text-[#D6CFC2] leading-relaxed">
+                        Manifest V3 browser extension with declarativeNetRequest dynamic interception rules, Shadow DOM injected countdown radial timer, and background service worker memory lifecycle management.
+                      </p>
+                      <div className="font-mono text-[9px] text-[#8E98AA] pt-1 border-t border-[#2D3645]/60 flex items-center gap-1.5">
+                        <span className="text-[#4AF626]">&gt;</span>
+                        <span>Chrome MV3 • DNR Rules • Shadow DOM • TypeScript</span>
+                      </div>
+                    </div>
+
+                    {/* Milestone 4: Rannabanna */}
+                    <div className="bg-[#070814] p-3.5 border border-[#2D3645] hover:border-[#FF2A85] transition-colors space-y-1.5">
+                      <div className="flex items-center justify-between gap-2 font-pixel text-[9px]">
+                        <span className="text-[#FF2A85]">04. RANNABANNA</span>
+                        <span className="text-[#FFCC00]">-78% PAYLOAD</span>
+                      </div>
+                      <p className="font-sans text-xs text-[#D6CFC2] leading-relaxed">
+                        Localized Bengali culinary &amp; nutrition platform engineered with Unicode font subsetting reducing critical CSS/font payload by 78%, coupled with optimistic Cloud DB sync.
+                      </p>
+                      <div className="font-mono text-[9px] text-[#8E98AA] pt-1 border-t border-[#2D3645]/60 flex items-center gap-1.5">
+                        <span className="text-[#4AF626]">&gt;</span>
+                        <span>Bengali NLP • Cloud DB Sync • React 18 • IndexedDB</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="text-[#8E98AA] shrink-0 font-pixel text-[9px]">TIMELINE:</span>
-                    <span className="text-[#FFCC00] text-right font-pixel text-[10px]">2021 – PRESENT (SENIOR STANDING)</span>
-                  </div>
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="text-[#8E98AA] shrink-0 font-pixel text-[9px]">LOCATION:</span>
-                    <span className="text-[#D6CFC2] text-right">Dhaka, Bangladesh (UTC+6)</span>
-                  </div>
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="text-[#8E98AA] shrink-0 font-pixel text-[9px]">CURRICULUM:</span>
-                    <span className="text-[#00F0FF] text-right text-[10px]">OS Kernel, Algorithms, Distributed DB, Compilers</span>
+
+                  {/* Footnote */}
+                  <div className="pt-3 border-t border-[#2D3645] flex flex-col sm:flex-row items-center justify-between gap-2 font-mono text-[10px] text-[#8E98AA]">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="font-pixel text-[8px] text-[#00F0FF] mr-1">STACK VERIFIED:</span>
+                      {['React 18', 'TypeScript', 'Matter.js', 'Cloud Firestore', 'Vite', 'Tailwind CSS', 'Chrome MV3', 'GitHub Actions'].map((t) => (
+                        <span key={t} className="px-1.5 py-0.5 bg-[#070814] border border-[#2D3645] font-mono text-[9px] text-[#D6CFC2]">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                    <span className="text-[#4AF626] font-pixel text-[8px] shrink-0">
+                      14/14 CI/CD PASS • PRODUCTION VERIFIED ✓
+                    </span>
                   </div>
                 </div>
-              </div>
+              )}
 
-              {/* Right Column: SHA-256 Authenticated System Record */}
-              <div className="space-y-3 font-mono text-[11px]">
-                <div className="font-pixel text-[9px] text-[#00F0FF] border-b border-[#2D3645] pb-1 uppercase tracking-wider flex items-center justify-between">
-                  <span>[ CRYPTOGRAPHIC ROM TELEMETRY // POST CHECK ]</span>
-                  <span className="text-[#4AF626]">POST 000 OK</span>
+              {/* [TAB 3: SYSTEMS, KERNEL & GRAPHICS LABS] */}
+              {activeBiosTab === 2 && (
+                <div>
+                  {/* Systems, Kernel & Graphics Labs Header */}
+                  <div className="border-b-2 border-[#2D3645] pb-4 mb-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 font-pixel text-[10px] text-[#4AF626]">
+                      <div className="flex items-center gap-2">
+                        <Terminal className="w-4 h-4 text-[#4AF626] animate-pulse" />
+                        <span>LINUX KERNEL, POSIX IPC &amp; WEBGL GRAPHICS LABS // LOW-LEVEL ENGINE</span>
+                      </div>
+                      <span className="text-[#00F0FF]">RING-0 SYSCALLS // 120 FPS</span>
+                    </div>
+                    <div className="font-mono text-[11px] text-[#8E98AA] mt-1">
+                      BITFORGE &amp; GRAPHICS MICRO-ENGINES (2023 — PRESENT, OPEN SOURCE)
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    {/* Systems 1: POSIX Shared-Memory IPC */}
+                    <div className="bg-[#070814] p-3.5 border border-[#2D3645] hover:border-[#4AF626] transition-colors space-y-1.5">
+                      <div className="flex items-center justify-between gap-2 font-pixel text-[9px]">
+                        <span className="text-[#4AF626]">01. POSIX SHARED MEMORY IPC</span>
+                        <span className="text-[#00F0FF]">&lt; 1.2μs LATENCY</span>
+                      </div>
+                      <p className="font-sans text-xs text-[#D6CFC2] leading-relaxed">
+                        Multi-process fork() hierarchies with anonymous duplex pipes and POSIX shared memory (shmget, shmat) synchronized via atomic spinlocks and semaphore barriers. Zero-copy ring buffer throughput.
+                      </p>
+                      <div className="font-mono text-[9px] text-[#8E98AA] pt-1 border-t border-[#2D3645]/60 flex items-center gap-1.5">
+                        <span className="text-[#4AF626]">&gt;</span>
+                        <span>C / C++ • shmget/shmat • Anonymous Pipes • Spinlocks</span>
+                      </div>
+                    </div>
+
+                    {/* Systems 2: Process Lifecycle & fork() Trees */}
+                    <div className="bg-[#070814] p-3.5 border border-[#2D3645] hover:border-[#00F0FF] transition-colors space-y-1.5">
+                      <div className="flex items-center justify-between gap-2 font-pixel text-[9px]">
+                        <span className="text-[#00F0FF]">02. PROCESS HIERARCHIES &amp; FORK()</span>
+                        <span className="text-[#FFCC00]">POSIX SIGNALS</span>
+                      </div>
+                      <p className="font-sans text-xs text-[#D6CFC2] leading-relaxed">
+                        Deterministic process spawning hierarchies with robust signal handling (SIGCHLD, SIGKILL, SIGSEGV), automated zombie process reclamation, and descriptor polling without resource leaks.
+                      </p>
+                      <div className="font-mono text-[9px] text-[#8E98AA] pt-1 border-t border-[#2D3645]/60 flex items-center gap-1.5">
+                        <span className="text-[#4AF626]">&gt;</span>
+                        <span>fork() Trees • Zombie Reaping • Exit Traps • Linux Kernel</span>
+                      </div>
+                    </div>
+
+                    {/* Systems 3: WebGL Shader Pipelines */}
+                    <div className="bg-[#070814] p-3.5 border border-[#2D3645] hover:border-[#FF2A85] transition-colors space-y-1.5">
+                      <div className="flex items-center justify-between gap-2 font-pixel text-[9px]">
+                        <span className="text-[#FF2A85]">03. WEBGL SHADER PIPELINES</span>
+                        <span className="text-[#00F0FF]">GPU WAVE DISPLACEMENT</span>
+                      </div>
+                      <p className="font-sans text-xs text-[#D6CFC2] leading-relaxed">
+                        Custom Three.js GLSL vertex &amp; fragment shaders executing real-time 3D wave displacements, additive bloom buffers, cursor ripples, and procedural Web Audio bass energy modulations entirely on the GPU.
+                      </p>
+                      <div className="font-mono text-[9px] text-[#8E98AA] pt-1 border-t border-[#2D3645]/60 flex items-center gap-1.5">
+                        <span className="text-[#4AF626]">&gt;</span>
+                        <span>Three.js / GLSL • Additive Bloom • CRT ShaderPass</span>
+                      </div>
+                    </div>
+
+                    {/* Systems 4: Deterministic Memory Safety & Valgrind */}
+                    <div className="bg-[#070814] p-3.5 border border-[#2D3645] hover:border-[#4AF626] transition-colors space-y-1.5">
+                      <div className="flex items-center justify-between gap-2 font-pixel text-[9px]">
+                        <span className="text-[#4AF626]">04. VALGRIND MEMORY SAFETY</span>
+                        <span className="text-[#4AF626]">0 LEAKS // 0 BLOCKS</span>
+                      </div>
+                      <p className="font-sans text-xs text-[#D6CFC2] leading-relaxed">
+                        Deterministic heap/stack lifecycle audits verifying 0 memory leaks across high-throughput IPC pipelines. Neon Vanguard 120 FPS 2D canvas combat engine with raycast projectile piercing.
+                      </p>
+                      <div className="font-mono text-[9px] text-[#8E98AA] pt-1 border-t border-[#2D3645]/60 flex items-center gap-1.5">
+                        <span className="text-[#4AF626]">&gt;</span>
+                        <span>Valgrind Audit • GDB Profiling • 120 FPS 2D Canvas</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Footnote */}
+                  <div className="pt-3 border-t border-[#2D3645] flex flex-col sm:flex-row items-center justify-between gap-2 font-mono text-[10px] text-[#8E98AA]">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="font-pixel text-[8px] text-[#4AF626] mr-1">SYSTEMS STACK:</span>
+                      {['C / C++', 'Linux POSIX', 'shmget / shmat', 'fork() Trees', 'Valgrind 0 Leaks', 'Three.js / GLSL', 'HTML5 2D Canvas', 'Web Audio API'].map((t) => (
+                        <span key={t} className="px-1.5 py-0.5 bg-[#070814] border border-[#2D3645] font-mono text-[9px] text-[#D6CFC2]">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                    <span className="text-[#00F0FF] font-pixel text-[8px] shrink-0">
+                      VALGRIND VERIFIED: 0 LEAKS (0 BYTES / 0 BLOCKS) ✓
+                    </span>
+                  </div>
                 </div>
-
-                <div className="bg-[#070814] p-3.5 border border-[#2D3645] space-y-2">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-[#8E98AA] font-pixel text-[9px]">SYSTEM CHECKSUM:</span>
-                    <span className="font-pixel text-[9px] text-[#4AF626]">SHA-256 AUTHENTICATED</span>
-                  </div>
-                  <div className="p-1.5 bg-[#131629] border border-[#2D3645] font-mono text-[9px] text-[#00F0FF] break-all leading-tight">
-                    SHA-256: 8F4A2B9C7D1E0F3A6B5C4D3E2F1A0B9C8D7E6F5A4B3C2D1E0F9A8B7C6D5E4F3A
-                  </div>
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-[#8E98AA] font-pixel text-[9px]">VALGRIND MEM AUDIT:</span>
-                    <span className="text-[#4AF626] font-bold">0 LEAKS // CLEAN EXIT (0 BYTES / 0 BLOCKS)</span>
-                  </div>
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-[#8E98AA] font-pixel text-[9px]">CANVAS PACING:</span>
-                    <span className="text-[#00F0FF] font-bold">120 FPS STABLE // ZERO JANK</span>
-                  </div>
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-[#8E98AA] font-pixel text-[9px]">OBSIDIAN AST PARITY:</span>
-                    <span className="text-[#FFCC00] font-bold">100% BIDIRECTIONAL SCHEMA SYNC</span>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-            {/* BIOS Security Notice Footnote */}
-            <div className="mt-4 pt-3 border-t border-[#2D3645] flex flex-col sm:flex-row items-center justify-between gap-2 font-mono text-[10px] text-[#8E98AA]">
-              <span className="flex items-center gap-1.5">
-                <ShieldCheck className="w-4 h-4 text-[#4AF626]" />
-                <span>ROM Hardware Hash signed by East West University CSE workstation node (@watchknight).</span>
-              </span>
-              <span className="text-[#4AF626] font-pixel text-[8px]">
-                BOOT SEQUENCE: FLOPPY (A:) → ROM CARTRIDGE (C:) → POSIX RAM
-              </span>
+              )}
             </div>
           </RetroWindow>
         </div>

@@ -11,7 +11,6 @@ import { CRTViewportShell } from './components/CRTViewportShell';
 import { Hero } from './components/Hero';
 import { ProjectsShowcase } from './components/ProjectsShowcase';
 import { ExtensionStudio } from './components/ExtensionStudio';
-import { Experience } from './components/Experience';
 import { GithubLab } from './components/GithubLab';
 import { SkillMatrix } from './components/SkillMatrix';
 import { TerminalLab } from './components/TerminalLab';
@@ -211,7 +210,6 @@ export const App: React.FC = () => {
                   nextSectionId="lab-sector"
                   prevSectionId="extensions-sector"
                 >
-                  <Experience />
                   <SkillMatrix />
                 </ShutterLayer>
 
