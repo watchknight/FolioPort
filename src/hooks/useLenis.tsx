@@ -23,52 +23,14 @@ const LenisContext = createContext<LenisContextValue>({
   scrollTo: () => {},
 });
 
-let sharedLenis: Lenis | null = null;
-let tickerCallback: ((time: number) => void) | null = null;
+import { getOrInitScrollEngine } from '../motion/ScrollEngine';
 
 /**
  * Initializes and exposes a single Lenis smooth-scroll instance synchronized
- * with GSAP's master requestAnimationFrame loop exactly once.
+ * with GSAP's master requestAnimationFrame loop exactly once via ScrollEngine.
  */
 export const getOrInitLenis = (): Lenis => {
-  if (typeof window === 'undefined') {
-    return null as unknown as Lenis;
-  }
-
-  if (sharedLenis) {
-    window.__lenis = sharedLenis;
-    return sharedLenis;
-  }
-
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  // Single Lenis smooth-scroll instance
-  const lenis = new Lenis({
-    duration: prefersReducedMotion ? 0 : 1.2,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    orientation: 'vertical',
-    gestureOrientation: 'vertical',
-    smoothWheel: !prefersReducedMotion,
-    wheelMultiplier: 0.9,
-    touchMultiplier: 1.8,
-    infinite: false,
-    autoRaf: false, // Disable Lenis's internal RAF so zero competing loops exist
-  });
-
-  sharedLenis = lenis;
-  window.__lenis = lenis;
-
-  // Synchronize Lenis scroll position with GSAP ScrollTrigger exactly once
-  lenis.on('scroll', ScrollTrigger.update);
-
-  // Hook Lenis into GSAP's master ticker RAF loop
-  tickerCallback = (time: number) => {
-    lenis.raf(time * 1000);
-  };
-  gsap.ticker.add(tickerCallback);
-  gsap.ticker.lagSmoothing(0);
-
-  return lenis;
+  return (getOrInitScrollEngine() ?? null) as Lenis;
 };
 
 export const LenisProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {

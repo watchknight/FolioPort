@@ -128,6 +128,16 @@ export const RenderPassInspector: React.FC = () => {
     activePassRef.current = passId;
     audio.playChord();
 
+    // Propagate render mode change to full-viewport SceneManager layer
+    if (typeof window !== 'undefined') {
+      const modeIndex = passId === 'beauty' ? 0 : passId === 'uv' || passId === 'normals' ? 1 : 2;
+      window.dispatchEvent(
+        new CustomEvent('wk-render-pass-change', {
+          detail: { mode: passId, modeIndex, source: 'inspector' },
+        })
+      );
+    }
+
     const mesh = meshRef.current;
     const materials = materialsRef.current;
     if (mesh && materials[passId]) {
@@ -200,6 +210,25 @@ export const RenderPassInspector: React.FC = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handlePassSelect]);
+
+  // Listen for SentinelHUD 3-mode Render Pass Switcher events
+  useEffect(() => {
+    const onPassChange = (e: Event) => {
+      const customEvent = e as CustomEvent<{ mode?: string; source?: string }>;
+      if (customEvent.detail?.source === 'inspector') return;
+      const mode = customEvent.detail?.mode;
+      if (mode === 'beauty') {
+        handlePassSelect('beauty');
+      } else if (mode === 'uv') {
+        handlePassSelect('uv');
+      } else if (mode === 'lattice' || mode === 'wireframe') {
+        handlePassSelect('wireframe');
+      }
+    };
+
+    window.addEventListener('wk-render-pass-change', onPassChange);
+    return () => window.removeEventListener('wk-render-pass-change', onPassChange);
   }, [handlePassSelect]);
 
   // Main Three.js Scene Initialization
@@ -786,7 +815,8 @@ export const RenderPassInspector: React.FC = () => {
 
   return (
     <section 
-      id="shader-inspector"
+      id="render-pass-inspector"
+      data-section="shader-inspector"
       className="relative w-full bg-obsidian text-alabaster py-16 sm:py-24 border-b border-white/10 overflow-hidden"
       aria-label="Interactive 3D Shader and Render-Pass Inspector"
     >

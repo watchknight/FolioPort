@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import gsap from 'gsap';
 
 export interface CanvasNode {
@@ -55,8 +55,8 @@ const INITIAL_NODES: Omit<CanvasNode, 'x' | 'y' | 'vx' | 'vy' | 'targetX' | 'tar
     sub: 'POSIX / Memory',
     color: '#DF6C4F',
     glowColor: 'rgba(223, 108, 79, 0.5)',
-    baseRelX: 0.65,
-    baseRelY: 0.22,
+    baseRelX: 0.44,
+    baseRelY: 0.28,
     radius: 48,
     phaseX: 0.2,
     phaseY: 1.4,
@@ -68,8 +68,8 @@ const INITIAL_NODES: Omit<CanvasNode, 'x' | 'y' | 'vx' | 'vy' | 'targetX' | 'tar
     sub: 'Kernel & CLI',
     color: '#A74024',
     glowColor: 'rgba(167, 64, 36, 0.5)',
-    baseRelX: 0.88,
-    baseRelY: 0.20,
+    baseRelX: 0.58,
+    baseRelY: 0.25,
     radius: 44,
     phaseX: 2.1,
     phaseY: 0.8,
@@ -81,8 +81,8 @@ const INITIAL_NODES: Omit<CanvasNode, 'x' | 'y' | 'vx' | 'vy' | 'targetX' | 'tar
     sub: 'Spatial Web UI',
     color: '#DF6C4F',
     glowColor: 'rgba(223, 108, 79, 0.5)',
-    baseRelX: 0.62,
-    baseRelY: 0.50,
+    baseRelX: 0.44,
+    baseRelY: 0.52,
     radius: 48,
     phaseX: 1.5,
     phaseY: 3.2,
@@ -94,8 +94,8 @@ const INITIAL_NODES: Omit<CanvasNode, 'x' | 'y' | 'vx' | 'vy' | 'targetX' | 'tar
     sub: 'Spatial Inertia',
     color: '#A74024',
     glowColor: 'rgba(167, 64, 36, 0.5)',
-    baseRelX: 0.86,
-    baseRelY: 0.46,
+    baseRelX: 0.58,
+    baseRelY: 0.54,
     radius: 44,
     phaseX: 3.4,
     phaseY: 1.9,
@@ -107,8 +107,8 @@ const INITIAL_NODES: Omit<CanvasNode, 'x' | 'y' | 'vx' | 'vy' | 'targetX' | 'tar
     sub: 'Distributed IPC',
     color: '#DF6C4F',
     glowColor: 'rgba(223, 108, 79, 0.5)',
-    baseRelX: 0.74,
-    baseRelY: 0.68,
+    baseRelX: 0.50,
+    baseRelY: 0.78,
     radius: 46,
     phaseX: 4.2,
     phaseY: 2.7,
@@ -134,32 +134,31 @@ const LINKS: Link[] = [
  */
 function getNodeBaseCoords(id: string, width: number): { relX: number; relY: number } {
   if (width >= 1024) {
-    if (id === 'c-cpp') return { relX: 0.65, relY: 0.22 };
-    if (id === 'linux') return { relX: 0.88, relY: 0.20 };
-    if (id === 'react-ts') return { relX: 0.62, relY: 0.50 };
-    if (id === 'gsap') return { relX: 0.86, relY: 0.46 };
-    if (id === 'node-db') return { relX: 0.74, relY: 0.68 };
+    if (id === 'c-cpp') return { relX: 0.44, relY: 0.28 };
+    if (id === 'linux') return { relX: 0.58, relY: 0.25 };
+    if (id === 'react-ts') return { relX: 0.44, relY: 0.52 };
+    if (id === 'gsap') return { relX: 0.58, relY: 0.54 };
+    if (id === 'node-db') return { relX: 0.50, relY: 0.78 };
   } else if (width >= 768) {
-    if (id === 'c-cpp') return { relX: 0.60, relY: 0.20 };
-    if (id === 'linux') return { relX: 0.86, relY: 0.18 };
-    if (id === 'react-ts') return { relX: 0.56, relY: 0.48 };
-    if (id === 'gsap') return { relX: 0.84, relY: 0.45 };
-    if (id === 'node-db') return { relX: 0.70, relY: 0.68 };
+    if (id === 'c-cpp') return { relX: 0.38, relY: 0.28 };
+    if (id === 'linux') return { relX: 0.56, relY: 0.25 };
+    if (id === 'react-ts') return { relX: 0.40, relY: 0.52 };
+    if (id === 'gsap') return { relX: 0.58, relY: 0.54 };
+    if (id === 'node-db') return { relX: 0.48, relY: 0.78 };
   } else {
-    // Mobile constellation
-    if (id === 'c-cpp') return { relX: 0.28, relY: 0.22 };
-    if (id === 'linux') return { relX: 0.78, relY: 0.20 };
-    if (id === 'react-ts') return { relX: 0.24, relY: 0.62 };
-    if (id === 'gsap') return { relX: 0.78, relY: 0.60 };
-    if (id === 'node-db') return { relX: 0.50, relY: 0.74 };
+    // Mobile constellation around perimeter
+    if (id === 'c-cpp') return { relX: 0.22, relY: 0.24 };
+    if (id === 'linux') return { relX: 0.78, relY: 0.22 };
+    if (id === 'react-ts') return { relX: 0.22, relY: 0.80 };
+    if (id === 'gsap') return { relX: 0.78, relY: 0.78 };
+    if (id === 'node-db') return { relX: 0.50, relY: 0.86 };
   }
-  return { relX: 0.7, relY: 0.5 };
+  return { relX: 0.50, relY: 0.5 };
 }
 
 export const HeroCanvas: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [activeHint, setActiveHint] = useState<string | null>(null);
 
   // Mutable animation state refs (avoid React re-render thrashing at 60-120 FPS)
   const nodesRef = useRef<CanvasNode[]>([]);
@@ -266,7 +265,7 @@ export const HeroCanvas: React.FC = () => {
       // Adaptive responsive layout scaling
       const isMobile = width < 768;
       const isTablet = width >= 768 && width < 1024;
-      const radiusScale = isMobile ? 0.84 : isTablet ? 0.92 : 1.0;
+      const radiusScale = isMobile ? 0.76 : isTablet ? 0.84 : 0.88;
 
       nodesRef.current.forEach((node) => {
         const initialDef = INITIAL_NODES.find((item) => item.id === node.id);
@@ -425,9 +424,10 @@ export const HeroCanvas: React.FC = () => {
           node.y += node.vy * step;
         }
 
-        // Keep inside bounds (with bottom padding protecting telemetry bar)
+        // Keep inside bounds (with right boundary protection for HeroPortrait on desktop)
         const pad = node.radius + 12;
-        node.x = Math.max(pad, Math.min(width - pad, node.x));
+        const maxRightBound = width >= 1024 ? width * 0.64 - pad : width - pad;
+        node.x = Math.max(pad, Math.min(maxRightBound, node.x));
         node.y = Math.max(pad, Math.min(height - bottomPad, node.y));
 
         // Pulse energy relaxation
@@ -613,7 +613,7 @@ export const HeroCanvas: React.FC = () => {
 
         if (shouldSplitTitle) {
           const parts = node.name.split(' & ');
-          const titleFontSize = Math.max(9, Math.round(node.radius * 0.23));
+          const titleFontSize = Math.max(8.5, Math.round(node.radius * 0.22));
           ctx.font = `700 ${titleFontSize}px "Space Grotesk", "Syne", sans-serif`;
           ctx.fillStyle = '#FFFFFF';
 
@@ -621,25 +621,26 @@ export const HeroCanvas: React.FC = () => {
           ctx.fillText(`${parts[0]} &`, node.x, node.y - node.radius * 0.25);
           // Line 2: e.g. "TypeScript"
           ctx.fillText(parts[1], node.x, node.y - node.radius * 0.02);
-
-          // Subtitle (Monospace JetBrains Mono)
-          const subFontSize = Math.max(7.5, Math.round(node.radius * 0.16));
-          ctx.font = `600 ${subFontSize}px "JetBrains Mono", monospace`;
-          ctx.fillStyle = node.color;
-          ctx.fillText(node.sub, node.x, node.y + node.radius * 0.32);
         } else {
           // Single line title
-          const titleFontSize = Math.max(10, Math.round(node.radius * 0.26));
+          const titleFontSize = Math.max(9.5, Math.round(node.radius * 0.25));
           ctx.font = `700 ${titleFontSize}px "Space Grotesk", "Syne", sans-serif`;
           ctx.fillStyle = '#FFFFFF';
           ctx.fillText(node.name, node.x, node.y - node.radius * 0.14);
-
-          // Subtitle (Monospace JetBrains Mono)
-          const subFontSize = Math.max(8, Math.round(node.radius * 0.18));
-          ctx.font = `600 ${subFontSize}px "JetBrains Mono", monospace`;
-          ctx.fillStyle = node.color;
-          ctx.fillText(node.sub, node.x, node.y + node.radius * 0.25);
         }
+
+        // Subtitle (Monospace JetBrains Mono) with automatic font-scaling to prevent truncation
+        const maxSubWidth = node.radius * 1.55;
+        let subFontSize = Math.max(6.5, Math.round(node.radius * (shouldSplitTitle ? 0.15 : 0.17)));
+        ctx.font = `600 ${subFontSize}px "JetBrains Mono", monospace`;
+        let measuredSubWidth = ctx.measureText(node.sub).width;
+        while (measuredSubWidth > maxSubWidth && subFontSize > 5.5) {
+          subFontSize -= 0.5;
+          ctx.font = `600 ${subFontSize}px "JetBrains Mono", monospace`;
+          measuredSubWidth = ctx.measureText(node.sub).width;
+        }
+        ctx.fillStyle = node.color;
+        ctx.fillText(node.sub, node.x, node.y + (shouldSplitTitle ? node.radius * 0.32 : node.radius * 0.24));
 
         // F. Tiny Telemetry Dot at node apex
         ctx.beginPath();
@@ -705,7 +706,6 @@ export const HeroCanvas: React.FC = () => {
     if (clickedNode) {
       draggedNodeIdRef.current = clickedNode.id;
       clickedNode.pulseEnergy = 1.0;
-      setActiveHint(`Active Node: ${clickedNode.name} • ${clickedNode.sub}`);
 
       // Lock touch action to allow smooth 360-degree node dragging without browser scroll hijacking
       canvas.style.touchAction = 'none';
@@ -744,15 +744,8 @@ export const HeroCanvas: React.FC = () => {
       node.isHovered = dist <= node.radius + 8;
       if (node.isHovered) {
         isOverAnyNode = true;
-        if (!draggedNodeIdRef.current) {
-          setActiveHint(`${node.name}: ${node.sub}`);
-        }
       }
     });
-
-    if (!isOverAnyNode && !draggedNodeIdRef.current) {
-      setActiveHint(null);
-    }
 
     // Sync with custom cursor system
     const currentMode = draggedNodeIdRef.current ? 'grabbing' : isOverAnyNode ? 'grab' : '';
@@ -844,21 +837,8 @@ export const HeroCanvas: React.FC = () => {
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerCancel}
         style={{ touchAction: 'pan-y' }}
-        className="w-full h-full block"
+        className="w-full h-full block opacity-80 transition-opacity duration-500"
       />
-
-      {/* Tactile interaction cue & active node readout (positioned cleanly below fixed navbar) */}
-      <div className="absolute top-24 md:top-28 right-4 sm:right-6 lg:right-8 z-20 pointer-events-none flex flex-col items-end gap-1.5 animate-in fade-in duration-700">
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-obsidian-surface/85 border border-white/10 backdrop-blur-xl shadow-lg font-mono text-fluid-micro text-slate-300">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-accent" />
-          </span>
-          <span className="tracking-wide">
-            {activeHint ?? 'Tactile Physics: Drag nodes • Click to ripple pulse'}
-          </span>
-        </div>
-      </div>
     </div>
   );
 };

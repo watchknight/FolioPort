@@ -349,7 +349,7 @@ export const EasterEggPong: React.FC<EasterEggPongProps> = ({
       {/* CRT Television Monitor Frame */}
       <div 
         ref={modalRef}
-        className="relative w-full max-w-4xl max-h-[92vh] flex flex-col bg-[#0b0c10] border-2 border-white/20 rounded-2xl shadow-[0_0_60px_rgba(0,0,0,0.9),0_0_20px_rgba(223,108,79,0.15)] overflow-hidden"
+        className="relative w-full max-w-4xl max-h-[92vh] flex flex-col bg-[#0b0c10] border-2 border-white/20 rounded-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.95)] overflow-hidden"
       >
         {/* CRT Scanline & Phosphor Overlay */}
         <div 
@@ -398,7 +398,7 @@ export const EasterEggPong: React.FC<EasterEggPongProps> = ({
               aria-pressed={activeChannel === 'pong'}
               className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition-all ${
                 activeChannel === 'pong'
-                  ? 'bg-accent text-alabaster font-bold shadow-[0_0_12px_rgba(223,108,79,0.4)]'
+                  ? 'bg-accent text-alabaster font-bold shadow-editorial-card'
                   : 'bg-white/5 text-muted hover:text-alabaster'
               }`}
             >
@@ -415,7 +415,7 @@ export const EasterEggPong: React.FC<EasterEggPongProps> = ({
               aria-pressed={activeChannel === 'notes'}
               className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition-all ${
                 activeChannel === 'notes'
-                  ? 'bg-accent text-alabaster font-bold shadow-[0_0_12px_rgba(223,108,79,0.4)]'
+                  ? 'bg-accent text-alabaster font-bold shadow-editorial-card'
                   : 'bg-white/5 text-muted hover:text-alabaster'
               }`}
             >
@@ -437,7 +437,7 @@ export const EasterEggPong: React.FC<EasterEggPongProps> = ({
               aria-pressed={activeChannel === 'kernel'}
               className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition-all ${
                 activeChannel === 'kernel'
-                  ? 'bg-accent text-alabaster font-bold shadow-[0_0_12px_rgba(223,108,79,0.4)]'
+                  ? 'bg-accent text-alabaster font-bold shadow-editorial-card'
                   : 'bg-white/5 text-muted hover:text-alabaster'
               }`}
             >

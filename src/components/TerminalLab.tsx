@@ -657,6 +657,22 @@ export const TerminalLab: React.FC = () => {
         </div>
       );
     }
+    // Handle '404' or 'knight' command (Easter Egg to Node 404)
+    else if (lower === '404' || lower === 'goto 404' || lower === 'knight' || lower === 'tour') {
+      outputNode = (
+        <div className="p-3 rounded-lg bg-accent/10 border border-accent/30 text-fluid-micro font-mono text-white space-y-1">
+          <div className="text-amber-warm font-bold flex items-center gap-1.5">
+            <span>⚠️ [TEMPORAL SECTOR FAULT] Traversing to Node 404...</span>
+          </div>
+          <div className="text-slate-300">
+            Dispatching to the 5x5 Knight&apos;s Tour Chessboard in Unreachable Sector 404.
+          </div>
+        </div>
+      );
+      setTimeout(() => {
+        window.location.hash = '#/404';
+      }, 400);
+    }
     // Handle unknown sudo
     else if (lower.startsWith('sudo ')) {
       isError = true;
@@ -859,7 +875,7 @@ export const TerminalLab: React.FC = () => {
         <div 
           onClick={handleTerminalWindowClick}
           className={`rounded-2xl overflow-hidden border border-white/15 bg-carbon/90 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.95)] backdrop-blur-2xl transition-all duration-300 cursor-text ${
-            isExpanded ? 'ring-2 ring-cyan-mint/40 shadow-[0_30px_90px_-15px_rgba(0,245,212,0.15)]' : ''
+            isExpanded ? 'ring-1 ring-wk-verdigris-signal/40 shadow-editorial-elevated' : ''
           }`}
         >
           {/* Authentic Ubuntu Window Titlebar with Traffic Lights */}
@@ -1090,6 +1106,7 @@ export const TerminalLab: React.FC = () => {
                   { cmd: 'skills', label: 'skills', special: false },
                   { cmd: 'projects', label: 'projects', special: false },
                   { cmd: 'github', label: 'github', special: false },
+                  { cmd: '404', label: '404', special: false },
                   { cmd: 'clear', label: 'clear', special: false },
                 ].map(({ cmd, label }) => (
                   <button

@@ -6,24 +6,51 @@ import { TransitionProvider } from './context/TransitionContext';
 import { CaseStudyView } from './components/case-study/CaseStudyView';
 import { Preloader } from './components/Preloader';
 import { CustomCursor } from './components/cursor/CustomCursor';
-import { Navbar } from './components/navigation/Navbar';
+import { SentinelHUD } from './components/SentinelHUD';
 import { Hero } from './components/Hero';
 import { About } from './components/About';
 import { RenderPassInspector } from './components/RenderPassInspector';
 import { HorizontalShowcase } from './components/HorizontalShowcase';
+import { ProjectLedger } from './components/ProjectLedger';
 import { ProjectsShowcase } from './components/ProjectsShowcase';
 import { Experience } from './components/Experience';
 import { GithubLab } from './components/GithubLab';
 import { SkillMatrix } from './components/SkillMatrix';
 import { TerminalLab } from './components/TerminalLab';
 import { ContactFooter } from './components/ContactFooter';
+import { SceneManager } from './webgl/SceneManager';
+import { NotFoundPage } from './pages/404';
 
 export const App: React.FC = () => {
+  const [is404, setIs404] = React.useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    const path = window.location.pathname;
+    const hash = window.location.hash;
+    return path === '/404' || path === '/404.html' || hash === '#/404' || hash === '#404';
+  });
+
+  useEffect(() => {
+    const handleRoute = () => {
+      const path = window.location.pathname;
+      const hash = window.location.hash;
+      setIs404(path === '/404' || path === '/404.html' || hash === '#/404' || hash === '#404');
+    };
+
+    window.addEventListener('popstate', handleRoute);
+    window.addEventListener('hashchange', handleRoute);
+    return () => {
+      window.removeEventListener('popstate', handleRoute);
+      window.removeEventListener('hashchange', handleRoute);
+    };
+  }, []);
   useEffect(() => {
     // Root application entry: instantiate single Lenis smooth-scroll instance
     // and expose as window.__lenis for programmatic anchor scrolling
     const lenis = getOrInitLenis();
     window.__lenis = lenis;
+
+    // Full-viewport Three.js WebGL rendering layer & DOM plane synchronizer
+    const sceneManager = SceneManager.getOrInit();
 
     // Global layout stabilization listener: refresh ScrollTrigger once document.fonts.ready resolves
     // and after lazy-loaded case-study images finish decoding
@@ -75,8 +102,29 @@ export const App: React.FC = () => {
     document.addEventListener('click', handleAnchorClick);
     return () => {
       document.removeEventListener('click', handleAnchorClick);
+      sceneManager.dispose();
     };
   }, []);
+
+  if (is404) {
+    return (
+      <ThemeProvider>
+        <CustomCursor />
+        <NotFoundPage
+          onReturnHome={() => {
+            setIs404(false);
+            if (typeof window !== 'undefined') {
+              if (window.location.hash.startsWith('#/404') || window.location.hash.startsWith('#404')) {
+                window.location.hash = '';
+              } else {
+                window.history.pushState(null, '', '/');
+              }
+            }
+          }}
+        />
+      </ThemeProvider>
+    );
+  }
 
   return (
     <ThemeProvider>
@@ -106,8 +154,8 @@ export const App: React.FC = () => {
           {/* Deep Obsidian Background (#0A0A0A) with subtle editorial noise grid */}
           <div className="relative min-h-screen bg-obsidian text-alabaster selection:bg-accent selection:text-alabaster overflow-hidden bg-grid-subtle">
             
-            {/* Floating Glassmorphic Editorial Navigation Bar */}
-            <Navbar />
+            {/* Fitts' & Hick's Law Sentinel HUD Navigation */}
+            <SentinelHUD />
 
             {/* Core Layout Content: z-index: 2 and solid background acting as theatrical curtain stage */}
             <main
@@ -119,9 +167,10 @@ export const App: React.FC = () => {
               <About />
               {/* Interactive 3D Shader and Render-Pass Inspector embedded in the hero-to-showcase bridge */}
               <RenderPassInspector />
-              {/* Dual-Mode Showcase: Pinned Horizontal Scrollytelling Reel + Kinetic Ledger */}
+              {/* Dual-Mode Showcase: Pinned Horizontal Scrollytelling Reel + Editorial Serial Ledger + Flagship Deep-Dives */}
               <div id="work" className="relative">
                 <HorizontalShowcase />
+                <ProjectLedger />
                 <ProjectsShowcase />
               </div>
               {/* Chronological Trajectory & Experience Timeline with data-stagger */}

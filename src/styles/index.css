@@ -1,3 +1,4 @@
+@import './tokens.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,26 +6,26 @@
 @layer base {
   :root,
   :root[data-theme="obsidian"] {
-    --bg-obsidian-rgb: 10 10 10;
-    --bg-surface-rgb: 18 18 18;
-    --bg-card-rgb: 22 22 22;
-    --bg-elevated-rgb: 29 29 29;
-    --text-primary-rgb: 244 243 239;
+    --bg-obsidian-rgb: var(--wk-obsidian-void-rgb);
+    --bg-surface-rgb: var(--wk-slate-surface-rgb);
+    --bg-card-rgb: 22 25 34;
+    --bg-elevated-rgb: 30 35 46;
+    --text-primary-rgb: var(--wk-alabaster-ink-rgb);
     --text-dim-rgb: 220 218 210;
-    --text-muted-rgb: 87 91 95;
-    --accent-rust-rgb: 167 64 36;
-    --accent-coral-rgb: 223 108 79;
-    --border-editorial-rgb: 244 243 239;
+    --text-muted-rgb: var(--wk-ash-muted-rgb);
+    --accent-rust-rgb: var(--wk-terracotta-pulse-rgb);
+    --accent-coral-rgb: var(--wk-terracotta-pulse-rgb);
+    --border-editorial-rgb: var(--wk-alabaster-ink-rgb);
 
-    --bg-obsidian: #0A0A0A;
-    --bg-carbon: #121212;
-    --bg-surface: #121212;
-    --bg-card: #161616;
-    --surface-alabaster: #F4F3EF;
-    --text-muted: #575B5F;
-    --accent-rust: #A74024;
-    --accent-coral: #DF6C4F;
-    --border-editorial: rgba(244, 243, 239, 0.08);
+    --bg-obsidian: var(--wk-obsidian-void);
+    --bg-carbon: var(--wk-slate-surface);
+    --bg-surface: var(--wk-slate-surface);
+    --bg-card: #161922;
+    --surface-alabaster: var(--wk-alabaster-ink);
+    --text-muted: var(--wk-ash-muted);
+    --accent-rust: var(--wk-terracotta-pulse);
+    --accent-coral: var(--wk-terracotta-pulse);
+    --border-editorial: rgba(242, 239, 233, 0.08);
   }
 
   :root[data-theme="alabaster"] {
@@ -75,8 +76,8 @@
 
   html,
   body {
-    background-color: var(--bg-obsidian, #0A0A0A);
-    color: var(--surface-alabaster, #F4F3EF);
+    background-color: var(--bg-obsidian, #090A0D);
+    color: var(--surface-alabaster, #F2EFE9);
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -94,8 +95,8 @@
   }
 
   ::selection {
-    background-color: #A74024;
-    color: #F4F3EF;
+    background-color: var(--wk-terracotta-pulse, #B84A27);
+    color: var(--wk-alabaster-ink, #F2EFE9);
   }
 
   /* Lenis smooth scrolling reset */
@@ -126,16 +127,16 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: #0A0A0A;
+    background: var(--wk-obsidian-void, #090A0D);
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #242424;
+    background: var(--wk-ash-muted, #7A808C);
     border-radius: 9999px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #A74024;
+    background: var(--wk-terracotta-pulse, #B84A27);
   }
 }
 
@@ -143,57 +144,57 @@
   /* Restrained Editorial Card */
   .editorial-card {
     position: relative;
-    background: rgba(18, 18, 18, 0.7);
+    background: rgba(18, 21, 28, 0.7);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(244, 243, 239, 0.08);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(244, 243, 239, 0.06);
+    border: 1px solid rgba(242, 239, 233, 0.08);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(242, 239, 233, 0.06);
     transition: border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .editorial-card:hover {
-    border-color: rgba(244, 243, 239, 0.16);
+    border-color: rgba(242, 239, 233, 0.16);
   }
 
   /* Retain liquid-glass classes for existing cards with restrained styling */
   .liquid-glass {
     position: relative;
-    background: rgba(18, 18, 18, 0.72);
+    background: rgba(18, 21, 28, 0.72);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
-    border: 1px solid rgba(244, 243, 239, 0.08);
-    box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(244, 243, 239, 0.04);
+    border: 1px solid rgba(242, 239, 233, 0.08);
+    box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(242, 239, 233, 0.04);
     transition: border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .liquid-glass:hover {
-    border-color: rgba(244, 243, 239, 0.18);
+    border-color: rgba(242, 239, 233, 0.18);
   }
 
   .liquid-glass-accent {
     position: relative;
-    background: rgba(18, 18, 18, 0.82);
+    background: rgba(18, 21, 28, 0.82);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(167, 64, 36, 0.35);
-    box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.85), inset 0 1px 0 0 rgba(244, 243, 239, 0.1);
+    border: 1px solid rgba(184, 74, 39, 0.35);
+    box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.85), inset 0 1px 0 0 rgba(242, 239, 233, 0.1);
   }
 
   /* Navigation pill floating bar */
   .nav-pill-surface {
-    background: rgba(10, 10, 10, 0.82);
+    background: rgba(9, 10, 13, 0.82);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(244, 243, 239, 0.08);
-    box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(244, 243, 239, 0.04);
+    border: 1px solid rgba(242, 239, 233, 0.08);
+    box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(242, 239, 233, 0.04);
   }
 
   /* Subtle editorial grid pattern */
   .bg-grid-subtle {
     background-size: 48px 48px;
     background-image: 
-      linear-gradient(to right, rgba(244, 243, 239, 0.02) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(244, 243, 239, 0.02) 1px, transparent 1px);
+      linear-gradient(to right, rgba(242, 239, 233, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(242, 239, 233, 0.02) 1px, transparent 1px);
   }
 
   /* Editorial word mask for kinetic typography */
@@ -226,12 +227,7 @@
 
 @media (hover: hover) and (pointer: fine) {
   body.cursor-active,
-  body.cursor-active a,
-  body.cursor-active button,
-  body.cursor-active [role="button"],
-  body.cursor-active input,
-  body.cursor-active textarea,
-  body.cursor-active canvas {
+  body.cursor-active * {
     cursor: none !important;
   }
 
@@ -270,6 +266,6 @@
 
 /* Keyboard Accessibility: High-contrast focus rings for Tab navigation */
 :focus-visible {
-  outline: 2px solid var(--accent-coral, #DF6C4F) !important;
+  outline: 2px solid var(--wk-terracotta-pulse, #B84A27) !important;
   outline-offset: 3px !important;
 }

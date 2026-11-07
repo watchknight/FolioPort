@@ -38,7 +38,7 @@ const NAV_ITEMS: NavItem[] = [
 ];
 
 export const Navbar: React.FC = () => {
-  const { scrollTo } = useLenis();
+  const { lenis, scrollTo } = useLenis();
   const { isEnabled: isSoundEnabled, toggle: toggleSound } = useWebAudio();
   const { theme, setTheme } = useTheme();
   const [activeSection, setActiveSection] = useState<string>('');
@@ -71,33 +71,32 @@ export const Navbar: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Track active section and scroll state
+  // Track active section and scroll state synchronized with Lenis single-RAF loop
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      setScrolled(scrollY > 40);
+    const updateActiveSection = (currentScrollY: number) => {
+      setScrolled(currentScrollY > 40);
 
       // If at apex/hero, no section is active
-      if (scrollY < 200) {
+      if (currentScrollY < 200) {
         setActiveSection('');
         return;
       }
 
       // If reached bottom of document, activate #contact
-      if (window.innerHeight + scrollY >= document.documentElement.scrollHeight - 60) {
+      if (window.innerHeight + currentScrollY >= document.documentElement.scrollHeight - 60) {
         setActiveSection('#contact');
         return;
       }
 
       const sections = ['#about', '#work', '#experience', '#lab', '#systems', '#terminal', '#contact'];
-      const scrollPosition = scrollY + window.innerHeight * 0.35;
+      const scrollPosition = currentScrollY + window.innerHeight * 0.35;
 
       let current = '';
       for (let i = sections.length - 1; i >= 0; i--) {
         const el = document.querySelector(sections[i]);
         if (el) {
           const rect = el.getBoundingClientRect();
-          const top = rect.top + scrollY;
+          const top = rect.top + currentScrollY;
           if (scrollPosition >= top) {
             current = sections[i];
             break;
@@ -107,9 +106,22 @@ export const Navbar: React.FC = () => {
       setActiveSection(current);
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    const onLenisScroll = (e: { scroll: number }) => updateActiveSection(e.scroll);
+    const onWindowScroll = () => updateActiveSection(window.scrollY);
+
+    if (lenis) {
+      lenis.on('scroll', onLenisScroll);
+    } else {
+      window.addEventListener('scroll', onWindowScroll, { passive: true });
+    }
+
+    return () => {
+      if (lenis) {
+        lenis.off('scroll', onLenisScroll);
+      }
+      window.removeEventListener('scroll', onWindowScroll);
+    };
+  }, [lenis]);
 
   const handleNavClick = (id: string) => {
     setActiveSection(id);

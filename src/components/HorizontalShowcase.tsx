@@ -267,7 +267,7 @@ export const HorizontalShowcase: React.FC = () => {
       />
 
       {/* FIXED VIEWPORT CHOREOGRAPHY STAGE (100VH) */}
-      <div className="h-screen w-full flex flex-col justify-between py-5 sm:py-6 relative z-10 overflow-hidden">
+      <div className="h-screen w-full flex flex-col justify-between pt-24 sm:pt-28 pb-4 sm:pb-6 relative z-10 overflow-hidden">
         
         {/* ================================================================ */}
         {/* TOP EDITORIAL HUD STRIP: Header, Category & Slide Counter        */}
@@ -307,7 +307,7 @@ export const HorizontalShowcase: React.FC = () => {
         {/* ================================================================ */}
         <div
           ref={trackRef}
-          className="horizontal-track flex items-center h-[72vh] sm:h-[74vh] pl-6 sm:pl-12 lg:pl-20 pr-16 sm:pr-32 select-none"
+          className="horizontal-track flex items-center h-[64vh] sm:h-[66vh] pl-6 sm:pl-12 lg:pl-20 pr-16 sm:pr-32 select-none"
           style={{ width: 'fit-content' }}
         >
           {/* INTRO HERO CARD (SETTING THE ARCHITECTURAL STAGE) */}
@@ -378,7 +378,8 @@ export const HorizontalShowcase: React.FC = () => {
                 
                 {/* PARALLAX VISUAL BACKGROUND MEDIA LAYER (xPercent: -15 to 15) with Bleed */}
                 <div 
-                  className="showcase-media-layer absolute -inset-x-20 -inset-y-8 pointer-events-none opacity-25"
+                  className="showcase-media-layer wk-project-media absolute -inset-x-20 -inset-y-8 pointer-events-none opacity-25"
+                  data-project-id={project.id}
                   style={{
                     backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(223, 108, 79, 0.16) 0%, transparent 70%), linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px)',
                     backgroundSize: '100% 100%, 36px 36px, 36px 36px',

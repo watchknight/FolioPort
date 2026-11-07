@@ -501,9 +501,9 @@ export const SkillMatrix: React.FC = () => {
                   onClick={() => handleProjectClick(project.id)}
                   className={`relative p-3.5 rounded-xl border transition-all duration-300 cursor-pointer select-none flex flex-col justify-between ${
                     isSelected
-                      ? 'bg-cyan-mint/15 border-cyan-mint shadow-[0_0_20px_rgba(0,245,212,0.3)] scale-[1.02]'
+                      ? 'bg-wk-slate-surface border-wk-verdigris-signal shadow-editorial-card scale-[1.02]'
                       : highlighted
-                      ? 'bg-white/10 border-cyan-mint/60 shadow-[0_0_15px_rgba(0,245,212,0.2)]'
+                      ? 'bg-white/10 border-wk-verdigris-signal/60 shadow-editorial-card'
                       : isDimmed
                       ? 'opacity-35 bg-obsidian-surface/40 border-white/5 grayscale-[50%]'
                       : 'bg-obsidian-surface/80 border-white/10 hover:border-white/25 hover:bg-carbon-surface/90'
@@ -513,9 +513,9 @@ export const SkillMatrix: React.FC = () => {
                     <div className="flex items-center justify-between gap-1 mb-1.5">
                       <span className={`w-2 h-2 rounded-full ${
                         isSelected 
-                          ? 'bg-accent-coral shadow-[0_0_8px_rgba(223,108,79,0.5)]' 
+                          ? 'bg-wk-terracotta-pulse' 
                           : highlighted 
-                          ? 'bg-accent shadow-[0_0_8px_rgba(167,64,36,0.5)]' 
+                          ? 'bg-wk-verdigris-signal' 
                           : 'bg-muted/60'
                       }`} />
                       <span className="font-mono text-[10px] text-slate-500 uppercase">
@@ -640,9 +640,9 @@ export const SkillMatrix: React.FC = () => {
                           onClick={() => handleTechClick(tech.id)}
                           className={`group relative p-4 rounded-xl border transition-all duration-300 cursor-pointer select-none ${
                             isSelected
-                              ? 'bg-cyan-mint/15 border-cyan-mint shadow-[0_0_22px_rgba(0,245,212,0.25)] scale-[1.01]'
+                              ? 'bg-wk-slate-surface border-wk-verdigris-signal shadow-editorial-card scale-[1.01]'
                               : highlighted
-                              ? 'bg-white/10 border-cyan-mint/70 shadow-[0_0_15px_rgba(0,245,212,0.18)]'
+                              ? 'bg-white/10 border-wk-verdigris-signal/70 shadow-editorial-card'
                               : isDimmed
                               ? 'opacity-30 bg-obsidian-surface/40 border-white/5 grayscale-[60%]'
                               : 'bg-obsidian-surface/75 border-white/5 hover:border-white/20 hover:bg-carbon-surface/90'

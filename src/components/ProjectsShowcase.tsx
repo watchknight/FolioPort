@@ -1248,6 +1248,7 @@ export const ProjectsShowcase: React.FC = () => {
   const previewRef = useRef<HTMLDivElement | null>(null);
   const labelRef = useRef<HTMLDivElement | null>(null);
   const reelRef = useRef<HTMLDivElement | null>(null);
+  const mouseCoordRef = useRef<{ x: number; y: number; hasMoved: boolean }>({ x: 0, y: 0, hasMoved: false });
 
   // Mount detection for React portal
   useEffect(() => {
@@ -1319,6 +1320,7 @@ export const ProjectsShowcase: React.FC = () => {
           let hasPositioned = false;
 
           const onMouseMove = (e: MouseEvent) => {
+            mouseCoordRef.current = { x: e.clientX, y: e.clientY, hasMoved: true };
             if (!hasPositioned) {
               setInitX(e.clientX);
               setInitY(e.clientY);
@@ -1423,17 +1425,28 @@ export const ProjectsShowcase: React.FC = () => {
   }, [mounted, viewMode]);
 
   // Hover handlers for ledger rows
-  const handleRowEnter = (idx: number) => {
+  const handleRowEnter = (idx: number, e?: React.MouseEvent | React.PointerEvent) => {
     if (viewMode !== 'ledger') return;
     const isTouchOnly = typeof window !== 'undefined' && window.matchMedia('(hover: none) and (pointer: coarse)').matches;
     if (isTouchOnly) return;
 
-    setHoveredIndex(idx);
-    document.body.classList.add('ledger-hover-active');
-
     const previewEl = previewRef.current;
     const labelEl = labelRef.current;
     const reelEl = reelRef.current;
+
+    // Direct coordinate capture if passed via event
+    if (e && typeof e.clientX === 'number' && (e.clientX > 0 || e.clientY > 0)) {
+      mouseCoordRef.current = { x: e.clientX, y: e.clientY, hasMoved: true };
+      if (previewEl && labelEl) {
+        gsap.set([previewEl, labelEl], { x: e.clientX, y: e.clientY });
+      }
+    } else if (!mouseCoordRef.current.hasMoved) {
+      // Do not open floating preview without valid coordinates to prevent snapping to (0,0)
+      return;
+    }
+
+    setHoveredIndex(idx);
+    document.body.classList.add('ledger-hover-active');
 
     // Inside floating preview container, translate inner reel to -index * 100% (duration: 0.5, ease: 'power4.inOut')
     if (reelEl) {
@@ -1447,6 +1460,7 @@ export const ProjectsShowcase: React.FC = () => {
 
     // Scale the container to 1 (autoAlpha: 1) on mouseenter
     if (previewEl && labelEl) {
+      gsap.killTweensOf([previewEl, labelEl]);
       gsap.to([previewEl, labelEl], {
         scale: 1,
         autoAlpha: 1,
@@ -1466,10 +1480,11 @@ export const ProjectsShowcase: React.FC = () => {
 
     // Scale back to scale: 0 (autoAlpha: 0) on mouseleave
     if (previewEl && labelEl) {
+      gsap.killTweensOf([previewEl, labelEl]);
       gsap.to([previewEl, labelEl], {
         scale: 0,
         autoAlpha: 0,
-        duration: 0.3,
+        duration: 0.25,
         ease: 'power3.in',
         overwrite: 'auto',
       });
@@ -1577,8 +1592,8 @@ export const ProjectsShowcase: React.FC = () => {
                   style={{
                     opacity: hoveredIndex !== null && !isHovered ? 0.35 : 1,
                   }}
-                  onMouseEnter={() => handleRowEnter(idx)}
-                  onPointerEnter={() => handleRowEnter(idx)}
+                  onMouseEnter={(e) => handleRowEnter(idx, e)}
+                  onPointerEnter={(e) => handleRowEnter(idx, e)}
                 >
                   {/* 1px horizontal divider rule above row */}
                   <div
@@ -1610,66 +1625,67 @@ export const ProjectsShowcase: React.FC = () => {
                     }}
                     aria-expanded={isExpanded}
                     aria-label={`${project.title}: ${project.role}, ${project.year}. Press Enter to open case study.`}
-                    className="w-full py-8 sm:py-10 md:py-12 px-2 sm:px-4 lg:px-6 flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 cursor-pointer select-none focus:outline-none focus:bg-white/5 transition-colors"
+                    className="w-full py-6 sm:py-8 lg:py-10 px-3 sm:px-5 lg:px-6 grid grid-cols-1 sm:grid-cols-12 items-center gap-3 sm:gap-4 lg:gap-6 cursor-pointer select-none focus:outline-none focus:bg-white/5 transition-colors"
                   >
-                    {/* Left: Zero-Padded Monospace Index + Title + Mobile Inline Thumbnail */}
-                    <div className="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-8 flex-1 min-w-0">
-                      <div className="flex items-baseline gap-4 sm:gap-8 shrink-0">
-                        <span className="font-mono text-fluid-mono sm:text-lg text-accent-coral font-bold shrink-0">
-                          {project.number}
-                        </span>
-                        <h3
-                          style={{
-                            transform: isHovered ? 'translateX(16px)' : 'translateX(0px)',
-                            opacity: isHovered ? 1 : 0.9,
-                          }}
-                          className="font-display font-extrabold text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-alabaster tracking-tight group-hover:text-accent-coral transition-all duration-300 ease-out"
-                        >
-                          {project.title}
-                        </h3>
-                      </div>
-
-                      {/* Mobile & Touch Viewport Inline Thumbnail Indicator */}
-                      <div className="flex lg:hidden items-center gap-2 font-mono text-[11px] text-muted-light">
-                        <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-accent-coral font-semibold">
-                          {project.category}
-                        </span>
-                        <span className="text-white/20">•</span>
-                        <span className="text-alabaster-dim">{project.coreStack}</span>
-                      </div>
+                    {/* Column 1-5 (lg): Monospace Index + Title */}
+                    <div className="sm:col-span-12 lg:col-span-5 flex items-baseline gap-3 sm:gap-6 min-w-0">
+                      <span className="font-mono text-fluid-mono sm:text-lg text-accent-coral font-bold shrink-0">
+                        {project.number}
+                      </span>
+                      <h3
+                        style={{
+                          transform: isHovered ? 'translateX(12px)' : 'translateX(0px)',
+                          opacity: isHovered ? 1 : 0.95,
+                        }}
+                        className="font-display font-extrabold text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl text-alabaster tracking-tight group-hover:text-accent-coral transition-all duration-300 ease-out truncate"
+                        title={project.title}
+                      >
+                        {project.title}
+                      </h3>
                     </div>
 
-                    {/* Right: Surgical Metadata Columns + Interactive External Arrow Indicator */}
-                    <div className="flex flex-wrap sm:flex-nowrap items-center justify-between lg:justify-end gap-4 sm:gap-8 lg:gap-10 text-left shrink-0">
-                      {/* Role */}
-                      <div className="min-w-[150px] hidden sm:block">
-                        <span className="block font-mono text-[10px] text-muted-light uppercase tracking-wider">Role</span>
-                        <span className="font-mono text-xs sm:text-sm text-alabaster-dim">{project.role}</span>
+                    {/* Column 6-8 (lg): Role */}
+                    <div className="hidden sm:block sm:col-span-4 lg:col-span-3 min-w-0 pr-2">
+                      <span className="block font-mono text-[10px] text-muted-light uppercase tracking-wider mb-0.5">Role</span>
+                      <span className="font-mono text-xs sm:text-sm text-alabaster-dim truncate block" title={project.role}>
+                        {project.role}
+                      </span>
+                    </div>
+
+                    {/* Column 9-10 (lg): Services / Stack */}
+                    <div className="hidden md:block sm:col-span-4 md:col-span-4 lg:col-span-2 min-w-0 pr-2">
+                      <span className="block font-mono text-[10px] text-muted-light uppercase tracking-wider mb-0.5">Services / Stack</span>
+                      <span className="font-mono text-xs sm:text-sm text-muted-light truncate block" title={project.coreStack}>
+                        {project.coreStack}
+                      </span>
+                    </div>
+
+                    {/* Column 11 (lg): Year */}
+                    <div className="hidden sm:block sm:col-span-2 md:col-span-2 lg:col-span-1 min-w-0">
+                      <span className="block font-mono text-[10px] text-muted-light uppercase tracking-wider mb-0.5">Year</span>
+                      <span className="font-mono text-xs sm:text-sm text-alabaster-dim">{project.year}</span>
+                    </div>
+
+                    {/* Column 12 (lg): Interactive Action Icons & Arrow */}
+                    <div className="flex items-center justify-between sm:justify-end gap-2 sm:col-span-2 md:col-span-2 lg:col-span-1 shrink-0">
+                      {/* Mobile & Touch summary indicator */}
+                      <div className="flex sm:hidden items-center gap-2 font-mono text-[11px] text-muted-light truncate">
+                        <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-accent-coral font-semibold">
+                          {project.year}
+                        </span>
+                        <span className="text-alabaster-dim truncate">{project.role}</span>
                       </div>
 
-                      {/* Services / Core Stack */}
-                      <div className="min-w-[170px] hidden md:block">
-                        <span className="block font-mono text-[10px] text-muted-light uppercase tracking-wider">Services / Stack</span>
-                        <span className="font-mono text-xs sm:text-sm text-muted-light">{project.coreStack}</span>
-                      </div>
-
-                      {/* Year */}
-                      <div className="min-w-[44px]">
-                        <span className="block font-mono text-[10px] text-muted-light uppercase tracking-wider">Year</span>
-                        <span className="font-mono text-xs sm:text-sm text-alabaster-dim">{project.year}</span>
-                      </div>
-
-                      {/* Interactive External Arrow & Action Icons */}
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                         <a
                           href={project.githubUrl}
                           target="_blank"
                           rel="noreferrer"
                           onClick={(e) => e.stopPropagation()}
                           aria-label={`GitHub repository for ${project.title}`}
-                          className="p-2.5 rounded-full bg-white/5 hover:bg-accent-coral/20 text-slate-300 hover:text-accent-coral transition-colors border border-white/10"
+                          className="p-2 sm:p-2.5 rounded-full bg-white/5 hover:bg-accent-coral/20 text-slate-300 hover:text-accent-coral transition-colors border border-white/10"
                         >
-                          <GithubIcon className="w-4 h-4" />
+                          <GithubIcon className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
                         </a>
 
                         {project.liveUrl && (
@@ -1679,16 +1695,16 @@ export const ProjectsShowcase: React.FC = () => {
                             rel="noreferrer"
                             onClick={(e) => e.stopPropagation()}
                             aria-label={`Live demo for ${project.title}`}
-                            className="p-2.5 rounded-full bg-white/5 hover:bg-accent-coral/20 text-slate-300 hover:text-accent-coral transition-colors border border-white/10"
+                            className="p-2 sm:p-2.5 rounded-full bg-white/5 hover:bg-accent-coral/20 text-slate-300 hover:text-accent-coral transition-colors border border-white/10"
                           >
-                            <ExternalLink className="w-4 h-4" />
+                            <ExternalLink className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
                           </a>
                         )}
 
                         <div
-                          className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-alabaster group-hover:border-accent-coral group-hover:bg-accent-coral group-hover:text-obsidian transition-all duration-300 shrink-0"
+                          className="w-8 sm:w-9 lg:w-10 h-8 sm:h-9 lg:h-10 rounded-full border border-white/10 flex items-center justify-center text-alabaster group-hover:border-accent-coral group-hover:bg-accent-coral group-hover:text-obsidian transition-all duration-300 shrink-0"
                         >
-                          <ArrowUpRight className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? 'rotate-90' : 'group-hover:translate-x-0.5 group-hover:-translate-y-0.5'}`} />
+                          <ArrowUpRight className={`w-3.5 sm:w-4 h-3.5 sm:h-4 transition-transform duration-300 ${isExpanded ? 'rotate-90' : 'group-hover:translate-x-0.5 group-hover:-translate-y-0.5'}`} />
                         </div>
                       </div>
                     </div>
@@ -2006,6 +2022,9 @@ export const ProjectsShowcase: React.FC = () => {
               pointerEvents: 'none',
               zIndex: 50,
               overflow: 'hidden',
+              opacity: 0,
+              visibility: 'hidden',
+              transform: 'translate(-50%, -50%) scale(0)',
             }}
             aria-hidden="true"
           >
@@ -2230,6 +2249,9 @@ export const ProjectsShowcase: React.FC = () => {
               height: 68,
               pointerEvents: 'none',
               zIndex: 51,
+              opacity: 0,
+              visibility: 'hidden',
+              transform: 'translate(-50%, -50%) scale(0)',
             }}
             aria-hidden="true"
           >

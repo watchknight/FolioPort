@@ -1,0 +1,106 @@
+/**
+ * @watchknight Neuroaesthetic Design System Tokens & Editorial Ledger Architecture
+ * 
+ * Strict Token Invariants (WCAG 2.1 AAA & Chromostereopsis Protected):
+ * --wk-obsidian-void:     #090A0D (Primary canvas background — 70% viewport rest zone)
+ * --wk-slate-surface:     #12151C (Elevated telemetry HUD & drawer surface — 15% area)
+ * --wk-alabaster-ink:     #F2EFE9 (Primary typography & 1px SVG vector rules, >= 14:1 AAA contrast)
+ * --wk-ash-muted:         #7A808C (Secondary metadata, coordinates & timestamps)
+ * --wk-terracotta-pulse:  #B84A27 (Strategic Von Restorff focal anomaly & CTA accent — 3% area)
+ * --wk-verdigris-signal:  #4E9A7F (Active telemetry, live status & graph traversal state — 2% area)
+ */
+
+:root {
+  /* Core Neuroaesthetic Hex Tokens */
+  --wk-obsidian-void: #090A0D;
+  --wk-slate-surface: #12151C;
+  --wk-alabaster-ink: #F2EFE9;
+  --wk-ash-muted: #7A808C;
+  --wk-terracotta-pulse: #B84A27;
+  --wk-verdigris-signal: #4E9A7F;
+
+  /* RGB channels for tailwind alpha compositing */
+  --wk-obsidian-void-rgb: 9 10 13;
+  --wk-slate-surface-rgb: 18 21 28;
+  --wk-alabaster-ink-rgb: 242 239 233;
+  --wk-ash-muted-rgb: 122 128 140;
+  --wk-terracotta-pulse-rgb: 184 74 39;
+  --wk-verdigris-signal-rgb: 78 154 127;
+
+  /* Editorial Ledger Baseline Aliases */
+  --bg-obsidian: var(--wk-obsidian-void);
+  --bg-surface: var(--wk-slate-surface);
+  --bg-card: #161922;
+  --bg-elevated: #1E232E;
+  --surface-alabaster: var(--wk-alabaster-ink);
+  --text-muted: var(--wk-ash-muted);
+  --accent-rust: var(--wk-terracotta-pulse);
+  --accent-coral: var(--wk-terracotta-pulse);
+  --accent-verdigris: var(--wk-verdigris-signal);
+  --border-editorial: rgba(242, 239, 233, 0.08);
+
+  /* Chromostereopsis Buffer Invariant:
+     Terracotta accent is buffered with neutral borders (#090A0D or #F2EFE9)
+     and guaranteed >= 35 L* perceptual lightness delta against dark void/slate */
+  --wk-neutral-buffer-dark: #090A0D;
+  --wk-neutral-buffer-light: #F2EFE9;
+  --wk-terracotta-delta-l: 38.5; /* L* 45.87 vs Slate L* 7.32 = 38.55 >= 35 */
+}
+
+/* Kanizsa Geometry Corner Crosshairs (1px SVG optical illusions) */
+.kanizsa-container {
+  position: relative;
+}
+
+.kanizsa-crosshair {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  pointer-events: none;
+  z-index: 10;
+  color: var(--wk-ash-muted);
+  opacity: 0.45;
+  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.kanizsa-container:hover .kanizsa-crosshair {
+  opacity: 0.95;
+  color: var(--wk-alabaster-ink);
+}
+
+.kanizsa-tl { top: -4.5px; left: -4.5px; }
+.kanizsa-tr { top: -4.5px; right: -4.5px; }
+.kanizsa-bl { bottom: -4.5px; left: -4.5px; }
+.kanizsa-br { bottom: -4.5px; right: -4.5px; }
+
+/* 1px SVG Data-Draw Rules */
+.wk-rule-h {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(242, 239, 233, 0.08);
+}
+
+.wk-rule-v {
+  width: 1px;
+  height: 100%;
+  background-color: rgba(242, 239, 233, 0.08);
+}
+
+/* Von Restorff Strategic Anomaly Frame:
+   Breaks horizontal grid alignment with protruding --wk-terracotta-pulse accent border
+   buffered by neutral obsidian void (#090A0D) to eliminate chromostereopsis */
+.von-restorff-frame {
+  position: relative;
+  box-shadow: 
+    0 0 0 1px var(--wk-neutral-buffer-dark),
+    0 0 0 2px var(--wk-terracotta-pulse),
+    0 20px 48px -12px rgba(184, 74, 39, 0.18);
+}
+
+/* Zero-Jank Velocity Skew Isolation:
+   Isolates GPU-composited transform properties so CSS transition rules
+   never conflict or interpolate against GSAP quickSetter RAF skew ticks */
+.wk-velocity-item {
+  will-change: transform;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow !important;
+}

@@ -587,7 +587,7 @@ export const GithubLab: React.FC = () => {
                   onMouseEnter={() => audio.playTick()}
                   className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full font-mono text-fluid-micro transition-all duration-200 border ${
                     isActive
-                      ? 'bg-amber-warm/15 text-amber-warm border-amber-warm/50 shadow-[0_0_15px_rgba(255,183,3,0.2)] font-bold'
+                      ? 'bg-wk-terracotta-pulse/15 text-wk-terracotta-pulse border-wk-terracotta-pulse/50 shadow-editorial-card font-bold'
                       : 'bg-carbon/60 text-slate-400 hover:text-slate-200 border-white/10 hover:border-white/20'
                   }`}
                   aria-label={`Filter by ${filter} category (${count} repositories)`}

@@ -8,56 +8,71 @@ export default {
   theme: {
     extend: {
       colors: {
+        // @watchknight Neuroaesthetic Design System Tokens
+        wk: {
+          'obsidian-void': 'var(--wk-obsidian-void, #090A0D)',
+          'slate-surface': 'var(--wk-slate-surface, #12151C)',
+          'alabaster-ink': 'var(--wk-alabaster-ink, #F2EFE9)',
+          'ash-muted': 'var(--wk-ash-muted, #7A808C)',
+          'terracotta-pulse': 'var(--wk-terracotta-pulse, #B84A27)',
+          'verdigris-signal': 'var(--wk-verdigris-signal, #4E9A7F)',
+          obsidian: 'var(--wk-obsidian-void, #090A0D)',
+          slate: 'var(--wk-slate-surface, #12151C)',
+          alabaster: 'var(--wk-alabaster-ink, #F2EFE9)',
+          ash: 'var(--wk-ash-muted, #7A808C)',
+          terracotta: 'var(--wk-terracotta-pulse, #B84A27)',
+          verdigris: 'var(--wk-verdigris-signal, #4E9A7F)',
+        },
         // High-contrast Editorial Design Tokens (Colombel / Spatzek 2026 system)
         obsidian: {
-          DEFAULT: 'rgb(var(--bg-obsidian-rgb, 10 10 10) / <alpha-value>)',
-          surface: 'rgb(var(--bg-surface-rgb, 18 18 18) / <alpha-value>)',
-          card: 'rgb(var(--bg-card-rgb, 22 22 22) / <alpha-value>)',
-          elevated: 'rgb(var(--bg-elevated-rgb, 29 29 29) / <alpha-value>)',
-          border: 'rgb(var(--border-editorial-rgb, 244 243 239) / <alpha-value>)',
-          darker: 'rgb(var(--bg-obsidian-rgb, 10 10 10) / <alpha-value>)',
+          DEFAULT: 'rgb(var(--bg-obsidian-rgb, 9 10 13) / <alpha-value>)',
+          surface: 'rgb(var(--bg-surface-rgb, 18 21 28) / <alpha-value>)',
+          card: 'rgb(var(--bg-card-rgb, 22 25 34) / <alpha-value>)',
+          elevated: 'rgb(var(--bg-elevated-rgb, 30 35 46) / <alpha-value>)',
+          border: 'rgb(var(--border-editorial-rgb, 242 239 233) / <alpha-value>)',
+          darker: 'rgb(var(--bg-obsidian-rgb, 9 10 13) / <alpha-value>)',
         },
         alabaster: {
-          DEFAULT: 'rgb(var(--text-primary-rgb, 244 243 239) / <alpha-value>)',
+          DEFAULT: 'rgb(var(--text-primary-rgb, 242 239 233) / <alpha-value>)',
           dim: 'rgb(var(--text-dim-rgb, 220 218 210) / <alpha-value>)',
-          muted: 'rgb(var(--text-muted-rgb, 87 91 95) / <alpha-value>)',
+          muted: 'rgb(var(--text-muted-rgb, 122 128 140) / <alpha-value>)',
           pure: 'rgb(var(--text-primary-rgb, 255 255 255) / <alpha-value>)',
         },
         muted: {
-          DEFAULT: 'rgb(var(--text-muted-rgb, 87 91 95) / <alpha-value>)',
-          light: '#7A8086',
-          dark: '#383B3E',
+          DEFAULT: 'rgb(var(--text-muted-rgb, 122 128 140) / <alpha-value>)',
+          light: '#7A808C',
+          dark: '#1E232E',
         },
         accent: {
-          DEFAULT: 'rgb(var(--accent-rust-rgb, 167 64 36) / <alpha-value>)', // terracotta rust primary focal accent
-          rust: 'rgb(var(--accent-rust-rgb, 167 64 36) / <alpha-value>)',
-          coral: 'rgb(var(--accent-coral-rgb, 223 108 79) / <alpha-value>)', // burnt coral accent variant
-          hover: 'rgb(var(--accent-rust-rgb, 194 77 45) / <alpha-value>)',
-          glow: 'rgba(var(--accent-rust-rgb, 167 64 36), 0.25)',
+          DEFAULT: 'rgb(var(--accent-rust-rgb, 184 74 39) / <alpha-value>)', // terracotta pulse primary focal accent
+          rust: 'rgb(var(--accent-rust-rgb, 184 74 39) / <alpha-value>)',
+          coral: 'rgb(var(--accent-coral-rgb, 184 74 39) / <alpha-value>)', // terracotta pulse
+          hover: 'rgb(var(--accent-rust-rgb, 202 84 45) / <alpha-value>)',
+          glow: 'rgba(var(--accent-rust-rgb, 184 74 39), 0.2)',
         },
         // Editorial compatibility mappings for existing components
         carbon: {
-          DEFAULT: '#121212',
-          surface: '#161616',
-          elevated: '#1D1D1D',
-          highlight: '#262626',
+          DEFAULT: 'var(--wk-slate-surface, #12151C)',
+          surface: '#161922',
+          elevated: '#1E232E',
+          highlight: '#262B38',
         },
         cyan: {
-          mint: '#DF6C4F', // Remapped to burnt coral focal accent
-          dim: '#A74024',
-          glow: 'rgba(167, 64, 36, 0.25)',
+          mint: 'var(--wk-verdigris-signal, #4E9A7F)', // Remapped to verdigris signal
+          dim: '#38735E',
+          glow: 'rgba(78, 154, 127, 0.2)',
         },
         amber: {
-          warm: '#A74024', // Remapped to terracotta rust focal accent
-          dim: '#85321B',
-          glow: 'rgba(167, 64, 36, 0.25)',
+          warm: 'var(--wk-terracotta-pulse, #B84A27)', // Remapped to terracotta pulse
+          dim: '#8E391E',
+          glow: 'rgba(184, 74, 39, 0.2)',
         },
         glass: {
-          border: 'rgba(244, 243, 239, 0.08)',
-          'border-hover': 'rgba(244, 243, 239, 0.18)',
-          'border-accent': 'rgba(223, 108, 79, 0.35)',
-          surface: 'rgba(18, 18, 18, 0.75)',
-          panel: 'rgba(14, 14, 14, 0.85)',
+          border: 'rgba(242, 239, 233, 0.08)',
+          'border-hover': 'rgba(242, 239, 233, 0.18)',
+          'border-accent': 'rgba(184, 74, 39, 0.35)',
+          surface: 'rgba(18, 21, 28, 0.75)',
+          panel: 'rgba(9, 10, 13, 0.85)',
         },
       },
       fontFamily: {
@@ -80,20 +95,16 @@ export default {
         'fluid-micro': ['clamp(0.68rem, 0.2vw + 0.62rem, 0.78rem)', { lineHeight: '1.4' }],
       },
       boxShadow: {
-        'editorial-card': '0 1px 2px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(244, 243, 239, 0.08)',
-        'editorial-elevated': '0 20px 40px -15px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(244, 243, 239, 0.1)',
-        'nav-pill': '0 12px 32px -8px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(244, 243, 239, 0.08)',
-        'glow-accent': '0 0 25px -4px rgba(167, 64, 36, 0.4)',
-        // Retained for compatibility without multi-color gradients
-        'glow-cyan': '0 0 20px -4px rgba(223, 108, 79, 0.35)',
-        'glow-cyan-sm': '0 0 10px -2px rgba(223, 108, 79, 0.3)',
-        'glow-amber': '0 0 20px -4px rgba(167, 64, 36, 0.35)',
-        'liquid-card': '0 20px 40px -15px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(244, 243, 239, 0.06)',
+        'editorial-card': '0 1px 2px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(242, 239, 233, 0.08)',
+        'editorial-elevated': '0 20px 40px -15px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(242, 239, 233, 0.1)',
+        'nav-pill': '0 12px 32px -8px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(242, 239, 233, 0.08)',
+        'glow-accent': '0 0 24px -6px rgba(184, 74, 39, 0.25)',
+        'liquid-card': '0 20px 40px -15px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(242, 239, 233, 0.06)',
       },
       backgroundImage: {
-        'radial-spotlight': 'radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(223, 108, 79, 0.08), transparent 40%)',
-        'radial-spotlight-amber': 'radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(167, 64, 36, 0.08), transparent 40%)',
-        'noise-pattern': "radial-gradient(rgba(244, 243, 239, 0.03) 1px, transparent 1px)",
+        'radial-spotlight': 'radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(184, 74, 39, 0.06), transparent 40%)',
+        'radial-spotlight-amber': 'radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(184, 74, 39, 0.06), transparent 40%)',
+        'noise-pattern': "radial-gradient(rgba(242, 239, 233, 0.03) 1px, transparent 1px)",
       },
       animation: {
         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',

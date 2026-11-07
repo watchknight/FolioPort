@@ -399,17 +399,17 @@ export const ContactFooter: React.FC = () => {
       <section
         ref={sectionRef}
         id="contact"
-        className="relative z-[1] min-h-[85vh] lg:min-h-[90vh] pt-16 pb-16 md:pt-24 md:pb-20 bg-obsidian-darker/95 overflow-hidden border-t border-white/10"
+        className="relative z-[1] min-h-[85vh] lg:min-h-[90vh] pt-28 sm:pt-36 md:pt-40 pb-16 md:pb-20 bg-obsidian-darker/95 overflow-hidden border-t border-white/10"
         aria-label="Contact and conversion footer"
       >
         <div ref={footerInnerRef} className="w-full h-full">
         {/* Ambient background glow accents */}
         <div
-          className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-b from-cyan-mint/10 to-transparent blur-[120px] rounded-full"
+          className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-b from-accent/10 to-transparent blur-[120px] rounded-full"
           aria-hidden="true"
         />
         <div
-          className="pointer-events-none absolute bottom-0 right-10 w-[450px] h-[250px] bg-gradient-to-t from-amber-warm/5 to-transparent blur-[100px] rounded-full"
+          className="pointer-events-none absolute bottom-0 right-10 w-[450px] h-[250px] bg-gradient-to-t from-accent/5 to-transparent blur-[100px] rounded-full"
           aria-hidden="true"
         />
 
@@ -426,9 +426,9 @@ export const ContactFooter: React.FC = () => {
               : 'opacity-0 translate-y-4 scale-95 pointer-events-none'
           }`}
         >
-          <div className="flex items-center gap-3 px-4 sm:px-5 py-3.5 rounded-2xl bg-carbon-surface/95 border border-cyan-mint/40 shadow-[0_16px_40px_rgba(0,0,0,0.85),0_0_20px_rgba(0,245,212,0.25)] backdrop-blur-2xl text-slate-100">
-            <div className="w-8 h-8 rounded-xl bg-cyan-mint/15 border border-cyan-mint/40 flex items-center justify-center shrink-0">
-              <Check className="w-4 h-4 text-cyan-mint" />
+          <div className="flex items-center gap-3 px-4 sm:px-5 py-3.5 rounded-xl bg-carbon-surface/95 border border-white/10 shadow-editorial-elevated backdrop-blur-2xl text-slate-100">
+            <div className="w-8 h-8 rounded-lg bg-wk-verdigris-signal/15 border border-wk-verdigris-signal/40 flex items-center justify-center shrink-0">
+              <Check className="w-4 h-4 text-wk-verdigris-signal" />
             </div>
             <div className="min-w-0 flex-1">
               <div className="font-display font-bold text-sm text-white">
@@ -498,9 +498,11 @@ export const ContactFooter: React.FC = () => {
               ZERO-FRICTION CONVERSION HERO CALLOUT
              ========================================================================= */}
           <div className="footer-anim text-center max-w-4xl mx-auto mb-16 space-y-6">
-            <h2 className="font-display font-black text-3xl sm:text-4xl md:text-fluid-h1 lg:text-fluid-hero tracking-tight text-white uppercase break-words">
-              Ready to build something{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-mint via-white to-amber-warm drop-shadow-[0_0_35px_rgba(0,245,212,0.35)]">
+            <h2 className="font-display font-black text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl tracking-tight text-white uppercase break-normal hyphens-none leading-[1.1] text-balance">
+              <span className="block">
+                Ready to build something
+              </span>
+              <span className="block text-wk-terracotta-pulse">
                 unforgettable?
               </span>
             </h2>
@@ -517,17 +519,17 @@ export const ContactFooter: React.FC = () => {
                 onClick={handleCopyEmail}
                 strength={0.35}
                 innerStrength={0.2}
-                className="group px-7 py-4 rounded-2xl bg-gradient-to-r from-cyan-mint via-[#25ffdb] to-cyan-dim text-obsidian font-display font-black text-sm sm:text-base tracking-wide shadow-[0_0_30px_rgba(0,245,212,0.45)] hover:shadow-[0_0_45px_rgba(0,245,212,0.7)] active:scale-95 transition-all"
+                className="group px-7 py-4 rounded-xl bg-wk-terracotta-pulse hover:brightness-110 text-wk-alabaster-ink font-display font-black text-sm sm:text-base tracking-wide shadow-editorial-card border border-wk-terracotta-pulse active:scale-95 transition-all"
                 aria-label={`Copy email address ${PORTFOLIO_DATA.meta.email} to clipboard`}
               >
                 <span className="flex items-center gap-2.5">
                   {copied ? (
-                    <Check className="w-5 h-5 text-obsidian animate-bounce" />
+                    <Check className="w-5 h-5 text-wk-alabaster-ink animate-bounce" />
                   ) : (
-                    <Copy className="w-5 h-5 text-obsidian transition-transform group-hover:scale-110" />
+                    <Copy className="w-5 h-5 text-wk-alabaster-ink transition-transform group-hover:scale-110" />
                   )}
                   <span>{copied ? 'Copied to Clipboard!' : 'Copy Email Address'}</span>
-                  <span className="font-mono text-xs font-bold px-2 py-0.5 rounded-full bg-obsidian/15 border border-obsidian/20 hidden sm:inline">
+                  <span className="font-mono text-xs font-bold px-2 py-0.5 rounded-full bg-black/30 border border-white/20 hidden sm:inline">
                     {PORTFOLIO_DATA.meta.email}
                   </span>
                 </span>
@@ -540,7 +542,7 @@ export const ContactFooter: React.FC = () => {
                     href="/resume.pdf"
                     download="Abdur_Rahman_Moayed_Resume.pdf"
                     onMouseEnter={() => audio.playTick()}
-                    className="px-6 py-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/15 hover:border-amber-warm/50 text-slate-100 hover:text-white font-display font-bold text-sm sm:text-base flex items-center gap-2 transition-all shadow-lg hover:shadow-[0_0_25px_rgba(255,183,3,0.25)]"
+                    className="px-6 py-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 hover:border-wk-terracotta-pulse/50 text-slate-100 hover:text-white font-display font-bold text-sm sm:text-base flex items-center gap-2 transition-all shadow-editorial-card"
                     aria-label="Download Abdur Rahman Moayed's Resume PDF"
                   >
                     <Download className="w-4 h-4 text-amber-warm" />
@@ -906,8 +908,8 @@ export const ContactFooter: React.FC = () => {
                           formErrors.message
                             ? 'border-rose-500/80 focus:border-rose-400'
                             : isPrefillGlow
-                            ? 'border-cyan-mint ring-2 ring-cyan-mint/50 shadow-[0_0_25px_rgba(0,245,212,0.4)]'
-                            : 'border-white/10 focus:border-cyan-mint'
+                            ? 'border-wk-verdigris-signal ring-1 ring-wk-verdigris-signal/50 shadow-editorial-card'
+                            : 'border-white/10 focus:border-wk-verdigris-signal'
                         }`}
                       />
                       {formErrors.message && (
