@@ -12,15 +12,15 @@
 
 * **Strictly Forbidden ("AI Slop"):** Default Tailwind/shadcn 3-column bento grids, `rounded-2xl` glowing cards, purple-to-cyan neon gradients, CSS `box-shadow` neon glows, un-throttled hover handlers, generic AI filler copy ("Passionate developer..."), and multiple competing `requestAnimationFrame` loops.
 
-## 2. Neuroaesthetic Palette Tokens (Strict Enforcement)
+## 2. Cyber-CRT Palette Tokens (Strict Enforcement)
 
-* `--wk-obsidian-void`: `#090A0D` (Primary canvas background — 70% viewport rest zone)
-* `--wk-slate-surface`: `#12151C` (Elevated telemetry HUD & drawer surface — 15% area)
-* `--wk-alabaster-ink`: `#F2EFE9` (Primary typography & 1px SVG vector rules, >= 14:1 AAA contrast)
-* `--wk-ash-muted`: `#7A808C` (Secondary metadata, coordinates & timestamps)
-* `--wk-terracotta-pulse`: `#B84A27` (Strategic Von Restorff focal anomaly & CTA accent — 3% area)
-* `--wk-verdigris-signal`: `#4E9A7F` (Active telemetry, live status & graph traversal state — 2% area)
-* **Chromostereopsis Rule:** Never place `--wk-terracotta-pulse` directly adjacent to saturated blue at near-equal lightness; always buffer warm focal accents with `#090A0D` or `#F2EFE9` neutral borders and maintain a >= 35 L* perceptual lightness delta.
+* `--cyber-void`: `#070814` (Deep void background — primary canvas baseline)
+* `--cyber-cyan`: `#00F0FF` (Electric cyan CRT beam — primary focal accent, glows & telemetry)
+* `--cyber-green`: `#4AF626` (Terminal phosphor green — active status, signal telemetry & success states)
+* `--cyber-slate`: `#0F1224` (Elevated CRT HUD, glass panels & drawer surface)
+* `--cyber-ink`: `#EDF2F7` (Primary typography & crisp vector rules, >= 14:1 AAA contrast)
+* `--cyber-muted`: `#687796` (Secondary telemetry metadata, coordinate labels & timestamps)
+* **Contrast & Beam Integrity Rule:** Preserve high-contrast scanlines, CRT beam bloom, and phosphor glows without muddy dark-grey noise. Keep `#070814` as the deep void anchor, accented sharply with `#00F0FF` and `#4AF626`.
 
 ## 3. Motion, WebGL & Audio Invariants
 
