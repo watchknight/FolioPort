@@ -798,7 +798,7 @@ export const GithubLab: React.FC = () => {
                     </div>
 
                     {/* Description */}
-                    <p className="font-body text-xs text-[#D6CFC2] mb-4 leading-relaxed line-clamp-3">
+                    <p className="font-body text-xs text-[#D6CFC2] mb-4 leading-relaxed break-words">
                       {repo.description}
                     </p>
 

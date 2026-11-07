@@ -738,7 +738,7 @@ export const DocLensBDPreview: React.FC = () => {
 
       <div className="bg-[#070814] p-2 border border-[#2D3645] text-[9px] text-[#8E98AA] space-y-0.5">
         {pipelineLogs.map((log, i) => (
-          <div key={i} className="truncate">
+          <div key={i} className="break-words">
             <span className="text-[#FFCC00]">❯</span> {log}
           </div>
         ))}
@@ -829,7 +829,7 @@ export const RannabannaPreview: React.FC = () => {
               watchknightAudio.playHoverTick(0);
               setActiveDish(idx);
             }}
-            className={`px-1.5 py-1 truncate border ${
+            className={`px-1.5 py-1 break-words border ${
               activeDish === idx
                 ? 'bg-[#00F0FF]/20 border-[#00F0FF] text-[#00F0FF] font-bold'
                 : 'bg-[#131629] border-[#2D3645] text-[#8E98AA]'
@@ -1331,7 +1331,7 @@ export const ChronosAetherPreview: React.FC = () => {
                 }`}
               >
                 <div className="font-bold">{tx}</div>
-                <div className="text-[8px] text-[#8E98AA] truncate">
+                <div className="text-[8px] text-[#8E98AA] break-all">
                   {tamperedBlock === idx ? '0xMUTATED!' : `0x${(idx + 1) * 31}a7e`}
                 </div>
                 <button

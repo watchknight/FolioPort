@@ -1043,7 +1043,7 @@ export const RenderPassInspector: React.FC = () => {
                 <div className={`font-pixel text-[10px] uppercase mb-1 ${isActive ? 'text-[#00F0FF]' : 'text-[#F0EFE6]'}`}>
                   {pass.label}
                 </div>
-                <p className="font-mono text-[9px] text-[#8E98AA] line-clamp-3 leading-snug">
+                <p className="font-mono text-[9px] text-[#8E98AA] break-words leading-snug">
                   {pass.description}
                 </p>
               </div>

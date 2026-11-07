@@ -551,7 +551,7 @@ export const Hero: React.FC<HeroProps> = ({ showCanvas = true }) => {
             </h1>
 
             {/* Subtitles: Curated systems & spatial web engineering bio */}
-            <p className="hero-subheadline max-w-xl font-body text-[11px] sm:text-xs text-alabaster-dim pt-0.5 font-normal leading-relaxed line-clamp-2">
+            <p className="hero-subheadline max-w-xl font-body text-[11px] sm:text-xs text-alabaster-dim pt-0.5 font-normal leading-relaxed break-words">
               Architecting low-level systems, Linux POSIX kernels, and immersive spatial web experiences. {PORTFOLIO_DATA.meta.bio}
             </p>
 
@@ -598,7 +598,7 @@ export const Hero: React.FC<HeroProps> = ({ showCanvas = true }) => {
                         </span>
 
                         <span className={`font-pixel text-[8px] font-bold tracking-tight break-words uppercase transition-colors ${
-                          isFlashing ? 'text-[#070814]' : 'text-[#F0EFE6] group-hover:white'
+                          isFlashing ? 'text-[#070814]' : 'text-[#F0EFE6] group-hover:text-white'
                         }`}>
                           {item.title}
                         </span>
