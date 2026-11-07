@@ -227,10 +227,10 @@ export const RetroCommandBar: React.FC = () => {
 
           <div className="flex items-center gap-1.5 min-w-0">
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#4AF626] animate-pulse shadow-[0_0_6px_#4AF626] shrink-0" />
-            <span className="font-pixel text-[7px] sm:text-[7.5px] xl:text-[8px] text-[#D6CFC2] tracking-wider hidden sm:inline truncate whitespace-nowrap">
+            <span className="font-pixel text-[7px] sm:text-[7.5px] xl:text-[8px] text-[#D6CFC2] tracking-wider hidden sm:inline whitespace-nowrap">
               EWU CSE // DHAKA {dhakaTime ? `${dhakaTime} ` : ''}(UTC+6)
             </span>
-            <span className="font-pixel text-[7px] text-[#D6CFC2] tracking-wider sm:hidden truncate max-w-[120px]">
+            <span className="font-pixel text-[6.5px] text-[#D6CFC2] tracking-wider sm:hidden whitespace-nowrap">
               EWU CSE // DHAKA (UTC+6)
             </span>
           </div>

@@ -669,7 +669,7 @@ export const Hero: React.FC<HeroProps> = ({ showCanvas = true }) => {
                 </div>
                 <div className="min-w-0">
                   <div className="text-muted text-[7px] uppercase tracking-wider font-semibold">Focus</div>
-                  <div className="text-alabaster font-bold truncate text-[10px]">Full-Stack &amp; OS Systems</div>
+                  <div className="text-alabaster font-bold break-words text-[10px]">Full-Stack &amp; OS Systems</div>
                 </div>
               </div>
 
@@ -680,7 +680,7 @@ export const Hero: React.FC<HeroProps> = ({ showCanvas = true }) => {
                 </div>
                 <div className="min-w-0">
                   <div className="text-muted text-[7px] uppercase tracking-wider font-semibold">Base</div>
-                  <div className="text-alabaster font-bold truncate text-[10px]">East West University, Dhaka</div>
+                  <div className="text-alabaster font-bold break-words text-[10px]">East West University, Dhaka</div>
                 </div>
               </div>
 
@@ -700,7 +700,7 @@ export const Hero: React.FC<HeroProps> = ({ showCanvas = true }) => {
                     <span>GitHub</span>
                     <ExternalLink className="w-2 h-2 opacity-60 group-hover:opacity-100 group-hover:text-[#00F0FF] transition-all" />
                   </div>
-                  <div className="text-[#FF2A85] font-bold group-hover:underline truncate text-[10px]">@watchknight</div>
+                  <div className="text-[#FF2A85] font-bold group-hover:underline break-words text-[10px]">@watchknight</div>
                 </div>
               </a>
 
@@ -711,7 +711,7 @@ export const Hero: React.FC<HeroProps> = ({ showCanvas = true }) => {
                 </div>
                 <div className="min-w-0">
                   <div className="text-muted text-[7px] uppercase tracking-wider font-semibold">Environment</div>
-                  <div className="text-[#FF2A85] font-bold truncate text-[10px]">Ubuntu Linux / Vite / C++</div>
+                  <div className="text-[#FF2A85] font-bold break-words text-[10px]">Ubuntu Linux / Vite / C++</div>
                 </div>
               </div>
 

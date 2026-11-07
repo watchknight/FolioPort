@@ -698,7 +698,7 @@ const CyberKnightArcade: React.FC<ArcadeProps> = ({ onExit, phosphorMode }) => {
             onClick={() => onExit(gameRef.current.score, gameRef.current.bugsPurged, gameRef.current.wave)}
             className="min-h-[38px] px-3 py-1.5 bg-[#131629] hover:bg-[#FF2A85] text-[#D6CFC2] hover:text-white border-2 border-[#2D3645] hover:border-white active:scale-95"
           >
-            [ ✕ EXIT TO SHELL ]
+            [ X EXIT TO SHELL ]
           </button>
         </div>
       </div>

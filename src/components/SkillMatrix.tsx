@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useReveal } from '../hooks/useReveal';
 import { audio } from '../utils/audio';
 import { chiptuneAudio } from '../utils/chiptuneAudio';
@@ -450,14 +450,27 @@ export const SkillMatrix: React.FC = () => {
   const [activeMobileLayer, setActiveMobileLayer] = useState<'all' | 'client' | 'server' | 'systems'>('all');
   const [activeBiosTab, setActiveBiosTab] = useState<number>(0);
   const [isBiosWiping, setIsBiosWiping] = useState<boolean>(false);
+  const wipeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (wipeTimeoutRef.current) {
+        clearTimeout(wipeTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleBiosTabSwitch = (tabIndex: number) => {
     if (activeBiosTab === tabIndex) return;
     chiptuneAudio.playPixelTick();
+    if (wipeTimeoutRef.current) {
+      clearTimeout(wipeTimeoutRef.current);
+    }
     setIsBiosWiping(true);
     setActiveBiosTab(tabIndex);
-    setTimeout(() => {
+    wipeTimeoutRef.current = setTimeout(() => {
       setIsBiosWiping(false);
+      wipeTimeoutRef.current = null;
     }, 150);
   };
 

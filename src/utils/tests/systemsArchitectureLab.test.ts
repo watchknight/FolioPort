@@ -8,6 +8,12 @@ import {
 } from '../../components/SkillMatrix';
 import { GithubLab } from '../../components/GithubLab';
 import { TerminalLab } from '../../components/TerminalLab';
+// @ts-ignore
+import fs from 'node:fs';
+// @ts-ignore
+import path from 'node:path';
+
+declare const process: any;
 
 describe('SYS.96 Systems UI Architecture Verification: SkillMatrix, GithubLab & TerminalLab', () => {
 
@@ -237,6 +243,32 @@ describe('SYS.96 Systems UI Architecture Verification: SkillMatrix, GithubLab & 
       }
 
       expect(gameOverTriggered).toBe(false);
+    });
+
+    it('verifies arcade game incorporates [ X EXIT TO SHELL ] and 0xDEAD / SIGSEGV / NULL_PTR specifications', () => {
+      const terminalLabPath = path.resolve(process.cwd(), 'src/components/TerminalLab.tsx');
+      const terminalLabCode = fs.readFileSync(terminalLabPath, 'utf-8');
+
+      // ASCII X exit button returning cleanly to shell
+      expect(terminalLabCode).toContain('[ X EXIT TO SHELL ]');
+
+      // 0xDEAD / SIGSEGV / NULL_PTR arcade invaders
+      expect(terminalLabCode).toContain("label: '0xDEAD'");
+      expect(terminalLabCode).toContain("label: 'SIGSEGV'");
+      expect(terminalLabCode).toContain("label: 'NULL_PTR'");
+    });
+
+    it('verifies typography contracts guarantee zero truncate classes across key cyberdeck views', () => {
+      const heroCode = fs.readFileSync(path.resolve(process.cwd(), 'src/components/Hero.tsx'), 'utf-8');
+      const retroWinCode = fs.readFileSync(path.resolve(process.cwd(), 'src/components/ui/RetroWindow.tsx'), 'utf-8');
+      const renderPassCode = fs.readFileSync(path.resolve(process.cwd(), 'src/components/RenderPassInspector.tsx'), 'utf-8');
+      const extensionStudioCode = fs.readFileSync(path.resolve(process.cwd(), 'src/components/ExtensionStudio.tsx'), 'utf-8');
+
+      // None of these critical headers / badges / omniboxes use truncate
+      expect(heroCode).not.toContain('truncate');
+      expect(retroWinCode).not.toContain('truncate');
+      expect(renderPassCode).not.toContain('truncate');
+      expect(extensionStudioCode).not.toContain('truncate');
     });
   });
 

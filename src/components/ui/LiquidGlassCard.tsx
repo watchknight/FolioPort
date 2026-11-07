@@ -74,7 +74,7 @@ export const LiquidGlassCard: React.FC<LiquidGlassCardProps> = ({
       {/* 90s Retro Window Top Accent Strip if title provided */}
       {title && (
         <div className="flex items-center justify-between px-3 py-1.5 bg-[#0D1512] border-b-2 border-[#2D3645] text-xs font-pixel text-[#00F0FF] select-none">
-          <span className="truncate">{title}</span>
+          <span className="break-words">{title}</span>
           <div className="flex items-center gap-1">
             <span className="w-2.5 h-2.5 bg-[#D6CFC2] border border-[#2D3645] text-[7px] text-black flex items-center justify-center">-</span>
             <span className="w-2.5 h-2.5 bg-[#D6CFC2] border border-[#2D3645] text-[7px] text-black flex items-center justify-center">+</span>

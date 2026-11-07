@@ -75,7 +75,7 @@ export const RetroWindow: React.FC<RetroWindowProps> = ({
               {tag}
             </span>
           )}
-          <span className="font-pixel text-[10px] sm:text-[11px] truncate tracking-wider">
+          <span className="font-pixel text-[10px] sm:text-[11px] break-words tracking-wider">
             {title}
           </span>
         </div>

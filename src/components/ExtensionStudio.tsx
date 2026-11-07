@@ -488,15 +488,15 @@ export const ExtensionStudio: React.FC = () => {
 
                 {/* Omnibox (Address Bar) */}
                 <div
-                  className="flex-1 flex items-center justify-between px-3 py-1 border border-[var(--crt-bezel-shadow,#2D3645)] text-xs font-mono"
+                  className="flex-1 flex items-center justify-between px-3 py-1 border border-[var(--crt-bezel-shadow,#2D3645)] text-xs font-mono min-w-0"
                   style={{ backgroundColor: 'var(--crt-phosphor-dark, #0D1512)' }}
                 >
-                  <div className="flex items-center gap-2 truncate">
+                  <div className="flex items-center gap-2 min-w-0">
                     <span className="flex items-center gap-1 text-[var(--pixel-phosphor-green,#4AF626)] font-pixel text-[8px] shrink-0">
                       <Lock className="w-2.5 h-2.5" />
                       SECURE
                     </span>
-                    <span className="text-[var(--tech-cyan-wave,#00F0FF)] select-all truncate text-[11px] sm:text-xs">
+                    <span className="text-[var(--tech-cyan-wave,#00F0FF)] select-all break-all text-[11px] sm:text-xs">
                       {omniboxUrl}
                     </span>
                   </div>

@@ -963,7 +963,7 @@ export const PixelWorkstationCRT: React.FC<PixelWorkstationCRTProps> = ({
           <div className="flex items-center justify-between px-2 py-1 bg-[#2D3645] text-[#F0EFE6] text-[10px] mb-1.5 shadow-[inset_1px_1px_0_#D6CFC2]">
             <div className="flex items-center gap-1.5 font-pixel text-[8px] sm:text-[9px]">
               <Monitor className="w-3 h-3 text-[#00F0FF]" />
-              <span className="truncate">DEV_WORKSTATION.EXE</span>
+              <span className="break-words">DEV_WORKSTATION.EXE</span>
             </div>
 
             {/* Retro [ - ] [ + ] [ x ] Controls */}

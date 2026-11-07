@@ -993,7 +993,7 @@ export const RenderPassInspector: React.FC = () => {
                         />
                       )}
 
-                      <span className="text-[10px] sm:text-xs tracking-tight uppercase font-bold leading-tight truncate">
+                      <span className="text-[10px] sm:text-xs tracking-tight uppercase font-bold leading-tight break-words">
                         {pass.label}
                       </span>
 
