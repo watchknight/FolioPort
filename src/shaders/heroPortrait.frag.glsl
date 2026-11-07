@@ -23,12 +23,12 @@ uniform float uAudioBass;
 
 varying vec2 vUv;
 
-// Neuroaesthetic Token Palette Vectors
-const vec3 C_OBSIDIAN_VOID = vec3(0.035, 0.039, 0.051); // #090A0D
-const vec3 C_SLATE_SURFACE = vec3(0.071, 0.082, 0.110); // #12151C
-const vec3 C_ALABASTER_INK = vec3(0.949, 0.937, 0.914); // #F2EFE9
-const vec3 C_TERRACOTTA     = vec3(0.722, 0.290, 0.153); // #B84A27
-const vec3 C_VERDIGRIS      = vec3(0.306, 0.604, 0.498); // #4E9A7F
+// Cyber-CRT Token Palette Vectors (WATCHKNIGHT_OS // SYS.96)
+const vec3 C_OBSIDIAN_VOID = vec3(0.027, 0.031, 0.078); // #070814 (--crt-void-bg)
+const vec3 C_SLATE_SURFACE = vec3(0.075, 0.086, 0.161); // #131629 (--crt-panel-slate)
+const vec3 C_ALABASTER_INK = vec3(0.941, 0.937, 0.902); // #F0EFE6 (--pixel-ivory-text)
+const vec3 C_TERRACOTTA     = vec3(1.0, 0.165, 0.522);   // #FF2A85 (--tech-magenta-crest)
+const vec3 C_VERDIGRIS      = vec3(0.0, 0.941, 1.0);     // #00F0FF (--tech-cyan-wave)
 
 // High-frequency pseudo-random hash generator
 float hash(vec2 p) {

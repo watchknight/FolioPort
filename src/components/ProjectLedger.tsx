@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import gsap from 'gsap';
 import { watchknightAudio } from '../audio/WatchknightAudioEngine';
+import { chiptuneAudio } from '../utils/chiptuneAudio';
 import { useReveal } from '../hooks/useReveal';
 import {
   ChevronDown,
@@ -174,6 +175,7 @@ export const ProjectLedger: React.FC = () => {
   const handleRowHover = (e: React.PointerEvent | React.MouseEvent) => {
     const normX = typeof window !== 'undefined' ? (e.clientX / window.innerWidth) * 2 - 1 : 0;
     watchknightAudio.playHoverTick(normX);
+    chiptuneAudio.playPixelTick();
   };
 
   // Toggle progressive disclosure with auditory feedback & 3D HRTF spatial panner
@@ -185,6 +187,7 @@ export const ProjectLedger: React.FC = () => {
       normY = -((e.clientY / window.innerHeight) * 2 - 1);
     }
     watchknightAudio.playSpatialClick(normX, normY, -1);
+    chiptuneAudio.playCoinSFX();
     setExpandedId((prev) => (prev === id ? null : id));
   };
 
@@ -255,18 +258,18 @@ export const ProjectLedger: React.FC = () => {
           const x = 3 + i * (barWidth + 3);
           const y = h - freqHeight - 8;
 
-          // Terracotta focal band highlights
+          // Cyber-CRT focal band highlights
           const isHighRes = i >= 8 && i <= 14;
-          ctx.fillStyle = isHighRes ? '#B84A27' : 'rgba(242, 239, 233, 0.25)';
+          ctx.fillStyle = isHighRes ? '#FF2A85' : 'rgba(240, 239, 230, 0.25)';
           ctx.fillRect(x, y, barWidth, freqHeight);
 
           // Crest vector ticks
-          ctx.fillStyle = isHighRes ? '#F2EFE9' : '#4E9A7F';
+          ctx.fillStyle = isHighRes ? '#F0EFE6' : '#4AF626';
           ctx.fillRect(x, Math.max(4, y - 3), barWidth, 1.5);
         }
       } else {
         // GLSL Render-Pass Inspector wireframe & depth buffer
-        ctx.strokeStyle = 'rgba(122, 128, 140, 0.3)';
+        ctx.strokeStyle = 'rgba(0, 240, 255, 0.2)';
         ctx.lineWidth = 1;
         for (let x = 0; x <= w; x += 32) {
           ctx.beginPath();
@@ -286,16 +289,16 @@ export const ProjectLedger: React.FC = () => {
         const boxY = h * 0.2;
         const boxW = w * 0.5;
         const boxH = h * 0.6;
-        ctx.strokeStyle = '#B84A27';
+        ctx.strokeStyle = '#00F0FF';
         ctx.lineWidth = 1.5;
         ctx.strokeRect(boxX, boxY, boxW, boxH);
 
         ctx.font = '9px monospace';
-        ctx.fillStyle = '#F2EFE9';
+        ctx.fillStyle = '#F0EFE6';
         ctx.fillText('PASS 01: COLOR_ATTACHMENT_0 (RGBA16F)', boxX + 6, boxY + 14);
-        ctx.fillStyle = '#4E9A7F';
+        ctx.fillStyle = '#4AF626';
         ctx.fillText('PASS 02: DEPTH24_STENCIL8 [VALIDATED]', boxX + 6, boxY + 28);
-        ctx.fillStyle = '#7A808C';
+        ctx.fillStyle = '#8E98AA';
         ctx.fillText(`OCCLUSION SAMPLES: ${3420 + (step % 40)}`, boxX + 6, boxY + 42);
       }
     };
@@ -460,7 +463,7 @@ export const ProjectLedger: React.FC = () => {
                       </div>
 
                       <h3
-                        className={`font-display font-black text-base sm:text-lg md:text-xl tracking-tight transition-colors truncate ${
+                        className={`font-display font-black text-base sm:text-lg md:text-xl tracking-tight transition-colors break-words leading-snug ${
                           isAnomaly
                             ? 'text-wk-alabaster-ink group-hover:text-wk-terracotta-pulse'
                             : 'text-wk-alabaster-ink'
@@ -645,7 +648,7 @@ export const ProjectLedger: React.FC = () => {
                               <span className="block text-sm sm:text-base font-bold text-wk-alabaster-ink my-0.5">
                                 {met.value}
                               </span>
-                              <span className="block text-[9px] text-wk-ash-muted/70 truncate">
+                              <span className="block text-[9px] text-wk-ash-muted/70 break-words leading-tight">
                                 {met.detail}
                               </span>
                             </div>

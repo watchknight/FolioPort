@@ -555,19 +555,16 @@ export const HeroPortrait: React.FC<HeroPortraitProps> = ({
           onPointerEnter={handlePointerEnter}
           onPointerMove={handlePointerMove}
           onPointerLeave={handlePointerLeave}
-          className="hero-portrait-frame wk-velocity-item relative aspect-[3/4] w-full h-full rounded-2xl overflow-hidden border border-white/[0.08] bg-[#12151C] shadow-editorial-card transform-gpu cursor-pointer"
-          style={{
-            boxShadow: '0 24px 64px -16px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.08)',
-          }}
+          className="hero-portrait-frame wk-velocity-item relative aspect-[3/4] w-full h-full overflow-hidden border border-white/[0.08] border-2 border-[#00F0FF] bg-[#12151C] shadow-[0_0_20px_rgba(0,240,255,0.25),2px_2px_0_0_#070814] transform-gpu cursor-pointer"
         >
           {/* BACKGROUND LAYER: Rich textured #12151C placeholder card that scale-fades in first */}
           <div
             className="hero-portrait-bg absolute inset-0 bg-[#12151C] flex flex-col justify-between p-6 pointer-events-none z-0 transform-gpu"
             style={{
               backgroundImage: `
-                radial-gradient(circle at 50% 30%, rgba(184, 74, 39, 0.12), transparent 70%),
-                linear-gradient(rgba(242, 239, 233, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(242, 239, 233, 0.03) 1px, transparent 1px)
+                radial-gradient(circle at 50% 30%, rgba(0, 240, 255, 0.15), transparent 70%),
+                linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px)
               `,
               backgroundSize: '100% 100%, 20px 20px, 20px 20px',
             }}
@@ -635,7 +632,7 @@ export const HeroPortrait: React.FC<HeroPortraitProps> = ({
             />
 
             {/* Tactical Blueprint HUD Pill in Corner */}
-            <div className="absolute top-4 left-4 pointer-events-none font-mono text-[9px] uppercase tracking-widest px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md border border-white/10 text-alabaster/90 flex items-center gap-2 shadow-sm z-20">
+            <div className="absolute top-4 left-4 pointer-events-none font-pixel text-[8px] uppercase tracking-wider px-2 py-1 border-2 border-[#2D3645] bg-[#070814]/90 backdrop-blur-md text-[#F0EFE6] flex items-center gap-2 shadow-sm z-20">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-wk-verdigris-signal opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-wk-verdigris-signal" />
@@ -644,7 +641,7 @@ export const HeroPortrait: React.FC<HeroPortraitProps> = ({
             </div>
 
             {/* Bottom subtle edge coordinate stamp */}
-            <div className="absolute bottom-4 right-4 pointer-events-none font-mono text-[9px] uppercase tracking-widest px-2 py-0.5 rounded bg-black/60 backdrop-blur-sm border border-white/10 text-white/60 z-20">
+            <div className="absolute bottom-4 right-4 pointer-events-none font-pixel text-[8px] uppercase tracking-wider px-2 py-0.5 border-2 border-[#2D3645] bg-[#070814]/90 backdrop-blur-sm text-[#00F0FF] z-20">
               SENTINEL // UTC+6
             </div>
           </div>

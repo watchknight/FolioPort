@@ -53,8 +53,8 @@ const INITIAL_NODES: Omit<CanvasNode, 'x' | 'y' | 'vx' | 'vy' | 'targetX' | 'tar
     id: 'c-cpp',
     name: 'C/C++ & OS',
     sub: 'POSIX / Memory',
-    color: '#DF6C4F',
-    glowColor: 'rgba(223, 108, 79, 0.5)',
+    color: '#00F0FF',
+    glowColor: 'rgba(0, 240, 255, 0.5)',
     baseRelX: 0.44,
     baseRelY: 0.28,
     radius: 48,
@@ -66,8 +66,8 @@ const INITIAL_NODES: Omit<CanvasNode, 'x' | 'y' | 'vx' | 'vy' | 'targetX' | 'tar
     id: 'linux',
     name: 'Linux/Bash',
     sub: 'Kernel & CLI',
-    color: '#A74024',
-    glowColor: 'rgba(167, 64, 36, 0.5)',
+    color: '#FF2A85',
+    glowColor: 'rgba(255, 42, 133, 0.5)',
     baseRelX: 0.58,
     baseRelY: 0.25,
     radius: 44,
@@ -79,8 +79,8 @@ const INITIAL_NODES: Omit<CanvasNode, 'x' | 'y' | 'vx' | 'vy' | 'targetX' | 'tar
     id: 'react-ts',
     name: 'React & TypeScript',
     sub: 'Spatial Web UI',
-    color: '#DF6C4F',
-    glowColor: 'rgba(223, 108, 79, 0.5)',
+    color: '#00F0FF',
+    glowColor: 'rgba(0, 240, 255, 0.5)',
     baseRelX: 0.44,
     baseRelY: 0.52,
     radius: 48,
@@ -92,8 +92,8 @@ const INITIAL_NODES: Omit<CanvasNode, 'x' | 'y' | 'vx' | 'vy' | 'targetX' | 'tar
     id: 'gsap',
     name: 'GSAP Motion',
     sub: 'Spatial Inertia',
-    color: '#A74024',
-    glowColor: 'rgba(167, 64, 36, 0.5)',
+    color: '#FF2A85',
+    glowColor: 'rgba(255, 42, 133, 0.5)',
     baseRelX: 0.58,
     baseRelY: 0.54,
     radius: 44,
@@ -105,8 +105,8 @@ const INITIAL_NODES: Omit<CanvasNode, 'x' | 'y' | 'vx' | 'vy' | 'targetX' | 'tar
     id: 'node-db',
     name: 'Node & Databases',
     sub: 'Distributed IPC',
-    color: '#DF6C4F',
-    glowColor: 'rgba(223, 108, 79, 0.5)',
+    color: '#00F0FF',
+    glowColor: 'rgba(0, 240, 255, 0.5)',
     baseRelX: 0.50,
     baseRelY: 0.78,
     radius: 46,
@@ -333,7 +333,7 @@ export const HeroCanvas: React.FC = () => {
           targetId: link.target,
           progress: 0,
           speed: 0.018 + Math.random() * 0.012,
-          color: Math.random() > 0.4 ? '#DF6C4F' : '#A74024',
+          color: Math.random() > 0.4 ? '#00F0FF' : '#FF2A85',
         });
       }
 
@@ -462,9 +462,9 @@ export const HeroCanvas: React.FC = () => {
           ctx.beginPath();
           ctx.arc(ripple.x, ripple.y, ripple.radius, 0, Math.PI * 2);
           ctx.lineWidth = 2.0 * ripple.opacity;
-          ctx.strokeStyle = ripple.color === '#A74024'
-            ? `rgba(167, 64, 36, ${ripple.opacity * 0.75})`
-            : `rgba(223, 108, 79, ${ripple.opacity * 0.75})`;
+          ctx.strokeStyle = ripple.color === '#FF2A85'
+            ? `rgba(255, 42, 133, ${ripple.opacity * 0.75})`
+            : `rgba(0, 240, 255, ${ripple.opacity * 0.75})`;
           ctx.stroke();
 
           // Outer secondary faint ripple glow
@@ -562,7 +562,7 @@ export const HeroCanvas: React.FC = () => {
         // A. Ambient Radial Glow Aura
         const glowRadius = node.radius * (1.6 + totalEnergy * 0.9);
         const auraGrad = ctx.createRadialGradient(node.x, node.y, node.radius * 0.5, node.x, node.y, glowRadius);
-        auraGrad.addColorStop(0, node.color === '#A74024' ? 'rgba(167, 64, 36, 0.35)' : 'rgba(223, 108, 79, 0.35)');
+        auraGrad.addColorStop(0, node.color === '#FF2A85' ? 'rgba(255, 42, 133, 0.35)' : 'rgba(0, 240, 255, 0.35)');
         auraGrad.addColorStop(1, 'transparent');
         ctx.beginPath();
         ctx.arc(node.x, node.y, glowRadius, 0, Math.PI * 2);

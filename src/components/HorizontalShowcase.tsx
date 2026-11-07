@@ -285,17 +285,17 @@ export const HorizontalShowcase: React.FC = () => {
 
           {/* Scrolly Slide Indicator & Parallax Status Pill */}
           <div className="flex items-center gap-2 sm:gap-3 font-mono text-[11px]">
-            <div className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-muted">
-              <Compass className="w-3 h-3 text-accent-coral" />
-              <span>Scroll to Traverse</span>
+            <div className="hidden md:flex items-center gap-1.5 px-3 py-1 border-2 border-[#2D3645] bg-[#131629] text-[#8E98AA] font-pixel text-[9px]">
+              <Compass className="w-3 h-3 text-[#00F0FF]" />
+              <span>SCROLL // TRAVERSE</span>
             </div>
 
-            <div className="px-3.5 py-1 rounded-full bg-obsidian-surface/90 border border-white/15 shadow-editorial-card flex items-center gap-2">
-              <span className="text-accent-coral font-bold">
+            <div className="px-3 py-1 border-2 border-[#2D3645] bg-[#131629] shadow-[0_0_10px_rgba(0,0,0,0.5)] flex items-center gap-2 font-pixel text-[10px]">
+              <span className="text-[#00F0FF] font-bold">
                 0{activeSlideIndex}
               </span>
-              <span className="text-white/20">/</span>
-              <span className="text-alabaster-dim">
+              <span className="text-[#8E98AA]">/</span>
+              <span className="text-[#F0EFE6]">
                 0{FLAGSHIP_PROJECTS.length}
               </span>
             </div>
@@ -311,22 +311,22 @@ export const HorizontalShowcase: React.FC = () => {
           style={{ width: 'fit-content' }}
         >
           {/* INTRO HERO CARD (SETTING THE ARCHITECTURAL STAGE) */}
-          <div className="showcase-item shrink-0 w-[82vw] sm:w-[68vw] lg:w-[48vw] max-w-[620px] h-full mr-6 sm:mr-8 rounded-3xl overflow-hidden bg-gradient-to-br from-[#121118]/90 via-[#0d0c12]/95 to-obsidian border border-white/15 shadow-editorial-elevated backdrop-blur-2xl">
+          <div className="showcase-item shrink-0 w-[82vw] sm:w-[68vw] lg:w-[48vw] max-w-[620px] h-full mr-6 sm:mr-8 border-2 border-[#00F0FF] overflow-hidden bg-[#131629] shadow-[0_0_25px_rgba(0,240,255,0.25)] backdrop-blur-2xl">
             <div className="showcase-inner-visual relative w-full h-full flex flex-col justify-between p-6 sm:p-8 overflow-hidden">
               
               {/* Internal Parallax Media Layer with Bleed Margins */}
               <div 
                 className="showcase-media-layer absolute -inset-x-20 -inset-y-8 pointer-events-none opacity-20"
                 style={{
-                  backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(223, 108, 79, 0.18) 0%, transparent 70%), linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px)',
+                  backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.2) 0%, transparent 70%), linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px)',
                   backgroundSize: '100% 100%, 36px 36px, 36px 36px',
                 }}
                 aria-hidden="true"
               />
 
               <div className="relative z-10 space-y-4">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/15 border border-accent/30 font-mono text-fluid-micro text-accent-coral">
-                  <Layers className="w-3.5 h-3.5" />
+                <div className="inline-flex items-center gap-2 px-3 py-1 border-2 border-[#2D3645] bg-[#070814] font-pixel text-[9px] text-[#00F0FF]">
+                  <Layers className="w-3.5 h-3.5 text-[#FF2A85]" />
                   <span>ARCHITECTURAL DOSSIER // VOL. 2026</span>
                 </div>
 
@@ -370,7 +370,7 @@ export const HorizontalShowcase: React.FC = () => {
                 if ((e.target as HTMLElement).closest('a, button')) return;
                 openCaseStudy(project, e.currentTarget);
               }}
-              className="showcase-item shrink-0 w-[88vw] sm:w-[82vw] lg:w-[74vw] max-w-[1040px] h-full mx-4 sm:mx-6 rounded-3xl overflow-hidden bg-obsidian-card/90 border border-white/15 shadow-editorial-elevated backdrop-blur-2xl flex flex-col justify-between cursor-pointer"
+              className="showcase-item shrink-0 w-[88vw] sm:w-[82vw] lg:w-[74vw] max-w-[1040px] h-full mx-4 sm:mx-6 border-2 border-[#2D3645] hover:border-[#00F0FF] overflow-hidden bg-[#131629] shadow-[0_0_25px_rgba(0,0,0,0.8)] backdrop-blur-2xl flex flex-col justify-between cursor-pointer transition-colors duration-300"
               aria-label={`Case Study: ${project.title}`}
             >
               {/* Card Inner Visual Container with Internal Parallax */}
@@ -420,7 +420,7 @@ export const HorizontalShowcase: React.FC = () => {
                       target="_blank"
                       rel="noreferrer"
                       aria-label={`GitHub repository for ${project.title}`}
-                      className="p-2 sm:p-2.5 rounded-xl bg-white/5 hover:bg-accent/20 border border-white/10 hover:border-accent text-slate-300 hover:text-alabaster transition-all active:scale-95"
+                      className="p-2 bg-[#131629] hover:bg-[#1A1F38] border-2 border-[#2D3645] hover:border-[#00F0FF] text-[#D6CFC2] hover:text-[#00F0FF] transition-all shadow-[2px_2px_0_0_#070814]"
                     >
                       <GithubIcon className="w-4 h-4" />
                     </a>
@@ -428,7 +428,7 @@ export const HorizontalShowcase: React.FC = () => {
                     <button
                       type="button"
                       onClick={(e) => openCaseStudy(project, (e.currentTarget.closest('.showcase-item') as HTMLElement) || e.currentTarget)}
-                      className="p-2 sm:p-2.5 rounded-xl bg-accent text-alabaster font-mono text-xs font-bold hover:bg-accent-coral transition-all active:scale-95 flex items-center gap-1 shadow-editorial-card"
+                      className="px-3 py-1.5 bg-[#00F0FF] text-[#070814] font-pixel text-[10px] uppercase font-bold hover:bg-[#FF2A85] hover:text-white transition-all shadow-[2px_2px_0_0_#070814] active:translate-y-0.5 flex items-center gap-1 border-2 border-white"
                       aria-label={`Open Case Study for ${project.title}`}
                     >
                       <span>Case Study</span>
@@ -445,32 +445,32 @@ export const HorizontalShowcase: React.FC = () => {
                   {/* Left Column: Deep Problem & Solution Storytelling */}
                   <div className="lg:col-span-6 space-y-3 sm:space-y-4">
                     {/* Problem Bottleneck Card */}
-                    <div className="p-3.5 sm:p-4 rounded-2xl bg-obsidian/70 border border-white/10 space-y-1.5 font-mono text-[11px]">
-                      <div className="flex items-center gap-1.5 text-accent-coral font-bold text-xs uppercase tracking-wider">
+                    <div className="p-3.5 sm:p-4 bg-[#0D1512] border-2 border-[#2D3645] shadow-[2px_2px_0_0_#070814] space-y-1.5 font-mono text-[11px]">
+                      <div className="flex items-center gap-1.5 text-[#FF2A85] font-bold text-xs uppercase tracking-wider">
                         <TerminalIcon className="w-3.5 h-3.5" />
                         <span>Problem: {project.problem.headline}</span>
                       </div>
-                      <p className="font-body text-alabaster-dim text-xs leading-relaxed">
+                      <p className="font-body text-[#D6CFC2] text-xs leading-relaxed">
                         {project.problem.description}
                       </p>
-                      <div className="text-[10px] text-muted-light pt-1 border-t border-white/5">
-                        <span className="text-accent-coral font-semibold">Bottleneck:</span> {project.problem.bottleneck}
+                      <div className="text-[10px] text-[#8E98AA] pt-1 border-t border-white/5">
+                        <span className="text-[#FF2A85] font-semibold">Bottleneck:</span> {project.problem.bottleneck}
                       </div>
                     </div>
 
                     {/* Solution Architecture Card */}
-                    <div className="p-3.5 sm:p-4 rounded-2xl bg-obsidian/70 border border-white/10 space-y-1.5 font-mono text-[11px]">
-                      <div className="flex items-center gap-1.5 text-emerald-400 font-bold text-xs uppercase tracking-wider">
+                    <div className="p-3.5 sm:p-4 bg-[#0D1512] border-2 border-[#2D3645] shadow-[2px_2px_0_0_#070814] space-y-1.5 font-mono text-[11px]">
+                      <div className="flex items-center gap-1.5 text-[#4AF626] font-bold text-xs uppercase tracking-wider">
                         <CheckCircle2 className="w-3.5 h-3.5" />
                         <span>Solution: {project.solution.headline}</span>
                       </div>
-                      <p className="font-body text-alabaster-dim text-xs leading-relaxed">
+                      <p className="font-body text-[#D6CFC2] text-xs leading-relaxed">
                         {project.solution.description}
                       </p>
-                      <ul className="space-y-1 pt-1 border-t border-white/5 text-[10px] text-alabaster-dim">
+                      <ul className="space-y-1 pt-1 border-t border-white/5 text-[10px] text-[#D6CFC2]">
                         {project.solution.architecture.slice(0, 2).map((item, aIdx) => (
                           <li key={aIdx} className="flex items-start gap-1.5">
-                            <span className="text-accent-coral mt-0.5">❯</span>
+                            <span className="text-[#00F0FF] mt-0.5">❯</span>
                             <span>{item}</span>
                           </li>
                         ))}
@@ -479,7 +479,7 @@ export const HorizontalShowcase: React.FC = () => {
                   </div>
 
                   {/* Right Column: Live Interactive Simulation Preview with Depth Parallax */}
-                  <div className="showcase-preview-box lg:col-span-6 h-[220px] sm:h-[260px] lg:h-[280px] w-full rounded-2xl overflow-hidden border border-white/10 bg-obsidian/90 shadow-editorial-card">
+                  <div className="showcase-preview-box lg:col-span-6 h-[220px] sm:h-[260px] lg:h-[280px] w-full overflow-hidden border-2 border-[#00F0FF]/40 bg-[#070814] shadow-[0_0_15px_rgba(0,240,255,0.15)]">
                     {project.previewType === 'mental-defrag' && <MentalDefragPreview />}
                     {project.previewType === 'doclens' && <DocLensBDPreview />}
                     {project.previewType === 'rannabanna' && <RannabannaPreview />}
@@ -497,9 +497,9 @@ export const HorizontalShowcase: React.FC = () => {
                   {/* 3 Authority Metrics */}
                   <div className="flex flex-wrap items-center gap-2 sm:gap-4 font-mono text-[11px]">
                     {project.impact.metrics.map((m, mIdx) => (
-                      <div key={mIdx} className="px-2.5 py-1 rounded-xl bg-white/5 border border-white/10 flex items-center gap-2">
-                        <span className="text-muted text-[10px] uppercase">{m.label}:</span>
-                        <span className="text-accent-coral font-bold">{m.value}</span>
+                      <div key={mIdx} className="px-2.5 py-1 bg-[#131629] border border-[#2D3645] flex items-center gap-2 font-mono text-[10px]">
+                        <span className="text-[#8E98AA] uppercase">{m.label}:</span>
+                        <span className="text-[#FF2A85] font-bold">{m.value}</span>
                       </div>
                     ))}
                   </div>
@@ -509,7 +509,7 @@ export const HorizontalShowcase: React.FC = () => {
                     {project.techStack.slice(0, 4).map((tech) => (
                       <span
                         key={tech}
-                        className="px-2 py-0.5 rounded-md bg-obsidian-surface border border-white/10 text-alabaster-dim"
+                        className="px-2 py-0.5 bg-[#131629] border border-[#2D3645] text-[#D6CFC2]"
                       >
                         #{tech}
                       </span>
@@ -523,42 +523,42 @@ export const HorizontalShowcase: React.FC = () => {
           ))}
 
           {/* OUTRO CALL-TO-ACTION CARD */}
-          <div className="showcase-item shrink-0 w-[80vw] sm:w-[60vw] lg:w-[42vw] max-w-[540px] h-full mx-6 rounded-3xl overflow-hidden bg-gradient-to-br from-obsidian via-[#0f0e15] to-[#160c0c] border border-white/15 shadow-editorial-elevated backdrop-blur-2xl">
+          <div className="showcase-item shrink-0 w-[80vw] sm:w-[60vw] lg:w-[42vw] max-w-[540px] h-full mx-6 overflow-hidden bg-[#131629] border-2 border-[#2D3645] shadow-[2px_2px_0_0_#070814] backdrop-blur-2xl">
             <div className="showcase-inner-visual relative w-full h-full flex flex-col justify-between p-6 sm:p-8 overflow-hidden">
               
               {/* Internal Parallax Media Layer with Bleed Margins */}
               <div 
                 className="showcase-media-layer absolute -inset-x-20 -inset-y-8 pointer-events-none opacity-20"
                 style={{
-                  backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(223, 108, 79, 0.16) 0%, transparent 70%), linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px)',
+                  backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.16) 0%, transparent 70%), linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px)',
                   backgroundSize: '100% 100%, 36px 36px, 36px 36px',
                 }}
                 aria-hidden="true"
               />
 
               <div className="relative z-10 space-y-4">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent-coral/15 border border-accent-coral/30 font-mono text-fluid-micro text-accent-coral">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#0D1512] border border-[#FF2A85]/40 font-pixel text-[9px] text-[#FF2A85]">
                   <Zap className="w-3.5 h-3.5" />
-                  <span>NEXT HORIZON // RESEARCH LAB</span>
+                  <span>&gt; NEXT HORIZON // RESEARCH LAB</span>
                 </span>
 
                 <h3 className="font-display font-black text-2xl sm:text-3xl text-alabaster uppercase leading-tight tracking-tight">
                   Inspect Open-Source <br />
-                  <span className="text-accent-coral">Low-Level Systems & Experiments</span>
+                  <span className="text-[#00F0FF]">Low-Level Systems &amp; Experiments</span>
                 </h3>
 
-                <p className="font-body text-fluid-body text-alabaster-dim leading-relaxed">
+                <p className="font-body text-fluid-body text-[#D6CFC2] leading-relaxed">
                   Continue scrolling to discover the interactive GitHub Lab, C/C++ memory primitives, SIMD JSON stream parsers, and live telemetry terminal.
                 </p>
               </div>
 
-              <div className="relative z-10 pt-6 border-t border-white/10">
+              <div className="relative z-10 pt-6 border-t border-[#2D3645]">
                 <button
                   type="button"
                   onClick={() => scrollTo('#lab', { offset: -80 })}
-                  className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl bg-accent hover:bg-accent-coral text-alabaster font-display font-black text-sm uppercase tracking-wider transition-all duration-200 shadow-editorial-card active:scale-95"
+                  className="w-full flex items-center justify-center gap-2 py-3.5 px-6 bg-[#00F0FF] text-[#070814] font-pixel text-xs tracking-wider uppercase border-2 border-white shadow-[2px_2px_0_0_#070814] hover:bg-[#FF2A85] hover:text-white active:translate-y-0.5 transition-all duration-200"
                 >
-                  <span>Enter Research Lab</span>
+                  <span>&gt; Enter Research Lab</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>

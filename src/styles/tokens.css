@@ -1,105 +1,126 @@
 /**
- * @watchknight Neuroaesthetic Design System Tokens & Editorial Ledger Architecture
+ * WATCHKNIGHT_OS // SYS.96 — Dual-Register Cyber-CRT Design System Tokens
  * 
- * Strict Token Invariants (WCAG 2.1 AAA & Chromostereopsis Protected):
- * --wk-obsidian-void:     #090A0D (Primary canvas background — 70% viewport rest zone)
- * --wk-slate-surface:     #12151C (Elevated telemetry HUD & drawer surface — 15% area)
- * --wk-alabaster-ink:     #F2EFE9 (Primary typography & 1px SVG vector rules, >= 14:1 AAA contrast)
- * --wk-ash-muted:         #7A808C (Secondary metadata, coordinates & timestamps)
- * --wk-terracotta-pulse:  #B84A27 (Strategic Von Restorff focal anomaly & CTA accent — 3% area)
- * --wk-verdigris-signal:  #4E9A7F (Active telemetry, live status & graph traversal state — 2% area)
+ * Aesthetic Paradigm: "The 1996 Cyberdeck Workstation Rendering a Real-Time 3D Volumetric Particle Engine"
+ * Developer: Abdur Rahman Moayed (@watchknight), CSE at East West University, Dhaka [23.7644° N, 90.4252° E, UTC+6]
+ *
+ * Core Token Invariants:
+ * --crt-void-bg:            #070814 (Primary 3D scene & CRT background void for additive bloom)
+ * --crt-phosphor-dark:      #0D1512 (Inner 90s CRT terminal & workstation screen fill)
+ * --crt-panel-slate:        #131629 (Elevated cyberdeck module surface)
+ * --crt-bezel-putty:        #D6CFC2 (Outer 90s monitor hardware bezel & retro titlebars)
+ * --crt-bezel-shadow:       #2D3645 (Beveled 90s hardware shadow border)
+ * --tech-cyan-wave:         #00F0FF (3D particle wave troughs, wireframe grids, and > COMMAND nav prompts)
+ * --tech-magenta-crest:     #FF2A85 (3D particle wave crests, velocity peaks, and shader badges)
+ * --pixel-phosphor-green:   #4AF626 (90s CRT [1]–[4] bracket menus, terminal stdout, and power LEDs)
+ * --pixel-amber-gold:       #FFCC00 (Arcade telemetry readouts, star counters, and cursor focal sparks)
+ * --pixel-ivory-text:       #F0EFE6 (Warm NTSC-calibrated off-white for high-contrast body text)
  */
 
 :root {
-  /* Core Neuroaesthetic Hex Tokens */
-  --wk-obsidian-void: #090A0D;
-  --wk-slate-surface: #12151C;
-  --wk-alabaster-ink: #F2EFE9;
-  --wk-ash-muted: #7A808C;
-  --wk-terracotta-pulse: #B84A27;
-  --wk-verdigris-signal: #4E9A7F;
+  /* Exact Dual-Register Cyber-CRT Color Tokens */
+  --crt-void-bg: #070814;
+  --crt-phosphor-dark: #0D1512;
+  --crt-panel-slate: #131629;
+  --crt-bezel-putty: #D6CFC2;
+  --crt-bezel-shadow: #2D3645;
+  --tech-cyan-wave: #00F0FF;
+  --tech-magenta-crest: #FF2A85;
+  --pixel-phosphor-green: #4AF626;
+  --pixel-amber-gold: #FFCC00;
+  --pixel-ivory-text: #F0EFE6;
 
-  /* RGB channels for tailwind alpha compositing */
-  --wk-obsidian-void-rgb: 9 10 13;
-  --wk-slate-surface-rgb: 18 21 28;
-  --wk-alabaster-ink-rgb: 242 239 233;
-  --wk-ash-muted-rgb: 122 128 140;
-  --wk-terracotta-pulse-rgb: 184 74 39;
-  --wk-verdigris-signal-rgb: 78 154 127;
+  /* RGB channels for alpha compositing */
+  --crt-void-bg-rgb: 7 8 20;
+  --crt-phosphor-dark-rgb: 13 21 18;
+  --crt-panel-slate-rgb: 19 22 41;
+  --crt-bezel-putty-rgb: 214 207 194;
+  --crt-bezel-shadow-rgb: 45 54 69;
+  --tech-cyan-wave-rgb: 0 240 255;
+  --tech-magenta-crest-rgb: 255 42 133;
+  --pixel-phosphor-green-rgb: 74 246 38;
+  --pixel-amber-gold-rgb: 255 204 0;
+  --pixel-ivory-text-rgb: 240 239 230;
 
-  /* Editorial Ledger Baseline Aliases */
-  --bg-obsidian: var(--wk-obsidian-void);
-  --bg-surface: var(--wk-slate-surface);
-  --bg-card: #161922;
-  --bg-elevated: #1E232E;
-  --surface-alabaster: var(--wk-alabaster-ink);
-  --text-muted: var(--wk-ash-muted);
-  --accent-rust: var(--wk-terracotta-pulse);
-  --accent-coral: var(--wk-terracotta-pulse);
-  --accent-verdigris: var(--wk-verdigris-signal);
-  --border-editorial: rgba(242, 239, 233, 0.08);
+  /* Forward-compatible component aliases mapped to Cyber-CRT palette */
+  --wk-obsidian-void: var(--crt-void-bg);
+  --wk-slate-surface: var(--crt-panel-slate);
+  --wk-alabaster-ink: var(--pixel-ivory-text);
+  --wk-ash-muted: #8E98AA;
+  --wk-terracotta-pulse: var(--tech-magenta-crest);
+  --wk-verdigris-signal: var(--pixel-phosphor-green);
 
-  /* Chromostereopsis Buffer Invariant:
-     Terracotta accent is buffered with neutral borders (#090A0D or #F2EFE9)
-     and guaranteed >= 35 L* perceptual lightness delta against dark void/slate */
-  --wk-neutral-buffer-dark: #090A0D;
-  --wk-neutral-buffer-light: #F2EFE9;
-  --wk-terracotta-delta-l: 38.5; /* L* 45.87 vs Slate L* 7.32 = 38.55 >= 35 */
+  --wk-obsidian-void-rgb: var(--crt-void-bg-rgb);
+  --wk-slate-surface-rgb: var(--crt-panel-slate-rgb);
+  --wk-alabaster-ink-rgb: var(--pixel-ivory-text-rgb);
+  --wk-ash-muted-rgb: 142 152 170;
+  --wk-terracotta-pulse-rgb: var(--tech-magenta-crest-rgb);
+  --wk-verdigris-signal-rgb: var(--pixel-phosphor-green-rgb);
+
+  /* Editorial Ledger Baseline Aliases mapped to SYS.96 */
+  --bg-obsidian: var(--crt-void-bg);
+  --bg-surface: var(--crt-phosphor-dark);
+  --bg-card: var(--crt-panel-slate);
+  --bg-elevated: #1A1F38;
+  --surface-alabaster: var(--pixel-ivory-text);
+  --text-muted: #8E98AA;
+  --accent-rust: var(--tech-magenta-crest);
+  --accent-coral: var(--tech-magenta-crest);
+  --accent-verdigris: var(--pixel-phosphor-green);
+  --border-editorial: rgba(0, 240, 255, 0.18);
+
+  --wk-neutral-buffer-dark: var(--crt-void-bg);
+  --wk-neutral-buffer-light: var(--pixel-ivory-text);
+
+  /* 90s CRT Hardware Bevel & Shadow Geometry */
+  --bevel-light: #F5EFEB;
+  --bevel-dark: #121620;
+  --bevel-mid: var(--crt-bezel-shadow);
+  --pixel-border-width: 2px;
 }
 
-/* Kanizsa Geometry Corner Crosshairs (1px SVG optical illusions) */
-.kanizsa-container {
-  position: relative;
+/* 90s Retro OS 2px Inset and Outset Bevel Borders */
+.retro-bevel-outset {
+  border-width: 2px;
+  border-style: solid;
+  border-color: var(--bevel-light) var(--bevel-dark) var(--bevel-dark) var(--bevel-light);
 }
 
-.kanizsa-crosshair {
-  position: absolute;
-  width: 9px;
-  height: 9px;
-  pointer-events: none;
-  z-index: 10;
-  color: var(--wk-ash-muted);
-  opacity: 0.45;
-  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+.retro-bevel-inset {
+  border-width: 2px;
+  border-style: solid;
+  border-color: var(--bevel-dark) var(--bevel-light) var(--bevel-light) var(--bevel-dark);
 }
 
-.kanizsa-container:hover .kanizsa-crosshair {
-  opacity: 0.95;
-  color: var(--wk-alabaster-ink);
+.retro-cyber-border {
+  border: 2px solid var(--tech-cyan-wave);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.25), inset 0 0 8px rgba(0, 240, 255, 0.1);
 }
 
-.kanizsa-tl { top: -4.5px; left: -4.5px; }
-.kanizsa-tr { top: -4.5px; right: -4.5px; }
-.kanizsa-bl { bottom: -4.5px; left: -4.5px; }
-.kanizsa-br { bottom: -4.5px; right: -4.5px; }
+.retro-magenta-border {
+  border: 2px solid var(--tech-magenta-crest);
+  box-shadow: 0 0 10px rgba(255, 42, 133, 0.25), inset 0 0 8px rgba(255, 42, 133, 0.1);
+}
+
+.retro-bezel-border {
+  border: 2px solid var(--crt-bezel-shadow);
+  box-shadow: inset 1px 1px 0 rgba(214, 207, 194, 0.35), inset -1px -1px 0 rgba(0, 0, 0, 0.6);
+}
 
 /* 1px SVG Data-Draw Rules */
 .wk-rule-h {
   width: 100%;
   height: 1px;
-  background-color: rgba(242, 239, 233, 0.08);
+  background-color: rgba(0, 240, 255, 0.18);
 }
 
 .wk-rule-v {
   width: 1px;
   height: 100%;
-  background-color: rgba(242, 239, 233, 0.08);
+  background-color: rgba(0, 240, 255, 0.18);
 }
 
-/* Von Restorff Strategic Anomaly Frame:
-   Breaks horizontal grid alignment with protruding --wk-terracotta-pulse accent border
-   buffered by neutral obsidian void (#090A0D) to eliminate chromostereopsis */
-.von-restorff-frame {
-  position: relative;
-  box-shadow: 
-    0 0 0 1px var(--wk-neutral-buffer-dark),
-    0 0 0 2px var(--wk-terracotta-pulse),
-    0 20px 48px -12px rgba(184, 74, 39, 0.18);
-}
-
-/* Zero-Jank Velocity Skew Isolation:
-   Isolates GPU-composited transform properties so CSS transition rules
-   never conflict or interpolate against GSAP quickSetter RAF skew ticks */
+/* Zero-Jank Velocity Skew Isolation */
 .wk-velocity-item {
   will-change: transform;
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow !important;

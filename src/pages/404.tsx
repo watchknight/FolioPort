@@ -381,9 +381,9 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
           new THREE.Float32BufferAttribute(gearVertices, 3)
         );
         const gearMaterial = new THREE.LineBasicMaterial({
-          color: 0xb84a27,
+          color: 0xff2a85,
           transparent: true,
-          opacity: 0.45,
+          opacity: 0.55,
         });
         gearMesh = new THREE.LineSegments(gearGeom, gearMaterial);
         scene.add(gearMesh);
@@ -408,9 +408,9 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
           );
 
           const tickMat = new THREE.LineBasicMaterial({
-            color: isBroken ? 0xb84a27 : 0x7a808c,
+            color: isBroken ? 0xff2a85 : 0x00f0ff,
             transparent: true,
-            opacity: isBroken ? 0.8 : 0.4,
+            opacity: isBroken ? 0.9 : 0.45,
           });
 
           ticksGroup.add(new THREE.LineSegments(tickGeom, tickMat));
@@ -423,9 +423,9 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
         const positions = new Float32Array(particleCount * 3);
         const colors = new Float32Array(particleCount * 3);
 
-        const colorTerracotta = new THREE.Color(0xb84a27);
-        const colorVerdigris = new THREE.Color(0x4e9a7f);
-        const colorAlabaster = new THREE.Color(0xf2efe9);
+        const colorMagenta = new THREE.Color(0xff2a85);
+        const colorCyan = new THREE.Color(0x00f0ff);
+        const colorIvory = new THREE.Color(0xf0efe6);
 
         for (let p = 0; p < particleCount; p++) {
           const pAngle = Math.random() * Math.PI * 2;
@@ -436,10 +436,10 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
 
           const chosenColor =
             p % 4 === 0
-              ? colorTerracotta
+              ? colorMagenta
               : p % 4 === 1
-              ? colorVerdigris
-              : colorAlabaster;
+              ? colorCyan
+              : colorIvory;
           colors[p * 3] = chosenColor.r;
           colors[p * 3 + 1] = chosenColor.g;
           colors[p * 3 + 2] = chosenColor.b;
@@ -513,7 +513,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
         // Draw Broken Dial Ring
         ctx.beginPath();
         ctx.arc(0, 0, 130, 0, Math.PI * 1.85); // Fractured gap
-        ctx.strokeStyle = solved ? '#4E9A7F' : '#B84A27';
+        ctx.strokeStyle = solved ? '#4AF626' : '#FF2A85';
         ctx.lineWidth = 1.5;
         ctx.globalAlpha = 0.4;
         ctx.stroke();
@@ -552,10 +552,10 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
 
   return (
     <div
-      className="min-h-screen w-full relative flex flex-col justify-between items-center p-4 sm:p-8 md:p-12 overflow-x-hidden selection:bg-[#B84A27] selection:text-[#F2EFE9]"
+      className="min-h-screen w-full relative flex flex-col justify-between items-center p-4 sm:p-8 md:p-12 overflow-x-hidden selection:bg-[#FF2A85] selection:text-[#F0EFE6]"
       style={{
-        backgroundColor: 'var(--wk-obsidian-void, #090A0D)',
-        color: 'var(--wk-alabaster-ink, #F2EFE9)',
+        backgroundColor: 'var(--crt-void-bg, #070814)',
+        color: 'var(--pixel-ivory-text, #F0EFE6)',
       }}
     >
       {/* Background Architectural Noise & Fine Grid */}
@@ -563,7 +563,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
         className="absolute inset-0 pointer-events-none opacity-20"
         style={{
           backgroundImage:
-            'radial-gradient(circle at 1px 1px, rgba(242, 239, 233, 0.12) 1px, transparent 0)',
+            'radial-gradient(circle at 1px 1px, rgba(0, 240, 255, 0.15) 1px, transparent 0)',
           backgroundSize: '32px 32px',
         }}
         aria-hidden="true"
@@ -575,13 +575,12 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
       </div>
 
       {/* Top Telemetry Header */}
-      <header className="relative z-10 w-full max-w-4xl flex items-center justify-between border-b border-white/10 pb-4">
+      <header className="relative z-10 w-full max-w-4xl flex items-center justify-between border-b-2 border-[#2D3645] pb-4">
         <div className="flex items-center gap-3">
           <span
-            className="w-2.5 h-2.5 rounded-full animate-ping motion-reduce:animate-none"
-            style={{ backgroundColor: 'var(--wk-terracotta-pulse, #B84A27)' }}
+            className="w-2.5 h-2.5 bg-[#FF2A85] animate-ping motion-reduce:animate-none"
           />
-          <span className="font-mono text-fluid-micro uppercase tracking-widest text-[#7A808C]">
+          <span className="font-pixel text-[9px] uppercase tracking-wider text-[#00F0FF]">
             NODE 404 // BROKEN CHRONOMETER SECTOR
           </span>
         </div>
@@ -589,21 +588,21 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
         <div className="flex items-center gap-3">
           <button
             onClick={() => audioEngine.toggleMute()}
-            className="p-2 rounded border border-white/10 text-[#7A808C] hover:text-[#F2EFE9] hover:border-white/20 transition-colors focus:outline-none focus:ring-1 focus:ring-[#4E9A7F]"
+            className="p-2 border-2 border-[#2D3645] bg-[#131629] text-[#8E98AA] hover:text-[#00F0FF] hover:border-[#00F0FF] transition-colors focus:outline-none"
             aria-label={audioEngine.isAudioMuted() ? 'Unmute Audio Engine' : 'Mute Audio Engine'}
           >
             {audioEngine.isAudioMuted() ? (
               <VolumeX className="w-4 h-4" />
             ) : (
-              <Volume2 className="w-4 h-4" />
+              <Volume2 className="w-4 h-4 text-[#4AF626]" />
             )}
           </button>
 
           <button
             onClick={handleReturnHome}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded border border-white/15 bg-[#12151C] text-xs font-mono uppercase tracking-wider text-[#F2EFE9] hover:border-[#B84A27] hover:text-[#B84A27] transition-colors focus:outline-none focus:ring-1 focus:ring-[#B84A27]"
+            className="inline-flex items-center gap-2 px-3 py-1.5 border-2 border-[#2D3645] bg-[#131629] text-xs font-pixel text-[9px] uppercase tracking-wider text-[#00F0FF] hover:border-[#00F0FF] hover:bg-[#070814] transition-colors focus:outline-none"
           >
-            <Home className="w-3.5 h-3.5" />
+            <Home className="w-3.5 h-3.5 text-[#00F0FF]" />
             <span>Return to Home</span>
           </button>
         </div>
@@ -613,55 +612,55 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
       <main className="relative z-10 w-full max-w-4xl flex flex-col items-center my-auto py-8">
         {/* Narrative & Error Code Headline */}
         <div className="text-center mb-6">
-          <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-[#B84A27] mb-2 px-2.5 py-1 rounded bg-[#B84A27]/10 border border-[#B84A27]/30">
+          <div className="inline-flex items-center gap-2 text-xs font-pixel text-[9px] uppercase tracking-wider text-[#FF2A85] mb-2 px-2.5 py-1 border-2 border-[#FF2A85]/40 bg-[#FF2A85]/10">
             <AlertTriangle className="w-3.5 h-3.5" />
             <span>TEMPORAL SECTOR FAULT // 404</span>
           </div>
 
-          <h1 className="font-display font-extrabold text-3xl sm:text-5xl md:text-6xl tracking-tight text-[#F2EFE9]">
+          <h1 className="font-display font-extrabold text-3xl sm:text-5xl md:text-6xl tracking-tight text-[#F0EFE6]">
             Unreachable Sector in the Watchtower
           </h1>
 
-          <p className="mt-3 text-sm sm:text-base text-[#7A808C] max-w-xl mx-auto leading-relaxed">
+          <p className="mt-3 text-sm sm:text-base text-[#8E98AA] max-w-xl mx-auto leading-relaxed">
             The chronometric sentinel lattice has fractured. Execute valid{' '}
-            <span className="text-[#F2EFE9] font-mono font-semibold">
+            <span className="text-[#00F0FF] font-mono font-semibold">
               Knight Graph Jumps
             </span>{' '}
             (|dx|=1, |dy|=2 or |dx|=2, |dy|=1) to reconnect Sector Alpha in exactly{' '}
-            <span className="text-[#4E9A7F] font-mono font-bold">3 moves</span>.
+            <span className="text-[#4AF626] font-mono font-bold">3 moves</span>.
           </p>
         </div>
 
         {/* Puzzle Status Ledger HUD */}
-        <div className="w-full max-w-md grid grid-cols-3 gap-2 p-2 mb-4 rounded bg-[#12151C] border border-white/10 text-center font-mono text-xs">
+        <div className="w-full max-w-md grid grid-cols-3 gap-2 p-2 mb-4 border-2 border-[#2D3645] bg-[#131629] text-center font-mono text-xs">
           <div>
-            <span className="text-[#7A808C] block text-[10px] uppercase">Origin Node</span>
-            <span className="text-[#F2EFE9] font-bold">
+            <span className="text-[#8E98AA] block text-[10px] uppercase font-pixel text-[8px]">Origin Node</span>
+            <span className="text-[#F0EFE6] font-bold">
               {COL_LABELS[puzzle.start.x]}
               {ROW_LABELS[puzzle.start.y]}
             </span>
           </div>
           <div>
-            <span className="text-[#7A808C] block text-[10px] uppercase">Moves Taken</span>
+            <span className="text-[#8E98AA] block text-[10px] uppercase font-pixel text-[8px]">Moves Taken</span>
             <span
               className="font-bold text-sm"
               style={{
                 color:
                   visitedPath.length - 1 === 3 && isSolved
-                    ? 'var(--wk-verdigris-signal, #4E9A7F)'
+                    ? 'var(--pixel-phosphor-green, #4AF626)'
                     : visitedPath.length - 1 >= 3
-                    ? 'var(--wk-terracotta-pulse, #B84A27)'
-                    : 'var(--wk-alabaster-ink, #F2EFE9)',
+                    ? 'var(--tech-magenta-crest, #FF2A85)'
+                    : 'var(--pixel-ivory-text, #F0EFE6)',
               }}
             >
               {`${visitedPath.length - 1} / 3`}
             </span>
           </div>
           <div>
-            <span className="text-[#7A808C] block text-[10px] uppercase">Target Sector</span>
+            <span className="text-[#8E98AA] block text-[10px] uppercase font-pixel text-[8px]">Target Sector</span>
             <span
               className="font-bold animate-pulse motion-reduce:animate-none"
-              style={{ color: 'var(--wk-terracotta-pulse, #B84A27)' }}
+              style={{ color: 'var(--tech-magenta-crest, #FF2A85)' }}
             >
               {COL_LABELS[puzzle.target.x]}
               {ROW_LABELS[puzzle.target.y]}
@@ -672,7 +671,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
         {/* Invalid Notice / Quota Exceeded Banner */}
         {invalidNotice && (
           <div
-            className="mb-4 px-3 py-1.5 rounded text-xs font-mono text-[#B84A27] bg-[#B84A27]/10 border border-[#B84A27]/30 flex items-center gap-2"
+            className="mb-4 px-3 py-1.5 border-2 border-[#FF2A85] text-xs font-mono text-[#FF2A85] bg-[#FF2A85]/10 flex items-center gap-2"
             role="alert"
           >
             <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
@@ -683,10 +682,10 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
         {/* Success Banner */}
         {isSolved && (
           <div
-            className="mb-4 px-4 py-2 rounded text-xs sm:text-sm font-mono text-[#4E9A7F] bg-[#4E9A7F]/10 border border-[#4E9A7F]/40 flex items-center gap-2.5 animate-bounce motion-reduce:animate-none"
+            className="mb-4 px-4 py-2 border-2 border-[#4AF626] text-xs sm:text-sm font-mono text-[#4AF626] bg-[#0D1512] flex items-center gap-2.5 animate-bounce motion-reduce:animate-none"
             role="status"
           >
-            <CheckCircle2 className="w-4 h-4 shrink-0 text-[#4E9A7F]" />
+            <CheckCircle2 className="w-4 h-4 shrink-0 text-[#4AF626]" />
             <span className="font-semibold">
               SECTOR REPAIRED // Solved in exactly 3 moves! Smoothly transitioning back to Sector Alpha...
             </span>
@@ -696,7 +695,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
         {/* 5x5 Knight's Tour Chessboard Container with Ambient WebGL Broken Chronometer */}
         <div
           ref={boardRef}
-          className="relative p-3 sm:p-5 rounded-lg border border-white/15 bg-[#12151C]/90 shadow-2xl backdrop-blur-md select-none overflow-hidden"
+          className="relative p-3 sm:p-5 border-2 border-[#2D3645] bg-[#131629]/90 shadow-2xl backdrop-blur-md select-none overflow-hidden"
         >
           {/* Ambient WebGL Broken Chronometer Canvas */}
           <canvas
@@ -706,7 +705,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
           />
 
           {/* Top Column Coordinates (A to E) */}
-          <div className="relative z-10 grid grid-cols-5 gap-2 mb-2 px-1 text-center font-mono text-xs text-[#7A808C]">
+          <div className="relative z-10 grid grid-cols-5 gap-2 mb-2 px-1 text-center font-mono text-xs text-[#8E98AA]">
             {COL_LABELS.map((col) => (
               <div key={col}>{col}</div>
             ))}
@@ -731,7 +730,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
                 </filter>
               </defs>
 
-              {/* Render glowing --wk-verdigris-signal edges for visited graph transitions */}
+              {/* Render glowing --pixel-phosphor-green edges for visited graph transitions */}
               {edges.map((edge, idx) => {
                 const x1 = (edge.from.x + 0.5) * 100;
                 const y1 = (edge.from.y + 0.5) * 100;
@@ -746,7 +745,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
                       y1={y1}
                       x2={x2}
                       y2={y2}
-                      stroke="var(--wk-verdigris-signal, #4E9A7F)"
+                      stroke="var(--pixel-phosphor-green, #4AF626)"
                       strokeWidth="5"
                       strokeOpacity="0.4"
                       strokeLinecap="round"
@@ -757,7 +756,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
                       y1={y1}
                       x2={x2}
                       y2={y2}
-                      stroke="var(--wk-verdigris-signal, #4E9A7F)"
+                      stroke="var(--pixel-phosphor-green, #4AF626)"
                       strokeWidth="2.5"
                       strokeLinecap="round"
                       filter="url(#verdigris-glow)"
@@ -775,7 +774,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
                     y1={(currentPos.y + 0.5) * 100}
                     x2={(hoveredSquare.x + 0.5) * 100}
                     y2={(hoveredSquare.y + 0.5) * 100}
-                    stroke="var(--wk-verdigris-signal, #4E9A7F)"
+                    stroke="var(--pixel-phosphor-green, #4AF626)"
                     strokeWidth="2"
                     strokeDasharray="6 4"
                     strokeOpacity="0.8"
@@ -820,11 +819,11 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
                           ? ', Valid knight move available'
                           : ''
                       }`}
-                      className={`relative flex items-center justify-center rounded transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#4E9A7F] ${
-                        isDarkSquare ? 'bg-[#090A0D]/75' : 'bg-[#181D26]/75'
+                      className={`relative flex items-center justify-center transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#4AF626] ${
+                        isDarkSquare ? 'bg-[#070814]/85' : 'bg-[#131629]/85'
                       } ${
                         isValidCandidate && !isSolved
-                          ? 'border border-[#4E9A7F]/60 cursor-pointer shadow-[0_0_12px_rgba(78,154,127,0.25)] hover:bg-[#4E9A7F]/15'
+                          ? 'border-2 border-[#4AF626]/80 cursor-pointer shadow-[0_0_12px_rgba(74,246,38,0.35)] hover:bg-[#4AF626]/20'
                           : 'border border-white/5 cursor-default'
                       }`}
                     >
@@ -836,10 +835,10 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
                       {/* Visited Node Marker */}
                       {isVisited && !isCurrent && (
                         <div
-                          className="w-2.5 h-2.5 rounded-full z-10"
+                          className="w-2.5 h-2.5 z-10"
                           style={{
-                            backgroundColor: 'var(--wk-verdigris-signal, #4E9A7F)',
-                            boxShadow: '0 0 8px #4E9A7F',
+                            backgroundColor: 'var(--pixel-phosphor-green, #4AF626)',
+                            boxShadow: '0 0 8px #4AF626',
                           }}
                         />
                       )}
@@ -848,12 +847,12 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
                       {isTarget && !isCurrent && (
                         <div className="relative flex items-center justify-center z-10">
                           <span
-                            className="absolute w-6 h-6 rounded-full animate-ping opacity-75 motion-reduce:animate-none"
-                            style={{ backgroundColor: 'var(--wk-terracotta-pulse, #B84A27)' }}
+                            className="absolute w-6 h-6 animate-ping opacity-75 motion-reduce:animate-none"
+                            style={{ backgroundColor: 'var(--tech-magenta-crest, #FF2A85)' }}
                           />
                           <span
-                            className="w-3.5 h-3.5 rounded-full border-2 border-[#F2EFE9]"
-                            style={{ backgroundColor: 'var(--wk-terracotta-pulse, #B84A27)' }}
+                            className="w-3.5 h-3.5 border-2 border-[#F0EFE6]"
+                            style={{ backgroundColor: 'var(--tech-magenta-crest, #FF2A85)' }}
                           />
                         </div>
                       )}
@@ -865,16 +864,16 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
                           className="relative flex items-center justify-center z-30"
                         >
                           <div
-                            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center border-2 border-[#F2EFE9] shadow-lg"
+                            className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center border-2 border-[#F0EFE6] shadow-lg"
                             style={{
                               backgroundColor: isSolved
-                                ? 'var(--wk-verdigris-signal, #4E9A7F)'
-                                : 'var(--wk-terracotta-pulse, #B84A27)',
+                                ? 'var(--pixel-phosphor-green, #4AF626)'
+                                : 'var(--tech-magenta-crest, #FF2A85)',
                             }}
                           >
                             {/* Stylized Knight SVG glyph */}
                             <svg
-                              className="w-5 h-5 sm:w-6 sm:h-6 text-[#F2EFE9]"
+                              className="w-5 h-5 sm:w-6 sm:h-6 text-[#F0EFE6]"
                               viewBox="0 0 24 24"
                               fill="currentColor"
                             >
@@ -887,8 +886,8 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
                       {/* Valid Jump Target Beacon ring */}
                       {isValidCandidate && !isCurrent && !isSolved && (
                         <span
-                          className="absolute w-2 h-2 rounded-full animate-pulse motion-reduce:animate-none"
-                          style={{ backgroundColor: 'var(--wk-verdigris-signal, #4E9A7F)' }}
+                          className="absolute w-2 h-2 animate-pulse motion-reduce:animate-none"
+                          style={{ backgroundColor: 'var(--pixel-phosphor-green, #4AF626)' }}
                         />
                       )}
                     </button>
@@ -904,7 +903,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
           <button
             onClick={handleUndo}
             disabled={visitedPath.length <= 1 || isSolved || isTransitioningHome}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded border border-white/10 text-xs font-mono uppercase tracking-wider text-[#7A808C] hover:text-[#F2EFE9] hover:border-white/25 transition-colors focus:outline-none focus:ring-1 focus:ring-[#4E9A7F] disabled:opacity-40 disabled:cursor-not-allowed"
+            className="inline-flex items-center gap-2 px-3 py-1.5 border-2 border-[#2D3645] bg-[#131629] text-xs font-pixel text-[9px] uppercase tracking-wider text-[#8E98AA] hover:text-[#00F0FF] hover:border-[#00F0FF] transition-colors focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <Undo2 className="w-3.5 h-3.5" />
             <span>Undo Step</span>
@@ -912,7 +911,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
 
           <button
             onClick={handleReset}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded border border-white/10 text-xs font-mono uppercase tracking-wider text-[#7A808C] hover:text-[#F2EFE9] hover:border-white/25 transition-colors focus:outline-none focus:ring-1 focus:ring-[#4E9A7F]"
+            className="inline-flex items-center gap-2 px-3 py-1.5 border-2 border-[#2D3645] bg-[#131629] text-xs font-pixel text-[9px] uppercase tracking-wider text-[#8E98AA] hover:text-[#00F0FF] hover:border-[#00F0FF] transition-colors focus:outline-none"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Reset Path</span>
@@ -920,7 +919,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
 
           <button
             onClick={handleReturnHome}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded font-mono text-xs uppercase tracking-wider font-semibold border border-[#4E9A7F] text-[#4E9A7F] hover:bg-[#4E9A7F] hover:text-[#090A0D] transition-colors focus:outline-none focus:ring-2 focus:ring-[#4E9A7F]"
+            className="inline-flex items-center gap-2 px-4 py-1.5 font-pixel text-[9px] uppercase tracking-wider font-semibold border-2 border-[#4AF626] text-[#4AF626] bg-[#0D1512] hover:bg-[#4AF626] hover:text-[#070814] transition-colors focus:outline-none"
           >
             <Home className="w-3.5 h-3.5" />
             <span>Bypass to Home Route</span>
@@ -933,20 +932,20 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
         className="relative z-10 w-full max-w-4xl border-t border-white/10 pt-6 mt-4"
         aria-label="Node 404 Sector Telemetry and Directory"
       >
-        <div className="text-[#7A808C] font-mono text-xs space-y-3">
-          <h2 className="text-sm font-semibold text-[#F2EFE9] uppercase tracking-wider">
+        <div className="text-[#8E98AA] font-mono text-xs space-y-3">
+          <h2 className="text-sm font-semibold text-[#F0EFE6] uppercase tracking-wider">
             Sector 404 Telemetry & Chronometric Directory
           </h2>
           <p className="leading-relaxed">
             You have accessed an unmapped temporal sector within the{' '}
-            <strong className="text-[#F2EFE9]">@watchknight</strong> portfolio runtime. The
+            <strong className="text-[#F0EFE6]">@watchknight</strong> portfolio runtime. The
             interactive 5x5 chessboard above simulates an algorithmic graph traversal puzzle
             governed by standard chess knight jumps: every move must span strictly two squares in
             one dimension and one square in the orthogonal dimension.
           </p>
 
           <nav aria-label="Portfolio Flagship Sectors" className="pt-2">
-            <span className="block text-[#F2EFE9] font-medium mb-1.5">
+            <span className="block text-[#F0EFE6] font-medium mb-1.5">
               Available Direct Routes:
             </span>
             <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 text-[11px]">
@@ -957,7 +956,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
                     e.preventDefault();
                     handleReturnHome();
                   }}
-                  className="inline-flex items-center gap-1.5 text-[#4E9A7F] hover:underline"
+                  className="inline-flex items-center gap-1.5 text-[#00F0FF] hover:underline"
                 >
                   <ExternalLink className="w-3 h-3" />
                   <span>01: Mental Defrag</span>
@@ -970,7 +969,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
                     e.preventDefault();
                     handleReturnHome();
                   }}
-                  className="inline-flex items-center gap-1.5 text-[#4E9A7F] hover:underline"
+                  className="inline-flex items-center gap-1.5 text-[#00F0FF] hover:underline"
                 >
                   <ExternalLink className="w-3 h-3" />
                   <span>02: DocLensBD</span>
@@ -983,7 +982,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
                     e.preventDefault();
                     handleReturnHome();
                   }}
-                  className="inline-flex items-center gap-1.5 text-[#4E9A7F] hover:underline"
+                  className="inline-flex items-center gap-1.5 text-[#00F0FF] hover:underline"
                 >
                   <ExternalLink className="w-3 h-3" />
                   <span>03: Trash Trail & Aether-GL</span>
@@ -996,7 +995,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
                     e.preventDefault();
                     handleReturnHome();
                   }}
-                  className="inline-flex items-center gap-1.5 text-[#4E9A7F] hover:underline"
+                  className="inline-flex items-center gap-1.5 text-[#00F0FF] hover:underline"
                 >
                   <ExternalLink className="w-3 h-3" />
                   <span>04: Rannabanna & Neon Vanguard</span>
@@ -1008,9 +1007,9 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
       </section>
 
       {/* Footer Colophon */}
-      <footer className="relative z-10 w-full max-w-4xl border-t border-white/10 pt-4 mt-6 flex flex-col sm:flex-row items-center justify-between text-[#7A808C] font-mono text-fluid-micro gap-2">
+      <footer className="relative z-10 w-full max-w-4xl border-t border-white/10 pt-4 mt-6 flex flex-col sm:flex-row items-center justify-between text-[#8E98AA] font-mono text-fluid-micro gap-2">
         <div className="flex items-center gap-2">
-          <Compass className="w-3.5 h-3.5 text-[#B84A27]" />
+          <Compass className="w-3.5 h-3.5 text-[#FF2A85]" />
           <span>EST. EAST WEST UNIVERSITY // CSE DEPT // 23.7644° N, 90.4252° E</span>
         </div>
         <div>

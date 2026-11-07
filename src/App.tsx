@@ -6,13 +6,11 @@ import { TransitionProvider } from './context/TransitionContext';
 import { CaseStudyView } from './components/case-study/CaseStudyView';
 import { Preloader } from './components/Preloader';
 import { CustomCursor } from './components/cursor/CustomCursor';
-import { SentinelHUD } from './components/SentinelHUD';
+import { RetroCommandBar } from './components/navigation/RetroCommandBar';
+import { CRTViewportShell } from './components/CRTViewportShell';
 import { Hero } from './components/Hero';
-import { About } from './components/About';
-import { RenderPassInspector } from './components/RenderPassInspector';
-import { HorizontalShowcase } from './components/HorizontalShowcase';
-import { ProjectLedger } from './components/ProjectLedger';
 import { ProjectsShowcase } from './components/ProjectsShowcase';
+import { ExtensionStudio } from './components/ExtensionStudio';
 import { Experience } from './components/Experience';
 import { GithubLab } from './components/GithubLab';
 import { SkillMatrix } from './components/SkillMatrix';
@@ -20,6 +18,8 @@ import { TerminalLab } from './components/TerminalLab';
 import { ContactFooter } from './components/ContactFooter';
 import { SceneManager } from './webgl/SceneManager';
 import { NotFoundPage } from './pages/404';
+import { CyberWaveCanvas } from './components/CyberWaveCanvas';
+import { ShutterSectionStack, ShutterLayer } from './components/ShutterSectionStack';
 
 export const App: React.FC = () => {
   const [is404, setIs404] = React.useState<boolean>(() => {
@@ -151,41 +151,99 @@ export const App: React.FC = () => {
             </svg>
           </div>
 
-          {/* Deep Obsidian Background (#0A0A0A) with subtle editorial noise grid */}
-          <div className="relative min-h-screen bg-obsidian text-alabaster selection:bg-accent selection:text-alabaster overflow-hidden bg-grid-subtle">
-            
-            {/* Fitts' & Hick's Law Sentinel HUD Navigation */}
-            <SentinelHUD />
+          {/* 90s CRT Monitor Viewport Shell with Hardware Bezel, Scanlines & Live FX Switch */}
+          <CRTViewportShell>
+            {/* Top Terminal Command Bar (> [01] PROJECTS, > [02] SKILLS, etc.) */}
+            <RetroCommandBar />
 
-            {/* Core Layout Content: z-index: 2 and solid background acting as theatrical curtain stage */}
+            {/* Persistent Hardware-Accelerated 3D Cyberdeck Wave WebGL Canvas (Waypoints across Sectors 01 - 05) */}
+            <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
+              <CyberWaveCanvas className="w-full h-full" enableScrollWaypoints={true} />
+            </div>
+
+            {/* Core Layout Content: z-index: 2 and transparent background */}
             <main
-              className="relative z-[2] transition-colors flex flex-col"
-              style={{ background: 'var(--bg-surface, #121212)' }}
+              className="relative z-[2] transition-colors flex flex-col bg-transparent"
             >
-              <Hero />
-              {/* Editorial Ledger About Section with drawn rules, numeric stat counters, and capability columns */}
-              <About />
-              {/* Interactive 3D Shader and Render-Pass Inspector embedded in the hero-to-showcase bridge */}
-              <RenderPassInspector />
-              {/* Dual-Mode Showcase: Pinned Horizontal Scrollytelling Reel + Editorial Serial Ledger + Flagship Deep-Dives */}
-              <div id="work" className="relative">
-                <HorizontalShowcase />
-                <ProjectLedger />
-                <ProjectsShowcase />
-              </div>
-              {/* Chronological Trajectory & Experience Timeline with data-stagger */}
-              <Experience />
-              <GithubLab />
-              <SkillMatrix />
-              <TerminalLab />
-            </main>
+              <ShutterSectionStack total={6}>
+                {/* Sector 01: Hero Horizon */}
+                <ShutterLayer
+                  index={0}
+                  total={6}
+                  title="HERO_HORIZON"
+                  id="hero-sector"
+                  nextSectionId="work"
+                  showDivider={false}
+                >
+                  <Hero showCanvas={false} />
+                </ShutterLayer>
 
-            {/* Theatrical Curtain Footer Reveal: Tucked beneath main content wrapper (z-[1]) */}
-            <ContactFooter />
+                {/* Sector 02: Flagship Systems & 3D Deck */}
+                <ShutterLayer
+                  index={1}
+                  total={6}
+                  title="FLAGSHIP_SYSTEMS_3D_DECK"
+                  id="work"
+                  nextSectionId="extensions-sector"
+                  prevSectionId="hero-sector"
+                >
+                  <ProjectsShowcase />
+                </ShutterLayer>
+
+                {/* Sector 03: Dedicated Browser Extension Studio */}
+                <ShutterLayer
+                  index={2}
+                  total={6}
+                  title="BROWSER_EXTENSION_STUDIO"
+                  id="extensions-sector"
+                  nextSectionId="architecture-sector"
+                  prevSectionId="work"
+                >
+                  <ExtensionStudio />
+                </ShutterLayer>
+
+                {/* Sector 04: Motherboard Architecture, Trajectory & BIOS */}
+                <ShutterLayer
+                  index={3}
+                  total={6}
+                  title="MOTHERBOARD_BIOS_ARCHITECTURE"
+                  id="architecture-sector"
+                  nextSectionId="lab-sector"
+                  prevSectionId="extensions-sector"
+                >
+                  <Experience />
+                  <SkillMatrix />
+                </ShutterLayer>
+
+                {/* Sector 05: GitHub ROMs & Interactive Terminal */}
+                <ShutterLayer
+                  index={4}
+                  total={6}
+                  title="GITHUB_ROMS_TERMINAL_ARCADE"
+                  id="lab-sector"
+                  nextSectionId="contact-sector"
+                  prevSectionId="architecture-sector"
+                >
+                  <GithubLab />
+                  <TerminalLab />
+                </ShutterLayer>
+
+                {/* Sector 06: Contact Uplink */}
+                <ShutterLayer
+                  index={5}
+                  total={6}
+                  title="CONTACT_SATELLITE_UPLINK"
+                  id="contact-sector"
+                  prevSectionId="lab-sector"
+                >
+                  <ContactFooter />
+                </ShutterLayer>
+              </ShutterSectionStack>
+            </main>
 
             {/* GSAP Flip Seamless Morph Case Study Overlay */}
             <CaseStudyView />
-          </div>
+          </CRTViewportShell>
         </TransitionProvider>
       </LenisProvider>
     </ThemeProvider>

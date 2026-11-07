@@ -163,10 +163,11 @@ const chronometerCoreFrag = `
   varying vec3 vNormal;
   varying vec3 vViewPosition;
 
-  const vec3 C_OBSIDIAN_VOID = vec3(0.035, 0.039, 0.051); // #090A0D
-  const vec3 C_TERRACOTTA     = vec3(0.722, 0.290, 0.153); // #B84A27
-  const vec3 C_ALABASTER_INK  = vec3(0.949, 0.937, 0.914); // #F2EFE9
-  const vec3 C_VERDIGRIS      = vec3(0.306, 0.604, 0.498); // #4E9A7F
+  // Cyber-CRT Token Palette Vectors (WATCHKNIGHT_OS // SYS.96)
+  const vec3 C_OBSIDIAN_VOID = vec3(0.027, 0.031, 0.078); // #070814 (--crt-void-bg)
+  const vec3 C_TERRACOTTA     = vec3(1.0, 0.165, 0.522);   // #FF2A85 (--tech-magenta-crest)
+  const vec3 C_ALABASTER_INK  = vec3(0.941, 0.937, 0.902); // #F0EFE6 (--pixel-ivory-text)
+  const vec3 C_VERDIGRIS      = vec3(0.0, 0.941, 1.0);     // #00F0FF (--tech-cyan-wave)
 
   void main() {
     vec3 normal = normalize(vNormal);
@@ -340,7 +341,7 @@ export class SceneManager {
     this.gimbalRing1Material = new THREE.MeshBasicMaterial({
       color: 0xb84a27,
       transparent: true,
-      opacity: 0.45,
+      opacity: 0.55,
     });
     this.gimbalRing1Mesh = new THREE.Mesh(this.gimbalRing1Geom, this.gimbalRing1Material);
     this.heroChronometer.add(this.gimbalRing1Mesh);
@@ -350,7 +351,7 @@ export class SceneManager {
     this.gimbalRing2Material = new THREE.MeshBasicMaterial({
       color: 0xf2efe9,
       transparent: true,
-      opacity: 0.35,
+      opacity: 0.45,
     });
     this.gimbalRing2Mesh = new THREE.Mesh(this.gimbalRing2Geom, this.gimbalRing2Material);
     this.heroChronometer.add(this.gimbalRing2Mesh);
@@ -360,7 +361,7 @@ export class SceneManager {
     this.gimbalRing3Material = new THREE.MeshBasicMaterial({
       color: 0x4e9a7f,
       transparent: true,
-      opacity: 0.40,
+      opacity: 0.45,
     });
     this.gimbalRing3Mesh = new THREE.Mesh(this.gimbalRing3Geom, this.gimbalRing3Material);
     this.heroChronometer.add(this.gimbalRing3Mesh);
@@ -541,7 +542,7 @@ export class SceneManager {
         uSpectralCentroid: { value: 0.0 },
         uBeatPulse: { value: 0.0 },
         uRenderMode: { value: this.renderMode },
-        uColorTheme: { value: new THREE.Vector3(0.722, 0.290, 0.153) }, // #B84A27
+        uColorTheme: { value: new THREE.Vector3(1.0, 0.165, 0.522) }, // #FF2A85 (Tech Magenta Crest)
       };
 
       const material = new THREE.ShaderMaterial({

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import gsap from 'gsap';
 import { audio } from '../utils/audio';
-import { LiquidGlassCard } from './ui/LiquidGlassCard';
 import { MagneticButton } from './ui/MagneticButton';
 import { GithubIcon } from './ui/Icons';
 import {
@@ -32,21 +31,33 @@ const LANGUAGE_COLORS: Record<string, string> = {
   TypeScript: '#3178C6',
   JavaScript: '#F7DF1E',
   'C++': '#F34B7D',
-  C: '#555555',
-  'HTML/Canvas': '#E34C26',
-  HTML: '#E34C26',
+  C: '#8E98AA',
+  'HTML/Canvas': '#00F0FF',
+  HTML: '#00F0FF',
   Python: '#3572A5',
   Rust: '#DEA584',
   Go: '#00ADD8',
-  Shell: '#89E051',
+  Shell: '#4AF626',
   CSS: '#563D7C'
 };
 
-const CACHE_KEY = 'watchknight_repos_cache_v2';
+const CACHE_KEY = 'watchknight_repos_cache_v3';
 const CACHE_TTL_MS = 25 * 60 * 1000; // 25 minutes TTL
 
-// Curated Fallback & Metadata Enrichment Dataset
+// Curated Fallback & Metadata Enrichment Dataset (including FolioPort, watchknight, MyPortfolio, etc.)
 const FALLBACK_REPOS: GithubRepo[] = [
+  {
+    id: 100,
+    name: 'FolioPort',
+    description: '1996 Cyberdeck Workstation Rendering a Real-Time 3D Volumetric Particle Engine (WATCHKNIGHT_OS // SYS.96). Built with Three.js WebGL shaders, React 18, GSAP, and procedural Web Audio chiptunes.',
+    html_url: 'https://github.com/watchknight/FolioPort',
+    language: 'TypeScript',
+    stargazers_count: 28,
+    forks_count: 6,
+    updated_at: '2026-11-07T12:00:00Z',
+    topics: ['three-js', 'webgl-shaders', 'cyberdeck', 'react-18', 'audio-api'],
+    category: 'TypeScript/JS'
+  },
   {
     id: 101,
     name: 'Mental-Defrag',
@@ -190,11 +201,29 @@ const FALLBACK_REPOS: GithubRepo[] = [
     updated_at: '2026-10-31T17:19:00Z',
     topics: ['linux', 'dotfiles', 'automation', 'posix'],
     category: 'C/C++'
+  },
+  {
+    id: 113,
+    name: 'MyPortfolio',
+    description: 'Personal portfolio codebase featuring GSAP inertia, interactive canvas shaders, and responsive UI components.',
+    html_url: 'https://github.com/watchknight/MyPortfolio',
+    language: 'JavaScript',
+    stargazers_count: 10,
+    forks_count: 2,
+    updated_at: '2026-07-20T10:00:00Z',
+    topics: ['react', 'gsap', 'tailwind-css'],
+    category: 'HTML/Canvas'
   }
 ];
 
 // Enricher dictionary for repos that might have null descriptions from GitHub API
 const REPO_DESCRIPTIONS: Record<string, { desc: string; category: GithubRepo['category']; language?: string; topics?: string[] }> = {
+  'FolioPort': {
+    desc: '1996 Cyberdeck Workstation Rendering a Real-Time 3D Volumetric Particle Engine (WATCHKNIGHT_OS // SYS.96). Built with Three.js WebGL shaders, React 18, GSAP, and procedural Web Audio chiptunes.',
+    category: 'TypeScript/JS',
+    language: 'TypeScript',
+    topics: ['three-js', 'webgl-shaders', 'cyberdeck', 'react-18', 'audio-api']
+  },
   'Mental-Defrag': {
     desc: 'Zero-gravity spatial cognitive canvas & physics thought sandbox with Obsidian .canvas AST integration and vector clustering.',
     category: 'TypeScript/JS',
@@ -275,13 +304,14 @@ const REPO_DESCRIPTIONS: Record<string, { desc: string; category: GithubRepo['ca
   }
 };
 
-type FilterCategory = 'All' | 'TypeScript/JS' | 'C/C++' | 'HTML/Canvas' | 'Full-Stack';
+// Prompt filter specification: [FILTER: ALL | TS/JS | C/C++ | HTML/CANVAS]
+export type RetroFilterCategory = 'ALL' | 'TS/JS' | 'C/C++' | 'HTML/CANVAS';
 
 export const GithubLab: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const [repos, setRepos] = useState<GithubRepo[]>(FALLBACK_REPOS);
-  const [activeFilter, setActiveFilter] = useState<FilterCategory>('All');
+  const [activeFilter, setActiveFilter] = useState<RetroFilterCategory>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [dataSource, setDataSource] = useState<'live' | 'cache' | 'fallback'>('fallback');
@@ -291,15 +321,16 @@ export const GithubLab: React.FC = () => {
   const formatRelativeTime = (isoString: string) => {
     try {
       const date = new Date(isoString);
+      if (isNaN(date.getTime())) return 'Recently updated';
       const now = new Date();
       const diffMs = now.getTime() - date.getTime();
       const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-      if (diffDays < 1) return 'Updated today';
+      if (diffDays <= 0) return 'Updated today';
       if (diffDays === 1) return 'Updated yesterday';
-      if (diffDays < 30) return `Updated ${diffDays} days ago`;
+      if (diffDays < 30) return `Updated ${diffDays}d ago`;
       const diffMonths = Math.floor(diffDays / 30);
-      if (diffMonths < 12) return `Updated ${diffMonths} ${diffMonths === 1 ? 'month' : 'months'} ago`;
+      if (diffMonths < 12) return `Updated ${diffMonths}mo ago`;
       return `Updated ${date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`;
     } catch {
       return 'Recently updated';
@@ -346,14 +377,14 @@ export const GithubLab: React.FC = () => {
             return;
           }
         }
-      } catch (err) {
+      } catch {
         // Continue to network fetch if cache read errors
       }
     }
 
     // 2. Network Fetch from GitHub API
     try {
-      const response = await fetch('https://api.github.com/users/watchknight/repos?sort=updated&per_page=12', {
+      const response = await fetch('https://api.github.com/users/watchknight/repos?sort=updated&per_page=15', {
         headers: {
           Accept: 'application/vnd.github.v3+json'
         }
@@ -381,8 +412,8 @@ export const GithubLab: React.FC = () => {
           description: item.description || metadata?.desc || fallbackMatch?.description || `${item.name} engineering repository by @watchknight.`,
           html_url: item.html_url || `https://github.com/watchknight/${item.name}`,
           language: item.language || metadata?.language || fallbackMatch?.language || 'TypeScript',
-          stargazers_count: item.stargazers_count || fallbackMatch?.stargazers_count || 0,
-          forks_count: item.forks_count || fallbackMatch?.forks_count || 0,
+          stargazers_count: item.stargazers_count ?? fallbackMatch?.stargazers_count ?? 0,
+          forks_count: item.forks_count ?? fallbackMatch?.forks_count ?? 0,
           updated_at: item.updated_at || new Date().toISOString(),
           topics: (item.topics && item.topics.length > 0) ? item.topics : metadata?.topics || fallbackMatch?.topics || ['engineering', 'systems'],
           category
@@ -410,9 +441,8 @@ export const GithubLab: React.FC = () => {
       setRepos(combined);
       setDataSource('live');
       setLastRefreshed(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-    } catch (err) {
+    } catch {
       // 5. Graceful Fallback Dataset on Rate Limit (403) or Network Failure
-      // Check if previously cached data exists first (even if stale) to maximize live fidelity
       try {
         const cached = sessionStorage.getItem(CACHE_KEY);
         if (cached) {
@@ -441,29 +471,56 @@ export const GithubLab: React.FC = () => {
     fetchRepositories(false);
   }, [fetchRepositories]);
 
+  // Matcher for retro filter categories
+  const matchesFilter = useCallback((repo: GithubRepo, filter: RetroFilterCategory): boolean => {
+    if (filter === 'ALL') return true;
+    if (filter === 'TS/JS') {
+      return (
+        repo.language === 'TypeScript' ||
+        repo.language === 'JavaScript' ||
+        repo.category === 'TypeScript/JS' ||
+        repo.category === 'Full-Stack'
+      );
+    }
+    if (filter === 'C/C++') {
+      return (
+        repo.language === 'C++' ||
+        repo.language === 'C' ||
+        repo.category === 'C/C++'
+      );
+    }
+    if (filter === 'HTML/CANVAS') {
+      return (
+        repo.language === 'HTML/Canvas' ||
+        repo.language === 'HTML' ||
+        repo.category === 'HTML/Canvas'
+      );
+    }
+    return true;
+  }, []);
+
   // Compute counts per category
   const categoryCounts = useMemo(() => {
-    const counts: Record<FilterCategory, number> = {
-      All: repos.length,
-      'TypeScript/JS': 0,
+    const counts: Record<RetroFilterCategory, number> = {
+      ALL: repos.length,
+      'TS/JS': 0,
       'C/C++': 0,
-      'HTML/Canvas': 0,
-      'Full-Stack': 0
+      'HTML/CANVAS': 0
     };
 
     repos.forEach((repo) => {
-      if (counts[repo.category] !== undefined) {
-        counts[repo.category]++;
-      }
+      if (matchesFilter(repo, 'TS/JS')) counts['TS/JS']++;
+      if (matchesFilter(repo, 'C/C++')) counts['C/C++']++;
+      if (matchesFilter(repo, 'HTML/CANVAS')) counts['HTML/CANVAS']++;
     });
 
     return counts;
-  }, [repos]);
+  }, [repos, matchesFilter]);
 
   // Filtered and searched repositories
   const filteredRepos = useMemo(() => {
     return repos.filter((repo) => {
-      const matchesCategory = activeFilter === 'All' || repo.category === activeFilter;
+      const matchCat = matchesFilter(repo, activeFilter);
       const matchesSearch =
         searchQuery === '' ||
         repo.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -471,9 +528,9 @@ export const GithubLab: React.FC = () => {
         repo.language.toLowerCase().includes(searchQuery.toLowerCase()) ||
         repo.topics.some((t) => t.toLowerCase().includes(searchQuery.toLowerCase()));
 
-      return matchesCategory && matchesSearch;
+      return matchCat && matchesSearch;
     });
-  }, [repos, activeFilter, searchQuery]);
+  }, [repos, activeFilter, searchQuery, matchesFilter]);
 
   // Smooth layout animation on filter change
   useEffect(() => {
@@ -499,59 +556,79 @@ export const GithubLab: React.FC = () => {
     };
   }, [activeFilter, searchQuery]);
 
+  const filterTabs: RetroFilterCategory[] = ['ALL', 'TS/JS', 'C/C++', 'HTML/CANVAS'];
+
   return (
-    <section ref={sectionRef} id="lab" className="py-24 md:py-32 relative bg-obsidian-surface/40">
+    <section ref={sectionRef} id="lab" className="py-24 md:py-32 relative bg-[#070814] text-[#F0EFE6] border-t-2 border-[#2D3645] overflow-hidden">
+      {/* 90s Cyberdeck PCB Background Grid */}
+      <div 
+        className="pointer-events-none absolute inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#00F0FF_1px,transparent_1px),linear-gradient(to_bottom,#00F0FF_1px,transparent_1px)] bg-[size:32px_32px] -z-10" 
+        aria-hidden="true"
+      />
+
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         
         {/* Section Header */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-12 border-b border-white/10 pb-8 gap-6">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-10 border-b-2 border-[#2D3645] pb-8 gap-6">
           <div>
-            <div className="flex items-center gap-2 font-mono text-fluid-micro text-amber-warm uppercase tracking-widest mb-3">
-              <FlaskConical className="w-4 h-4" />
-              <span>Live GitHub Repository Explorer • @watchknight</span>
+            <div className="flex items-center gap-2 font-pixel text-[10px] text-[#FFCC00] uppercase tracking-widest mb-3">
+              <FlaskConical className="w-4 h-4 text-[#FFCC00]" />
+              <span>&gt; [04] GITHUB_ROM // RETRO DATA CARTRIDGE EXPLORER</span>
             </div>
-            <h2 className="font-display font-extrabold text-fluid-h1 text-white tracking-tight uppercase">
-              GITHUB <span className="text-amber-warm">LAB</span> & OPEN SOURCE
-            </h2>
-            <p className="font-body text-fluid-body text-slate-400 max-w-2xl mt-2 leading-relaxed">
-              Live cryptographic telemetry and repository stream directly queried from GitHub. Spanning high-throughput C/C++ OS primitives, spatial physics engines, and localized web architectures.
+            <div className="overflow-visible">
+              <h2 
+                className="font-display uppercase text-white"
+                style={{
+                  fontFamily: "'Space Grotesk', 'Syne', sans-serif",
+                  fontWeight: 800,
+                  letterSpacing: '-0.035em',
+                  fontSize: 'clamp(1.85rem, 4vw, 3.25rem)',
+                  lineHeight: 1.05,
+                }}
+              >
+                GITHUB <span className="text-[#FFCC00]">DATA CARTRIDGES</span>
+              </h2>
+            </div>
+            <p className="font-body text-fluid-body text-[#D6CFC2] max-w-2xl mt-2 leading-relaxed">
+              Live cryptographic telemetry and repository stream directly queried from GitHub. 
+              Restyled as 90s Cyberdeck Floppy Modules and Data Cartridges spanning Linux C/C++ OS primitives, spatial physics engines, and localized web architectures.
             </p>
           </div>
 
           {/* Telemetry Status Strip & Manual Refresh */}
           <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-carbon/80 border border-white/10 text-fluid-micro font-mono">
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-[#131629] border-2 border-[#2D3645] shadow-[2px_2px_0_0_#070814] text-[9px] font-pixel">
               {dataSource === 'live' && (
                 <>
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-emerald-400 font-semibold">Live GitHub API Connected</span>
+                  <span className="w-2 h-2 rounded-none bg-[#4AF626] animate-pulse" />
+                  <span className="text-[#4AF626] font-semibold">Live GitHub API Connected</span>
                 </>
               )}
               {dataSource === 'cache' && (
                 <>
-                  <span className="w-2 h-2 rounded-full bg-cyan-mint" />
-                  <span className="text-cyan-mint font-semibold">Smart Session Cache Active</span>
+                  <span className="w-2 h-2 rounded-none bg-[#00F0FF]" />
+                  <span className="text-[#00F0FF] font-semibold">Smart Session Cache Active</span>
                 </>
               )}
               {dataSource === 'fallback' && (
                 <>
-                  <span className="w-2 h-2 rounded-full bg-amber-warm" />
-                  <span className="text-amber-warm font-semibold">Rate-Limit Resilient Fallback</span>
+                  <span className="w-2 h-2 rounded-none bg-[#FFCC00]" />
+                  <span className="text-[#FFCC00] font-semibold">Rate-Limit Resilient Fallback</span>
                 </>
               )}
               {lastRefreshed && (
-                <span className="text-slate-500 hidden sm:inline">[{lastRefreshed}]</span>
+                <span className="text-[#8E98AA] hidden sm:inline">[{lastRefreshed}]</span>
               )}
             </div>
 
             <button
               onClick={() => fetchRepositories(true)}
               disabled={loading}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 font-mono text-fluid-micro transition-all active:scale-95 disabled:opacity-50"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#131629] hover:bg-[#1A1F38] text-[#D6CFC2] hover:text-white border-2 border-[#2D3645] hover:border-[#FFCC00] font-pixel text-[9px] transition-all active:scale-95 disabled:opacity-50 shadow-[2px_2px_0_0_#070814]"
               title="Force re-query GitHub API"
               aria-label="Refresh repository data"
             >
-              <RefreshCw className={`w-3.5 h-3.5 text-amber-warm ${loading ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`w-3 h-3 text-[#FFCC00] ${loading ? 'animate-spin' : ''}`} />
               <span>Refresh</span>
             </button>
 
@@ -559,7 +636,7 @@ export const GithubLab: React.FC = () => {
               href="https://github.com/watchknight?tab=repositories"
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-warm text-obsidian font-mono text-fluid-micro font-bold shadow-glow-amber hover:bg-[#ffc42e] transition-all active:scale-95"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#FFCC00] text-[#070814] font-pixel text-[9px] font-bold border-2 border-white shadow-[2px_2px_0_0_#070814] hover:bg-[#00F0FF] transition-all active:scale-95"
               aria-label="View all repositories on GitHub (@watchknight)"
             >
               <GithubIcon className="w-3.5 h-3.5" />
@@ -569,12 +646,16 @@ export const GithubLab: React.FC = () => {
           </div>
         </div>
 
-        {/* Filter Controls & Live Search Bar */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        {/* Filter Controls [FILTER: ALL | TS/JS | C/C++ | HTML/CANVAS] & Live Search Bar */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
           
-          {/* Category Filter Pills */}
+          {/* Prompt-mandated Category Filter Buttons */}
           <div className="flex flex-wrap items-center gap-2">
-            {(['All', 'TypeScript/JS', 'C/C++', 'HTML/Canvas', 'Full-Stack'] as FilterCategory[]).map((filter) => {
+            <span className="font-pixel text-[9px] text-[#8E98AA] mr-1 hidden sm:inline">
+              [FILTER:
+            </span>
+
+            {filterTabs.map((filter) => {
               const isActive = activeFilter === filter;
               const count = categoryCounts[filter];
               return (
@@ -585,42 +666,46 @@ export const GithubLab: React.FC = () => {
                     audio.playChord();
                   }}
                   onMouseEnter={() => audio.playTick()}
-                  className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full font-mono text-fluid-micro transition-all duration-200 border ${
+                  className={`flex items-center gap-2 px-3 py-1.5 font-pixel text-[9px] transition-all duration-150 border-2 ${
                     isActive
-                      ? 'bg-wk-terracotta-pulse/15 text-wk-terracotta-pulse border-wk-terracotta-pulse/50 shadow-editorial-card font-bold'
-                      : 'bg-carbon/60 text-slate-400 hover:text-slate-200 border-white/10 hover:border-white/20'
+                      ? 'bg-[#332505] text-[#FFCC00] border-[#FFCC00] shadow-[0_0_12px_rgba(255,204,0,0.35),2px_2px_0_0_#070814] font-bold'
+                      : 'bg-[#131629] text-[#8E98AA] hover:text-[#F0EFE6] border-[#2D3645] hover:border-[#00F0FF] shadow-[2px_2px_0_0_#070814]'
                   }`}
                   aria-label={`Filter by ${filter} category (${count} repositories)`}
                 >
-                  <span>{filter}</span>
+                  <span>{`> ${filter}`}</span>
                   <span
-                    className={`px-1.5 py-0.2 rounded-full text-[10px] ${
-                      isActive ? 'bg-amber-warm text-obsidian font-bold' : 'bg-white/10 text-slate-400'
+                    className={`px-1 py-0.2 text-[8px] font-mono ${
+                      isActive ? 'bg-[#FFCC00] text-[#070814] font-bold' : 'bg-white/10 text-slate-300'
                     }`}
                   >
-                    {count}
+                    [{count}]
                   </span>
                 </button>
               );
             })}
+
+            <span className="font-pixel text-[9px] text-[#8E98AA] ml-1 hidden sm:inline">
+              ]
+            </span>
           </div>
 
-          {/* Quick Filter Search Input */}
+          {/* Quick Filter Search Input styled as 90s Command */}
           <div className="relative max-w-xs w-full">
-            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#8E98AA]" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search repos, tags, or stack..."
+              placeholder="> SEARCH_ROM: [ query... ]"
               aria-label="Search repositories, tags, or technology stack"
-              className="w-full pl-9 pr-3 py-1.5 rounded-full bg-carbon/70 border border-white/10 font-mono text-fluid-micro text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-amber-warm/50 transition-colors"
+              className="w-full pl-9 pr-3 py-1.5 bg-[#0D1512] border-2 border-[#2D3645] font-mono text-fluid-micro text-[#00F0FF] placeholder:text-[#8E98AA] focus:outline-none focus:border-[#FFCC00] shadow-[inset_0_0_8px_rgba(0,0,0,0.8),2px_2px_0_0_#070814] transition-colors"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
                 aria-label="Clear repository search query"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white text-xs font-mono"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8E98AA] hover:text-white text-xs font-mono"
               >
                 ✕
               </button>
@@ -628,118 +713,168 @@ export const GithubLab: React.FC = () => {
           </div>
         </div>
 
-        {/* Repository Grid */}
+        {/* ========================================================================= */}
+        {/* RETRO ROM CARTRIDGE / FLOPPY MODULES GRID                                 */}
+        {/* ========================================================================= */}
         <div
           ref={gridRef}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {filteredRepos.map((repo) => {
-            const langColor = LANGUAGE_COLORS[repo.language] || '#DF6C4F';
+          {filteredRepos.map((repo, idx) => {
+            const langColor = LANGUAGE_COLORS[repo.language] || '#00F0FF';
+            const romId = `ROM_${String(idx + 1).padStart(2, '0')}`;
+
             return (
-              <LiquidGlassCard
+              <div
                 key={repo.id}
-                spotlightColor="amber"
-                spotlightRadius={420}
-                spotlightOpacity={0.14}
                 onMouseEnter={() => audio.playTick()}
-                className="p-5 sm:p-6 flex flex-col justify-between group"
+                className="relative bg-[#131629] border-2 border-[#2D3645] hover:border-[#FFCC00] shadow-[2px_2px_0_0_#070814] transition-all duration-200 group flex flex-col justify-between"
               >
-                <div>
-                  {/* Card Header: Category & Language Badge */}
-                  <div className="flex items-center justify-between mb-3.5">
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-fluid-micro font-mono bg-white/5 border border-white/10 text-slate-300">
-                      <span
-                        className="w-2 h-2 rounded-full shrink-0 shadow-sm"
-                        style={{ backgroundColor: langColor }}
-                      />
-                      <span>{repo.language}</span>
+                {/* 1. Floppy Shutter & Write-Protect Notch Header */}
+                <div className="bg-[#1A1F38] border-b-2 border-[#2D3645] px-3.5 py-2 flex items-center justify-between select-none">
+                  {/* Metal sliding shutter graphic */}
+                  <div className="flex items-center gap-2">
+                    <span className="font-pixel text-[8px] text-[#8E98AA] px-1.5 py-0.5 bg-[#070814] border border-[#2D3645]">
+                      {romId}
                     </span>
-
-                    <span className="font-mono text-[10px] text-slate-500">
-                      {formatRelativeTime(repo.updated_at)}
+                    <span className="font-pixel text-[8px] sm:text-[9px] text-[#FFCC00] tracking-wider break-all">
+                      {repo.name.toUpperCase()}.DAT
                     </span>
-                  </div>
-
-                  {/* Repository Name & External Icon */}
-                  <div className="mb-2.5">
-                    <a
-                      href={repo.html_url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="group/link inline-flex items-center gap-1.5"
-                    >
-                      <h3 className="font-display font-bold text-lg sm:text-xl text-white group-hover/link:text-amber-warm transition-colors truncate">
-                        {repo.name}
-                      </h3>
-                      <ExternalLink className="w-3.5 h-3.5 text-slate-500 group-hover/link:text-amber-warm transition-colors shrink-0" />
-                    </a>
-                  </div>
-
-                  {/* Description */}
-                  <p className="font-body text-xs sm:text-sm text-slate-400 mb-5 leading-relaxed line-clamp-3">
-                    {repo.description}
-                  </p>
-
-                  {/* Topic Badges */}
-                  <div className="flex flex-wrap gap-1.5 mb-5">
-                    {repo.topics.slice(0, 3).map((topic) => (
-                      <span
-                        key={topic}
-                        className="px-2 py-0.5 rounded bg-white/5 font-mono text-[10px] text-slate-400 border border-white/5"
+                    {repo.name === 'FocusGuard' && (
+                      <a
+                        href="#extensions"
+                        className="font-pixel text-[7px] px-1.5 py-0.5 bg-[#00F0FF]/15 border border-[#00F0FF] text-[#00F0FF] hover:bg-[#00F0FF] hover:text-[#070814] transition-colors shadow-[0_0_8px_rgba(0,240,255,0.25)]"
+                        title="Jump to interactive Browser Extension Studio"
                       >
-                        #{topic}
+                        [ STUDIO ↗ ]
+                      </a>
+                    )}
+                  </div>
+
+                  {/* Write-Protect & Grip Ridges */}
+                  <div className="flex items-center gap-2">
+                    <div className="hidden sm:flex items-center gap-0.5 text-[#2D3645] font-mono text-[8px]">
+                      <span>||||</span>
+                    </div>
+                    <span className="font-pixel text-[7px] px-1.5 py-0.5 bg-[#0D1512] border border-[#4AF626]/40 text-[#4AF626] flex items-center gap-1">
+                      <span className="w-1 h-1 rounded-none bg-[#4AF626] animate-pulse" />
+                      WP: OFF
+                    </span>
+                  </div>
+                </div>
+
+                {/* 2. Cartridge Label Sticker Body */}
+                <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between bg-[#0D1512]/95 m-1.5 border border-[#2D3645]">
+                  <div>
+                    {/* Language LED & Timestamp */}
+                    <div className="flex items-center justify-between mb-3 border-b border-[#2D3645]/80 pb-2">
+                      {/* Pixelated language color LED */}
+                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 border border-[#2D3645] text-fluid-micro font-pixel text-[8px] bg-[#070814] text-[#F0EFE6]">
+                        <span
+                          className="w-2 h-2 shrink-0 rounded-none shadow-[0_0_6px_currentColor]"
+                          style={{ backgroundColor: langColor, color: langColor }}
+                        />
+                        <span>{repo.language}</span>
                       </span>
-                    ))}
+
+                      <span className="font-mono text-[9px] text-[#8E98AA]">
+                        {formatRelativeTime(repo.updated_at)}
+                      </span>
+                    </div>
+
+                    {/* Repository Name & External Icon */}
+                    <div className="mb-2">
+                      <a
+                        href={repo.html_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="group/link inline-flex items-center gap-1.5 max-w-full"
+                      >
+                        <h3 className="font-pixel text-xs text-[#F0EFE6] group-hover/link:text-[#FFCC00] transition-colors break-words">
+                          {repo.name}
+                        </h3>
+                        <ExternalLink className="w-3 h-3 text-[#8E98AA] group-hover/link:text-[#FFCC00] transition-colors shrink-0" />
+                      </a>
+                    </div>
+
+                    {/* Description */}
+                    <p className="font-body text-xs text-[#D6CFC2] mb-4 leading-relaxed line-clamp-3">
+                      {repo.description}
+                    </p>
+
+                    {/* Topic Badges */}
+                    <div className="flex flex-wrap gap-1 mb-4">
+                      {repo.topics.slice(0, 3).map((topic) => (
+                        <span
+                          key={topic}
+                          className="px-1.5 py-0.5 bg-[#070814] font-mono text-[9px] text-[#00F0FF] border border-[#2D3645]"
+                        >
+                          #{topic}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 3. Gold Cartridge Pin Contacts & [ >_ INSPECT_ROM ] Action Button */}
+                  <div>
+                    {/* PCB Gold Contact Pin Fingers */}
+                    <div className="py-1 border-t border-[#2D3645] mb-3 flex items-center justify-between font-mono text-[8px] text-[#C59B27] select-none tracking-widest opacity-80 overflow-hidden">
+                      <span>||||||||||||||||||||||||||||||||</span>
+                      <span className="font-pixel text-[7px] text-[#8E98AA]">16-BIT BUS</span>
+                    </div>
+
+                    {/* Footer: Star/Fork Counters + [ >_ INSPECT_ROM ] Button */}
+                    <div className="flex items-center justify-between pt-1">
+                      {/* Star and Fork Glowing Pixel Readouts */}
+                      <div className="flex items-center gap-3 font-pixel text-[9px]">
+                        <span className="flex items-center gap-1 text-[#FFCC00]">
+                          <Star className="w-3 h-3 text-[#FFCC00] fill-[#FFCC00]/30" />
+                          <span>{String(repo.stargazers_count).padStart(2, '0')}</span>
+                        </span>
+                        <span className="flex items-center gap-1 text-[#8E98AA]">
+                          <GitFork className="w-3 h-3 text-[#8E98AA]" />
+                          <span>{String(repo.forks_count).padStart(2, '0')}</span>
+                        </span>
+                      </div>
+
+                      {/* Prompt-mandated [ >_ INSPECT_ROM ] Button */}
+                      <MagneticButton
+                        as="a"
+                        href={repo.html_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        strength={0.25}
+                        innerStrength={0.15}
+                        onMouseEnter={() => audio.playTick()}
+                        onClick={() => audio.playChord()}
+                        className="px-2.5 py-1 border-2 border-[#2D3645] bg-[#131629] hover:bg-[#FFCC00] hover:text-[#070814] text-[#FFCC00] font-pixel text-[8px] transition-all group/btn inline-flex items-center gap-1 shadow-[2px_2px_0_0_#070814] active:scale-95 cursor-pointer"
+                        aria-label={`Inspect ROM for ${repo.name} on GitHub`}
+                      >
+                        <span>[ &gt;_ INSPECT_ROM ]</span>
+                        <ArrowUpRight className="w-2.5 h-2.5 transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
+                      </MagneticButton>
+                    </div>
                   </div>
                 </div>
-
-                {/* Card Footer: Telemetry & Magnetic Repository Link */}
-                <div className="border-t border-white/10 pt-4 flex items-center justify-between">
-                  <div className="flex items-center gap-3 font-mono text-fluid-micro text-slate-400">
-                    <span className="flex items-center gap-1">
-                      <Star className="w-3.5 h-3.5 text-amber-warm fill-amber-warm/20" />
-                      <span>{repo.stargazers_count}</span>
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <GitFork className="w-3.5 h-3.5 text-slate-400" />
-                      <span>{repo.forks_count}</span>
-                    </span>
-                  </div>
-
-                  {/* Direct Magnetic Link to Repository */}
-                  <MagneticButton
-                    as="a"
-                    href={repo.html_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    strength={0.25}
-                    innerStrength={0.15}
-                    className="px-3 py-1.5 rounded-lg bg-carbon-elevated hover:bg-amber-warm/15 border border-white/10 hover:border-amber-warm/40 text-slate-300 hover:text-amber-warm font-mono text-[11px] transition-all group/btn inline-flex items-center"
-                    aria-label={`Inspect code for ${repo.name} on GitHub`}
-                  >
-                    <span>Inspect Code</span>
-                    <ArrowUpRight className="w-3 h-3 text-amber-warm transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
-                  </MagneticButton>
-                </div>
-              </LiquidGlassCard>
+              </div>
             );
           })}
         </div>
 
         {/* Empty Search Fallback */}
         {filteredRepos.length === 0 && (
-          <div className="text-center py-16 bg-carbon/40 rounded-2xl border border-white/5 font-mono">
-            <AlertTriangle className="w-8 h-8 text-amber-warm mx-auto mb-2" />
-            <h4 className="text-white text-base font-bold">No repositories match &ldquo;{searchQuery}&rdquo;</h4>
-            <p className="text-slate-400 text-xs mt-1">Try resetting the filter category or clearing search keywords.</p>
+          <div className="text-center py-16 bg-[#131629] border-2 border-[#2D3645] font-mono">
+            <AlertTriangle className="w-8 h-8 text-[#FFCC00] mx-auto mb-2" />
+            <h4 className="text-[#F0EFE6] text-base font-pixel text-xs">No repositories match &ldquo;{searchQuery}&rdquo;</h4>
+            <p className="text-[#8E98AA] text-xs mt-1">Try resetting the filter category or clearing search keywords.</p>
             <button
               onClick={() => {
-                setActiveFilter('All');
+                setActiveFilter('ALL');
                 setSearchQuery('');
               }}
-              className="mt-4 px-4 py-1.5 rounded-full bg-amber-warm text-obsidian text-xs font-bold"
+              className="mt-4 px-4 py-1.5 border-2 border-[#2D3645] bg-[#FFCC00] text-[#070814] font-pixel text-[10px] hover:bg-white transition-colors"
             >
-              Reset Filters
+              [ RESET FILTERS ]
             </button>
           </div>
         )}

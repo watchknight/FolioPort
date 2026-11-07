@@ -33,6 +33,9 @@ export class WatchknightAudioEngine {
   private triggerTimestamps: number[] = [];
   private lastBeatTime: number = -1000;
   private energyHistory: number[] = [];
+  private chiptuneInterval: ReturnType<typeof setInterval> | null = null;
+  private isChiptuneActive: boolean = false;
+  private chiptuneStep: number = 0;
 
   private isTickerAttached: boolean = false;
   private tickerBound: () => void;
@@ -386,6 +389,47 @@ export class WatchknightAudioEngine {
   }
 
   /**
+   * Synthesizes an authentic CRT Horizontal-Sync (H-Sync) electron beam laser hum:
+   * High-frequency saw/sine oscillator (sweeping ~2800Hz -> 7800Hz -> 3200Hz) with subtle sub-harmonic buzz
+   * and click-free exponential gain envelope.
+   */
+  public playCrtSyncHum(volume: number = 0.18): void {
+    if (this.isMuted || this.reducedMotion) return;
+
+    if (!this.ctx) {
+      if (typeof window !== 'undefined' && !this.isUnlocked) return;
+      this.initContext();
+    }
+    if (!this.ctx || !this.masterGain) return;
+
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const filter = this.ctx.createBiquadFilter();
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(2800, t);
+    osc.frequency.exponentialRampToValueAtTime(7800, t + 0.12);
+    osc.frequency.exponentialRampToValueAtTime(3200, t + 0.28);
+
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(5200, t);
+    filter.Q.setValueAtTime(4.0, t);
+
+    const safeGain = Math.min(0.35, Math.max(0.01, volume));
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.linearRampToValueAtTime(safeGain, t + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.masterGain);
+
+    osc.start(t);
+    osc.stop(t + 0.32);
+  }
+
+  /**
    * Computes the Spectral Centroid C = Sum(f_i * M_i) / Sum(M_i).
    * @param freqData Array of frequency magnitudes
    * @param normalized If true, normalizes centroid by total bin count into [0.0, 1.0]
@@ -512,6 +556,114 @@ export class WatchknightAudioEngine {
     return this.isMuted;
   }
 
+  /**
+   * Synthesizes an 8-bit retro UI blip using a square oscillator with click-free envelope
+   */
+  public play8BitBlip(frequency: number = 880): void {
+    if (this.isMuted || this.reducedMotion) return;
+    if (!this.ctx) this.initContext();
+    if (!this.ctx || !this.masterGain) return;
+    try {
+      const t = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(frequency, t);
+      osc.frequency.setValueAtTime(frequency * 1.5, t + 0.025);
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.linearRampToValueAtTime(0.12, t + 0.005);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.07);
+      osc.connect(gain);
+      gain.connect(this.masterGain);
+      osc.start(t);
+      osc.stop(t + 0.075);
+    } catch {
+      // Audio node scheduling safely handled
+    }
+  }
+
+  /**
+   * Starts native Web Audio procedural 8-bit chiptune BGM loop
+   * Zero external audio files: square lead + triangle bass + click-free ramps
+   */
+  public startChiptune(): void {
+    if (this.isChiptuneActive || this.reducedMotion) return;
+    if (!this.ctx) this.initContext();
+    if (!this.ctx || !this.masterGain) return;
+    if (this.isMuted) {
+      this.setMuted(false);
+    }
+
+    this.isChiptuneActive = true;
+    this.chiptuneStep = 0;
+
+    const MELODY = [220, 261.63, 293.66, 329.63, 392, 440, 523.25, 440, 392, 329.63, 293.66, 261.63, 329.63, 392, 440, 587.33];
+    const BASS = [110, 110, 130.81, 146.83, 110, 110, 164.81, 146.83];
+
+    this.chiptuneInterval = setInterval(() => {
+      if (!this.ctx || !this.masterGain || !this.isChiptuneActive || this.isMuted) return;
+
+      const t = this.ctx.currentTime;
+      const step = this.chiptuneStep % MELODY.length;
+      const bassStep = Math.floor(this.chiptuneStep / 2) % BASS.length;
+      this.chiptuneStep++;
+
+      // Lead Channel (Square)
+      try {
+        const leadOsc = this.ctx.createOscillator();
+        const leadGain = this.ctx.createGain();
+        leadOsc.type = 'square';
+        leadOsc.frequency.setValueAtTime(MELODY[step], t);
+        leadGain.gain.setValueAtTime(0.0001, t);
+        leadGain.gain.linearRampToValueAtTime(0.08, t + 0.005);
+        leadGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.12);
+        leadOsc.connect(leadGain);
+        leadGain.connect(this.masterGain);
+        leadOsc.start(t);
+        leadOsc.stop(t + 0.13);
+
+        // Bass Channel (Triangle)
+        if (this.chiptuneStep % 2 === 0) {
+          const bassOsc = this.ctx.createOscillator();
+          const bassGain = this.ctx.createGain();
+          bassOsc.type = 'triangle';
+          bassOsc.frequency.setValueAtTime(BASS[bassStep], t);
+          bassGain.gain.setValueAtTime(0.0001, t);
+          bassGain.gain.linearRampToValueAtTime(0.12, t + 0.005);
+          bassGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+          bassOsc.connect(bassGain);
+          bassGain.connect(this.masterGain);
+          bassOsc.start(t);
+          bassOsc.stop(t + 0.23);
+        }
+      } catch {
+        // Safe audio scheduling
+      }
+    }, 140);
+  }
+
+  public stopChiptune(): void {
+    if (this.chiptuneInterval) {
+      clearInterval(this.chiptuneInterval);
+      this.chiptuneInterval = null;
+    }
+    this.isChiptuneActive = false;
+  }
+
+  public toggleChiptune(): boolean {
+    if (this.isChiptuneActive) {
+      this.stopChiptune();
+      return false;
+    } else {
+      this.startChiptune();
+      return true;
+    }
+  }
+
+  public isChiptuneRunning(): boolean {
+    return this.isChiptuneActive;
+  }
+
   public attachTicker(): void {
     if (this.isTickerAttached) return;
     gsap.ticker.add(this.tickerBound);
@@ -525,6 +677,7 @@ export class WatchknightAudioEngine {
   }
 
   public destroy(): void {
+    this.stopChiptune();
     this.detachTicker();
     if (typeof window !== 'undefined') {
       if (this.unlockHandler) {

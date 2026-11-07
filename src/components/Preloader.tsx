@@ -329,14 +329,14 @@ export const Preloader: React.FC<PreloaderProps> = ({ onCurtainLifting, onComple
           <div className="flex items-center gap-2">
             <span
               className="w-2 h-2 rounded-full animate-pulse"
-              style={{ backgroundColor: 'var(--accent-verdigris, #4E9A7F)' }}
+              style={{ backgroundColor: 'var(--pixel-phosphor-green, #4AF626)' }}
             />
             <span className="text-alabaster font-bold tracking-wider">
               WATCHKNIGHT // ARCHITECTURE ATELIER
             </span>
           </div>
           <div className="hidden sm:flex items-center gap-4 text-xs">
-            <span className="text-[#7A808C]">CHRONOMETRIC CALIBRATION</span>
+            <span className="text-[#8E98AA]">CHRONOMETRIC CALIBRATION</span>
             <span className="text-white/20">|</span>
             <span className="text-alabaster font-semibold">1000 Hz TIMEBASE</span>
           </div>
@@ -348,7 +348,7 @@ export const Preloader: React.FC<PreloaderProps> = ({ onCurtainLifting, onComple
             <span
               className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full shrink-0 shadow-glow-accent animate-ping"
               style={{
-                backgroundColor: 'var(--accent-rust, #B84A27)',
+                backgroundColor: 'var(--tech-magenta-crest, #FF2A85)',
                 animationDuration: '2.5s',
               }}
             />
@@ -356,14 +356,14 @@ export const Preloader: React.FC<PreloaderProps> = ({ onCurtainLifting, onComple
               {GREETINGS[greetingIdx]?.text}
             </h1>
           </div>
-          <p className="mt-4 font-mono text-fluid-micro uppercase tracking-widest text-[#7A808C]">
+          <p className="mt-4 font-mono text-fluid-micro uppercase tracking-widest text-[#8E98AA]">
             [{GREETINGS[greetingIdx]?.lang}] • {GREETINGS[greetingIdx]?.sub}
           </p>
         </div>
 
         {/* Bottom Coordinates & Precision Horological Counter (000 -> 100%) */}
         <div className="flex items-end justify-between border-t border-white/10 pt-4 sm:pt-6">
-          <div className="font-mono text-fluid-micro text-[#7A808C] flex flex-col gap-1">
+          <div className="font-mono text-fluid-micro text-[#8E98AA] flex flex-col gap-1">
             <span className="text-alabaster font-semibold tracking-wider">
               EAST WEST UNIVERSITY // CSE DEPT
             </span>
@@ -375,7 +375,7 @@ export const Preloader: React.FC<PreloaderProps> = ({ onCurtainLifting, onComple
             <span ref={counterTextRef}>{counterValue}</span>
             <span
               className="text-2xl sm:text-3xl ml-1 font-bold"
-              style={{ color: 'var(--accent-rust, #B84A27)' }}
+              style={{ color: 'var(--tech-magenta-crest, #FF2A85)' }}
             >
               %
             </span>

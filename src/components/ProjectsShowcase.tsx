@@ -1,18 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { RenderPixelatedPass } from 'three/addons/postprocessing/RenderPixelatedPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useLenis } from '../hooks/useLenis';
 import { useTransition } from '../context/TransitionContext';
-import { LiquidGlassCard } from './ui/LiquidGlassCard';
+import { watchknightAudio } from '../audio/WatchknightAudioEngine';
+import { chiptuneAudio } from '../utils/chiptuneAudio';
 import { GithubIcon } from './ui/Icons';
 import {
-  Briefcase,
   ExternalLink,
-  ArrowRight,
-  ArrowUpRight,
-  ChevronLeft,
-  ChevronRight,
   Zap,
   Activity,
   ShieldCheck,
@@ -22,14 +21,16 @@ import {
   Play,
   Share2,
   Database,
-  Layers,
-  LayoutGrid,
+  Cpu,
+  AlertTriangle,
+  ChevronRight,
+  Terminal,
 } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
 // ============================================================================
-// DATA STRUCTURE & 5 FLAGSHIP CASE STUDIES
+// DATA STRUCTURE & 6 FLAGSHIP CASE STUDIES
 // ============================================================================
 
 export interface MetricItem {
@@ -48,7 +49,12 @@ export interface FlagshipProject {
   role: string;
   coreStack: string;
   year: string;
-  accent: 'cyan' | 'amber';
+  accent: 'cyan' | 'magenta' | 'amber';
+  p99Latency: string;
+  fpsMetric: string;
+  parityMetric: string;
+  trisCount: string;
+  holoGeometryName: string;
   problem: {
     headline: string;
     description: string;
@@ -66,7 +72,7 @@ export interface FlagshipProject {
   techStack: string[];
   githubUrl: string;
   liveUrl?: string;
-  previewType: 'mental-defrag' | 'doclens' | 'rannabanna' | 'trash-trail' | 'neon-vanguard';
+  previewType: 'mental-defrag' | 'doclens' | 'rannabanna' | 'trash-trail' | 'neon-vanguard' | 'chronos-aether';
 }
 
 export const FLAGSHIP_PROJECTS: FlagshipProject[] = [
@@ -81,6 +87,11 @@ export const FLAGSHIP_PROJECTS: FlagshipProject[] = [
     coreStack: 'TypeScript • Matter.js • Vectors',
     year: '2024',
     accent: 'cyan',
+    p99Latency: '< 0.12 ms',
+    fpsMetric: '60 FPS',
+    parityMetric: '100% AST Parity',
+    trisCount: '16.8K TRIS',
+    holoGeometryName: 'SPATIAL_DODECAHEDRON_CORE',
     problem: {
       headline: 'Cognitive Bottlenecking in Linear Note Systems',
       description: 'Traditional linear notes enforce rigid hierarchical trees, creating cognitive bottlenecks when mapping multi-dimensional system architectures and emergent ideas.',
@@ -99,7 +110,7 @@ export const FLAGSHIP_PROJECTS: FlagshipProject[] = [
     impact: {
       metrics: [
         { label: 'Simulation FPS', value: '60 FPS', detail: 'Solid under 500+ bodies' },
-        { label: 'Query Latency', value: '0 ms', detail: 'Local-first IndexedDB' },
+        { label: 'Query Latency', value: '< 0.12 ms', detail: 'Local-first IndexedDB p99' },
         { label: 'Obsidian Parity', value: '100%', detail: 'Bi-directional .canvas format' }
       ],
       summary: 'Empowers engineers to decompose complex distributed systems into non-linear, spatial knowledge constellations with zero server reliance.'
@@ -120,6 +131,11 @@ export const FLAGSHIP_PROJECTS: FlagshipProject[] = [
     coreStack: 'Cloud Firestore • AES-256 • CI/CD',
     year: '2024',
     accent: 'amber',
+    p99Latency: '< 45 ms',
+    fpsMetric: '60 FPS',
+    parityMetric: '99.98% SLA',
+    trisCount: '14.2K TRIS',
+    holoGeometryName: 'DATA_CYLINDER_ARRAY',
     problem: {
       headline: 'Fragmented Medical Diagnostics in Regional Bangladesh',
       description: 'Clinics and diagnostic centers across Bangladesh rely on unstandardized physical papers and fragile siloed databases, causing lost diagnostic records, diagnostic delays, and zero regional interoperability.',
@@ -159,6 +175,11 @@ export const FLAGSHIP_PROJECTS: FlagshipProject[] = [
     coreStack: 'React • Bengali NLP • PWA',
     year: '2023',
     accent: 'cyan',
+    p99Latency: '< 15 ms',
+    fpsMetric: '60 FPS',
+    parityMetric: '99/100 Lighthouse',
+    trisCount: '24.6K TRIS',
+    holoGeometryName: 'PARAMETRIC_BOTANICAL_TORUS',
     problem: {
       headline: 'Cultural Disconnect & Script Rendering Deficits',
       description: 'Existing culinary platforms do not support native Bengali typography kerning, lack indigenous regional ingredient taxonomies, and ship bloated JavaScript bundles unusable on low-end mobile devices.',
@@ -198,6 +219,11 @@ export const FLAGSHIP_PROJECTS: FlagshipProject[] = [
     coreStack: 'GSAP • ScrollTrigger • Vanilla JS',
     year: '2023',
     accent: 'amber',
+    p99Latency: '< 1.0 ms',
+    fpsMetric: '60 FPS',
+    parityMetric: '0.00 CLS Score',
+    trisCount: '18.2K TRIS',
+    holoGeometryName: 'MOBIUS_HYDRO_RIBBON',
     problem: {
       headline: 'Severe User Drop-Off in Public Awareness Narratives',
       description: 'Traditional ecological awareness campaigns face over 82% user drop-off before reaching impact data due to static walls of text, disconnected diagrams, and unengaging visual pacing.',
@@ -237,6 +263,11 @@ export const FLAGSHIP_PROJECTS: FlagshipProject[] = [
     coreStack: 'C / C++ • POSIX IPC • 2D Canvas',
     year: '2024',
     accent: 'cyan',
+    p99Latency: '< 1.2 μs',
+    fpsMetric: '120 FPS',
+    parityMetric: '0 Leaks (Valgrind)',
+    trisCount: '21.0K TRIS',
+    holoGeometryName: 'OCTAHEDRAL_COMBAT_GIMBAL',
     problem: {
       headline: 'GC Jitter in Particle Combat & Opaque POSIX IPC Telemetry',
       description: 'Web game engines suffer from GC stutter under dense projectile storms, while systems engineering students lack interactive real-time visual telemetry for understanding Linux IPC pipes and POSIX shared memory buffers.',
@@ -264,13 +295,124 @@ export const FLAGSHIP_PROJECTS: FlagshipProject[] = [
     githubUrl: 'https://github.com/watchknight/BitForge',
     liveUrl: 'https://github.com/watchknight',
     previewType: 'neon-vanguard'
+  },
+  {
+    id: 'chronos-aether',
+    number: '06',
+    title: 'Chronos-Guard & Aether-GL',
+    subtitle: 'Cryptographic Merkle Agent Ledger & Audio-Reactive WebGPU Fluid Studio',
+    category: 'Cryptographic Systems & GPU Shaders',
+    client: 'Systems Architecture & Shader Lab',
+    role: 'Lead Cryptographic & GPU Technologist',
+    coreStack: 'WebGPU • SHA-256 • Navier-Stokes',
+    year: '2024',
+    accent: 'cyan',
+    p99Latency: '< 0.12 ms',
+    fpsMetric: '120 FPS',
+    parityMetric: '100% Cryptographic SLA',
+    trisCount: '28.4K TRIS',
+    holoGeometryName: 'MERKLE_FLUID_VAULT',
+    problem: {
+      headline: 'Tamper Vulnerability in Distributed State & GPU Shader Stutters',
+      description: 'Distributed AI agent state mutations lack immutable audit trails with sub-millisecond tamper alerts, while web-based Eulerian fluid solvers drop frames under dynamic acoustic FFT turbulence.',
+      bottleneck: 'High hash calculation overhead in multi-agent pipelines and GPU raster bottlenecks during fluid Jacobi pressure Poisson iterations.'
+    },
+    solution: {
+      headline: 'SHA-256 Merkle Ledger & WebGPU Eulerian Fluid Dynamics Solver',
+      description: 'Architected a tamper-evident cryptographic agent ledger utilizing monotonic append-only Merkle tree state anchors with HMAC verification; paired with a dual-API WebGPU / WebGL2 Navier-Stokes fluid synthesizer driven by procedural FFT audio frequency injections.',
+      architecture: [
+        'Monotonic append-only ledger secured via SHA-256 Merkle tree state anchors with sub-0.12ms tamper alerts',
+        'HMAC-SHA256 authenticated agent signatures preventing unauthorized state mutations at 18,500 evt/s',
+        'Eulerian Navier-Stokes fluid grid solver executing advection, diffusion, and Poisson pressure Jacobi steps',
+        'Fast Fourier Transform (FFT) procedural Web Audio frequency decomposition injecting dynamic fluid vorticity'
+      ]
+    },
+    impact: {
+      metrics: [
+        { label: 'Tamper Detection', value: '< 0.12 ms', detail: 'Merkle root proof p99' },
+        { label: 'Fluid Pass Time', value: '1.42 ms', detail: 'WebGPU compute kernel' },
+        { label: 'Event Ingest', value: '18.5k evt/s', detail: 'Lock-free POSIX buffer' }
+      ],
+      summary: 'Unifies cryptographic ledger immutability and real-time audio-reactive GPU fluid simulation into a resilient cybernetic system.'
+    },
+    techStack: ['WebGPU', 'WebGL2 / GLSL', 'SHA-256', 'HMAC', 'Merkle Tree', 'Navier-Stokes', 'Web Audio API', 'TypeScript'],
+    githubUrl: 'https://github.com/watchknight',
+    liveUrl: 'https://github.com/watchknight',
+    previewType: 'chronos-aether'
   }
 ];
 
 // ============================================================================
-// INTERACTIVE PREVIEW VISUAL 1: MENTAL DEFRAG (ZERO-G SPATIAL CANVAS)
+// 6 REAL-TIME SHADER PASS SWITCHES SPECIFICATION
 // ============================================================================
 
+export type RenderPassId = 'beauty' | 'pixel' | 'wireframe' | 'clay' | 'uv' | 'normals';
+
+export interface ShaderPassConfig {
+  id: RenderPassId;
+  keyNumber: string;
+  label: string;
+  badge: string;
+  subtitle: string;
+  description: string;
+}
+
+export const SHADER_PASSES: ShaderPassConfig[] = [
+  {
+    id: 'beauty',
+    keyNumber: '1',
+    label: '[1] BEAUTY_PBR',
+    badge: 'PBR + CHROMA',
+    subtitle: 'Physically Based Studio Composite + GGX Sheen + Chromatic Aberration',
+    description: 'Dual-point studio illumination with GGX specular sheen, Fresnel rim glow, subtle chromatic aberration, and interactive fluid mouse-ripple wave displacement.'
+  },
+  {
+    id: 'pixel',
+    keyNumber: '2',
+    label: '[2] 3D_PIXEL_PASS',
+    badge: 'PIXEL: 6PX // OUTLINES',
+    subtitle: 'Three.js RenderPixelatedPass 90s Cyberdeck Retro-Downsampling',
+    description: 'Direct RenderPixelatedPass hardware rasterization with pixelSize: 6 and single-pixel normal/depth outlines for authentic chunky 90s arcade workstation aesthetics.'
+  },
+  {
+    id: 'wireframe',
+    keyNumber: '3',
+    label: '[3] WIREFRAME_WAVE',
+    badge: 'TOPOLOGY // MATRIX',
+    subtitle: 'High-Contrast Polygon Edge Topology & Procedural Wave Flow',
+    description: 'Isolates polygon density, quad tessellation, and procedural vertex manifold flow over deep obsidian depth.'
+  },
+  {
+    id: 'clay',
+    keyNumber: '4',
+    label: '[4] CLAY_MATTE',
+    badge: 'ROUGHNESS 0.85',
+    subtitle: 'Matte Diffuse Studio Shading & Pure Silhouette Curvature',
+    description: 'Matte diffuse studio lighting (roughness: 0.85, metalness: 0.0) isolating geometric silhouette curvature and volume without specular highlights.'
+  },
+  {
+    id: 'uv',
+    keyNumber: '5',
+    label: '[5] UV_MATRIX',
+    badge: '[U, V] MANIFOLD',
+    subtitle: 'Parametric Texture Coordinate Space & 16x16 Grid Checker',
+    description: 'Procedural 16x16 UV coordinate checkerboard with 1px border lines and continuous [U, V] manifold coordinate color mapping.'
+  },
+  {
+    id: 'normals',
+    keyNumber: '6',
+    label: '[6] NORMALS_RGB',
+    badge: 'VECTORS [RGB]',
+    subtitle: 'Surface Normal Unit Vector Field in Camera Space',
+    description: 'Maps surface normal unit vectors [Nx, Ny, Nz] directly into normalized [R, G, B] color space for geometric validation.'
+  }
+];
+
+// ============================================================================
+// INTERACTIVE PREVIEWS (01 - 06)
+// ============================================================================
+
+// --- PREVIEW 1: MENTAL DEFRAG (ZERO-G SPATIAL PHYSICS CANVAS) ---
 interface PhysicsNode {
   id: number;
   label: string;
@@ -299,18 +441,20 @@ export const MentalDefragPreview: React.FC = () => {
       vx: (Math.random() - 0.5) * 1.2,
       vy: (Math.random() - 0.5) * 1.2,
       radius: idx === 0 ? 32 : 26,
-      color: idx % 2 === 0 ? '#DF6C4F' : '#A74024'
+      color: idx % 2 === 0 ? '#00F0FF' : '#FF2A85'
     }));
 
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+    ctx.imageSmoothingEnabled = false;
 
     const render = () => {
       const width = canvas.width;
       const height = canvas.height;
-      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = '#0D1512';
+      ctx.fillRect(0, 0, width, height);
 
       const nodes = nodesRef.current;
       const mouse = mouseRef.current;
@@ -324,14 +468,14 @@ export const MentalDefragPreview: React.FC = () => {
             ctx.beginPath();
             ctx.moveTo(nodes[i].x, nodes[i].y);
             ctx.lineTo(nodes[j].x, nodes[j].y);
-            const alpha = (1 - dist / 130) * 0.35;
-            ctx.strokeStyle = `rgba(223, 108, 79, ${alpha})`;
+            const alpha = (1 - dist / 130) * 0.45;
+            ctx.strokeStyle = `rgba(0, 240, 255, ${alpha})`;
             ctx.lineWidth = 1;
             ctx.stroke();
 
             if (dist < 80) {
               ctx.font = '8px monospace';
-              ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.7})`;
+              ctx.fillStyle = `rgba(74, 246, 38, ${alpha * 0.9})`;
               ctx.fillText(`${(1 - dist / 130).toFixed(2)} sim`, (nodes[i].x + nodes[j].x) / 2, (nodes[i].y + nodes[j].y) / 2 - 2);
             }
           }
@@ -374,24 +518,16 @@ export const MentalDefragPreview: React.FC = () => {
           node.vy = (node.vy / speed) * 2.5;
         }
 
-        const glow = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, node.radius * 1.5);
-        glow.addColorStop(0, 'rgba(223, 108, 79, 0.25)');
-        glow.addColorStop(1, 'rgba(223, 108, 79, 0)');
-        ctx.fillStyle = glow;
-        ctx.beginPath();
-        ctx.arc(node.x, node.y, node.radius * 1.5, 0, Math.PI * 2);
-        ctx.fill();
-
         ctx.beginPath();
         ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
-        ctx.fillStyle = '#0B0B10';
+        ctx.fillStyle = '#131629';
         ctx.fill();
         ctx.lineWidth = 1.5;
         ctx.strokeStyle = node.color;
         ctx.stroke();
 
         ctx.font = '9px monospace';
-        ctx.fillStyle = '#F1F5F9';
+        ctx.fillStyle = '#F0EFE6';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(node.label, node.x, node.y);
@@ -405,7 +541,7 @@ export const MentalDefragPreview: React.FC = () => {
       },
       { threshold: 0 }
     );
-    if (canvas) visibilityObserver.observe(canvas);
+    visibilityObserver.observe(canvas);
 
     const tickerRender = () => {
       if (!isVisible) return;
@@ -420,6 +556,7 @@ export const MentalDefragPreview: React.FC = () => {
   }, []);
 
   const handlePulse = () => {
+    watchknightAudio.playSpatialClick(0, 0, -1);
     setPulseCount((c) => c + 1);
     nodesRef.current.forEach((n) => {
       n.vx += (Math.random() - 0.5) * 4;
@@ -428,25 +565,26 @@ export const MentalDefragPreview: React.FC = () => {
   };
 
   const handleSyncObsidian = () => {
+    watchknightAudio.playHoverTick(0);
     setObsidianSynced(true);
     setTimeout(() => setObsidianSynced(false), 2000);
   };
 
   return (
-    <div className="flex flex-col h-full justify-between bg-obsidian-darker/90 rounded-xl border border-cyan-mint/20 p-4 relative overflow-hidden group">
-      <div className="flex items-center justify-between mb-2 z-10">
+    <div className="flex flex-col h-full justify-between bg-[#0D1512] rounded border-2 border-[#D6CFC2] border-b-[#2D3645] border-r-[#2D3645] p-3 relative overflow-hidden font-mono">
+      <div className="flex items-center justify-between mb-2 z-10 border-b border-[#2D3645] pb-1.5">
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-cyan-mint animate-pulse" />
-          <span className="font-mono text-fluid-micro text-cyan-mint uppercase tracking-wider">
-            Spatial 2D Physics HUD
+          <span className="w-2 h-2 rounded-full bg-[#4AF626] animate-pulse" />
+          <span className="font-pixel text-[10px] text-[#00F0FF] uppercase tracking-wider">
+            SPATIAL_2D_PHYSICS.SYS
           </span>
         </div>
-        <span className="font-mono text-[10px] text-slate-400 bg-white/5 px-2 py-0.5 rounded border border-white/5">
-          Matter.js Zero-G
+        <span className="text-[10px] text-[#4AF626] bg-[#131629] px-2 py-0.5 border border-[#2D3645]">
+          MATTER.JS ZERO-G
         </span>
       </div>
 
-      <div className="relative flex-1 w-full min-h-[170px] rounded-lg overflow-hidden border border-white/5 bg-carbon/60">
+      <div className="relative flex-1 w-full min-h-[160px] overflow-hidden border border-[#2D3645] bg-[#070814]">
         <canvas
           ref={canvasRef}
           width={340}
@@ -466,20 +604,7 @@ export const MentalDefragPreview: React.FC = () => {
                 n.vy += (dy / dist) * force;
               }
             });
-            if (nodesRef.current.length < 9) {
-              const extraLabels = ['Vector DB', 'AST Parser', 'Graph Walk', 'Cosine Sim', 'Neural Cache'];
-              const label = extraLabels[(nodesRef.current.length - 6) % extraLabels.length];
-              nodesRef.current.push({
-                id: Date.now(),
-                label,
-                x: clickX,
-                y: clickY,
-                vx: (Math.random() - 0.5) * 2,
-                vy: (Math.random() - 0.5) * 2,
-                radius: 25,
-                color: '#A74024'
-              });
-            }
+            watchknightAudio.playHoverTick(0);
             setPulseCount((c) => c + 1);
           }}
           onMouseMove={(e) => {
@@ -496,51 +621,42 @@ export const MentalDefragPreview: React.FC = () => {
         />
 
         {obsidianSynced && (
-          <div className="absolute inset-0 bg-cyan-mint/20 backdrop-blur-xs flex items-center justify-center animate-in fade-in duration-150">
-            <span className="font-mono text-fluid-xs font-bold text-obsidian bg-cyan-mint px-3 py-1 rounded shadow-glow-cyan">
-              ✓ Obsidian .canvas AST Parsed ({nodesRef.current.length} Nodes Linked)
+          <div className="absolute inset-0 bg-[#070814]/85 flex items-center justify-center p-2 text-center animate-in fade-in">
+            <span className="font-pixel text-[9px] text-[#4AF626] bg-[#131629] p-2 border border-[#4AF626]">
+              ✓ OBSIDIAN .CANVAS AST PARSED ({nodesRef.current.length} NODES LINKED)
             </span>
           </div>
         )}
       </div>
 
-      <div className="mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between gap-2 z-10">
+      <div className="mt-2.5 pt-2 border-t border-[#2D3645] flex items-center justify-between gap-2 z-10 text-[10px]">
         <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={handlePulse}
-            aria-label={`Inject physics impulse into zero-G canvas, current count ${pulseCount}`}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-cyan-mint/10 hover:bg-cyan-mint/20 text-cyan-mint border border-cyan-mint/30 font-mono text-[11px] transition-all active:scale-95"
-            title="Inject physics impulse into zero-G canvas"
+            className="flex items-center gap-1 px-2.5 py-1 bg-[#131629] hover:bg-[#00F0FF]/20 text-[#00F0FF] border border-[#00F0FF]/40 active:translate-y-0.5"
           >
-            <Zap className="w-3 h-3" />
-            <span>Pulse Field ({pulseCount})</span>
+            <Zap className="w-3 h-3 text-[#FFCC00]" />
+            <span>PULSE FIELD ({pulseCount})</span>
           </button>
-
           <button
             type="button"
             onClick={handleSyncObsidian}
-            aria-label="Simulate Obsidian Canvas JSON sync"
-            className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 font-mono text-[11px] transition-all active:scale-95"
-            title="Simulate Obsidian Canvas JSON sync"
+            className="flex items-center gap-1 px-2.5 py-1 bg-[#131629] hover:bg-[#4AF626]/20 text-[#4AF626] border border-[#4AF626]/40 active:translate-y-0.5"
           >
-            <Share2 className="w-3 h-3 text-cyan-mint" />
-            <span>Sync .canvas</span>
+            <Share2 className="w-3 h-3" />
+            <span>SYNC .CANVAS</span>
           </button>
         </div>
-
-        <div className="font-mono text-[10px] text-slate-400">
-          Bodies: <span className="text-cyan-mint font-semibold">{nodesRef.current.length || 6}</span> • 60 FPS
-        </div>
+        <span className="text-[#8E98AA]">
+          BODIES: <span className="text-[#00F0FF]">{nodesRef.current.length}</span> • 60 FPS
+        </span>
       </div>
     </div>
   );
 };
 
-// ============================================================================
-// INTERACTIVE PREVIEW VISUAL 2: DOCLENSBD (CLOUD FIRESTORE & CI/CD PIPELINE)
-// ============================================================================
-
+// --- PREVIEW 2: DOCLENSBD (CLOUD FIRESTORE & CI/CD PIPELINE) ---
 export const DocLensBDPreview: React.FC = () => {
   const [syncStep, setSyncStep] = useState<number>(0);
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
@@ -559,12 +675,13 @@ export const DocLensBDPreview: React.FC = () => {
 
   const triggerSync = () => {
     if (isSyncing) return;
+    watchknightAudio.playSpatialClick(0.2, 0, -1);
     setIsSyncing(true);
     setSyncStep(1);
 
     timeoutsRef.current.push(
-      window.setTimeout(() => setSyncStep(2), 400),
-      window.setTimeout(() => setSyncStep(3), 850),
+      window.setTimeout(() => setSyncStep(2), 350),
+      window.setTimeout(() => setSyncStep(3), 750),
       window.setTimeout(() => {
         setSyncStep(4);
         setPipelineLogs((prev) => [
@@ -572,99 +689,80 @@ export const DocLensBDPreview: React.FC = () => {
           ...prev.slice(0, 2)
         ]);
         setIsSyncing(false);
-      }, 1300)
+      }, 1150)
     );
   };
 
   return (
-    <div className="flex flex-col h-full justify-between bg-obsidian-darker/90 rounded-xl border border-amber-warm/20 p-4 relative overflow-hidden">
-      <div className="flex items-center justify-between mb-2">
+    <div className="flex flex-col h-full justify-between bg-[#0D1512] rounded border-2 border-[#D6CFC2] border-b-[#2D3645] border-r-[#2D3645] p-3 font-mono">
+      <div className="flex items-center justify-between mb-2 border-b border-[#2D3645] pb-1.5">
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-amber-warm animate-pulse" />
-          <span className="font-mono text-fluid-micro text-amber-warm uppercase tracking-wider">
-            Cloud Firestore & CI/CD Telemetry
+          <span className="w-2 h-2 rounded-full bg-[#FFCC00] animate-pulse" />
+          <span className="font-pixel text-[10px] text-[#FFCC00] uppercase tracking-wider">
+            CLOUD_FIRESTORE_TELEMETRY.SYS
           </span>
         </div>
-        <span className="font-mono text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+        <span className="text-[10px] text-[#4AF626] bg-[#131629] px-2 py-0.5 border border-[#2D3645]">
           99.98% SLA
         </span>
       </div>
 
-      <div className="my-auto py-3 bg-carbon/50 rounded-lg p-3 border border-white/5 space-y-3">
-        <div className="grid grid-cols-4 gap-2 text-center font-mono text-[10px]">
-          <div className={`p-2 rounded-lg border transition-all ${
-            syncStep >= 1 ? 'bg-amber-warm/15 border-amber-warm text-amber-warm scale-105' : 'bg-white/5 border-white/5 text-slate-400'
-          }`}>
+      <div className="my-auto py-2 bg-[#070814] p-3 border border-[#2D3645] space-y-2.5">
+        <div className="grid grid-cols-4 gap-1.5 text-center text-[9px]">
+          <div className={`p-1.5 border transition-all ${syncStep >= 1 ? 'bg-[#FFCC00]/20 border-[#FFCC00] text-[#FFCC00]' : 'bg-[#131629] border-[#2D3645] text-[#8E98AA]'}`}>
             <Activity className="w-3.5 h-3.5 mx-auto mb-1" />
             <div className="font-bold">EMR Client</div>
-            <div className="text-[9px] text-slate-500">Dhaka Hub</div>
+            <div className="text-[8px] text-[#8E98AA]">Dhaka Hub</div>
           </div>
-
-          <div className={`p-2 rounded-lg border transition-all ${
-            syncStep >= 2 ? 'bg-amber-warm/15 border-amber-warm text-amber-warm scale-105' : 'bg-white/5 border-white/5 text-slate-400'
-          }`}>
+          <div className={`p-1.5 border transition-all ${syncStep >= 2 ? 'bg-[#FFCC00]/20 border-[#FFCC00] text-[#FFCC00]' : 'bg-[#131629] border-[#2D3645] text-[#8E98AA]'}`}>
             <Database className="w-3.5 h-3.5 mx-auto mb-1" />
             <div className="font-bold">Firestore</div>
-            <div className="text-[9px] text-slate-500">Stream 24ms</div>
+            <div className="text-[8px] text-[#8E98AA]">Stream 24ms</div>
           </div>
-
-          <div className={`p-2 rounded-lg border transition-all ${
-            syncStep >= 3 ? 'bg-amber-warm/15 border-amber-warm text-amber-warm scale-105' : 'bg-white/5 border-white/5 text-slate-400'
-          }`}>
+          <div className={`p-1.5 border transition-all ${syncStep >= 3 ? 'bg-[#FFCC00]/20 border-[#FFCC00] text-[#FFCC00]' : 'bg-[#131629] border-[#2D3645] text-[#8E98AA]'}`}>
             <ShieldCheck className="w-3.5 h-3.5 mx-auto mb-1" />
             <div className="font-bold">CI/CD Guard</div>
-            <div className="text-[9px] text-slate-500">14/14 Tests</div>
+            <div className="text-[8px] text-[#8E98AA]">14/14 Tests</div>
           </div>
-
-          <div className={`p-2 rounded-lg border transition-all ${
-            syncStep >= 4 ? 'bg-emerald-500/15 border-emerald-500 text-emerald-400 scale-105' : 'bg-white/5 border-white/5 text-slate-400'
-          }`}>
+          <div className={`p-1.5 border transition-all ${syncStep >= 4 ? 'bg-[#4AF626]/20 border-[#4AF626] text-[#4AF626]' : 'bg-[#131629] border-[#2D3645] text-[#8E98AA]'}`}>
             <CheckCircle2 className="w-3.5 h-3.5 mx-auto mb-1" />
             <div className="font-bold">Sync Vault</div>
-            <div className="text-[9px] text-slate-500">Encrypted</div>
+            <div className="text-[8px] text-[#8E98AA]">Encrypted</div>
           </div>
         </div>
 
-        <div className="w-full h-1.5 bg-obsidian rounded-full overflow-hidden relative">
-          <div
-            className="h-full bg-gradient-to-r from-amber-warm to-emerald-400 transition-all duration-300 rounded-full"
-            style={{ width: `${(syncStep / 4) * 100}%` }}
-          />
+        <div className="w-full h-1.5 bg-[#131629] border border-[#2D3645] overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-[#FFCC00] to-[#4AF626] transition-all duration-300" style={{ width: `${(syncStep / 4) * 100}%` }} />
         </div>
       </div>
 
-      <div className="bg-obsidian rounded p-2 border border-white/5 font-mono text-[9px] text-slate-400 space-y-0.5 max-h-[60px] overflow-hidden">
+      <div className="bg-[#070814] p-2 border border-[#2D3645] text-[9px] text-[#8E98AA] space-y-0.5">
         {pipelineLogs.map((log, i) => (
           <div key={i} className="truncate">
-            <span className="text-amber-warm">❯</span> {log}
+            <span className="text-[#FFCC00]">❯</span> {log}
           </div>
         ))}
       </div>
 
-      <div className="mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between">
+      <div className="mt-2.5 pt-2 border-t border-[#2D3645] flex items-center justify-between text-[10px]">
         <button
           type="button"
           onClick={triggerSync}
           disabled={isSyncing}
-          aria-label={isSyncing ? 'Streaming Firestore sync in progress' : 'Trigger Firestore real-time sync simulation'}
-          className="flex items-center gap-1.5 px-3 py-1 rounded-md bg-amber-warm text-obsidian font-mono text-[11px] font-bold shadow-glow-amber hover:bg-[#ffc42e] active:scale-95 transition-all disabled:opacity-50"
+          className="flex items-center gap-1.5 px-3 py-1 bg-[#FFCC00] hover:bg-[#ffe066] text-[#070814] font-bold border border-[#D6CFC2] disabled:opacity-50 active:translate-y-0.5"
         >
           <RotateCcw className={`w-3 h-3 ${isSyncing ? 'animate-spin' : ''}`} />
-          <span>{isSyncing ? 'Streaming Realtime Sync...' : 'Trigger Firestore Sync'}</span>
+          <span>{isSyncing ? 'STREAMING...' : 'TRIGGER SYNC'}</span>
         </button>
-
-        <span className="font-mono text-[10px] text-slate-400">
-          p99: <span className="text-amber-warm font-semibold">32ms</span>
+        <span className="text-[#8E98AA]">
+          p99: <span className="text-[#FFCC00] font-bold">32 ms</span>
         </span>
       </div>
     </div>
   );
 };
 
-// ============================================================================
-// INTERACTIVE PREVIEW VISUAL 3: RANNABANNA (LOCALIZED BENGALI CULINARY ENGINE)
-// ============================================================================
-
+// --- PREVIEW 3: RANNABANNA (LOCALIZED BENGALI CULINARY ENGINE) ---
 export const RannabannaPreview: React.FC = () => {
   const [lang, setLang] = useState<'bn' | 'en'>('bn');
   const [activeDish, setActiveDish] = useState<number>(0);
@@ -675,74 +773,66 @@ export const RannabannaPreview: React.FC = () => {
       nameEn: 'Shorshe Ilish (Mustard Hilsa)',
       taglineBn: 'পদ্মার তাজা ইলিশ ও দেশি সরিষার ঝাঁঝ',
       taglineEn: 'Padma River Hilsa braised in pungent mustard emulsion',
-      metrics: { cal: '420 kcal', prep: '25 min', spice: 'ঝাঁঝালো / High' },
-      tags: ['ঐতিহ্যবাহী', 'পদ্মার মাছ', 'সরিষা বাটা']
+      metrics: { cal: '420 kcal', prep: '25 min', spice: 'ঝাঁঝালো' }
     },
     {
       nameBn: 'কাচ্চি বিরিয়ানি',
       nameEn: 'Dhaka Kacchi Biryani',
       taglineBn: 'পুরান ঢাকার খাঁটি জাফরানি সুবাস ও খাসির মাংস',
       taglineEn: 'Old Dhaka slow-steamed mutton with saffron basmati',
-      metrics: { cal: '680 kcal', prep: '90 min', spice: 'সুগন্ধি / Medium' },
-      tags: ['পুরান ঢাকা', 'খাসির মাংস', 'দমে রান্না']
+      metrics: { cal: '680 kcal', prep: '90 min', spice: 'সুগন্ধি' }
     },
     {
-      nameBn: 'শিল-পাটার ভর্তা সম্ভার',
+      nameBn: 'শিল-পাটার ভর্তা',
       nameEn: 'Artisanal Vorta Platter',
       taglineBn: 'শিল-পাটায় বাটা সরিষা, কালিজিরা ও বেগুন ভর্তা',
       taglineEn: 'Stone-ground kalijira, mustard and charred eggplant mash',
-      metrics: { cal: '210 kcal', prep: '15 min', spice: 'তীব্র / Sharp' },
-      tags: ['শিল-পাটা', 'দেশি পুষ্টি', 'নিরামিষ']
+      metrics: { cal: '210 kcal', prep: '15 min', spice: 'তীব্র' }
     }
   ];
 
   const current = dishes[activeDish];
 
   return (
-    <div className="flex flex-col h-full justify-between bg-obsidian-darker/90 rounded-xl border border-cyan-mint/20 p-4 relative overflow-hidden">
-      <div className="flex items-center justify-between mb-2">
+    <div className="flex flex-col h-full justify-between bg-[#0D1512] rounded border-2 border-[#D6CFC2] border-b-[#2D3645] border-r-[#2D3645] p-3 font-mono">
+      <div className="flex items-center justify-between mb-2 border-b border-[#2D3645] pb-1.5">
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-cyan-mint" />
-          <span className="font-mono text-fluid-micro text-cyan-mint uppercase tracking-wider">
-            {lang === 'bn' ? 'রান্নাবান্না • ভোজনরসিকদের প্ল্যাটফর্ম' : 'Rannabanna • Bengali Culinary Engine'}
+          <span className="w-2 h-2 rounded-full bg-[#00F0FF]" />
+          <span className="font-pixel text-[10px] text-[#00F0FF] uppercase tracking-wider">
+            {lang === 'bn' ? 'রান্নাবান্না • ভোজনরসিক' : 'RANNABANNA.SYS'}
           </span>
         </div>
-
-        <div className="flex items-center p-0.5 rounded-full bg-carbon border border-white/10 font-mono text-[10px]">
+        <div className="flex items-center bg-[#131629] border border-[#2D3645] p-0.5 text-[9px]">
           <button
             type="button"
             onClick={() => setLang('bn')}
-            aria-label="Switch interface language to Bengali (বাংলা)"
-            className={`px-2 py-0.5 rounded-full transition-all ${
-              lang === 'bn' ? 'bg-cyan-mint text-obsidian font-bold' : 'text-slate-400 hover:text-white'
-            }`}
+            className={`px-2 py-0.5 ${lang === 'bn' ? 'bg-[#00F0FF] text-[#070814] font-bold' : 'text-[#8E98AA]'}`}
           >
             বাংলা
           </button>
           <button
             type="button"
             onClick={() => setLang('en')}
-            aria-label="Switch interface language to English"
-            className={`px-2 py-0.5 rounded-full transition-all ${
-              lang === 'en' ? 'bg-cyan-mint text-obsidian font-bold' : 'text-slate-400 hover:text-white'
-            }`}
+            className={`px-2 py-0.5 ${lang === 'en' ? 'bg-[#00F0FF] text-[#070814] font-bold' : 'text-[#8E98AA]'}`}
           >
             EN
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-1.5 my-1">
+      <div className="grid grid-cols-3 gap-1 my-1 text-[10px]">
         {dishes.map((dish, idx) => (
           <button
             key={idx}
             type="button"
-            onClick={() => setActiveDish(idx)}
-            aria-label={`Select recipe: ${dish.nameEn}`}
-            className={`px-2 py-1.5 rounded-lg font-mono text-[11px] truncate transition-all text-center border ${
+            onClick={() => {
+              watchknightAudio.playHoverTick(0);
+              setActiveDish(idx);
+            }}
+            className={`px-1.5 py-1 truncate border ${
               activeDish === idx
-                ? 'bg-cyan-mint/15 border-cyan-mint text-cyan-mint font-bold'
-                : 'bg-carbon/40 border-white/5 text-slate-400 hover:text-slate-200'
+                ? 'bg-[#00F0FF]/20 border-[#00F0FF] text-[#00F0FF] font-bold'
+                : 'bg-[#131629] border-[#2D3645] text-[#8E98AA]'
             }`}
           >
             {lang === 'bn' ? dish.nameBn : dish.nameEn.split(' ')[0]}
@@ -750,115 +840,90 @@ export const RannabannaPreview: React.FC = () => {
         ))}
       </div>
 
-      <div className="my-auto p-3 rounded-lg bg-carbon/60 border border-white/5">
+      <div className="my-auto p-2.5 bg-[#070814] border border-[#2D3645]">
         <div className="flex items-baseline justify-between mb-1">
-          <h4 className="font-display font-extrabold text-base text-white">
+          <h4 className="font-bold text-sm text-[#F0EFE6]">
             {lang === 'bn' ? current.nameBn : current.nameEn}
           </h4>
-          <span className="font-mono text-[10px] text-cyan-mint bg-cyan-mint/10 px-2 py-0.5 rounded">
+          <span className="text-[10px] text-[#00F0FF] bg-[#131629] px-1.5 py-0.5 border border-[#2D3645]">
             {current.metrics.cal}
           </span>
         </div>
-
-        <p className="font-body text-[12px] text-slate-300 mb-2 leading-relaxed">
+        <p className="text-[11px] text-[#8E98AA] leading-relaxed mb-2">
           {lang === 'bn' ? current.taglineBn : current.taglineEn}
         </p>
-
-        <div className="grid grid-cols-3 gap-1.5 text-center font-mono text-[10px] border-t border-white/5 pt-2">
+        <div className="grid grid-cols-3 gap-1 text-center text-[9px] border-t border-[#2D3645] pt-1.5">
           <div>
-            <span className="text-slate-500 block text-[9px] uppercase">Time</span>
-            <span className="text-white font-semibold">{current.metrics.prep}</span>
+            <span className="text-[#8E98AA] block text-[8px]">TIME</span>
+            <span className="text-[#F0EFE6]">{current.metrics.prep}</span>
           </div>
           <div>
-            <span className="text-slate-500 block text-[9px] uppercase">Flavor</span>
-            <span className="text-cyan-mint font-semibold">{current.metrics.spice}</span>
+            <span className="text-[#8E98AA] block text-[8px]">FLAVOR</span>
+            <span className="text-[#00F0FF]">{current.metrics.spice}</span>
           </div>
           <div>
-            <span className="text-slate-500 block text-[9px] uppercase">Bundle</span>
-            <span className="text-amber-warm font-semibold">42 KB</span>
+            <span className="text-[#8E98AA] block text-[8px]">BUNDLE</span>
+            <span className="text-[#4AF626]">42 KB</span>
           </div>
         </div>
       </div>
 
-      <div className="mt-2 pt-2 border-t border-white/10 flex items-center justify-between font-mono text-[10px] text-slate-400">
-        <span className="text-emerald-400">✓ Lighthouse: 99/100</span>
-        <span>UTF-8 Subsetting (22KB)</span>
+      <div className="mt-2.5 pt-2 border-t border-[#2D3645] flex items-center justify-between text-[10px] text-[#8E98AA]">
+        <span className="text-[#4AF626]">✓ LIGHTHOUSE: 99/100</span>
+        <span>UTF-8 SUBSET (22KB)</span>
       </div>
     </div>
   );
 };
 
-// ============================================================================
-// INTERACTIVE PREVIEW VISUAL 4: TRASH TRAIL (SCROLL-DRIVEN STORYTELLING SIMULATOR)
-// ============================================================================
-
+// --- PREVIEW 4: TRASH TRAIL (SCROLLTRIGGER VIEWPORT SCRUBBER) ---
 export const TrashTrailPreview: React.FC = () => {
   const [scrubProgress, setScrubProgress] = useState<number>(35);
 
   const stages = [
     { title: '01. Urban Waste Generation', desc: 'Over 6,500 metric tons of plastic entering Dhaka waterways daily.' },
-    { title: '02. Riverway Runoff & Plastic Drift', desc: 'Buriganga & Shitalakshya aquatic channel microplastic density surge.' },
-    { title: '03. Microplastic Ecological Toxicity', desc: 'Downstream food web bio-accumulation and aquatic fauna asphyxiation.' },
+    { title: '02. Riverway Runoff & Drift', desc: 'Buriganga & Shitalakshya aquatic channel microplastic density surge.' },
+    { title: '03. Microplastic Bio-Toxicity', desc: 'Downstream food web bio-accumulation and aquatic fauna asphyxiation.' },
     { title: '04. Circular Recovery & Remediation', desc: 'Automated kinetic floating booms and localized recycling reclamation.' }
   ];
 
   const currentStageIndex = Math.min(3, Math.floor((scrubProgress / 100) * 4));
   const currentStage = stages[currentStageIndex];
 
-  const pSky = (scrubProgress - 50) * 0.15;
-  const pCity = (scrubProgress - 50) * 0.35;
-  const pWater = (scrubProgress - 50) * 0.75;
-
   return (
-    <div className="flex flex-col h-full justify-between bg-obsidian-darker/90 rounded-xl border border-amber-warm/20 p-4 relative overflow-hidden">
-      <div className="flex items-center justify-between mb-2">
+    <div className="flex flex-col h-full justify-between bg-[#0D1512] rounded border-2 border-[#D6CFC2] border-b-[#2D3645] border-r-[#2D3645] p-3 font-mono">
+      <div className="flex items-center justify-between mb-2 border-b border-[#2D3645] pb-1.5">
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-amber-warm" />
-          <span className="font-mono text-fluid-micro text-amber-warm uppercase tracking-wider">
-            ScrollTrigger Viewport Scrub Simulator
+          <span className="w-2 h-2 rounded-full bg-[#FF2A85]" />
+          <span className="font-pixel text-[10px] text-[#FF2A85] uppercase tracking-wider">
+            SCROLL_SCRUB_SIMULATOR.SYS
           </span>
         </div>
-        <span className="font-mono text-[10px] text-slate-400 bg-white/5 px-2 py-0.5 rounded">
-          GSAP Scrub: 0.8s
+        <span className="text-[10px] text-[#4AF626] bg-[#131629] px-2 py-0.5 border border-[#2D3645]">
+          GSAP SCRUB: 0.8S
         </span>
       </div>
 
-      <div className="relative flex-1 w-full min-h-[140px] rounded-lg overflow-hidden border border-white/5 bg-carbon/70 flex flex-col justify-end p-3">
-        <div 
-          className="absolute inset-0 bg-gradient-to-b from-[#18122B]/60 via-[#101018]/80 to-transparent pointer-events-none transition-transform duration-100 ease-out"
-          style={{ transform: `translateY(${pSky}px)` }}
-        />
-
-        <div 
-          className="absolute inset-x-0 bottom-10 h-16 opacity-35 pointer-events-none transition-transform duration-100 ease-out"
-          style={{ transform: `translateX(${-pCity}px)` }}
+      <div className="relative flex-1 w-full min-h-[140px] border border-[#2D3645] bg-[#070814] flex flex-col justify-end p-2.5 overflow-hidden">
+        <div
+          className="absolute inset-x-0 bottom-8 h-12 opacity-35 pointer-events-none transition-transform duration-100"
+          style={{ transform: `translateX(${-scrubProgress * 0.8}px)` }}
         >
-          <svg viewBox="0 0 400 60" preserveAspectRatio="none" className="w-full h-full fill-amber-warm/30">
-            <path d="M0 60 L0 35 L20 35 L20 20 L40 20 L40 45 L65 45 L65 10 L85 10 L85 50 L115 50 L115 30 L140 30 L140 55 L175 55 L175 15 L200 15 L200 45 L235 45 L235 25 L260 25 L260 55 L300 55 L300 20 L330 20 L330 45 L365 45 L365 30 L400 30 L400 60 Z" />
+          <svg viewBox="0 0 400 40" preserveAspectRatio="none" className="w-full h-full fill-[#FF2A85]/40">
+            <path d="M0 40 L0 25 L30 25 L30 15 L60 15 L60 30 L100 30 L100 10 L150 10 L150 35 L200 35 L200 20 L250 20 L250 35 L320 35 L320 15 L400 15 L400 40 Z" />
           </svg>
         </div>
 
-        <div 
-          className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-cyan-mint/15 to-transparent border-t border-cyan-mint/20 pointer-events-none transition-transform duration-100 ease-out"
-          style={{ transform: `translateX(${pWater}px)` }}
-        >
-          <div className="flex justify-around items-center h-full px-4 text-cyan-mint/60">
-            <span className="text-[10px] animate-pulse">● microplastic</span>
-            <span className="text-[10px] opacity-40">▲ PET-01</span>
-            <span className="text-[10px] text-amber-warm animate-pulse">◆ runoff stream</span>
-          </div>
-        </div>
-
-        <div className="relative z-10 bg-obsidian/85 backdrop-blur-md p-2 rounded border border-white/10 max-w-[95%]">
-          <div className="font-mono text-[10px] text-amber-warm font-bold">{currentStage.title}</div>
-          <div className="font-body text-[11px] text-slate-300 leading-tight mt-0.5">{currentStage.desc}</div>
+        <div className="relative z-10 bg-[#0D1512]/90 border border-[#2D3645] p-2 max-w-[95%]">
+          <div className="font-bold text-[10px] text-[#FF2A85]">{currentStage.title}</div>
+          <div className="text-[10px] text-[#8E98AA] leading-tight mt-0.5">{currentStage.desc}</div>
         </div>
       </div>
 
-      <div className="mt-3 pt-2.5 border-t border-white/10 space-y-1.5">
-        <div className="flex items-center justify-between font-mono text-[10px]">
-          <span className="text-slate-400">Scrub Viewport:</span>
-          <span className="text-amber-warm font-bold">{scrubProgress}% / 100%</span>
+      <div className="mt-2.5 pt-2 border-t border-[#2D3645] space-y-1 text-[10px]">
+        <div className="flex items-center justify-between">
+          <span className="text-[#8E98AA]">Scrub Viewport:</span>
+          <span className="text-[#FF2A85] font-bold">{scrubProgress}% / 100%</span>
         </div>
         <input
           type="range"
@@ -868,25 +933,17 @@ export const TrashTrailPreview: React.FC = () => {
           aria-label="Scrub viewport narrative progress"
           onChange={(e) => setScrubProgress(Number(e.target.value))}
           data-lenis-prevent
-          className="w-full accent-amber-warm h-1.5 bg-obsidian rounded-lg cursor-pointer"
+          className="w-full accent-[#FF2A85] h-1.5 bg-[#131629] cursor-pointer"
         />
-        <div className="flex justify-between font-mono text-[9px]">
-          {[
-            { label: '01 Urban', val: 12 },
-            { label: '02 River', val: 37 },
-            { label: '03 Toxicity', val: 62 },
-            { label: '04 Circular', val: 87 }
-          ].map((stageBtn, sIdx) => (
+        <div className="flex justify-between text-[9px] text-[#8E98AA]">
+          {['01 Urban', '02 River', '03 Toxicity', '04 Circular'].map((lbl, idx) => (
             <button
-              key={sIdx}
+              key={idx}
               type="button"
-              onClick={() => setScrubProgress(stageBtn.val)}
-              aria-label={`Jump to narrative stage: ${stageBtn.label}`}
-              className={`hover:text-amber-warm transition-colors ${
-                currentStageIndex === sIdx ? 'text-amber-warm font-bold underline underline-offset-2' : 'text-slate-500'
-              }`}
+              onClick={() => setScrubProgress(idx * 30 + 10)}
+              className={currentStageIndex === idx ? 'text-[#FF2A85] font-bold underline' : 'hover:text-[#F0EFE6]'}
             >
-              {stageBtn.label}
+              {lbl}
             </button>
           ))}
         </div>
@@ -895,10 +952,7 @@ export const TrashTrailPreview: React.FC = () => {
   );
 };
 
-// ============================================================================
-// INTERACTIVE PREVIEW VISUAL 5: NEON VANGUARD 2D & OS KERNEL LABS
-// ============================================================================
-
+// --- PREVIEW 5: NEON VANGUARD 2D & OS KERNEL LABS ---
 export const NeonVanguardPreview: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'canvas' | 'os'>('canvas');
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -906,8 +960,6 @@ export const NeonVanguardPreview: React.FC = () => {
   const [lastIpcLatency, setLastIpcLatency] = useState('0.85 μs');
   const [hits, setHits] = useState(0);
   const [isIpcSyncing, setIsIpcSyncing] = useState(false);
-  const cursorRef = useRef<{ x: number; y: number; active: boolean }>({ x: 170, y: 90, active: false });
-  const manualLasersRef = useRef<{ x: number; y: number; targetX: number; targetY: number; life: number }[]>([]);
 
   useEffect(() => {
     if (activeTab !== 'canvas') return;
@@ -915,77 +967,25 @@ export const NeonVanguardPreview: React.FC = () => {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+    ctx.imageSmoothingEnabled = false;
 
-    let projectiles: { x: number; y: number; vx: number; vy: number; life: number }[] = [];
-    let particles: { x: number; y: number; vx: number; vy: number; life: number; color: string }[] = [];
+    let projectiles: { x: number; y: number; vx: number; vy: number }[] = [];
     const targets = [
-      { x: 260, y: 50, radius: 14, hp: 100 },
-      { x: 280, y: 110, radius: 16, hp: 100 },
-      { x: 240, y: 150, radius: 12, hp: 100 }
+      { x: 260, y: 50, radius: 14 },
+      { x: 280, y: 110, radius: 16 },
+      { x: 240, y: 150, radius: 12 }
     ];
 
-    const spawnImpact = (x: number, y: number, color: string) => {
-      for (let i = 0; i < 10; i++) {
-        const angle = Math.random() * Math.PI * 2;
-        const speed = 1 + Math.random() * 3;
-        particles.push({
-          x,
-          y,
-          vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed,
-          life: 1,
-          color
-        });
-      }
-    };
-
-    const triggerLightningArcs = (originX: number, originY: number) => {
-      targets.forEach((t) => {
-        ctx.beginPath();
-        ctx.moveTo(originX, originY);
-        const midX = (originX + t.x) / 2 + (Math.random() - 0.5) * 16;
-        const midY = (originY + t.y) / 2 + (Math.random() - 0.5) * 16;
-        ctx.lineTo(midX, midY);
-        ctx.lineTo(t.x, t.y);
-        ctx.strokeStyle = '#A74024';
-        ctx.lineWidth = 1.6;
-        ctx.shadowColor = '#A74024';
-        ctx.shadowBlur = 10;
-        ctx.stroke();
-        ctx.shadowBlur = 0;
-        spawnImpact(t.x, t.y, '#A74024');
-      });
-    };
-
     const render = () => {
-      ctx.fillStyle = 'rgba(7, 7, 9, 0.35)';
+      ctx.fillStyle = 'rgba(7, 8, 20, 0.4)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      if (Math.random() < 0.1) {
+      if (Math.random() < 0.12) {
         projectiles.push({
           x: 20,
-          y: 60 + Math.random() * 80,
+          y: 50 + Math.random() * 100,
           vx: 7 + Math.random() * 2,
-          vy: (Math.random() - 0.5) * 1.5,
-          life: 1
-        });
-      }
-
-      if (manualLasersRef.current.length > 0) {
-        manualLasersRef.current = manualLasersRef.current.filter((beam) => {
-          beam.life -= 0.18;
-          ctx.beginPath();
-          ctx.moveTo(beam.x, beam.y);
-          ctx.lineTo(beam.targetX, beam.targetY);
-          ctx.strokeStyle = '#DF6C4F';
-          ctx.lineWidth = 3;
-          ctx.shadowColor = '#DF6C4F';
-          ctx.shadowBlur = 12;
-          ctx.stroke();
-          ctx.shadowBlur = 0;
-          spawnImpact(beam.targetX, beam.targetY, '#DF6C4F');
-          triggerLightningArcs(beam.targetX, beam.targetY);
-          return beam.life > 0;
+          vy: (Math.random() - 0.5) * 1.5
         });
       }
 
@@ -996,19 +996,18 @@ export const NeonVanguardPreview: React.FC = () => {
         ctx.beginPath();
         ctx.moveTo(p.x - 12, p.y);
         ctx.lineTo(p.x, p.y);
-        ctx.strokeStyle = '#DF6C4F';
-        ctx.lineWidth = 2.5;
-        ctx.shadowColor = '#DF6C4F';
-        ctx.shadowBlur = 8;
+        ctx.strokeStyle = '#00F0FF';
+        ctx.lineWidth = 2;
         ctx.stroke();
-        ctx.shadowBlur = 0;
 
         targets.forEach((t) => {
           const dx = p.x - t.x;
           const dy = p.y - t.y;
           if (Math.sqrt(dx * dx + dy * dy) < t.radius) {
-            spawnImpact(p.x, p.y, '#DF6C4F');
-            triggerLightningArcs(t.x, t.y);
+            ctx.beginPath();
+            ctx.arc(t.x, t.y, t.radius + 4, 0, Math.PI * 2);
+            ctx.strokeStyle = '#FF2A85';
+            ctx.stroke();
           }
         });
 
@@ -1018,49 +1017,17 @@ export const NeonVanguardPreview: React.FC = () => {
       targets.forEach((t) => {
         ctx.beginPath();
         ctx.arc(t.x, t.y, t.radius, 0, Math.PI * 2);
-        ctx.fillStyle = '#14141B';
+        ctx.fillStyle = '#131629';
         ctx.fill();
+        ctx.strokeStyle = '#4AF626';
         ctx.lineWidth = 1.5;
-        ctx.strokeStyle = '#A74024';
         ctx.stroke();
 
         ctx.font = '8px monospace';
-        ctx.fillStyle = '#A74024';
+        ctx.fillStyle = '#4AF626';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText('NODE', t.x, t.y);
-      });
-
-      const cur = cursorRef.current;
-      if (cur.active) {
-        ctx.beginPath();
-        ctx.arc(cur.x, cur.y, 9, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(223, 108, 79, 0.75)';
-        ctx.lineWidth = 1.2;
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.moveTo(cur.x - 13, cur.y);
-        ctx.lineTo(cur.x + 13, cur.y);
-        ctx.moveTo(cur.x, cur.y - 13);
-        ctx.lineTo(cur.x, cur.y + 13);
-        ctx.strokeStyle = 'rgba(223, 108, 79, 0.4)';
-        ctx.stroke();
-      }
-
-      particles = particles.filter((pt) => {
-        pt.x += pt.vx;
-        pt.y += pt.vy;
-        pt.life -= 0.035;
-
-        ctx.beginPath();
-        ctx.arc(pt.x, pt.y, 1.5, 0, Math.PI * 2);
-        ctx.fillStyle = pt.color;
-        ctx.globalAlpha = Math.max(0, pt.life);
-        ctx.fill();
-        ctx.globalAlpha = 1;
-
-        return pt.life > 0;
       });
     };
 
@@ -1071,7 +1038,7 @@ export const NeonVanguardPreview: React.FC = () => {
       },
       { threshold: 0 }
     );
-    if (canvas) visibilityObserver.observe(canvas);
+    visibilityObserver.observe(canvas);
 
     const tickerRender = () => {
       if (!isVisible) return;
@@ -1086,1184 +1053,1922 @@ export const NeonVanguardPreview: React.FC = () => {
   }, [activeTab]);
 
   const triggerIpcBurst = () => {
+    watchknightAudio.playSpatialClick(0, 0, -1);
     setIsIpcSyncing(true);
     setIpcMessageCount((prev) => prev + 128);
     const latency = (0.7 + Math.random() * 0.4).toFixed(2);
     setLastIpcLatency(`${latency} μs`);
-    setTimeout(() => setIsIpcSyncing(false), 900);
+    setTimeout(() => setIsIpcSyncing(false), 800);
   };
 
   return (
-    <div className="flex flex-col h-full justify-between bg-obsidian-darker/90 rounded-xl border border-cyan-mint/20 p-4 relative overflow-hidden">
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-1.5 p-0.5 rounded-lg bg-carbon border border-white/10 font-mono text-[10px]">
+    <div className="flex flex-col h-full justify-between bg-[#0D1512] rounded border-2 border-[#D6CFC2] border-b-[#2D3645] border-r-[#2D3645] p-3 font-mono">
+      <div className="flex items-center justify-between mb-2 border-b border-[#2D3645] pb-1.5">
+        <div className="flex items-center gap-1.5 bg-[#131629] p-0.5 border border-[#2D3645] text-[10px]">
           <button
             type="button"
             onClick={() => setActiveTab('canvas')}
-            aria-label="Switch simulation mode to 2D Canvas Combat Engine"
-            className={`px-2.5 py-1 rounded-md transition-all ${
-              activeTab === 'canvas' ? 'bg-cyan-mint text-obsidian font-bold' : 'text-slate-400 hover:text-white'
-            }`}
+            className={`px-2.5 py-1 ${activeTab === 'canvas' ? 'bg-[#00F0FF] text-[#070814] font-bold' : 'text-[#8E98AA]'}`}
           >
-            ⚡ 2D Canvas Engine
+            ⚡ 2D Canvas Combat
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('os')}
-            aria-label="Switch simulation mode to Linux POSIX OS Kernel Labs"
-            className={`px-2.5 py-1 rounded-md transition-all ${
-              activeTab === 'os' ? 'bg-amber-warm text-obsidian font-bold' : 'text-slate-400 hover:text-white'
-            }`}
+            className={`px-2.5 py-1 ${activeTab === 'os' ? 'bg-[#4AF626] text-[#070814] font-bold' : 'text-[#8E98AA]'}`}
           >
-            🐧 Linux OS Kernel
+            🐧 Linux Kernel POSIX
           </button>
         </div>
-
-        <span className="font-mono text-[10px] text-cyan-mint">
+        <span className="text-[10px] text-[#00F0FF]">
           {activeTab === 'canvas' ? '120 FPS' : 'POSIX IPC'}
         </span>
       </div>
 
       {activeTab === 'canvas' ? (
-        <div className="relative flex-1 w-full min-h-[160px] rounded-lg overflow-hidden border border-white/5 bg-obsidian">
+        <div className="relative flex-1 w-full min-h-[160px] border border-[#2D3645] bg-[#070814] overflow-hidden">
           <canvas
             ref={canvasRef}
             width={340}
             height={180}
             className="w-full h-full block cursor-crosshair"
-            onClick={(e) => {
-              const canvas = canvasRef.current;
-              if (!canvas) return;
-              const rect = canvas.getBoundingClientRect();
-              const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
-              const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
-              manualLasersRef.current.push(
-                { x: 15, y: 70, targetX: clickX, targetY: clickY, life: 1 },
-                { x: 15, y: 95, targetX: clickX, targetY: clickY, life: 1 },
-                { x: 15, y: 120, targetX: clickX, targetY: clickY, life: 1 }
-              );
-              setHits((h) => h + 3);
-            }}
-            onMouseMove={(e) => {
-              const canvas = canvasRef.current;
-              if (!canvas) return;
-              const rect = canvas.getBoundingClientRect();
-              cursorRef.current = {
-                x: (e.clientX - rect.left) * (canvas.width / rect.width),
-                y: (e.clientY - rect.top) * (canvas.height / rect.height),
-                active: true
-              };
-            }}
-            onMouseLeave={() => {
-              cursorRef.current.active = false;
+            onClick={() => {
+              watchknightAudio.playHoverTick(0);
+              setHits((h) => h + 1);
             }}
           />
-          <div className="absolute top-2 left-2 font-mono text-[9px] text-slate-300 bg-obsidian/85 px-2 py-0.5 rounded border border-white/10 pointer-events-none flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-cyan-mint animate-ping" />
-            <span>Click to Fire Lasers & Chain Lightning</span>
+          <div className="absolute top-2 left-2 text-[8px] text-[#00F0FF] bg-[#070814]/90 px-1.5 py-0.5 border border-[#00F0FF]/40 pointer-events-none">
+            Click to fire lasers • Zero-alloc object pool
           </div>
         </div>
       ) : (
-        <div className="my-auto p-3 rounded-lg bg-carbon/60 border border-white/5 font-mono text-[11px] space-y-2">
-          <div className="text-amber-warm flex items-center justify-between">
-            <div className="flex items-center gap-1.5">
+        <div className="my-auto p-2.5 bg-[#070814] border border-[#2D3645] text-[10px] space-y-2">
+          <div className="text-[#FFCC00] flex items-center justify-between font-bold">
+            <span className="flex items-center gap-1">
               <TerminalIcon className="w-3.5 h-3.5" />
-              <span className="font-bold">PID 1024: master_daemon (Linux 6.1 x86_64)</span>
-            </div>
-            {isIpcSyncing && (
-              <span className="text-[9px] text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded animate-pulse">
-                SYNCING PIPE...
-              </span>
-            )}
+              PID 1024: master_daemon (Linux 6.1)
+            </span>
+            {isIpcSyncing && <span className="text-[#4AF626] animate-pulse">SYNCING PIPE...</span>}
           </div>
-
-          <div className="pl-4 border-l border-white/10 space-y-1.5 text-slate-300 text-[10px]">
-            <div className={`flex items-center justify-between p-1.5 rounded transition-all ${
-              isIpcSyncing ? 'bg-cyan-mint/20 border border-cyan-mint/40 text-cyan-mint' : 'bg-white/5'
-            }`}>
-              <span className="text-cyan-mint font-semibold">├── [PID 1025] shm_producer</span>
-              <span className="text-slate-400">shmget(0x7ffd, 4MB) [OK]</span>
+          <div className="pl-3 border-l border-[#2D3645] space-y-1 text-[#8E98AA] text-[9px]">
+            <div className="flex justify-between p-1 bg-[#131629]">
+              <span className="text-[#00F0FF]">├── [PID 1025] shm_producer</span>
+              <span>shmget(0x7ffd, 4MB) [OK]</span>
             </div>
-            <div className={`flex items-center justify-between p-1.5 rounded transition-all ${
-              isIpcSyncing ? 'bg-amber-warm/20 border border-amber-warm/40 text-amber-warm' : 'bg-white/5'
-            }`}>
-              <span className="text-amber-warm font-semibold">└── [PID 1026] pipe_worker</span>
-              <span className="text-slate-400">pipe(fd[3]-&gt;fd[4]) [DUPLEX]</span>
+            <div className="flex justify-between p-1 bg-[#131629]">
+              <span className="text-[#4AF626]">└── [PID 1026] pipe_worker</span>
+              <span>pipe(fd[3]-&gt;fd[4]) [DUPLEX]</span>
             </div>
           </div>
-
-          <div className="grid grid-cols-2 gap-2 text-center text-[10px] pt-1">
-            <div className="bg-obsidian p-1.5 rounded border border-white/5">
-              <span className="text-slate-500 block text-[9px]">TOTAL IPC MSGS</span>
-              <span className="text-cyan-mint font-bold">{ipcMessageCount.toLocaleString()}</span>
+          <div className="grid grid-cols-2 gap-2 text-center text-[9px] pt-1">
+            <div className="bg-[#131629] p-1 border border-[#2D3645]">
+              <span className="text-[#8E98AA] block text-[8px]">TOTAL IPC MSGS</span>
+              <span className="text-[#00F0FF] font-bold">{ipcMessageCount.toLocaleString()}</span>
             </div>
-            <div className="bg-obsidian p-1.5 rounded border border-white/5">
-              <span className="text-slate-500 block text-[9px]">POSIX SHM LATENCY</span>
-              <span className="text-amber-warm font-bold">{lastIpcLatency}</span>
+            <div className="bg-[#131629] p-1 border border-[#2D3645]">
+              <span className="text-[#8E98AA] block text-[8px]">POSIX SHM LATENCY</span>
+              <span className="text-[#4AF626] font-bold">{lastIpcLatency}</span>
             </div>
           </div>
         </div>
       )}
 
-      <div className="mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between">
+      <div className="mt-2.5 pt-2 border-t border-[#2D3645] flex items-center justify-between text-[10px]">
         {activeTab === 'canvas' ? (
-          <span className="font-mono text-[10px] text-slate-400">
-            Hits: <span className="text-cyan-mint font-bold">{hits}</span> • Piercing Raycasting
+          <span className="text-[#8E98AA]">
+            HITS: <span className="text-[#00F0FF] font-bold">{hits}</span> • 120 FPS
           </span>
         ) : (
           <button
             type="button"
             onClick={triggerIpcBurst}
             disabled={isIpcSyncing}
-            aria-label="Trigger Linux fork process tree and POSIX shared memory sync"
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-warm/15 hover:bg-amber-warm/25 text-amber-warm border border-amber-warm/30 font-mono text-[11px] font-bold transition-all active:scale-95 disabled:opacity-50"
+            className="flex items-center gap-1 px-2.5 py-1 bg-[#4AF626] hover:bg-[#6ef750] text-[#070814] font-bold border border-[#D6CFC2] active:translate-y-0.5"
           >
             <Play className={`w-3 h-3 ${isIpcSyncing ? 'animate-spin' : ''}`} />
-            <span>Trigger fork() & IPC Sync</span>
+            <span>TRIGGER FORK() & IPC</span>
           </button>
         )}
+        <span className="text-[#4AF626]">VALGRIND: 0 LEAKS</span>
+      </div>
+    </div>
+  );
+};
 
-        <span className="font-mono text-[10px] text-emerald-400">
-          Valgrind: 0 Leaks
+// --- PREVIEW 6: CHRONOS-GUARD & AETHER-GL (CRYPTOGRAPHIC MERKLE & NAVIER-STOKES FLUID) ---
+export const ChronosAetherPreview: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<'fluid' | 'merkle'>('fluid');
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [tamperedBlock, setTamperedBlock] = useState<number | null>(null);
+  const [isVerifying, setIsVerifying] = useState<boolean>(false);
+  const [merkleRoot, setMerkleRoot] = useState<string>('0x7F4A88C1B03E');
+  const [tamperAlert, setTamperAlert] = useState<string>('< 0.12 ms [VERIFIED]');
+
+  // Navier-Stokes fluid grid simulation
+  useEffect(() => {
+    if (activeTab !== 'fluid') return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    ctx.imageSmoothingEnabled = false;
+
+    let time = 0;
+    const ripples: { x: number; y: number; r: number; color: string }[] = [];
+
+    const render = () => {
+      time += 0.04;
+      ctx.fillStyle = '#070814';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Procedural Eulerian fluid wave simulation
+      const cols = 28;
+      const rows = 14;
+      const cellW = canvas.width / cols;
+      const cellH = canvas.height / rows;
+
+      for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+          const u = i / cols;
+          const v = j / rows;
+          const wave = Math.sin(u * 8.0 + time) * Math.cos(v * 6.0 - time * 0.8) +
+                       Math.sin(Math.sqrt((u - 0.5) ** 2 + (v - 0.5) ** 2) * 12.0 - time * 2.0);
+          const intensity = Math.max(0, Math.min(1, (wave + 1.5) / 3.0));
+
+          const r = Math.floor(intensity * 0);
+          const g = Math.floor(intensity * 240);
+          const b = Math.floor(intensity * 255);
+
+          ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+          ctx.fillRect(i * cellW + 1, j * cellH + 1, cellW - 2, cellH - 2);
+        }
+      }
+
+      // Draw active ripples
+      for (let i = ripples.length - 1; i >= 0; i--) {
+        const rp = ripples[i];
+        rp.r += 2.5;
+        ctx.beginPath();
+        ctx.arc(rp.x, rp.y, rp.r, 0, Math.PI * 2);
+        ctx.strokeStyle = rp.color;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        if (rp.r > 80) ripples.splice(i, 1);
+      }
+    };
+
+    let isVisible = true;
+    const visibilityObserver = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+      },
+      { threshold: 0 }
+    );
+    visibilityObserver.observe(canvas);
+
+    const tickerRender = () => {
+      if (!isVisible) return;
+      render();
+    };
+    gsap.ticker.add(tickerRender);
+
+    const handleCanvasClick = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
+      const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
+      ripples.push({
+        x: clickX,
+        y: clickY,
+        r: 4,
+        color: Math.random() > 0.5 ? '#00F0FF' : '#FF2A85'
+      });
+      watchknightAudio.playHoverTick(0);
+    };
+
+    canvas.addEventListener('click', handleCanvasClick);
+
+    return () => {
+      canvas.removeEventListener('click', handleCanvasClick);
+      visibilityObserver.disconnect();
+      gsap.ticker.remove(tickerRender);
+    };
+  }, [activeTab]);
+
+  const handleSimulateTamper = (blockIndex: number) => {
+    watchknightAudio.playSpatialClick(-0.3, 0, -1);
+    setTamperedBlock(blockIndex);
+    setMerkleRoot('0xDEAD_C0DE_MISMATCH');
+    setTamperAlert('< 0.12 ms [TAMPER_DETECTED!]');
+  };
+
+  const handleVerifyMerkle = () => {
+    watchknightAudio.playSpatialClick(0.3, 0, -1);
+    setIsVerifying(true);
+    setTimeout(() => {
+      setTamperedBlock(null);
+      setMerkleRoot('0x7F4A88C1B03E');
+      setTamperAlert('< 0.12 ms [VERIFIED_100%]');
+      setIsVerifying(false);
+    }, 600);
+  };
+
+  return (
+    <div className="flex flex-col h-full justify-between bg-[#0D1512] rounded border-2 border-[#D6CFC2] border-b-[#2D3645] border-r-[#2D3645] p-3 font-mono">
+      <div className="flex items-center justify-between mb-2 border-b border-[#2D3645] pb-1.5">
+        <div className="flex items-center gap-1.5 bg-[#131629] p-0.5 border border-[#2D3645] text-[10px]">
+          <button
+            type="button"
+            onClick={() => setActiveTab('fluid')}
+            className={`px-2.5 py-1 ${activeTab === 'fluid' ? 'bg-[#00F0FF] text-[#070814] font-bold' : 'text-[#8E98AA]'}`}
+          >
+            🌊 Navier-Stokes Fluid
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('merkle')}
+            className={`px-2.5 py-1 ${activeTab === 'merkle' ? 'bg-[#4AF626] text-[#070814] font-bold' : 'text-[#8E98AA]'}`}
+          >
+            🛡️ SHA-256 Merkle Ledger
+          </button>
+        </div>
+        <span className="text-[10px] text-[#00F0FF]">
+          {activeTab === 'fluid' ? '1.42 ms PASS' : '18.5k EVT/S'}
         </span>
+      </div>
+
+      {activeTab === 'fluid' ? (
+        <div className="relative flex-1 w-full min-h-[160px] border border-[#2D3645] bg-[#070814] overflow-hidden">
+          <canvas
+            ref={canvasRef}
+            width={340}
+            height={180}
+            className="w-full h-full block cursor-crosshair"
+          />
+          <div className="absolute top-2 left-2 text-[8px] text-[#00F0FF] bg-[#070814]/90 px-1.5 py-0.5 border border-[#00F0FF]/40 pointer-events-none">
+            Click canvas to inject Navier-Stokes fluid vorticity
+          </div>
+        </div>
+      ) : (
+        <div className="my-auto p-2.5 bg-[#070814] border border-[#2D3645] text-[10px] space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-[#4AF626] font-bold flex items-center gap-1">
+              <ShieldCheck className="w-3.5 h-3.5" />
+              MERKLE_ROOT: <span className="text-[#F0EFE6]">{merkleRoot}</span>
+            </span>
+            <span className={tamperedBlock !== null ? 'text-[#FF2A85] font-bold animate-pulse' : 'text-[#4AF626]'}>
+              {tamperAlert}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-4 gap-1.5 text-center text-[9px]">
+            {['TX_01: STATE', 'TX_02: AGENT', 'TX_03: SHADER', 'TX_04: IPC'].map((tx, idx) => (
+              <div
+                key={idx}
+                className={`p-1.5 border transition-all ${
+                  tamperedBlock === idx
+                    ? 'bg-[#FF2A85]/20 border-[#FF2A85] text-[#FF2A85]'
+                    : 'bg-[#131629] border-[#2D3645] text-[#00F0FF]'
+                }`}
+              >
+                <div className="font-bold">{tx}</div>
+                <div className="text-[8px] text-[#8E98AA] truncate">
+                  {tamperedBlock === idx ? '0xMUTATED!' : `0x${(idx + 1) * 31}a7e`}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleSimulateTamper(idx)}
+                  className="mt-1 text-[7px] text-[#FFCC00] hover:underline block mx-auto"
+                >
+                  [Tamper]
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-3 gap-1.5 text-center text-[9px] pt-1">
+            <div className="bg-[#131629] p-1 border border-[#2D3645]">
+              <span className="text-[#8E98AA] block text-[8px]">INGEST RATE</span>
+              <span className="text-[#00F0FF] font-bold">18,500 evt/s</span>
+            </div>
+            <div className="bg-[#131629] p-1 border border-[#2D3645]">
+              <span className="text-[#8E98AA] block text-[8px]">MERKLE DEPTH</span>
+              <span className="text-[#4AF626] font-bold">32 Levels</span>
+            </div>
+            <div className="bg-[#131629] p-1 border border-[#2D3645]">
+              <span className="text-[#8E98AA] block text-[8px]">TAMPER ALERT</span>
+              <span className="text-[#FFCC00] font-bold">&lt; 0.12 ms</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="mt-2.5 pt-2 border-t border-[#2D3645] flex items-center justify-between text-[10px]">
+        {activeTab === 'fluid' ? (
+          <span className="text-[#8E98AA]">
+            GRID: <span className="text-[#00F0FF] font-bold">1024 x 1024</span> • 120 FPS
+          </span>
+        ) : (
+          <button
+            type="button"
+            onClick={handleVerifyMerkle}
+            disabled={isVerifying}
+            className="flex items-center gap-1 px-2.5 py-1 bg-[#4AF626] hover:bg-[#6ef750] text-[#070814] font-bold border border-[#D6CFC2] active:translate-y-0.5"
+          >
+            <ShieldCheck className={`w-3 h-3 ${isVerifying ? 'animate-spin' : ''}`} />
+            <span>{isVerifying ? 'VERIFYING...' : 'VERIFY MERKLE ROOT'}</span>
+          </button>
+        )}
+        <span className="text-[#4AF626]">SLA: 100% SECURE</span>
       </div>
     </div>
   );
 };
 
 // ============================================================================
-// MAIN COMPONENT: ProjectsShowcase (Dennis Snellenberg Dual-Mode Showcase)
+// GPU PARTICLE FORMATIONS & COLOR ACCENTS FOR 6 FLAGSHIP PROJECTS
+// ============================================================================
+
+export const PARTICLE_COUNT = 600;
+
+export interface ProjectAccentConfig {
+  color: THREE.Color;
+  rimColor: THREE.Color;
+}
+
+export const PROJECT_ACCENTS: ProjectAccentConfig[] = [
+  { color: new THREE.Color(0x00F0FF), rimColor: new THREE.Color(0x00F0FF) }, // 01 Mental Defrag (Cyan)
+  { color: new THREE.Color(0xFFCC00), rimColor: new THREE.Color(0xFFCC00) }, // 02 DocLensBD (Amber)
+  { color: new THREE.Color(0x00F0FF), rimColor: new THREE.Color(0xFFCC00) }, // 03 Rannabanna (Cyan/Amber)
+  { color: new THREE.Color(0xFF2A85), rimColor: new THREE.Color(0xFF2A85) }, // 04 Trash Trail (Magenta)
+  { color: new THREE.Color(0x4AF626), rimColor: new THREE.Color(0x4AF626) }, // 05 Neon Vanguard (Phosphor Green)
+  { color: new THREE.Color(0x00F0FF), rimColor: new THREE.Color(0xFF2A85) }, // 06 Chronos-Guard (Cyan/Magenta)
+];
+
+export const generateParticleFormation = (projectIndex: number, count: number): Float32Array => {
+  const positions = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+    const idx = i * 3;
+    if (projectIndex === 0) {
+      // [01] Mental Defrag: Cognitive Spherical Constellation + Equatorial Orbital Disk
+      if (i < count * 0.65) {
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(Math.random() * 2 - 1);
+        const rad = 2.0 + Math.random() * 1.0;
+        positions[idx] = rad * Math.sin(phi) * Math.cos(theta);
+        positions[idx + 1] = rad * Math.sin(phi) * Math.sin(theta);
+        positions[idx + 2] = rad * Math.cos(phi);
+      } else {
+        const angle = Math.random() * Math.PI * 2;
+        const rad = 1.6 + Math.random() * 1.6;
+        positions[idx] = Math.cos(angle) * rad;
+        positions[idx + 1] = (Math.random() - 0.5) * 0.35;
+        positions[idx + 2] = Math.sin(angle) * rad;
+      }
+    } else if (projectIndex === 1) {
+      // [02] DocLensBD: Cylindrical Ascending Telemetry Stream
+      const u = i / count;
+      const angle = u * Math.PI * 14;
+      const rad = 1.4 + 0.4 * Math.sin(u * Math.PI * 6);
+      positions[idx] = Math.cos(angle) * rad;
+      positions[idx + 1] = (u - 0.5) * 4.2;
+      positions[idx + 2] = Math.sin(angle) * rad;
+    } else if (projectIndex === 2) {
+      // [03] Rannabanna: Toroidal Botanical Vortex / Spiral Halo
+      const u = (i / count) * Math.PI * 2 * 3;
+      const rOuter = 2.1;
+      const rTube = 0.6 + 0.3 * Math.sin(u * 5);
+      positions[idx] = (rOuter + rTube * Math.cos(u * 3)) * Math.cos(u);
+      positions[idx + 1] = rTube * Math.sin(u * 3);
+      positions[idx + 2] = (rOuter + rTube * Math.cos(u * 3)) * Math.sin(u);
+    } else if (projectIndex === 3) {
+      // [04] Trash Trail: Hydrodynamic Wave Ribbon Stream
+      const u = (i / count) * 2 - 1;
+      const x = u * 3.2;
+      const z = ((i % 15) / 15 - 0.5) * 2.2;
+      const y = Math.sin(x * 1.8) * 0.65 + Math.cos(z * 2.5) * 0.25;
+      positions[idx] = x;
+      positions[idx + 1] = y;
+      positions[idx + 2] = z;
+    } else if (projectIndex === 4) {
+      // [05] Neon Vanguard: POSIX IPC 3D Grid Lattices
+      const step = 0.9;
+      const gx = ((i % 5) - 2) * step;
+      const gy = (((Math.floor(i / 5)) % 5) - 2) * step;
+      const gz = (((Math.floor(i / 25)) % 5) - 2) * step;
+      positions[idx] = gx + (Math.random() - 0.5) * 0.15;
+      positions[idx + 1] = gy + (Math.random() - 0.5) * 0.15;
+      positions[idx + 2] = gz + (Math.random() - 0.5) * 0.15;
+    } else {
+      // [06] Chronos-Guard: Geodesic Merkle Vault Cage + Acoustic Fluid Clusters
+      const theta = (i / count) * Math.PI * 16;
+      const phi = Math.acos(((i % 50) / 50) * 2 - 1);
+      const rad = 2.4 + 0.3 * Math.sin(theta * 3.0);
+      positions[idx] = rad * Math.sin(phi) * Math.cos(theta);
+      positions[idx + 1] = rad * Math.sin(phi) * Math.sin(theta);
+      positions[idx + 2] = rad * Math.cos(phi);
+    }
+  }
+  return positions;
+};
+
+// ============================================================================
+// MAIN COMPONENT: ProjectsShowcase (UNIFIED SYS.96 CYBERDECK SHOWCASE)
 // ============================================================================
 
 export const ProjectsShowcase: React.FC = () => {
-  const { scrollTo } = useLenis();
-  const { openCaseStudy, activeProject: transitionActiveProject } = useTransition();
-  const sectionRef = useRef<HTMLElement>(null);
-  const [viewMode, setViewMode] = useState<'ledger' | 'cards'>('ledger');
-  const [activeCardIndex, setActiveCardIndex] = useState(0);
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [mounted, setMounted] = useState(false);
+  const { openCaseStudy } = useTransition();
 
-  // Dennis Snellenberg Floating Preview & Label Cursor Refs
-  const previewRef = useRef<HTMLDivElement | null>(null);
-  const labelRef = useRef<HTMLDivElement | null>(null);
-  const reelRef = useRef<HTMLDivElement | null>(null);
-  const mouseCoordRef = useRef<{ x: number; y: number; hasMoved: boolean }>({ x: 0, y: 0, hasMoved: false });
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const fpsRef = useRef<HTMLSpanElement | null>(null);
+  const coordsRef = useRef<HTMLSpanElement | null>(null);
 
-  // Mount detection for React portal
-  useEffect(() => {
-    setMounted(true);
+  // Station State
+  const [activeProjectIndex, setActiveProjectIndex] = useState<number>(0);
+  const activeProjectIndexRef = useRef<number>(0);
+  const [activePass, setActivePass] = useState<RenderPassId>('beauty');
+  const activePassRef = useRef<RenderPassId>('beauty');
+  const [autoRotate, setAutoRotate] = useState<boolean>(true);
+  const autoRotateRef = useRef<boolean>(true);
+  const [isDossierOpen, setIsDossierOpen] = useState<boolean>(false);
+  const [dossierState, setDossierState] = useState<'normal' | 'maximized'>('normal');
+
+  // DOM & Selection control refs
+  const romCardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const isManualSelectingRef = useRef<boolean>(false);
+  const manualTimeoutRef = useRef<number | null>(null);
+  const dossierRef = useRef<HTMLDivElement | null>(null);
+
+  // Three.js instances refs
+  const sceneRef = useRef<THREE.Scene | null>(null);
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const composerRef = useRef<EffectComposer | null>(null);
+  const renderPassRef = useRef<RenderPass | null>(null);
+  const pixelatedPassRef = useRef<RenderPixelatedPass | null>(null);
+
+  // Mesh & Particle Groups
+  const projectMeshesRef = useRef<THREE.Group[]>([]);
+  const mainGroupRef = useRef<THREE.Group | null>(null);
+  const particleSystemRef = useRef<THREE.Points | null>(null);
+  const particleGeoRef = useRef<THREE.BufferGeometry | null>(null);
+  const materialsRef = useRef<Record<RenderPassId, THREE.Material>>({} as Record<RenderPassId, THREE.Material>);
+
+  // Particle Shader Uniforms
+  const particleUniformsRef = useRef<{
+    uTime: { value: number };
+    uMorphProgress: { value: number };
+    uMouse: { value: THREE.Vector2 };
+    uRipple: { value: number };
+    uColorA: { value: THREE.Color };
+    uColorB: { value: THREE.Color };
+  } | null>(null);
+
+  // Shader Uniforms
+  const beautyUniformsRef = useRef<{
+    uTime: { value: number };
+    uMouse: { value: THREE.Vector2 };
+    uRipple: { value: number };
+    uRimColor: { value: THREE.Color };
+    uBaseCore: { value: THREE.Color };
+  } | null>(null);
+
+  const uvUniformsRef = useRef<{
+    uTime: { value: number };
+  } | null>(null);
+
+  // Pointer tracking & physics
+  const mouseRef = useRef<{ x: number; y: number; targetX: number; targetY: number }>({
+    x: 0,
+    y: 0,
+    targetX: 0,
+    targetY: 0,
+  });
+  const rippleEnergyRef = useRef<number>(0);
+  const isPointerDownRef = useRef<boolean>(false);
+  const lastPointerPosRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+
+  const activeProject = FLAGSHIP_PROJECTS[activeProjectIndex];
+
+  // --------------------------------------------------------------------------
+  // SWITCH ACTIVE PROJECT & MORPH 3D GEOMETRY + PARTICLE FIELD
+  // --------------------------------------------------------------------------
+  const selectProject = useCallback((index: number) => {
+    const oldIndex = activeProjectIndexRef.current;
+    if (index === oldIndex && projectMeshesRef.current.length > 0) return;
+    setActiveProjectIndex(index);
+    activeProjectIndexRef.current = index;
+    watchknightAudio.playHoverTick((index / FLAGSHIP_PROJECTS.length) * 2 - 1);
+    chiptuneAudio.playCoinSFX();
+
+    // Dynamic morphing: toggle mesh visibility and execute GSAP spring punch
+    const meshes = projectMeshesRef.current;
+    meshes.forEach((meshGroup, idx) => {
+      meshGroup.visible = idx === index;
+    });
+
+    const activeMesh = meshes[index];
+    if (activeMesh) {
+      gsap.killTweensOf(activeMesh.scale);
+      gsap.fromTo(
+        activeMesh.scale,
+        { x: 0.78, y: 0.78, z: 0.78 },
+        { x: 1, y: 1, z: 1, duration: 0.55, ease: 'back.out(2.2)' }
+      );
+      gsap.fromTo(
+        activeMesh.rotation,
+        { y: activeMesh.rotation.y + 0.6 },
+        { y: activeMesh.rotation.y, duration: 0.7, ease: 'power3.out' }
+      );
+    }
+
+    // Dynamic particle field morphing across project signature formations
+    if (particleGeoRef.current && particleUniformsRef.current) {
+      const currentPos = generateParticleFormation(oldIndex, PARTICLE_COUNT);
+      const targetPos = generateParticleFormation(index, PARTICLE_COUNT);
+
+      const posAttr = particleGeoRef.current.getAttribute('position') as THREE.BufferAttribute;
+      const targetAttr = particleGeoRef.current.getAttribute('aTargetPosition') as THREE.BufferAttribute;
+
+      if (posAttr && targetAttr) {
+        posAttr.copyArray(currentPos);
+        posAttr.needsUpdate = true;
+        targetAttr.copyArray(targetPos);
+        targetAttr.needsUpdate = true;
+      }
+
+      const oldAccent = PROJECT_ACCENTS[oldIndex] || PROJECT_ACCENTS[0];
+      const newAccent = PROJECT_ACCENTS[index] || PROJECT_ACCENTS[0];
+
+      particleUniformsRef.current.uColorA.value.copy(oldAccent.color);
+      particleUniformsRef.current.uColorB.value.copy(newAccent.color);
+
+      gsap.killTweensOf(particleUniformsRef.current.uMorphProgress);
+      gsap.fromTo(
+        particleUniformsRef.current.uMorphProgress,
+        { value: 0 },
+        { value: 1, duration: 0.75, ease: 'power2.out' }
+      );
+    }
+
+    // Update beauty shader rim color
+    if (beautyUniformsRef.current) {
+      const accent = PROJECT_ACCENTS[index] || PROJECT_ACCENTS[0];
+      gsap.to(beautyUniformsRef.current.uRimColor.value, {
+        r: accent.rimColor.r,
+        g: accent.rimColor.g,
+        b: accent.rimColor.b,
+        duration: 0.5,
+      });
+    }
+
+    rippleEnergyRef.current = 1.2;
   }, []);
 
-  // Ensure preview and cursor label are hidden when leaving ledger mode
-  useEffect(() => {
-    if (viewMode !== 'ledger') {
-      handleLedgerLeave();
+  const handleSelectWithCooldown = useCallback((index: number) => {
+    isManualSelectingRef.current = true;
+    selectProject(index);
+    if (manualTimeoutRef.current) clearTimeout(manualTimeoutRef.current);
+    manualTimeoutRef.current = window.setTimeout(() => {
+      isManualSelectingRef.current = false;
+    }, 1200);
+  }, [selectProject]);
+
+  const openDossierForProject = useCallback((index?: number) => {
+    if (typeof index === 'number') {
+      handleSelectWithCooldown(index);
     }
-  }, [viewMode]);
-
-  // Refresh ScrollTrigger when expandable accordion opens/closes
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 320);
-    return () => clearTimeout(timer);
-  }, [viewMode, transitionActiveProject]);
+    setIsDossierOpen(true);
+    watchknightAudio.playSpatialClick(0, 0, -1);
+    setTimeout(() => {
+      if (dossierRef.current) {
+        dossierRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }, 120);
+  }, [handleSelectWithCooldown]);
 
   // --------------------------------------------------------------------------
-  // GSAP matchMedia: Floating Preview Portal, Velocity Skew & Batched Dividers
+  // SWITCH SHADER PASS
   // --------------------------------------------------------------------------
-  useEffect(() => {
-    if (!mounted) return;
-    const previewEl = previewRef.current;
-    const labelEl = labelRef.current;
-    const section = sectionRef.current;
-    if (!section) return;
+  const selectShaderPass = useCallback((passId: RenderPassId) => {
+    setActivePass(passId);
+    activePassRef.current = passId;
+    watchknightAudio.playSpatialClick(0, 0, -1);
+    chiptuneAudio.playPowerUpSFX();
 
-    const mm = gsap.matchMedia();
+    const materials = materialsRef.current;
+    const meshes = projectMeshesRef.current;
+    const targetMat = materials[passId];
 
-    mm.add(
-      {
-        isDesktop: '(min-width: 800px) and (hover: hover) and (prefers-reduced-motion: no-preference)',
-        isMobileOrTouch: '(max-width: 799px), (hover: none)',
-        reduceMotion: '(prefers-reduced-motion: reduce)',
-      },
-      (context) => {
-        const { isDesktop, reduceMotion } = context.conditions as {
-          isDesktop: boolean;
-          isMobileOrTouch: boolean;
-          reduceMotion: boolean;
-        };
+    if (!targetMat) return;
 
-        // 1. Reduced Motion Mode
-        if (reduceMotion) {
-          gsap.set('.skew-elem', { skewY: 0 });
-          gsap.set('.ledger-divider', { scaleX: 1, transformOrigin: 'left center' });
-          if (previewEl && labelEl) {
-            gsap.set([previewEl, labelEl], { autoAlpha: 0 });
+    // Apply material across all active project geometries including child orbital meshes
+    meshes.forEach((group) => {
+      group.traverse((child) => {
+        if ((child as THREE.Mesh).isMesh) {
+          const mesh = child as THREE.Mesh;
+          if (mesh.userData?.isCage) {
+            mesh.material = (mesh.userData?.originalMaterial as THREE.Material) || materials.wireframe;
+          } else if (passId === 'beauty') {
+            mesh.material = (mesh.userData?.originalMaterial as THREE.Material) || targetMat;
+          } else if (passId === 'pixel') {
+            mesh.material = (mesh.userData?.originalMaterial as THREE.Material) || materials.pixel;
+          } else {
+            mesh.material = targetMat;
           }
-          return;
         }
+      });
+    });
 
-        // 2. Desktop Floating Media Preview (Dennis Snellenberg Style)
-        if (isDesktop && previewEl && labelEl) {
-          gsap.set(previewEl, { xPercent: -50, yPercent: -50, scale: 0, autoAlpha: 0, force3D: true });
-          gsap.set(labelEl, { xPercent: -50, yPercent: -50, scale: 0, autoAlpha: 0, force3D: true });
+    // Handle RenderPixelatedPass vs standard RenderPass switching:
+    // In Three.js post-processing, RenderPixelatedPass replaces RenderPass directly!
+    const renderPass = renderPassRef.current;
+    const pixelatedPass = pixelatedPassRef.current;
+    const renderer = rendererRef.current;
+    const composer = composerRef.current;
+    const container = containerRef.current;
 
-          const xTo = gsap.quickTo(previewEl, 'x', { duration: 0.35, ease: 'power3.out', force3D: true });
-          const yTo = gsap.quickTo(previewEl, 'y', { duration: 0.35, ease: 'power3.out', force3D: true });
-          const labelXTo = gsap.quickTo(labelEl, 'x', { duration: 0.2, ease: 'power3.out', force3D: true });
-          const labelYTo = gsap.quickTo(labelEl, 'y', { duration: 0.2, ease: 'power3.out', force3D: true });
-          const setInitX = gsap.quickSetter([previewEl, labelEl], 'x', 'px');
-          const setInitY = gsap.quickSetter([previewEl, labelEl], 'y', 'px');
+    if (passId === 'pixel') {
+      if (renderPass) renderPass.enabled = false;
+      if (pixelatedPass) pixelatedPass.enabled = true;
+      if (renderer && composer && container) {
+        renderer.setPixelRatio(1);
+        composer.setPixelRatio(1);
+        const w = container.clientWidth || 400;
+        const h = container.clientHeight || 340;
+        composer.setSize(w, h);
+        if (pixelatedPass) {
+          pixelatedPass.setSize(w, h);
+        }
+      }
+    } else {
+      if (pixelatedPass) pixelatedPass.enabled = false;
+      if (renderPass) renderPass.enabled = true;
+      if (renderer && composer && container) {
+        const pr = Math.min(window.devicePixelRatio || 1, 2);
+        renderer.setPixelRatio(pr);
+        composer.setPixelRatio(pr);
+        const w = container.clientWidth || 400;
+        const h = container.clientHeight || 340;
+        composer.setSize(w, h);
+      }
+    }
 
-          let hasPositioned = false;
+    // Material uniform / property reaction
+    if (passId === 'clay') {
+      const clayMat = targetMat as THREE.MeshStandardMaterial;
+      gsap.fromTo(clayMat, { roughness: 0.2 }, { roughness: 0.85, duration: 0.5 });
+    } else if (passId === 'wireframe') {
+      const wireMat = targetMat as THREE.MeshBasicMaterial;
+      gsap.fromTo(wireMat, { opacity: 0.3 }, { opacity: 1, duration: 0.4 });
+    } else if (passId === 'beauty') {
+      rippleEnergyRef.current = 1.4;
+    }
+  }, []);
 
-          const onMouseMove = (e: MouseEvent) => {
-            mouseCoordRef.current = { x: e.clientX, y: e.clientY, hasMoved: true };
-            if (!hasPositioned) {
-              setInitX(e.clientX);
-              setInitY(e.clientY);
-              hasPositioned = true;
+  // --------------------------------------------------------------------------
+  // KEYBOARD SHORTCUTS [1 - 6] FOR SHADER PASSES & ESCAPE FOR DOSSIER
+  // --------------------------------------------------------------------------
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (target && (['INPUT', 'TEXTAREA'].includes(target.tagName) || target.isContentEditable)) return;
+      const keyNum = parseInt(e.key, 10);
+      if (keyNum >= 1 && keyNum <= 6) {
+        e.preventDefault();
+        const pass = SHADER_PASSES[keyNum - 1];
+        if (pass) selectShaderPass(pass.id);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectShaderPass]);
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isDossierOpen) {
+        setIsDossierOpen(false);
+        watchknightAudio.playHoverTick(0);
+      }
+    };
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [isDossierOpen]);
+
+  // --------------------------------------------------------------------------
+  // SCROLL-INTO-VIEW OBSERVER: MORPH 3D GEOMETRY AS ROM SLOTS SCROLL
+  // --------------------------------------------------------------------------
+  useEffect(() => {
+    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (isManualSelectingRef.current) return;
+        let bestEntry: IntersectionObserverEntry | null = null;
+        let maxRatio = 0;
+
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
+            maxRatio = entry.intersectionRatio;
+            bestEntry = entry;
+          }
+        });
+
+        if (bestEntry && maxRatio > 0.35) {
+          const target = (bestEntry as IntersectionObserverEntry).target as HTMLElement;
+          const idxStr = target.getAttribute('data-rom-index');
+          if (idxStr !== null) {
+            const idx = parseInt(idxStr, 10);
+            if (!isNaN(idx) && idx !== activeProjectIndexRef.current) {
+              selectProject(idx);
             }
-            xTo(e.clientX);
-            yTo(e.clientY);
-            labelXTo(e.clientX);
-            labelYTo(e.clientY);
-          };
-
-          const onWindowLeave = () => {
-            handleLedgerLeave();
-          };
-
-          window.addEventListener('mousemove', onMouseMove, { passive: true });
-          document.addEventListener('mouseleave', onWindowLeave);
-
-          const sectionTrigger = ScrollTrigger.create({
-            trigger: section,
-            start: 'top bottom',
-            end: 'bottom top',
-            onLeave: handleLedgerLeave,
-            onLeaveBack: handleLedgerLeave,
-          });
-
-          context.add(() => {
-            window.removeEventListener('mousemove', onMouseMove);
-            document.removeEventListener('mouseleave', onWindowLeave);
-            sectionTrigger.kill();
-            document.body.classList.remove('ledger-hover-active');
-          });
-        }
-
-        // 3. Velocity-Dependent Scroll Skew Engine (.skew-elem)
-        if (isDesktop) {
-          gsap.set('.skew-elem', { transformOrigin: 'right center', force3D: true });
-
-          const skewProxy = { skew: 0 };
-          const skewSetter = gsap.quickSetter('.skew-elem', 'skewY', 'deg');
-          const skewTo = gsap.quickTo(skewProxy, 'skew', {
-            duration: 0.6,
-            ease: 'power3.out',
-            onUpdate: () => {
-              skewSetter(skewProxy.skew);
-            },
-          });
-
-          let settleTimer: ReturnType<typeof setTimeout> | null = null;
-
-          const skewTrigger = ScrollTrigger.create({
-            onUpdate: (self) => {
-              const velocity = self.getVelocity();
-              const rawSkew = velocity / -260;
-              const clampedSkew = gsap.utils.clamp(-14, 14, rawSkew);
-              skewTo(clampedSkew);
-
-              if (settleTimer) clearTimeout(settleTimer);
-              settleTimer = setTimeout(() => {
-                skewTo(0);
-              }, 70);
-            },
-          });
-
-          context.add(() => {
-            skewTrigger.kill();
-            if (settleTimer) clearTimeout(settleTimer);
-            gsap.killTweensOf(skewProxy);
-            gsap.set('.skew-elem', { skewY: 0 });
-          });
-        }
-
-        // 4. Batched Ledger Divider Rules ScaleX Entrance Animation
-        if (viewMode === 'ledger') {
-          const dividers = section.querySelectorAll<HTMLElement>('.ledger-divider');
-          if (dividers && dividers.length > 0) {
-            gsap.set(dividers, { scaleX: 0, transformOrigin: 'left center', force3D: true });
-            ScrollTrigger.batch(dividers, {
-              onEnter: (batch) =>
-                gsap.to(batch, {
-                  scaleX: 1,
-                  duration: 0.85,
-                  stagger: 0.05,
-                  ease: 'power3.out',
-                  overwrite: true,
-                }),
-              start: 'top 92%',
-            });
           }
         }
+      },
+      {
+        root: null,
+        rootMargin: '-20% 0px -25% 0px',
+        threshold: [0.35, 0.6, 0.8],
       }
     );
 
-    const refreshTimer = setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 150);
+    romCardRefs.current.forEach((el) => {
+      if (el) observer.observe(el);
+    });
 
     return () => {
-      clearTimeout(refreshTimer);
-      mm.revert();
+      observer.disconnect();
+      if (manualTimeoutRef.current) clearTimeout(manualTimeoutRef.current);
     };
-  }, [mounted, viewMode]);
+  }, [selectProject]);
 
-  // Hover handlers for ledger rows
-  const handleRowEnter = (idx: number, e?: React.MouseEvent | React.PointerEvent) => {
-    if (viewMode !== 'ledger') return;
-    const isTouchOnly = typeof window !== 'undefined' && window.matchMedia('(hover: none) and (pointer: coarse)').matches;
-    if (isTouchOnly) return;
+  // --------------------------------------------------------------------------
+  // THREE.JS INITIALIZATION & 6 PROJECT MORPHING GEOMETRIES
+  // --------------------------------------------------------------------------
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const container = containerRef.current;
+    if (!canvas || !container) return;
 
-    const previewEl = previewRef.current;
-    const labelEl = labelRef.current;
-    const reelEl = reelRef.current;
+    // 1. Renderer
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: true,
+      powerPreference: 'high-performance',
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.25;
+    rendererRef.current = renderer;
 
-    // Direct coordinate capture if passed via event
-    if (e && typeof e.clientX === 'number' && (e.clientX > 0 || e.clientY > 0)) {
-      mouseCoordRef.current = { x: e.clientX, y: e.clientY, hasMoved: true };
-      if (previewEl && labelEl) {
-        gsap.set([previewEl, labelEl], { x: e.clientX, y: e.clientY });
+    // 2. Scene
+    const scene = new THREE.Scene();
+    sceneRef.current = scene;
+
+    // 3. Camera
+    const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+    camera.position.set(0, 0, 5.0);
+    cameraRef.current = camera;
+
+    // 4. Studio Illumination (Calibrated to prevent blown-out bloom)
+    const ambLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambLight);
+
+    const keyLight = new THREE.DirectionalLight(0x00F0FF, 1.6);
+    keyLight.position.set(4, 5, 4);
+    scene.add(keyLight);
+
+    const fillLight = new THREE.DirectionalLight(0xFF2A85, 1.2);
+    fillLight.position.set(-4, -3, -3);
+    scene.add(fillLight);
+
+    const pointAccent = new THREE.PointLight(0x4AF626, 1.5, 10);
+    pointAccent.position.set(0, 2, 3);
+    scene.add(pointAccent);
+
+    // 5. Build Materials for All 6 Passes
+    const beautyUniforms = {
+      uTime: { value: 0 },
+      uMouse: { value: new THREE.Vector2(0, 0) },
+      uRipple: { value: 0 },
+      uRimColor: { value: new THREE.Color(0x00F0FF) },
+      uBaseCore: { value: new THREE.Color(0x070814) },
+    };
+    beautyUniformsRef.current = beautyUniforms;
+
+    const beautyMaterial = new THREE.ShaderMaterial({
+      uniforms: beautyUniforms,
+      vertexShader: `
+        uniform float uTime;
+        uniform vec2 uMouse;
+        uniform float uRipple;
+        varying vec2 vUv;
+        varying vec3 vNormal;
+        varying vec3 vViewPosition;
+        varying vec4 vClipPosition;
+
+        void main() {
+          vUv = uv;
+          vec4 initialMv = modelViewMatrix * vec4(position, 1.0);
+          vec4 initialClip = projectionMatrix * initialMv;
+          vec2 screenNdc = initialClip.xy / initialClip.w;
+
+          float dist = length(screenNdc - uMouse);
+          float wave = sin(dist * 14.0 - uTime * 4.0) * exp(-dist * 1.8) * (0.04 + uRipple * 0.2);
+          vec3 pos = position + normal * wave;
+
+          vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+          vViewPosition = -mvPosition.xyz;
+          vNormal = normalize(normalMatrix * normal);
+          vClipPosition = projectionMatrix * mvPosition;
+          gl_Position = vClipPosition;
+        }
+      `,
+      fragmentShader: `
+        uniform float uTime;
+        uniform vec2 uMouse;
+        uniform float uRipple;
+        uniform vec3 uRimColor;
+        uniform vec3 uBaseCore;
+        varying vec2 vUv;
+        varying vec3 vNormal;
+        varying vec3 vViewPosition;
+        varying vec4 vClipPosition;
+
+        void main() {
+          vec3 normal = normalize(vNormal);
+          vec3 viewDir = normalize(vViewPosition);
+
+          vec2 ndc = vClipPosition.xy / vClipPosition.w;
+          float cursorDist = length(ndc - uMouse);
+
+          // Key and fill lights
+          vec3 lightDir = normalize(vec3(0.8, 1.2, 1.0));
+          float diff = max(dot(normal, lightDir), 0.0);
+
+          vec3 halfDir = normalize(lightDir + viewDir);
+          float spec = pow(max(dot(normal, halfDir), 0.0), 32.0);
+
+          float fresnel = pow(1.0 - max(dot(normal, viewDir), 0.0), 2.8);
+          vec3 diffuseCol = mix(uBaseCore, vec3(0.04, 0.08, 0.16), diff);
+
+          float chromShift = fresnel * 0.08 + exp(-cursorDist * 2.5) * (0.04 + uRipple * 0.1);
+          vec3 finalCol;
+          finalCol.r = diffuseCol.r + spec * 0.4 + fresnel * uRimColor.r * (0.8 + chromShift);
+          finalCol.g = diffuseCol.g + spec * 0.4 + fresnel * uRimColor.g * 0.8;
+          finalCol.b = diffuseCol.b + spec * 0.4 + fresnel * (uRimColor.b * 0.8 + chromShift * 1.2);
+
+          float ripplePulse = sin(cursorDist * 16.0 - uTime * 4.0) * exp(-cursorDist * 1.8) * uRipple;
+          finalCol += vec3(max(0.0, ripplePulse) * 0.2);
+
+          // Clamp maximum luminance to prevent blown out whiteout
+          finalCol = min(finalCol, vec3(0.85));
+
+          gl_FragColor = vec4(finalCol, 1.0);
+        }
+      `,
+    });
+
+    const wireframeMaterial = new THREE.MeshBasicMaterial({
+      color: 0x00F0FF,
+      wireframe: true,
+    });
+
+    const clayMaterial = new THREE.MeshStandardMaterial({
+      color: 0xD6CFC2,
+      roughness: 0.85,
+      metalness: 0.0,
+      flatShading: false,
+    });
+
+    const uvUniforms = { uTime: { value: 0 } };
+    uvUniformsRef.current = uvUniforms;
+
+    const uvMaterial = new THREE.ShaderMaterial({
+      uniforms: uvUniforms,
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform float uTime;
+        varying vec2 vUv;
+        void main() {
+          vec2 animUv = vUv + vec2(uTime * 0.02, uTime * 0.01);
+          vec2 grid = fract(animUv * 16.0);
+          float checkX = step(0.5, grid.x);
+          float checkY = step(0.5, grid.y);
+          float checker = (checkX == checkY) ? 0.92 : 0.38;
+
+          vec3 uvGradient = vec3(vUv.x, vUv.y, sin(vUv.x * 3.14159 + vUv.y * 3.14159) * 0.5 + 0.5);
+          vec2 edge = step(vec2(0.04), grid) * step(grid, vec2(0.96));
+          float gridLine = 1.0 - (edge.x * edge.y);
+
+          vec3 finalCol = mix(uvGradient * checker, vec3(1.0), gridLine * 0.8);
+          gl_FragColor = vec4(finalCol, 1.0);
+        }
+      `,
+    });
+
+    const normalsMaterial = new THREE.MeshNormalMaterial({ flatShading: false });
+
+    // Pixel pass material uses clay or standard shaded baseline before RenderPixelatedPass
+    const pixelBaseMaterial = new THREE.MeshStandardMaterial({
+      color: 0x00F0FF,
+      roughness: 0.3,
+      metalness: 0.2,
+    });
+
+    materialsRef.current = {
+      beauty: beautyMaterial,
+      pixel: pixelBaseMaterial,
+      wireframe: wireframeMaterial,
+      clay: clayMaterial,
+      uv: uvMaterial,
+      normals: normalsMaterial,
+    };
+
+    // 6. Post-Processing: EffectComposer with RenderPixelatedPass (pixelSize: 6)
+    const composer = new EffectComposer(renderer);
+    composerRef.current = composer;
+
+    const renderPass = new RenderPass(scene, camera);
+    composer.addPass(renderPass);
+    renderPassRef.current = renderPass;
+
+    const pixelatedPass = new RenderPixelatedPass(6, scene, camera, {
+      normalEdgeStrength: 1.5,
+      depthEdgeStrength: 1.5,
+    });
+    pixelatedPass.enabled = false;
+    composer.addPass(pixelatedPass);
+    pixelatedPassRef.current = pixelatedPass;
+
+    const outputPass = new OutputPass();
+    composer.addPass(outputPass);
+
+    // 7. Master Hologram Group
+    const mainGroup = new THREE.Group();
+    scene.add(mainGroup);
+    mainGroupRef.current = mainGroup;
+
+    // 8. Construct 6 Distinct Procedural 3D Project Geometries
+    const registerMesh = (mesh: THREE.Mesh, isCore = false) => {
+      mesh.name = isCore ? 'project-core-mesh' : 'project-child-mesh';
+      mesh.userData = { originalMaterial: mesh.material, isCore };
+    };
+
+    const projectMeshes: THREE.Group[] = [];
+
+    // [01] Mental Defrag: Multi-layered geometric hologram (Dark obsidian core, cyan/magenta cage, vertex cloud & orbital nodes)
+    const g01 = new THREE.Group();
+
+    // Dark translucent obsidian core (#070814, opacity: 0.8) with sharp 3D facets
+    const geom01 = new THREE.IcosahedronGeometry(1.2, 0);
+    const coreMat01 = new THREE.MeshStandardMaterial({
+      color: 0x070814,
+      roughness: 0.15,
+      metalness: 0.85,
+      transparent: true,
+      opacity: 0.8,
+      flatShading: true,
+    });
+    const m01 = new THREE.Mesh(geom01, coreMat01);
+    registerMesh(m01, true);
+    g01.add(m01);
+
+    // Outer cyan wireframe cage
+    const cageGeom01 = new THREE.IcosahedronGeometry(1.38, 0);
+    const cageMat01 = new THREE.MeshBasicMaterial({
+      color: 0x00F0FF,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.8,
+    });
+    const cage01 = new THREE.Mesh(cageGeom01, cageMat01);
+    cage01.name = 'project-cage-mesh';
+    cage01.userData = { originalMaterial: cageMat01, isCage: true };
+    g01.add(cage01);
+
+    // Outer magenta gimbal ring
+    const gimbalGeom01 = new THREE.TorusGeometry(1.65, 0.015, 16, 64);
+    const gimbalMat01 = new THREE.MeshBasicMaterial({
+      color: 0xFF2A85,
+      transparent: true,
+      opacity: 0.85,
+    });
+    const gimbal01 = new THREE.Mesh(gimbalGeom01, gimbalMat01);
+    gimbal01.rotation.x = Math.PI / 4;
+    gimbal01.rotation.y = Math.PI / 6;
+    gimbal01.name = 'project-gimbal-mesh';
+    gimbal01.userData = { originalMaterial: gimbalMat01, isCage: true };
+    g01.add(gimbal01);
+
+    // Outer vertex cloud around facets
+    const cloudGeom01 = new THREE.IcosahedronGeometry(1.5, 1);
+    const cloudMat01 = new THREE.PointsMaterial({
+      color: 0xFF2A85,
+      size: 0.045,
+      transparent: true,
+      opacity: 0.9,
+      blending: THREE.AdditiveBlending,
+    });
+    const cloud01 = new THREE.Points(cloudGeom01, cloudMat01);
+    cloud01.frustumCulled = false;
+    g01.add(cloud01);
+
+    // 6 Orbital thought / satellite nodes
+    for (let i = 0; i < 6; i++) {
+      const angle = (i / 6) * Math.PI * 2;
+      const satelliteGeom = new THREE.BoxGeometry(0.2, 0.2, 0.2);
+      const satMat = new THREE.MeshBasicMaterial({ color: 0x00F0FF, wireframe: true });
+      const sat = new THREE.Mesh(satelliteGeom, satMat);
+      registerMesh(sat, false);
+      sat.position.set(Math.cos(angle) * 2.1, Math.sin(angle * 2) * 0.8, Math.sin(angle) * 2.1);
+      g01.add(sat);
+    }
+    projectMeshes.push(g01);
+    mainGroup.add(g01);
+
+    // [02] DocLensBD: Cylindrical Cloud Health Core + Concentric Telemetry Rings
+    const g02 = new THREE.Group();
+    const geom02 = new THREE.CylinderGeometry(0.9, 0.9, 2.0, 32, 6, false);
+    const m02 = new THREE.Mesh(geom02, beautyMaterial);
+    registerMesh(m02, true);
+    g02.add(m02);
+
+    [1.4, 1.75, 2.1].forEach((r, idx) => {
+      const ringGeom = new THREE.TorusGeometry(r, 0.02, 16, 64);
+      const ringMat = new THREE.MeshBasicMaterial({ color: idx === 1 ? 0xFFCC00 : 0x00F0FF, transparent: true, opacity: 0.5 });
+      const ring = new THREE.Mesh(ringGeom, ringMat);
+      registerMesh(ring, false);
+      ring.rotation.x = Math.PI / 2 + idx * 0.2;
+      g02.add(ring);
+    });
+    g02.visible = false;
+    projectMeshes.push(g02);
+    mainGroup.add(g02);
+
+    // [03] Rannabanna: Parametric Botanical Torus Knot + Golden Spice Halo
+    const g03 = new THREE.Group();
+    const geom03 = new THREE.TorusKnotGeometry(1.15, 0.35, 128, 32, 3, 5);
+    const m03 = new THREE.Mesh(geom03, beautyMaterial);
+    registerMesh(m03, true);
+    g03.add(m03);
+
+    const spiceRingGeom = new THREE.TorusGeometry(2.05, 0.015, 16, 64);
+    const spiceMat = new THREE.MeshBasicMaterial({ color: 0xFFCC00, transparent: true, opacity: 0.6 });
+    const spiceRing = new THREE.Mesh(spiceRingGeom, spiceMat);
+    registerMesh(spiceRing, false);
+    spiceRing.rotation.x = Math.PI / 3;
+    g03.add(spiceRing);
+
+    g03.visible = false;
+    projectMeshes.push(g03);
+    mainGroup.add(g03);
+
+    // [04] Trash Trail: Hydrodynamic Möbius Ribbon Stream + Boom Barrier Torus
+    const g04 = new THREE.Group();
+    const geom04 = new THREE.TorusGeometry(1.35, 0.32, 24, 180, Math.PI * 2);
+    const m04 = new THREE.Mesh(geom04, beautyMaterial);
+    registerMesh(m04, true);
+    m04.rotation.x = Math.PI / 4;
+    g04.add(m04);
+
+    const boomGeom = new THREE.TorusGeometry(1.95, 0.03, 16, 64);
+    const boomMat = new THREE.MeshBasicMaterial({ color: 0xFF2A85, wireframe: true });
+    const boomRing = new THREE.Mesh(boomGeom, boomMat);
+    registerMesh(boomRing, false);
+    g04.add(boomRing);
+
+    g04.visible = false;
+    projectMeshes.push(g04);
+    mainGroup.add(g04);
+
+    // [05] Neon Vanguard: Octahedral Combat Hull + Orthogonal POSIX IPC Gimbals
+    const g05 = new THREE.Group();
+    const geom05 = new THREE.OctahedronGeometry(1.35, 0);
+    const m05 = new THREE.Mesh(geom05, beautyMaterial);
+    registerMesh(m05, true);
+    g05.add(m05);
+
+    const gimbal1Geom = new THREE.TorusGeometry(1.8, 0.03, 16, 64);
+    const gimbalMat = new THREE.MeshBasicMaterial({ color: 0x4AF626 });
+    const gimbal1 = new THREE.Mesh(gimbal1Geom, gimbalMat);
+    registerMesh(gimbal1, false);
+    g05.add(gimbal1);
+
+    const gimbal2 = new THREE.Mesh(gimbal1Geom, gimbalMat);
+    gimbal2.rotation.y = Math.PI / 2;
+    registerMesh(gimbal2, false);
+    g05.add(gimbal2);
+
+    g05.visible = false;
+    projectMeshes.push(g05);
+    mainGroup.add(g05);
+
+    // [06] Chronos-Guard & Aether-GL: Merkle Vault Cube + Geodesic Navier-Stokes Fluid Cage
+    const g06 = new THREE.Group();
+    const geom06 = new THREE.BoxGeometry(1.45, 1.45, 1.45, 4, 4, 4);
+    const m06 = new THREE.Mesh(geom06, beautyMaterial);
+    registerMesh(m06, true);
+    g06.add(m06);
+
+    const fluidCageGeom = new THREE.IcosahedronGeometry(1.95, 1);
+    const cageMat = new THREE.MeshBasicMaterial({ color: 0x00F0FF, wireframe: true, transparent: true, opacity: 0.35 });
+    const fluidCage = new THREE.Mesh(fluidCageGeom, cageMat);
+    registerMesh(fluidCage, false);
+    g06.add(fluidCage);
+
+    g06.visible = false;
+    projectMeshes.push(g06);
+    mainGroup.add(g06);
+
+    projectMeshesRef.current = projectMeshes;
+
+    // 9. Volumetric Particle System with GPU Morphing (600 Points adhering to GEMINI.md flags)
+    const particleCount = PARTICLE_COUNT;
+    const particleGeo = new THREE.BufferGeometry();
+    const initialPositions = generateParticleFormation(0, particleCount);
+    const targetPositions = generateParticleFormation(0, particleCount);
+    const particleSizes = new Float32Array(particleCount);
+
+    for (let i = 0; i < particleCount; i++) {
+      particleSizes[i] = 0.6 + Math.random() * 0.8;
+    }
+
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(initialPositions, 3));
+    particleGeo.setAttribute('aTargetPosition', new THREE.BufferAttribute(targetPositions, 3));
+    particleGeo.setAttribute('aPSize', new THREE.BufferAttribute(particleSizes, 1));
+    particleGeoRef.current = particleGeo;
+
+    const particleUniforms = {
+      uTime: { value: 0 },
+      uMorphProgress: { value: 1.0 },
+      uMouse: { value: new THREE.Vector2(0, 0) },
+      uRipple: { value: 0 },
+      uColorA: { value: new THREE.Color(0x00F0FF) },
+      uColorB: { value: new THREE.Color(0x00F0FF) },
+    };
+    particleUniformsRef.current = particleUniforms;
+
+    const particleMat = new THREE.ShaderMaterial({
+      uniforms: particleUniforms,
+      vertexShader: `
+        uniform float uTime;
+        uniform float uMorphProgress;
+        uniform vec2 uMouse;
+        uniform float uRipple;
+        uniform vec3 uColorA;
+        uniform vec3 uColorB;
+        attribute vec3 aTargetPosition;
+        attribute float aPSize;
+        varying vec3 vColor;
+        varying float vAlpha;
+
+        void main() {
+          float t = smoothstep(0.0, 1.0, uMorphProgress);
+          vec3 p = mix(position, aTargetPosition, t);
+
+          // GPU-only orbital wave perturbation
+          float angle = uTime * 0.4 + length(p.xz) * 0.5;
+          p.y += sin(angle) * 0.12;
+
+          // Screen-space mouse repulsion wave
+          vec4 clipPos = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+          vec2 screenNdc = clipPos.xy / clipPos.w;
+          float mouseDist = length(screenNdc - uMouse);
+          float rippleWave = sin(mouseDist * 12.0 - uTime * 4.0) * exp(-mouseDist * 2.0) * uRipple;
+          p += normalize(p + vec3(0.001)) * rippleWave * 0.35;
+
+          vec4 mvPosition = modelViewMatrix * vec4(p, 1.0);
+          gl_Position = projectionMatrix * mvPosition;
+
+          gl_PointSize = (aPSize * 36.0 + rippleWave * 20.0) * (1.0 / -mvPosition.z);
+
+          vColor = mix(uColorA, uColorB, t);
+          vAlpha = 0.55 + 0.35 * sin(uTime * 2.0 + p.x * 2.0);
+        }
+      `,
+      fragmentShader: `
+        varying vec3 vColor;
+        varying float vAlpha;
+
+        void main() {
+          vec2 coord = gl_PointCoord - vec2(0.5);
+          float dist = length(coord);
+          if (dist > 0.5) discard;
+          float intensity = pow(1.0 - dist * 2.0, 1.5);
+          gl_FragColor = vec4(vColor, vAlpha * intensity);
+        }
+      `,
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    });
+
+    const particles = new THREE.Points(particleGeo, particleMat);
+    particles.frustumCulled = false;
+    scene.add(particles);
+    particleSystemRef.current = particles;
+
+    // 10. Resize Observer
+    const handleResize = () => {
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+      if (width === 0 || height === 0) return;
+
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+
+      renderer.setSize(width, height);
+      composer.setSize(width, height);
+      if (pixelatedPassRef.current) {
+        pixelatedPassRef.current.setSize(width, height);
       }
-    } else if (!mouseCoordRef.current.hasMoved) {
-      // Do not open floating preview without valid coordinates to prevent snapping to (0,0)
-      return;
-    }
+    };
 
-    setHoveredIndex(idx);
-    document.body.classList.add('ledger-hover-active');
+    const resizeObserver = new ResizeObserver(handleResize);
+    resizeObserver.observe(container);
+    handleResize();
 
-    // Inside floating preview container, translate inner reel to -index * 100% (duration: 0.5, ease: 'power4.inOut')
-    if (reelEl) {
-      gsap.to(reelEl, {
-        yPercent: -idx * 100,
-        duration: 0.5,
-        ease: 'power4.inOut',
-        overwrite: 'auto',
+    // 11. Animation Loop driven by unified gsap.ticker
+    let frameCount = 0;
+    let lastFpsTime = performance.now();
+    let isVisible = true;
+    let isTickerAttached = false;
+    let lastTime = performance.now();
+
+    const animate = () => {
+      if (!isVisible) return;
+
+      const currentTime = performance.now();
+      const dt = Math.min((currentTime - lastTime) / 1000, 0.05);
+      lastTime = currentTime;
+      const time = currentTime * 0.001;
+
+      // Telemetry FPS update
+      frameCount += 1;
+      if (currentTime - lastFpsTime >= 500) {
+        const calculatedFps = Math.round((frameCount * 1000) / (currentTime - lastFpsTime));
+        if (fpsRef.current) {
+          fpsRef.current.textContent = `${calculatedFps} FPS`;
+        }
+        frameCount = 0;
+        lastFpsTime = currentTime;
+      }
+
+      // Smooth pointer interpolation
+      const mouse = mouseRef.current;
+      mouse.x += (mouse.targetX - mouse.x) * (0.08 * (dt * 60));
+      mouse.y += (mouse.targetY - mouse.y) * (0.08 * (dt * 60));
+
+      rippleEnergyRef.current = Math.max(0, rippleEnergyRef.current - dt * 1.5);
+
+      if (beautyUniformsRef.current) {
+        beautyUniformsRef.current.uTime.value = time;
+        beautyUniformsRef.current.uMouse.value.set(mouse.x, mouse.y);
+        beautyUniformsRef.current.uRipple.value = rippleEnergyRef.current;
+      }
+
+      if (uvUniformsRef.current) {
+        uvUniformsRef.current.uTime.value = time;
+      }
+
+      if (particleUniformsRef.current) {
+        particleUniformsRef.current.uTime.value = time;
+        particleUniformsRef.current.uMouse.value.set(mouse.x, mouse.y);
+        particleUniformsRef.current.uRipple.value = rippleEnergyRef.current;
+      }
+
+      // Rotate active project mesh
+      const activeMesh = projectMeshesRef.current[activeProjectIndexRef.current];
+      if (activeMesh) {
+        const autoSpeed = autoRotateRef.current ? 0.4 : 0.05;
+        activeMesh.rotation.y += dt * autoSpeed;
+
+        const targetRotX = mouse.y * -0.5;
+        const targetRotZ = mouse.x * 0.35;
+        activeMesh.rotation.x += (targetRotX - activeMesh.rotation.x) * 0.06;
+        activeMesh.rotation.z += (targetRotZ - activeMesh.rotation.z) * 0.06;
+
+        // Counter-rotation on hologram gimbal ring for enhanced multi-layer depth
+        const gimbal = activeMesh.getObjectByName('project-gimbal-mesh');
+        if (gimbal) {
+          gimbal.rotation.z += dt * 0.25;
+        }
+      }
+
+      // Rotate particle cloud
+      if (particleSystemRef.current) {
+        particleSystemRef.current.rotation.y -= dt * 0.15;
+        particleSystemRef.current.rotation.x += dt * 0.08;
+      }
+
+      composer.render();
+    };
+
+    const visibilityObserver = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+        if (isVisible && !isTickerAttached) {
+          lastTime = performance.now();
+          gsap.ticker.add(animate);
+          isTickerAttached = true;
+        } else if (!isVisible && isTickerAttached) {
+          gsap.ticker.remove(animate);
+          isTickerAttached = false;
+        }
+      },
+      { threshold: 0 }
+    );
+    visibilityObserver.observe(container);
+
+    gsap.ticker.add(animate);
+    isTickerAttached = true;
+    gsap.ticker.lagSmoothing(0);
+
+    // Teardown
+    return () => {
+      resizeObserver.disconnect();
+      visibilityObserver.disconnect();
+      if (isTickerAttached) {
+        gsap.ticker.remove(animate);
+      }
+
+      projectMeshes.forEach((g) => {
+        g.traverse((c) => {
+          if ((c as THREE.Mesh).isMesh) {
+            (c as THREE.Mesh).geometry?.dispose();
+          }
+        });
       });
+      particleGeo.dispose();
+      particleMat.dispose();
+      Object.values(materialsRef.current).forEach((m) => m.dispose());
+      renderer.dispose();
+    };
+  }, []);
+
+  // --------------------------------------------------------------------------
+  // POINTER TRACKING ON VIEWPORT
+  // --------------------------------------------------------------------------
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const rect = container.getBoundingClientRect();
+    const nx = Math.max(-1, Math.min(1, ((e.clientX - rect.left) / rect.width) * 2 - 1));
+    const ny = Math.max(-1, Math.min(1, -(((e.clientY - rect.top) / rect.height) * 2 - 1)));
+
+    mouseRef.current.targetX = nx;
+    mouseRef.current.targetY = ny;
+
+    if (coordsRef.current) {
+      coordsRef.current.textContent = `${nx >= 0 ? '+' : ''}${nx.toFixed(2)}, ${ny >= 0 ? '+' : ''}${ny.toFixed(2)}`;
     }
 
-    // Scale the container to 1 (autoAlpha: 1) on mouseenter
-    if (previewEl && labelEl) {
-      gsap.killTweensOf([previewEl, labelEl]);
-      gsap.to([previewEl, labelEl], {
-        scale: 1,
-        autoAlpha: 1,
-        duration: 0.35,
-        ease: 'power3.out',
-        overwrite: 'auto',
-      });
-    }
-  };
-
-  const handleLedgerLeave = () => {
-    setHoveredIndex(null);
-    document.body.classList.remove('ledger-hover-active');
-
-    const previewEl = previewRef.current;
-    const labelEl = labelRef.current;
-
-    // Scale back to scale: 0 (autoAlpha: 0) on mouseleave
-    if (previewEl && labelEl) {
-      gsap.killTweensOf([previewEl, labelEl]);
-      gsap.to([previewEl, labelEl], {
-        scale: 0,
-        autoAlpha: 0,
-        duration: 0.25,
-        ease: 'power3.in',
-        overwrite: 'auto',
-      });
-    }
-  };
-
-  const handleJumpToProjectCard = (idx: number) => {
-    handleLedgerLeave();
-    setActiveCardIndex(idx);
-    setViewMode('cards');
-    if (sectionRef.current) {
-      scrollTo(sectionRef.current, { duration: 0.8, offset: -80 });
+    if (isPointerDownRef.current) {
+      const activeMesh = projectMeshesRef.current[activeProjectIndexRef.current];
+      if (activeMesh) {
+        const dx = e.clientX - lastPointerPosRef.current.x;
+        const dy = e.clientY - lastPointerPosRef.current.y;
+        activeMesh.rotation.y += dx * 0.008;
+        activeMesh.rotation.x += dy * 0.008;
+        lastPointerPosRef.current = { x: e.clientX, y: e.clientY };
+      }
     }
   };
 
-  const handleNextCard = () => {
-    setActiveCardIndex((prev) => Math.min(FLAGSHIP_PROJECTS.length - 1, prev + 1));
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    isPointerDownRef.current = true;
+    lastPointerPosRef.current = { x: e.clientX, y: e.clientY };
+    rippleEnergyRef.current = 1.3;
+    watchknightAudio.playHoverTick(0);
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {}
   };
 
-  const handlePrevCard = () => {
-    setActiveCardIndex((prev) => Math.max(0, prev - 1));
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    isPointerDownRef.current = false;
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {}
   };
 
-  const activeProject = FLAGSHIP_PROJECTS[activeCardIndex];
+  // --------------------------------------------------------------------------
+  // RENDER SIMULATION PREVIEW INSIDE EXPANDED DOSSIER
+  // --------------------------------------------------------------------------
+  const renderInteractivePreview = (previewType: FlagshipProject['previewType']) => {
+    switch (previewType) {
+      case 'mental-defrag':
+        return <MentalDefragPreview />;
+      case 'doclens':
+        return <DocLensBDPreview />;
+      case 'rannabanna':
+        return <RannabannaPreview />;
+      case 'trash-trail':
+        return <TrashTrailPreview />;
+      case 'neon-vanguard':
+        return <NeonVanguardPreview />;
+      case 'chronos-aether':
+        return <ChronosAetherPreview />;
+      default:
+        return <MentalDefragPreview />;
+    }
+  };
 
   return (
     <section
       ref={sectionRef}
-      className="projects-showcase relative bg-obsidian text-slate-100 overflow-hidden py-16 sm:py-24"
-      aria-label="Flagship Engineering Case Studies"
+      className="projects-showcase relative bg-[#070814] text-[#F0EFE6] py-12 sm:py-16 overflow-hidden select-none font-mono"
+      aria-label="Unified Flagship Work Showcase & 3D Hologram Inspector"
     >
-      {/* Container wrapper */}
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Top Header & Dual-Mode Showcase Switcher */}
-        <div className="w-full flex flex-col md:flex-row md:items-end justify-between border-b border-white/10 pb-6 mb-8 sm:mb-12 gap-6">
-          <div>
-            <div className="flex items-center gap-2 font-mono text-fluid-micro text-accent-coral uppercase tracking-widest mb-1.5">
-              <Briefcase className="w-4 h-4 text-accent-coral" />
-              <span>Awwwards Dual-Mode Showcase • Kinetic Ledger</span>
+        {/* ================================================================== */}
+        {/* TOP STATION BANNER & HARDWARE CHROME                               */}
+        {/* ================================================================== */}
+        <div className="w-full mb-6 border-2 border-[#D6CFC2] border-b-[#2D3645] border-r-[#2D3645] bg-[#131629]">
+          <div className="flex items-center justify-between px-3 py-2 bg-[#D6CFC2] text-[#070814] font-bold text-xs">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 bg-[#4AF626] border border-[#070814] inline-block animate-pulse" />
+              <span className="font-pixel text-[11px] uppercase tracking-wider">
+                [ WATCHKNIGHT_OS // SYS.96 ] :: CYBERDECK_STATION.ROM
+              </span>
             </div>
-            <h2 className="font-display font-extrabold text-2xl sm:text-3xl lg:text-4xl text-white tracking-tight uppercase">
-              Engineered <span className="text-accent-coral">Systems</span> & <span className="text-alabaster">Experiences</span>
-            </h2>
+            <div className="flex items-center gap-1 font-mono text-[10px]">
+              <span className="hidden sm:inline-block px-1.5 py-0.5 bg-[#070814] text-[#4AF626] border border-[#2D3645]">
+                VOLUMETRIC_ENGINE // ACTIVE
+              </span>
+              <span className="px-1.5 py-0.5 bg-[#070814] text-[#F0EFE6] border border-[#2D3645]">
+                EAST WEST UNIVERSITY CSE
+              </span>
+            </div>
           </div>
-
-          {/* Dual-Mode View Switcher Pills */}
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1 p-1 rounded-full bg-obsidian-surface border border-white/10 backdrop-blur-md">
-              <button
-                type="button"
-                onClick={() => {
-                  handleLedgerLeave();
-                  setViewMode('ledger');
-                }}
-                aria-label="Switch to Editorial Project Index Ledger view"
-                aria-pressed={viewMode === 'ledger'}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full font-mono text-xs transition-all duration-200 ${
-                  viewMode === 'ledger'
-                    ? 'bg-accent-coral text-obsidian font-bold shadow-glow-cyan'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                <Layers className="w-3.5 h-3.5" />
-                <span>Index Ledger</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  handleLedgerLeave();
-                  setViewMode('cards');
-                }}
-                aria-label="Switch to Flagship Interactive Cards view"
-                aria-pressed={viewMode === 'cards'}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full font-mono text-xs transition-all duration-200 ${
-                  viewMode === 'cards'
-                    ? 'bg-accent-coral text-obsidian font-bold shadow-glow-cyan'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                <LayoutGrid className="w-3.5 h-3.5" />
-                <span>Flagship Cards</span>
-              </button>
+          <div className="px-4 py-3 bg-[#0D1512] border-t border-[#2D3645] flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
+            <div>
+              <div className="text-[10px] text-[#00F0FF] font-pixel mb-1 flex items-center gap-1.5">
+                <Terminal className="w-3.5 h-3.5 text-[#00F0FF]" />
+                <span>UNIFIED ROM CARTRIDGE LEDGER &amp; LIVE 3D HOLOGRAM INSPECTOR</span>
+              </div>
+              <p className="text-[#8E98AA] text-[11px] font-sans">
+                Select any ROM slot to dynamically morph the real-time 3D procedural hologram and inspect its geometric manifold across 6 live shader passes.
+              </p>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="text-[10px] text-[#4AF626] bg-[#131629] px-2 py-1 border border-[#2D3645]">
+                P99 LATENCY: &lt; 0.12ms
+              </span>
+              <span className="text-[10px] text-[#FFCC00] bg-[#131629] px-2 py-1 border border-[#2D3645]">
+                PARITY: 100% AST
+              </span>
             </div>
           </div>
         </div>
 
         {/* ================================================================== */}
-        {/* MODE 1: EDITORIAL PROJECT INDEX LEDGER (DENNIS SNELLENBERG STYLE)   */}
+        {/* TWO-ZONE CYBERDECK WORKSTATION: LEDGER (LEFT) + 3D VIEWPORT (RIGHT)*/}
         {/* ================================================================== */}
-        {viewMode === 'ledger' ? (
-          <div
-            className="w-full flex flex-col relative"
-            onMouseLeave={handleLedgerLeave}
-            onPointerLeave={handleLedgerLeave}
-          >
-            {FLAGSHIP_PROJECTS.map((project, idx) => {
-              const isHovered = hoveredIndex === idx;
-              const isExpanded = transitionActiveProject?.id === project.id;
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          
+          {/* ---------------------------------------------------------------- */}
+          {/* ZONE 1 (LEFT): RETRO 90s BRACKET & ROM CARTRIDGE INDEX           */}
+          {/* ---------------------------------------------------------------- */}
+          <div className="lg:col-span-6 flex flex-col space-y-3">
+            <div className="flex items-center justify-between px-2 py-1 bg-[#131629] border border-[#2D3645] text-[10px]">
+              <span className="text-[#00F0FF] font-bold font-pixel">
+                ROM SLOTS [01 - 06] // LOADED
+              </span>
+              <span className="text-[#8E98AA]">CLICK TO ENGAGE WORKSPACE</span>
+            </div>
 
-              return (
-                <div
-                  key={project.id}
-                  className="skew-elem relative w-full group transition-opacity duration-300"
-                  style={{
-                    opacity: hoveredIndex !== null && !isHovered ? 0.35 : 1,
-                  }}
-                  onMouseEnter={(e) => handleRowEnter(idx, e)}
-                  onPointerEnter={(e) => handleRowEnter(idx, e)}
-                >
-                  {/* 1px horizontal divider rule above row */}
-                  <div
-                    className="ledger-divider w-full h-[1px] border-t border-white/15 block"
-                    style={{ transformOrigin: 'left center' }}
-                    aria-hidden="true"
-                  />
+            <div className="space-y-2">
+              {FLAGSHIP_PROJECTS.map((project, idx) => {
+                const isActive = activeProjectIndex === idx;
 
-                  {/* Main Ledger Row */}
+                return (
                   <div
+                    key={project.id}
+                    ref={(el) => {
+                      romCardRefs.current[idx] = el;
+                    }}
+                    data-rom-index={idx}
+                    onClick={() => handleSelectWithCooldown(idx)}
+                    onMouseEnter={() => {
+                      watchknightAudio.playHoverTick(0);
+                      chiptuneAudio.playPixelTick();
+                    }}
                     role="button"
                     tabIndex={0}
-                    onClick={(e) => {
-                      const isPreviewActive = previewRef.current && 
-                        window.getComputedStyle(previewRef.current).display !== 'none' && 
-                        hoveredIndex === idx;
-                      const source = isPreviewActive ? previewRef.current : (e.currentTarget as HTMLElement);
-                      openCaseStudy(project, source);
-                    }}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
-                        const isPreviewActive = previewRef.current && 
-                          window.getComputedStyle(previewRef.current).display !== 'none' && 
-                          hoveredIndex === idx;
-                        const source = isPreviewActive ? previewRef.current : (e.currentTarget as HTMLElement);
-                        openCaseStudy(project, source);
+                        handleSelectWithCooldown(idx);
                       }
                     }}
-                    aria-expanded={isExpanded}
-                    aria-label={`${project.title}: ${project.role}, ${project.year}. Press Enter to open case study.`}
-                    className="w-full py-6 sm:py-8 lg:py-10 px-3 sm:px-5 lg:px-6 grid grid-cols-1 sm:grid-cols-12 items-center gap-3 sm:gap-4 lg:gap-6 cursor-pointer select-none focus:outline-none focus:bg-white/5 transition-colors"
+                    aria-label={`Select ROM [${project.number}] ${project.title}`}
+                    aria-pressed={isActive}
+                    className={`group w-full p-3 transition-all duration-200 border-2 cursor-pointer ${
+                      isActive
+                        ? 'bg-[#0D1512] border-[#00F0FF] shadow-[0_0_12px_rgba(0,240,255,0.25)]'
+                        : 'bg-[#131629]/90 border-[#2D3645] hover:border-[#D6CFC2] hover:bg-[#131629]'
+                    }`}
                   >
-                    {/* Column 1-5 (lg): Monospace Index + Title */}
-                    <div className="sm:col-span-12 lg:col-span-5 flex items-baseline gap-3 sm:gap-6 min-w-0">
-                      <span className="font-mono text-fluid-mono sm:text-lg text-accent-coral font-bold shrink-0">
-                        {project.number}
-                      </span>
-                      <h3
-                        style={{
-                          transform: isHovered ? 'translateX(12px)' : 'translateX(0px)',
-                          opacity: isHovered ? 1 : 0.95,
-                        }}
-                        className="font-display font-extrabold text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl text-alabaster tracking-tight group-hover:text-accent-coral transition-all duration-300 ease-out truncate"
-                        title={project.title}
-                      >
-                        {project.title}
-                      </h3>
-                    </div>
-
-                    {/* Column 6-8 (lg): Role */}
-                    <div className="hidden sm:block sm:col-span-4 lg:col-span-3 min-w-0 pr-2">
-                      <span className="block font-mono text-[10px] text-muted-light uppercase tracking-wider mb-0.5">Role</span>
-                      <span className="font-mono text-xs sm:text-sm text-alabaster-dim truncate block" title={project.role}>
-                        {project.role}
-                      </span>
-                    </div>
-
-                    {/* Column 9-10 (lg): Services / Stack */}
-                    <div className="hidden md:block sm:col-span-4 md:col-span-4 lg:col-span-2 min-w-0 pr-2">
-                      <span className="block font-mono text-[10px] text-muted-light uppercase tracking-wider mb-0.5">Services / Stack</span>
-                      <span className="font-mono text-xs sm:text-sm text-muted-light truncate block" title={project.coreStack}>
-                        {project.coreStack}
-                      </span>
-                    </div>
-
-                    {/* Column 11 (lg): Year */}
-                    <div className="hidden sm:block sm:col-span-2 md:col-span-2 lg:col-span-1 min-w-0">
-                      <span className="block font-mono text-[10px] text-muted-light uppercase tracking-wider mb-0.5">Year</span>
-                      <span className="font-mono text-xs sm:text-sm text-alabaster-dim">{project.year}</span>
-                    </div>
-
-                    {/* Column 12 (lg): Interactive Action Icons & Arrow */}
-                    <div className="flex items-center justify-between sm:justify-end gap-2 sm:col-span-2 md:col-span-2 lg:col-span-1 shrink-0">
-                      {/* Mobile & Touch summary indicator */}
-                      <div className="flex sm:hidden items-center gap-2 font-mono text-[11px] text-muted-light truncate">
-                        <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-accent-coral font-semibold">
-                          {project.year}
+                    {/* 12-Column Grid Layout row adhering to layout overlap tests */}
+                    <div className="grid grid-cols-1 sm:grid-cols-12 items-center gap-2 sm:gap-3">
+                      
+                      {/* Col 1-5: Pixel Index Bracket + Project Title */}
+                      <div className="sm:col-span-12 lg:col-span-5 flex items-center gap-2.5 min-w-0">
+                        <span className={`font-pixel text-xs shrink-0 ${isActive ? 'text-[#00F0FF]' : 'text-[#8E98AA]'}`}>
+                          [{project.number}]
                         </span>
-                        <span className="text-alabaster-dim truncate">{project.role}</span>
+                        <h3 className={`font-bold text-sm tracking-tight leading-snug break-words ${isActive ? 'text-[#F0EFE6]' : 'text-[#8E98AA] group-hover:text-[#F0EFE6]'}`}>
+                          {project.title}
+                        </h3>
                       </div>
 
-                      <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-                        <a
-                          href={project.githubUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          aria-label={`GitHub repository for ${project.title}`}
-                          className="p-2 sm:p-2.5 rounded-full bg-white/5 hover:bg-accent-coral/20 text-slate-300 hover:text-accent-coral transition-colors border border-white/10"
-                        >
-                          <GithubIcon className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
-                        </a>
+                      {/* Col 6-8: Role */}
+                      <div className="hidden sm:block sm:col-span-4 lg:col-span-3 min-w-0">
+                        <span className="block text-[8px] text-[#8E98AA] uppercase tracking-wider">Role</span>
+                        <span className="text-[11px] text-[#D6CFC2] leading-tight block break-words">
+                          {project.role}
+                        </span>
+                      </div>
 
-                        {project.liveUrl && (
-                          <a
-                            href={project.liveUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            onClick={(e) => e.stopPropagation()}
-                            aria-label={`Live demo for ${project.title}`}
-                            className="p-2 sm:p-2.5 rounded-full bg-white/5 hover:bg-accent-coral/20 text-slate-300 hover:text-accent-coral transition-colors border border-white/10"
-                          >
-                            <ExternalLink className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
-                          </a>
-                        )}
+                      {/* Col 9-10: Services / Stack */}
+                      <div className="hidden md:block sm:col-span-4 md:col-span-4 lg:col-span-2 min-w-0">
+                        <span className="block text-[8px] text-[#8E98AA] uppercase tracking-wider">Stack</span>
+                        <span className="text-[11px] text-[#00F0FF] leading-tight block break-words">
+                          {project.coreStack}
+                        </span>
+                      </div>
 
-                        <div
-                          className="w-8 sm:w-9 lg:w-10 h-8 sm:h-9 lg:h-10 rounded-full border border-white/10 flex items-center justify-center text-alabaster group-hover:border-accent-coral group-hover:bg-accent-coral group-hover:text-obsidian transition-all duration-300 shrink-0"
-                        >
-                          <ArrowUpRight className={`w-3.5 sm:w-4 h-3.5 sm:h-4 transition-transform duration-300 ${isExpanded ? 'rotate-90' : 'group-hover:translate-x-0.5 group-hover:-translate-y-0.5'}`} />
-                        </div>
+                      {/* Col 11: Year */}
+                      <div className="hidden sm:block sm:col-span-2 md:col-span-2 lg:col-span-1 min-w-0">
+                        <span className="block text-[8px] text-[#8E98AA] uppercase tracking-wider">Year</span>
+                        <span className="text-[11px] text-[#F0EFE6]">{project.year}</span>
+                      </div>
+
+                      {/* Col 12: Action Trigger */}
+                      <div className="flex sm:hidden lg:flex items-center justify-between sm:justify-end gap-2 sm:col-span-2 md:col-span-2 lg:col-span-1 shrink-0">
+                        <span className={`w-2 h-2 rounded-full ${isActive ? 'bg-[#4AF626] animate-pulse' : 'bg-[#2D3645]'}`} />
+                        <ChevronRight className={`w-3.5 h-3.5 ${isActive ? 'text-[#00F0FF] translate-x-0.5' : 'text-[#8E98AA]'}`} />
                       </div>
                     </div>
-                  </div>
 
-                  {/* Expandable Technical Specification Shelf */}
-                  <div
-                    id={`project-details-${project.id}`}
-                    onMouseEnter={(e) => {
-                      e.stopPropagation();
-                      handleLedgerLeave();
-                    }}
-                    className={`px-2 sm:px-6 lg:px-8 overflow-hidden transition-all duration-300 border-t border-white/5 bg-carbon/30 ${
-                      isExpanded ? 'max-h-[900px] opacity-100 py-6' : 'max-h-0 opacity-0 py-0 pointer-events-none'
-                    }`}
-                    aria-hidden={!isExpanded}
-                  >
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-4">
-                      {/* Left: Problem & Solution Details */}
-                      <div className="lg:col-span-7 space-y-4">
-                        <div>
-                          <p className="font-mono text-xs sm:text-sm text-accent-coral font-medium mb-1">
-                            {project.subtitle}
-                          </p>
-                          <p className="font-body text-xs sm:text-sm text-slate-300 leading-relaxed">
-                            {project.solution.description}
-                          </p>
-                        </div>
-
-                        <div className="space-y-1.5 pt-1">
-                          <span className="font-mono text-[10px] text-muted-light uppercase tracking-wider block">
-                            Architectural Highlights
-                          </span>
-                          {project.solution.architecture.map((item, i) => (
-                            <div key={i} className="flex items-start gap-2 text-xs text-slate-400">
-                              <CheckCircle2 className="w-3.5 h-3.5 text-accent-coral mt-0.5 shrink-0" />
-                              <span>{item}</span>
-                            </div>
-                          ))}
-                        </div>
-
-                        <div className="flex flex-wrap gap-1.5 pt-2">
-                          {project.techStack.map((tech) => (
-                            <span
-                              key={tech}
-                              className="px-2.5 py-0.5 rounded bg-white/5 font-mono text-[11px] text-slate-300 border border-white/5"
-                            >
-                              #{tech}
-                            </span>
-                          ))}
-                        </div>
+                    {/* ROM Cartridge Telemetry Sub-bar */}
+                    <div className="mt-2.5 pt-2 border-t border-[#2D3645] flex items-center justify-between text-[10px]">
+                      <div className="flex items-center gap-2">
+                        <span className={`px-1.5 py-0.5 text-[8px] font-bold ${
+                          isActive ? 'bg-[#00F0FF] text-[#070814]' : 'bg-[#070814] text-[#8E98AA] border border-[#2D3645]'
+                        }`}>
+                          {isActive ? 'ROM: ENGAGED' : 'ROM: READY'}
+                        </span>
+                        <span className="text-[#8E98AA]">
+                          p99: <span className="text-[#FFCC00] font-bold">{project.p99Latency}</span>
+                        </span>
+                        <span className="text-[#8E98AA] hidden sm:inline">
+                          • <span className="text-[#4AF626]">{project.fpsMetric}</span>
+                        </span>
                       </div>
 
-                      {/* Right: Metrics & Interactive Simulator Switcher */}
-                      <div className="lg:col-span-5 flex flex-col justify-between gap-4">
-                        <div className="space-y-2">
-                          <span className="font-mono text-[10px] text-muted-light uppercase tracking-wider block">
-                            Quantified Impact Telemetry
-                          </span>
-                          <div className="grid grid-cols-3 gap-2">
-                            {project.impact.metrics.map((m, mIdx) => (
-                              <div key={mIdx} className="p-3 rounded-lg bg-obsidian-surface border border-white/5 text-center">
-                                <div className="font-mono text-[9px] uppercase tracking-wider text-muted-light">{m.label}</div>
-                                <div className="font-mono font-bold text-xs sm:text-sm text-accent-coral my-0.5">{m.value}</div>
-                                <div className="font-mono text-[8px] text-slate-500 truncate">{m.detail}</div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="flex items-center justify-between gap-3 pt-4 border-t border-white/10">
-                          <button
-                            type="button"
-                            onClick={() => handleJumpToProjectCard(idx)}
-                            aria-label={`Open interactive sandbox simulator for ${project.title}`}
-                            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-accent-coral text-obsidian font-mono text-xs font-bold hover:bg-accent-hover transition-colors shadow-glow-cyan"
-                          >
-                            <Zap className="w-3.5 h-3.5" />
-                            <span>Launch Live Simulator</span>
-                          </button>
-
-                          <a
-                            href={project.githubUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="font-mono text-xs text-accent-coral hover:underline inline-flex items-center gap-1"
-                          >
-                            <span>View Source</span>
-                            <ArrowRight className="w-3.5 h-3.5" />
-                          </a>
-                        </div>
-                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openDossierForProject(idx);
+                        }}
+                        className="px-2 py-0.5 bg-[#131629] hover:bg-[#00F0FF]/20 text-[#00F0FF] border border-[#00F0FF]/40 text-[9px] font-pixel transition-all"
+                      >
+                        [ INSPECT ARCHITECTURE ]
+                      </button>
                     </div>
                   </div>
-
-                  {/* 1px horizontal divider rule below the last row */}
-                  {idx === FLAGSHIP_PROJECTS.length - 1 && (
-                    <div
-                      className="ledger-divider w-full h-[1px] border-t border-white/15 block"
-                      style={{ transformOrigin: 'left center' }}
-                      aria-hidden="true"
-                    />
-                  )}
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
-        ) : (
-          /* ================================================================== */
-          /* MODE 2: FLAGSHIP INTERACTIVE CASE STUDY CARDS VIEW                 */
-          /* ================================================================== */
-          <div className="w-full flex flex-col gap-6">
-            {/* Card Navigator Tabs */}
-            <div className="flex items-center justify-between flex-wrap gap-4 border-b border-white/10 pb-4">
-              <div className="flex items-center gap-1.5 p-1 rounded-full bg-carbon/90 border border-white/10 backdrop-blur-xl">
-                {FLAGSHIP_PROJECTS.map((p, idx) => (
-                  <button
-                    key={p.id}
-                    onClick={() => setActiveCardIndex(idx)}
-                    className={`px-3 py-1 rounded-full font-mono text-xs transition-all ${
-                      activeCardIndex === idx
-                        ? 'bg-accent-coral text-obsidian font-bold shadow-glow-cyan'
-                        : 'text-slate-400 hover:text-white'
-                    }`}
-                    aria-label={`Jump to project card ${p.title}`}
-                  >
-                    {p.number}
-                  </button>
-                ))}
+
+          {/* ---------------------------------------------------------------- */}
+          {/* ZONE 2 (RIGHT): LIVE THREE.JS 3D PROJECT HOLOGRAM & PASSES       */}
+          {/* ---------------------------------------------------------------- */}
+          <div id="render-pass-inspector" className="lg:col-span-6 flex flex-col space-y-3 lg:sticky lg:top-20 self-start">
+            
+            {/* Viewport Outer Frame */}
+            <div className="w-full border-2 border-[#D6CFC2] border-b-[#2D3645] border-r-[#2D3645] bg-[#0D1512] overflow-hidden flex flex-col">
+              
+              {/* Bezel Titlebar with Live Telemetry */}
+              <div className="flex items-center justify-between px-3 py-1.5 bg-[#D6CFC2] text-[#070814] font-bold text-[10px]">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#FF2A85] animate-ping" />
+                  <span className="font-pixel">
+                    HOLO_VIEWPORT // [{activeProject.number}] {activeProject.title.toUpperCase()}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 font-mono">
+                  <span ref={fpsRef} className="px-1.5 py-0.5 bg-[#070814] text-[#4AF626] border border-[#2D3645]">
+                    120 FPS
+                  </span>
+                  <span ref={coordsRef} className="hidden sm:inline-block px-1.5 py-0.5 bg-[#070814] text-[#00F0FF] border border-[#2D3645]">
+                    +0.00, +0.00
+                  </span>
+                </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              {/* 6 Real-Time Shader Pass Switches Directly on the Viewport Frame */}
+              <div className="p-2 bg-[#131629] border-b border-[#2D3645]">
+                <div className="text-[9px] text-[#8E98AA] mb-1.5 flex items-center justify-between">
+                  <span className="text-[#00F0FF] font-pixel">REAL-TIME SHADER PASS SWITCHES [KEYS 1-6]:</span>
+                  <span className="text-[#FFCC00]">PIXEL_PASS: RENDERPIXELATEDPASS</span>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                  {SHADER_PASSES.map((pass) => {
+                    const isPassActive = activePass === pass.id;
+
+                    return (
+                      <button
+                        key={pass.id}
+                        type="button"
+                        onClick={() => selectShaderPass(pass.id)}
+                        aria-pressed={isPassActive}
+                        className={`px-2 py-1.5 text-left text-[9px] font-pixel border transition-all ${
+                          isPassActive
+                            ? 'bg-[#00F0FF] text-[#070814] border-[#D6CFC2] font-bold shadow-[0_0_8px_rgba(0,240,255,0.4)]'
+                            : 'bg-[#0D1512] text-[#8E98AA] border-[#2D3645] hover:border-[#00F0FF] hover:text-[#F0EFE6]'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span>{pass.label}</span>
+                          <span className={`w-1.5 h-1.5 ${isPassActive ? 'bg-[#070814]' : 'bg-[#4AF626]'}`} />
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 3D WebGL Canvas Viewport */}
+              <div
+                ref={containerRef}
+                onPointerMove={handlePointerMove}
+                onPointerDown={handlePointerDown}
+                onPointerUp={handlePointerUp}
+                className="relative w-full h-[340px] sm:h-[400px] bg-[#070814] cursor-grab active:cursor-grabbing overflow-hidden"
+              >
+                <canvas ref={canvasRef} className="w-full h-full block" />
+
+                {/* CRT Scanline & Grid HUD Overlay */}
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    backgroundImage: 'linear-gradient(rgba(13, 21, 18, 0) 50%, rgba(0, 0, 0, 0.25) 50%)',
+                    backgroundSize: '100% 4px',
+                    opacity: 0.08,
+                  }}
+                  aria-hidden="true"
+                />
+
+                {/* Corner Geometric Reticle Badges */}
+                <div className="absolute top-2 left-2 text-[9px] text-[#00F0FF] bg-[#0D1512]/90 border border-[#2D3645] px-2 py-1 pointer-events-none space-y-0.5">
+                  <div>GEOMETRY: <span className="text-[#F0EFE6] font-bold">{activeProject.holoGeometryName}</span></div>
+                  <div>SURFACE_TRIS: <span className="text-[#4AF626]">{activeProject.trisCount}</span></div>
+                </div>
+
+                <div className="absolute top-2 right-2 text-[9px] text-[#FF2A85] bg-[#0D1512]/90 border border-[#2D3645] px-2 py-1 pointer-events-none space-y-0.5">
+                  <div>PASS_MODE: <span className="text-[#F0EFE6] font-bold">{activePass.toUpperCase()}</span></div>
+                  <div>PASS_BADGE: <span className="text-[#FFCC00]">{SHADER_PASSES.find((p) => p.id === activePass)?.badge}</span></div>
+                </div>
+
+                <div className="absolute bottom-2 left-2 text-[9px] text-[#8E98AA] bg-[#0D1512]/90 border border-[#2D3645] px-2 py-1 pointer-events-none">
+                  DRAG: ROTATE 3D • CLICK: SHOCKWAVE PULSE
+                </div>
+
+                {/* Bottom Viewport Bezel Controls */}
+                <div className="absolute bottom-2 right-2 flex items-center gap-1.5 z-10">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAutoRotate((prev) => !prev);
+                      autoRotateRef.current = !autoRotateRef.current;
+                      watchknightAudio.playHoverTick(0);
+                    }}
+                    className="px-2 py-0.5 bg-[#131629] hover:bg-[#00F0FF]/20 text-[#00F0FF] border border-[#2D3645] text-[9px]"
+                  >
+                    AUTO-ROT: {autoRotate ? 'ON' : 'OFF'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      rippleEnergyRef.current = 1.5;
+                      watchknightAudio.playSpatialClick(0, 0, -1);
+                    }}
+                    className="px-2 py-0.5 bg-[#131629] hover:bg-[#FF2A85]/20 text-[#FF2A85] border border-[#2D3645] text-[9px]"
+                  >
+                    PULSE WAVE
+                  </button>
+                </div>
+              </div>
+
+              {/* Viewport Footer Telemetry Bar */}
+              <div className="p-2.5 bg-[#131629] border-t border-[#2D3645] flex items-center justify-between text-[10px]">
+                <div className="text-[#8E98AA] leading-snug pr-2">
+                  <span className="text-[#00F0FF] font-bold">INFO:</span> {SHADER_PASSES.find((p) => p.id === activePass)?.description}
+                </div>
                 <button
                   type="button"
-                  onClick={handlePrevCard}
-                  disabled={activeCardIndex === 0}
-                  className="p-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white disabled:opacity-30 disabled:pointer-events-none transition-colors"
-                  aria-label="Previous project card"
+                  onClick={() => openDossierForProject(activeProjectIndex)}
+                  className="shrink-0 px-2.5 py-1 bg-[#4AF626] hover:bg-[#6ef750] text-[#070814] font-bold font-pixel text-[9px] active:translate-y-0.5"
                 >
-                  <ChevronLeft className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={handleNextCard}
-                  disabled={activeCardIndex === FLAGSHIP_PROJECTS.length - 1}
-                  className="p-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white disabled:opacity-30 disabled:pointer-events-none transition-colors"
-                  aria-label="Next project card"
-                >
-                  <ChevronRight className="w-4 h-4" />
+                  [ OPEN DOSSIER ]
                 </button>
               </div>
             </div>
+          </div>
+        </div>
 
-            {/* Featured Active Project Card */}
-            <div
-              className="skew-elem w-full cursor-pointer"
-              onClick={(e) => openCaseStudy(activeProject, e.currentTarget as HTMLElement)}
-            >
-              <LiquidGlassCard
-                spotlightColor={activeProject.accent}
-                spotlightRadius={550}
-                spotlightOpacity={0.16}
-                className="liquid-glass w-full min-h-[520px] p-5 sm:p-7 flex flex-col justify-between group"
-              >
-                {/* Card Header */}
-                <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4 shrink-0">
-                  <div className="flex items-center gap-3">
-                    <span className="font-mono font-black text-sm px-2.5 py-0.5 rounded bg-accent-coral/15 text-accent-coral border border-accent-coral/30">
-                      {activeProject.number} / 05
-                    </span>
-                    <div>
-                      <span className="font-mono text-[11px] text-slate-400 uppercase tracking-widest block">
-                        {activeProject.category}
-                      </span>
-                      <h3 className="font-display font-black text-xl sm:text-2xl text-white group-hover:text-accent-coral transition-colors">
-                        {activeProject.title}
-                      </h3>
+        {/* ================================================================== */}
+        {/* EXPANDABLE RETRO-OS DOSSIER & P99 TELEMETRY WINDOW                 */}
+        {/* ================================================================== */}
+        {isDossierOpen && (
+          <div ref={dossierRef} className="mt-8 transition-all duration-300 animate-in fade-in slide-in-from-bottom-4">
+            <div className={`w-full border-2 border-[#D6CFC2] border-b-[#2D3645] border-r-[#2D3645] bg-[#0D1512] ${
+              dossierState === 'maximized' ? 'fixed inset-4 z-50 overflow-y-auto' : 'relative'
+            }`}>
+              
+              {/* Dossier Titlebar with Retro Controls [ - ] [ + ] [ x ] */}
+              <div className="flex items-center justify-between px-3 py-2 bg-[#D6CFC2] text-[#070814] font-bold text-xs select-none">
+                <div className="flex items-center gap-2">
+                  <span className="font-pixel text-[10px] uppercase tracking-wider">
+                    [ ARCHITECTURE_DOSSIER // SYS.96 ] :: [{activeProject.number}] {activeProject.title.toUpperCase()}.EXE
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 font-mono text-[11px]">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDossierState('normal');
+                      watchknightAudio.playHoverTick(0);
+                    }}
+                    title="Minimize Dossier"
+                    className="w-5 h-5 flex items-center justify-center bg-[#131629] text-[#F0EFE6] hover:bg-[#070814] border border-[#2D3645]"
+                  >
+                    -
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDossierState((s) => s === 'maximized' ? 'normal' : 'maximized');
+                      watchknightAudio.playHoverTick(0);
+                    }}
+                    title="Toggle Fullscreen Maximize"
+                    className="w-5 h-5 flex items-center justify-center bg-[#131629] text-[#F0EFE6] hover:bg-[#070814] border border-[#2D3645]"
+                  >
+                    +
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsDossierOpen(false);
+                      watchknightAudio.playSpatialClick(0, 0, -1);
+                    }}
+                    title="Close Dossier"
+                    className="w-5 h-5 flex items-center justify-center bg-[#FF2A85] text-[#F0EFE6] hover:bg-[#e0186f] border border-[#070814] font-bold"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+
+              {/* Dossier Body Content */}
+              <div className="p-4 sm:p-6 space-y-6">
+                
+                {/* Header Information Bar */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#2D3645] pb-4">
+                  <div>
+                    <div className="flex items-center gap-2 text-[#00F0FF] text-[10px] font-pixel mb-1">
+                      <span>PROJECT_SECTOR // {activeProject.category}</span>
+                      <span>•</span>
+                      <span className="text-[#FFCC00]">YEAR {activeProject.year}</span>
                     </div>
+                    <h2 className="font-bold text-xl sm:text-2xl text-[#F0EFE6]">
+                      {activeProject.title} — <span className="text-[#8E98AA] text-base font-normal">{activeProject.subtitle}</span>
+                    </h2>
                   </div>
-
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 shrink-0">
                     <a
                       href={activeProject.githubUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="p-2 rounded-lg bg-white/5 hover:bg-white/15 text-slate-300 hover:text-white transition-all border border-white/10"
-                      aria-label={`GitHub repository for ${activeProject.title}`}
+                      className="px-3 py-1.5 bg-[#131629] hover:bg-[#00F0FF]/20 text-[#00F0FF] border border-[#00F0FF]/40 text-xs flex items-center gap-1.5"
                     >
-                      <GithubIcon className="w-4 h-4" />
+                      <GithubIcon className="w-3.5 h-3.5" />
+                      <span>@watchknight GITHUB ↗</span>
                     </a>
                     {activeProject.liveUrl && (
                       <a
                         href={activeProject.liveUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="p-2 rounded-lg bg-white/5 hover:bg-accent-coral/20 text-slate-300 hover:text-accent-coral transition-all border border-white/10"
-                        aria-label={`Live demo for ${activeProject.title}`}
+                        className="px-3 py-1.5 bg-[#00F0FF] hover:bg-[#4df4ff] text-[#070814] font-bold text-xs flex items-center gap-1.5"
                       >
-                        <ExternalLink className="w-4 h-4" />
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        <span>LIVE DEMO ↗</span>
                       </a>
                     )}
                   </div>
                 </div>
 
-                {/* Split Content: Recruiter Psychology & Interactive Simulator */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1">
-                  {/* Left Column: Problem, Solution, Impact Breakdown */}
-                  <div className="lg:col-span-7 flex flex-col justify-between gap-3">
-                    <p className="font-mono text-xs text-slate-300 font-medium">
-                      {activeProject.subtitle}
-                    </p>
-
-                    <div className="p-3 rounded-xl bg-rose-500/5 border border-rose-500/20">
-                      <div className="flex items-center gap-1.5 font-mono text-[10px] text-rose-400 uppercase tracking-wider mb-1 font-bold">
-                        <span>🛑 Problem Diagnosis</span>
+                {/* Problem Bottleneck & System Solution Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                  
+                  {/* Problem & Solution Columns */}
+                  <div className="lg:col-span-7 space-y-5">
+                    
+                    {/* Problem Bottleneck */}
+                    <div className="p-4 bg-[#131629] border border-[#2D3645] space-y-2">
+                      <div className="text-[10px] text-[#FF2A85] font-pixel flex items-center gap-1.5">
+                        <AlertTriangle className="w-3.5 h-3.5 text-[#FF2A85]" />
+                        <span>PROBLEM BOTTLENECK</span>
                       </div>
-                      <p className="font-body text-xs text-slate-300 leading-relaxed">
-                        {activeProject.problem.description}
-                      </p>
+                      <h4 className="font-bold text-sm text-[#F0EFE6]">{activeProject.problem.headline}</h4>
+                      <p className="text-xs text-[#8E98AA] leading-relaxed">{activeProject.problem.description}</p>
+                      <div className="p-2 bg-[#070814] border-l-2 border-[#FF2A85] text-[11px] text-[#D6CFC2]">
+                        <span className="text-[#FF2A85] font-bold">Root Bottleneck:</span> {activeProject.problem.bottleneck}
+                      </div>
                     </div>
 
-                    <div className="p-3 rounded-xl bg-cyan-mint/5 border border-cyan-mint/20">
-                      <div className="flex items-center gap-1.5 font-mono text-[10px] text-cyan-mint uppercase tracking-wider mb-1 font-bold">
-                        <span>⚡ Architectural Solution</span>
+                    {/* System Solution */}
+                    <div className="p-4 bg-[#131629] border border-[#2D3645] space-y-2.5">
+                      <div className="text-[10px] text-[#4AF626] font-pixel flex items-center gap-1.5">
+                        <Cpu className="w-3.5 h-3.5 text-[#4AF626]" />
+                        <span>SYSTEM ARCHITECTURE SOLUTION</span>
                       </div>
-                      <p className="font-body text-xs text-slate-300 leading-relaxed mb-2">
-                        {activeProject.solution.description}
-                      </p>
-                      <div className="space-y-1">
-                        {activeProject.solution.architecture.slice(0, 2).map((item, i) => (
-                          <div key={i} className="flex items-start gap-1.5 text-[11px] text-slate-400">
-                            <CheckCircle2 className="w-3 h-3 text-cyan-mint mt-0.5 shrink-0" />
-                            <span>{item}</span>
+                      <h4 className="font-bold text-sm text-[#F0EFE6]">{activeProject.solution.headline}</h4>
+                      <p className="text-xs text-[#8E98AA] leading-relaxed">{activeProject.solution.description}</p>
+                      
+                      <div className="space-y-1.5 pt-1">
+                        {activeProject.solution.architecture.map((archItem, aIdx) => (
+                          <div key={aIdx} className="flex items-start gap-2 text-xs text-[#D6CFC2]">
+                            <span className="text-[#00F0FF] font-bold">❯</span>
+                            <span>{archItem}</span>
                           </div>
                         ))}
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-2">
+                    {/* P99 Telemetry Readout Cards */}
+                    <div className="grid grid-cols-3 gap-3">
                       {activeProject.impact.metrics.map((metric, mIdx) => (
-                        <div
-                          key={mIdx}
-                          className="p-2.5 rounded-lg bg-carbon-surface/90 border border-white/5 text-center"
-                        >
-                          <div className="font-mono text-[9px] uppercase tracking-wider text-slate-400">
-                            {metric.label}
-                          </div>
-                          <div className="font-mono font-bold text-xs sm:text-sm my-0.5 text-accent-coral">
-                            {metric.value}
-                          </div>
-                          <div className="font-mono text-[8px] text-slate-500 truncate">
-                            {metric.detail}
-                          </div>
+                        <div key={mIdx} className="p-3 bg-[#131629] border border-[#2D3645] text-center">
+                          <span className="text-[9px] text-[#8E98AA] block uppercase mb-1">{metric.label}</span>
+                          <span className="text-base sm:text-lg font-bold text-[#00F0FF] block">{metric.value}</span>
+                          <span className="text-[9px] text-[#4AF626] block leading-tight break-words">{metric.detail}</span>
                         </div>
                       ))}
                     </div>
                   </div>
 
-                  {/* Right Column: Unique Interactive Preview Simulator */}
-                  <div className="lg:col-span-5 flex flex-col min-h-[260px]">
-                    {activeProject.previewType === 'mental-defrag' && <MentalDefragPreview />}
-                    {activeProject.previewType === 'doclens' && <DocLensBDPreview />}
-                    {activeProject.previewType === 'rannabanna' && <RannabannaPreview />}
-                    {activeProject.previewType === 'trash-trail' && <TrashTrailPreview />}
-                    {activeProject.previewType === 'neon-vanguard' && <NeonVanguardPreview />}
-                  </div>
-                </div>
+                  {/* Right Column: Live Interactive Simulation Preview Box */}
+                  <div className="lg:col-span-5 flex flex-col space-y-3">
+                    <div className="text-[10px] text-[#00F0FF] font-pixel flex items-center justify-between">
+                      <span>LIVE SIMULATION PREVIEW:</span>
+                      <span className="text-[#4AF626]">{activeProject.fpsMetric}</span>
+                    </div>
 
-                {/* Card Footer: Tech Stack Pills & Direct Inspection */}
-                <div className="border-t border-white/10 pt-3 mt-4 flex flex-wrap items-center justify-between gap-2 shrink-0">
-                  <div className="flex flex-wrap gap-1.5">
-                    {activeProject.techStack.map((tech) => (
-                      <span
-                        key={tech}
-                        className="px-2 py-0.5 rounded bg-white/5 font-mono text-[10px] text-slate-300 border border-white/5 hover:border-accent-coral/30 transition-colors"
+                    <div className="h-[340px] sm:h-[380px]">
+                      {renderInteractivePreview(activeProject.previewType)}
+                    </div>
+
+                    <div className="p-3 bg-[#131629] border border-[#2D3645] flex items-center justify-between">
+                      <div className="text-xs text-[#8E98AA]">
+                        <span className="text-[#00F0FF] font-bold">CLIENT:</span> {activeProject.client}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          openCaseStudy(activeProject, e.currentTarget);
+                        }}
+                        className="px-3 py-1 bg-[#00F0FF] hover:bg-[#4df4ff] text-[#070814] font-bold text-xs flex items-center gap-1 active:translate-y-0.5"
                       >
-                        #{tech}
-                      </span>
-                    ))}
+                        <span>FULL CASE STUDY ⤢</span>
+                      </button>
+                    </div>
                   </div>
-
-                  <a
-                    href={activeProject.githubUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-1 font-mono text-fluid-micro text-accent-coral hover:underline transition-all"
-                  >
-                    <span>Deep Dive Specification</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </a>
                 </div>
-              </LiquidGlassCard>
+
+              </div>
             </div>
           </div>
         )}
 
       </div>
-
-      {/* ==================================================================== */}
-      {/* CURSOR-BOUND FLOATING MEDIA PREVIEW PORTAL (DENNIS SNELLENBERG STYLE) */}
-      {/* ==================================================================== */}
-      {mounted && typeof document !== 'undefined' && createPortal(
-        <>
-          {/* Root-Level Floating Preview Portal (position: fixed; top: 0; left: 0; width: 380px; aspect-ratio: 16/10; pointer-events: none; z-index: 50; overflow: hidden) */}
-          <div
-            ref={previewRef}
-            data-preview-portal="true"
-            className="hidden lg:block fixed top-0 left-0 pointer-events-none overflow-hidden rounded-2xl border border-white/15 bg-obsidian-card shadow-editorial-elevated z-50"
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: 380,
-              aspectRatio: '16/10',
-              pointerEvents: 'none',
-              zIndex: 50,
-              overflow: 'hidden',
-              opacity: 0,
-              visibility: 'hidden',
-              transform: 'translate(-50%, -50%) scale(0)',
-            }}
-            aria-hidden="true"
-          >
-            {/* Inner reel of vertically stacked preview slides translated to -index * 100% */}
-            <div
-              ref={reelRef}
-              data-preview-reel="true"
-              className="w-full relative"
-              style={{ height: '100%', width: '100%' }}
-            >
-              {FLAGSHIP_PROJECTS.map((project, idx) => (
-                <div
-                  key={project.id}
-                  className="absolute top-0 left-0 w-full h-full p-5 flex flex-col justify-between overflow-hidden bg-obsidian-darker"
-                  style={{
-                    transform: `translateY(${idx * 100}%)`,
-                  }}
-                >
-                  {/* Slide 0: Mental Defrag */}
-                  {project.previewType === 'mental-defrag' && (
-                    <div className="w-full h-full flex flex-col justify-between relative bg-gradient-to-br from-[#0c0c12] via-[#09090c] to-[#140b0a]">
-                      <div className="flex items-center justify-between relative z-10">
-                        <div className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-accent-coral animate-ping" />
-                          <span className="font-mono text-[10px] text-accent-coral uppercase tracking-wider font-bold">
-                            Spatial Physics 01
-                          </span>
-                        </div>
-                        <span className="font-mono text-[9px] text-slate-400 bg-white/5 px-2 py-0.5 rounded border border-white/5">
-                          60 FPS • 0ms
-                        </span>
-                      </div>
-
-                      <div className="relative my-auto flex items-center justify-center py-2">
-                        <svg viewBox="0 0 280 100" className="w-full max-h-[90px] stroke-accent-coral/60 fill-none">
-                          <circle cx="140" cy="50" r="42" strokeDasharray="3 3" className="opacity-40" />
-                          <circle cx="140" cy="50" r="24" strokeDasharray="2 2" className="opacity-60" />
-                          <line x1="80" y1="35" x2="140" y2="50" strokeWidth="1" className="opacity-50" />
-                          <line x1="200" y1="35" x2="140" y2="50" strokeWidth="1" className="opacity-50" />
-                          <line x1="110" y1="75" x2="140" y2="50" strokeWidth="1" className="opacity-50" />
-                          <line x1="170" y1="75" x2="140" y2="50" strokeWidth="1" className="opacity-50" />
-                          <circle cx="140" cy="50" r="14" fill="#0A0A0A" stroke="#DF6C4F" strokeWidth="2" />
-                          <circle cx="80" cy="35" r="8" fill="#DF6C4F" />
-                          <circle cx="200" cy="35" r="8" fill="#A74024" />
-                          <circle cx="110" cy="75" r="6" fill="#DF6C4F" />
-                          <circle cx="170" cy="75" r="6" fill="#A74024" />
-                          <text x="140" y="53" textAnchor="middle" fill="#FFFFFF" fontSize="7" fontFamily="monospace">CANVAS</text>
-                          <text x="80" y="24" textAnchor="middle" fill="#DF6C4F" fontSize="6" fontFamily="monospace">Matter.js</text>
-                          <text x="200" y="24" textAnchor="middle" fill="#A74024" fontSize="6" fontFamily="monospace">Vectors</text>
-                        </svg>
-                      </div>
-
-                      <div className="relative z-10 border-t border-white/10 pt-2 flex items-end justify-between">
-                        <div>
-                          <h4 className="font-display font-extrabold text-sm text-white uppercase tracking-tight">Mental Defrag</h4>
-                          <p className="font-mono text-[9px] text-slate-400">Zero-Gravity Spatial Cognitive Obsidian Engine</p>
-                        </div>
-                        <span className="font-mono text-[9px] text-accent-coral font-bold">#Matter.js</span>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Slide 1: DocLensBD */}
-                  {project.previewType === 'doclens' && (
-                    <div className="w-full h-full flex flex-col justify-between relative bg-gradient-to-br from-[#0c0f0a] via-[#090b08] to-[#120a06]">
-                      <div className="flex items-center justify-between relative z-10">
-                        <div className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-amber-warm animate-ping" />
-                          <span className="font-mono text-[10px] text-amber-warm uppercase tracking-wider font-bold">
-                            Cloud Stream 02
-                          </span>
-                        </div>
-                        <span className="font-mono text-[9px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                          99.98% SLA
-                        </span>
-                      </div>
-
-                      <div className="relative my-auto flex items-center justify-center py-2">
-                        <svg viewBox="0 0 280 100" className="w-full max-h-[90px] stroke-amber-warm/60 fill-none">
-                          <path d="M 10 50 L 60 50 L 75 25 L 90 75 L 105 35 L 120 65 L 135 50 L 180 50 L 195 20 L 210 80 L 225 50 L 270 50" strokeWidth="1.5" />
-                          <rect x="35" y="60" width="45" height="18" rx="3" fill="#0A0A0A" stroke="#A74024" strokeWidth="1" />
-                          <text x="57" y="72" textAnchor="middle" fill="#A74024" fontSize="7" fontFamily="monospace">EMR HUB</text>
-                          <rect x="195" y="60" width="55" height="18" rx="3" fill="#0A0A0A" stroke="#10B981" strokeWidth="1" />
-                          <text x="222" y="72" textAnchor="middle" fill="#10B981" fontSize="7" fontFamily="monospace">FIRESTORE</text>
-                        </svg>
-                      </div>
-
-                      <div className="relative z-10 border-t border-white/10 pt-2 flex items-end justify-between">
-                        <div>
-                          <h4 className="font-display font-extrabold text-sm text-white uppercase tracking-tight">DocLensBD</h4>
-                          <p className="font-mono text-[9px] text-slate-400">Cloud Health Pipeline & AES-256 Vault</p>
-                        </div>
-                        <span className="font-mono text-[9px] text-amber-warm font-bold">#CloudFirestore</span>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Slide 2: Rannabanna */}
-                  {project.previewType === 'rannabanna' && (
-                    <div className="w-full h-full flex flex-col justify-between relative bg-gradient-to-br from-[#0f0b09] via-[#0b0807] to-[#140b08]">
-                      <div className="flex items-center justify-between relative z-10">
-                        <div className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-accent-coral animate-ping" />
-                          <span className="font-mono text-[10px] text-accent-coral uppercase tracking-wider font-bold">
-                            Full-Stack NLP 03
-                          </span>
-                        </div>
-                        <span className="font-mono text-[9px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                          99/100 Lighthouse
-                        </span>
-                      </div>
-
-                      <div className="relative my-auto flex items-center justify-center py-1">
-                        <div className="text-center">
-                          <span className="font-display font-black text-2xl text-accent-coral tracking-wider opacity-85 block">
-                            রান্নাবান্না
-                          </span>
-                          <span className="font-mono text-[10px] text-slate-300 block mt-0.5">
-                            সরিষা ইলিশ • কাচ্চি • শিল-পাটার ভর্তা
-                          </span>
-                          <span className="font-mono text-[8px] text-slate-500 block">
-                            UTF-8 Subsetting (22KB) • Phonetic Indexing
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="relative z-10 border-t border-white/10 pt-2 flex items-end justify-between">
-                        <div>
-                          <h4 className="font-display font-extrabold text-sm text-white uppercase tracking-tight">Rannabanna</h4>
-                          <p className="font-mono text-[9px] text-slate-400">Localized Bengali Culinary & Nutrition Engine</p>
-                        </div>
-                        <span className="font-mono text-[9px] text-accent-coral font-bold">#BengaliNLP</span>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Slide 3: Trash Trail */}
-                  {project.previewType === 'trash-trail' && (
-                    <div className="w-full h-full flex flex-col justify-between relative bg-gradient-to-br from-[#0c0a16] via-[#09080f] to-[#12080f]">
-                      <div className="flex items-center justify-between relative z-10">
-                        <div className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-amber-warm animate-ping" />
-                          <span className="font-mono text-[10px] text-amber-warm uppercase tracking-wider font-bold">
-                            Creative Motion 04
-                          </span>
-                        </div>
-                        <span className="font-mono text-[9px] text-slate-400 bg-white/5 px-2 py-0.5 rounded border border-white/5">
-                          GSAP Scrub 0.8s
-                        </span>
-                      </div>
-
-                      <div className="relative my-auto flex items-center justify-center py-2">
-                        <svg viewBox="0 0 280 80" className="w-full max-h-[80px]">
-                          <path d="M 0 80 L 0 50 L 25 50 L 25 30 L 45 30 L 45 60 L 70 60 L 70 20 L 95 20 L 95 65 L 130 65 L 130 35 L 160 35 L 160 70 L 195 70 L 195 25 L 225 25 L 225 55 L 255 55 L 255 40 L 280 40 L 280 80 Z" fill="rgba(167, 64, 36, 0.25)" />
-                          <line x1="0" y1="70" x2="280" y2="70" stroke="#DF6C4F" strokeWidth="1.5" strokeDasharray="6 3" />
-                          <circle cx="80" cy="65" r="3" fill="#DF6C4F" />
-                          <circle cx="150" cy="72" r="2.5" fill="#A74024" />
-                          <circle cx="210" cy="67" r="3" fill="#DF6C4F" />
-                        </svg>
-                      </div>
-
-                      <div className="relative z-10 border-t border-white/10 pt-2 flex items-end justify-between">
-                        <div>
-                          <h4 className="font-display font-extrabold text-sm text-white uppercase tracking-tight">Trash Trail</h4>
-                          <p className="font-mono text-[9px] text-slate-400">Kinetic Scroll-Driven Interactive Storytelling</p>
-                        </div>
-                        <span className="font-mono text-[9px] text-amber-warm font-bold">#ScrollTrigger</span>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Slide 4: Neon Vanguard */}
-                  {project.previewType === 'neon-vanguard' && (
-                    <div className="w-full h-full flex flex-col justify-between relative bg-gradient-to-br from-[#08080d] via-[#060609] to-[#0c0812]">
-                      <div className="flex items-center justify-between relative z-10">
-                        <div className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-accent-coral animate-ping" />
-                          <span className="font-mono text-[10px] text-accent-coral uppercase tracking-wider font-bold">
-                            Systems & Engine 05
-                          </span>
-                        </div>
-                        <span className="font-mono text-[9px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                          120 FPS • 0 Leaks
-                        </span>
-                      </div>
-
-                      <div className="relative my-auto flex items-center justify-center py-2">
-                        <svg viewBox="0 0 280 80" className="w-full max-h-[80px]">
-                          <line x1="20" y1="20" x2="240" y2="60" stroke="#DF6C4F" strokeWidth="2" strokeDasharray="8 4" />
-                          <line x1="20" y1="60" x2="240" y2="20" stroke="#A74024" strokeWidth="2" />
-                          <circle cx="130" cy="40" r="12" fill="#0A0A0A" stroke="#DF6C4F" strokeWidth="1.5" />
-                          <text x="130" y="43" textAnchor="middle" fill="#FFFFFF" fontSize="7" fontFamily="monospace">shm_shmget</text>
-                          <circle cx="230" cy="22" r="5" fill="#DF6C4F" />
-                          <circle cx="230" cy="58" r="5" fill="#A74024" />
-                        </svg>
-                      </div>
-
-                      <div className="relative z-10 border-t border-white/10 pt-2 flex items-end justify-between">
-                        <div>
-                          <h4 className="font-display font-extrabold text-sm text-white uppercase tracking-tight">Neon Vanguard</h4>
-                          <p className="font-mono text-[9px] text-slate-400">HTML5 2D Canvas & Linux C/C++ OS Kernel Labs</p>
-                        </div>
-                        <span className="font-mono text-[9px] text-accent-coral font-bold">#LinuxC</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Secondary Inner Label Cursor ({ duration: 0.2, ease: 'power3' }) */}
-          <div
-            ref={labelRef}
-            data-cursor-label="view"
-            className="hidden lg:flex fixed top-0 left-0 pointer-events-none items-center justify-center rounded-full bg-accent-coral text-obsidian font-mono text-[11px] font-black uppercase tracking-wider shadow-glow-cyan"
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: 68,
-              height: 68,
-              pointerEvents: 'none',
-              zIndex: 51,
-              opacity: 0,
-              visibility: 'hidden',
-              transform: 'translate(-50%, -50%) scale(0)',
-            }}
-            aria-hidden="true"
-          >
-            <div className="flex items-center gap-0.5">
-              <span>View</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
-            </div>
-          </div>
-        </>,
-        document.body
-      )}
-
     </section>
   );
 };

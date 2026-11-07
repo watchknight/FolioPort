@@ -85,7 +85,7 @@ export const Experience: React.FC = () => {
         className="pointer-events-none absolute left-4 top-16 font-mono text-[9vw] font-black text-white/[0.015] select-none uppercase tracking-tighter"
         aria-hidden="true"
       >
-        TIMELINE//02
+        TIMELINE//SYS.96
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -94,18 +94,26 @@ export const Experience: React.FC = () => {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div>
             <div data-anim className="flex items-center gap-2 mb-3">
-              <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-              <span className="font-mono text-fluid-micro uppercase tracking-widest text-accent-coral">
-                SECTION 02 • CHRONOLOGICAL TIMELINE
+              <span className="w-2 h-2 bg-[#4AF626] animate-pulse shadow-[0_0_8px_#4AF626]" />
+              <span className="font-pixel text-[10px] uppercase tracking-widest text-[#00F0FF]">
+                &gt; [TIMELINE] CHRONOLOGICAL TRAJECTORY // EWU ARCHIVE
               </span>
             </div>
 
-            <div className="overflow-hidden">
+            <div className="overflow-visible">
               <h2 
-                data-mask 
-                className="font-display font-black text-4xl sm:text-5xl lg:text-6xl tracking-tight uppercase"
+                data-anim 
+                className="font-display uppercase text-[#F0EFE6]"
+                style={{
+                  fontFamily: "'Space Grotesk', 'Syne', sans-serif",
+                  fontWeight: 800,
+                  letterSpacing: '-0.035em',
+                  fontSize: 'clamp(1.85rem, 4vw, 3.25rem)',
+                  lineHeight: 1.05,
+                  overflow: 'visible',
+                }}
               >
-                EXPERIENCE & <span className="text-accent-coral">TRAJECTORY</span>
+                EXPERIENCE &amp; <span className="text-[#FF2A85]">TRAJECTORY</span>
               </h2>
             </div>
           </div>
@@ -113,7 +121,7 @@ export const Experience: React.FC = () => {
           <p 
             data-anim 
             data-delay="0.15" 
-            className="max-w-md font-sans text-sm sm:text-base text-alabaster-dim leading-relaxed"
+            className="max-w-md font-sans text-sm sm:text-base text-[#D6CFC2] leading-relaxed"
           >
             Chronological ledger tracing academic engineering rigor at East West University alongside production-grade full-stack and low-level graphics implementations.
           </p>
@@ -131,81 +139,104 @@ export const Experience: React.FC = () => {
             <div
               key={exp.id}
               onMouseEnter={() => audio.playTick()}
-              className="relative rounded-2xl bg-obsidian-surface/70 border border-white/10 hover:border-accent/40 p-6 sm:p-8 transition-all duration-300 group shadow-editorial-card"
+              className="relative bg-[#131629] border-2 border-[#2D3645] hover:border-[#00F0FF] shadow-[2px_2px_0_0_#070814] transition-all duration-200 group"
             >
-              <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
-                
-                {/* Left Metadata Block */}
-                <div className="lg:w-1/3 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono text-[11px] font-bold px-2 py-0.5 rounded bg-accent/15 border border-accent/30 text-accent-coral uppercase">
-                      {exp.type}
-                    </span>
-                    <span className="font-mono text-[11px] text-muted">
-                      INDEX 0{idx + 1}
-                    </span>
-                  </div>
-
-                  <h3 className="font-display font-black text-xl sm:text-2xl text-alabaster group-hover:text-white transition-colors">
-                    {exp.role}
-                  </h3>
-
-                  <div className="flex items-center gap-1.5 text-accent-coral font-medium text-sm">
-                    {exp.type === 'Academic' ? (
-                      <GraduationCap className="w-4 h-4 shrink-0" />
-                    ) : (
-                      <Briefcase className="w-4 h-4 shrink-0" />
-                    )}
-                    <span>{exp.organization}</span>
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-3 pt-1 font-mono text-xs text-muted">
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-3 h-3 text-white/40" />
-                      <span>{exp.period}</span>
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <MapPin className="w-3 h-3 text-white/40" />
-                      <span>{exp.location}</span>
-                    </span>
-                  </div>
+              {/* Retro Window Titlebar */}
+              <div className="flex items-center justify-between px-3 py-1.5 bg-[#0D1512] border-b-2 border-[#2D3645] select-none">
+                <div className="flex items-center gap-2">
+                  <span className="font-pixel text-[8px] px-1.5 py-0.5 bg-black/40 border border-white/20 text-[#4AF626]">
+                    {exp.type.toUpperCase()}
+                  </span>
+                  <span className="font-pixel text-[10px] text-[#00F0FF]">
+                    EXP_ARCHIVE // [{exp.id.toUpperCase()}].DAT
+                  </span>
                 </div>
-
-                {/* Right Details Block */}
-                <div className="lg:w-2/3 space-y-4 lg:border-l lg:border-white/10 lg:pl-8">
-                  <p className="font-sans text-sm text-alabaster-dim leading-relaxed">
-                    {exp.description}
-                  </p>
-
-                  <ul className="space-y-2 text-xs sm:text-sm text-muted">
-                    {exp.achievements.map((item, aIdx) => (
-                      <li key={aIdx} className="flex items-start gap-2.5">
-                        <span className="text-accent-coral font-bold mt-0.5">›</span>
-                        <span className="leading-relaxed text-alabaster-dim">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  {/* Tech Stack Pills */}
-                  <div className="pt-3 flex flex-wrap gap-1.5">
-                    {exp.techStack.map((tech) => (
-                      <span
-                        key={tech}
-                        className="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 font-mono text-[11px] text-alabaster-dim group-hover:border-white/20 transition-colors"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
+                <div className="hidden sm:flex items-center gap-1 mx-2 flex-1 justify-center opacity-40">
+                  <div className="retro-drag-dots" />
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="retro-btn-box">-</span>
+                  <span className="retro-btn-box">+</span>
+                  <span className="retro-btn-box">x</span>
                 </div>
               </div>
 
-              {/* Bottom Subtle Ledger Line */}
-              <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between font-mono text-[11px] text-muted">
-                <span>VERIFIED RECORD // EWU ARCHIVES</span>
-                <span className="text-accent-coral opacity-0 group-hover:opacity-100 transition-opacity">
-                  TELEMETRY CONFIRMED ✓
-                </span>
+              {/* Window Body */}
+              <div className="p-5 sm:p-6 bg-[#0D1512]/90">
+                <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
+                  
+                  {/* Left Metadata Block */}
+                  <div className="lg:w-1/3 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="font-pixel text-[9px] px-2 py-0.5 bg-[#131629] border border-[#00F0FF]/40 text-[#00F0FF] uppercase">
+                        {exp.type}
+                      </span>
+                      <span className="font-pixel text-[9px] text-[#8E98AA]">
+                        INDEX 0{idx + 1}
+                      </span>
+                    </div>
+
+                    <h3 className="font-display font-black text-xl sm:text-2xl text-[#F0EFE6] group-hover:text-white transition-colors">
+                      {exp.role}
+                    </h3>
+
+                    <div className="flex items-center gap-1.5 text-[#FF2A85] font-medium text-sm">
+                      {exp.type === 'Academic' ? (
+                        <GraduationCap className="w-4 h-4 shrink-0" />
+                      ) : (
+                        <Briefcase className="w-4 h-4 shrink-0" />
+                      )}
+                      <span>{exp.organization}</span>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-3 pt-1 font-mono text-xs text-[#8E98AA]">
+                      <span className="flex items-center gap-1">
+                        <Calendar className="w-3 h-3 text-white/40" />
+                        <span>{exp.period}</span>
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <MapPin className="w-3 h-3 text-white/40" />
+                        <span>{exp.location}</span>
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Right Details Block */}
+                  <div className="lg:w-2/3 space-y-4 lg:border-l lg:border-white/10 lg:pl-8">
+                    <p className="font-sans text-sm text-[#D6CFC2] leading-relaxed">
+                      {exp.description}
+                    </p>
+
+                    <ul className="space-y-2 text-xs sm:text-sm text-[#8E98AA]">
+                      {exp.achievements.map((item, aIdx) => (
+                        <li key={aIdx} className="flex items-start gap-2">
+                          <span className="text-[#4AF626] font-pixel text-[8px] mt-1">&gt;</span>
+                          <span className="leading-relaxed text-[#D6CFC2]">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    {/* Tech Stack Badges */}
+                    <div className="pt-3 flex flex-wrap gap-1.5">
+                      {exp.techStack.map((tech) => (
+                        <span
+                          key={tech}
+                          className="px-2 py-0.5 bg-[#131629] border border-[#2D3645] font-mono text-[11px] text-[#D6CFC2] hover:border-[#00F0FF] transition-colors"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bottom Subtle Ledger Line */}
+                <div className="mt-6 pt-4 border-t border-[#2D3645] flex items-center justify-between font-mono text-[11px] text-[#8E98AA]">
+                  <span>VERIFIED RECORD // EWU ARCHIVES</span>
+                  <span className="text-[#4AF626] opacity-0 group-hover:opacity-100 transition-opacity font-pixel text-[9px]">
+                    TELEMETRY CONFIRMED ✓
+                  </span>
+                </div>
               </div>
             </div>
           ))}
@@ -215,9 +246,9 @@ export const Experience: React.FC = () => {
         <div data-draw className="w-full h-px bg-white/10 mt-14 mb-8" />
 
         {/* Navigation jump pill to skills and projects */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs text-muted">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs text-[#8E98AA]">
           <div data-anim className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-400" />
+            <span className="w-2 h-2 bg-[#4AF626] animate-pulse" />
             <span>ACADEMIC CSE DEGREE EXPECTED: 2025/2026</span>
           </div>
 
@@ -226,10 +257,10 @@ export const Experience: React.FC = () => {
               <a
                 href="#systems"
                 aria-label="Proceed to Systems and Skills Stack section"
-                className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 text-alabaster font-mono text-xs transition-colors"
+                className="flex items-center gap-1.5 px-4 py-2 bg-[#131629] hover:bg-[#1A1F38] border-2 border-[#2D3645] hover:border-[#00F0FF] text-[#F0EFE6] font-pixel text-[10px] shadow-[2px_2px_0_0_#070814] transition-all"
               >
-                <span>Examine Systems Matrix</span>
-                <ChevronRight className="w-3.5 h-3.5 text-accent-coral" />
+                <span>&gt; EXAMINE SYSTEMS MATRIX</span>
+                <ChevronRight className="w-3.5 h-3.5 text-[#00F0FF]" />
               </a>
             </Magnetic>
           </div>

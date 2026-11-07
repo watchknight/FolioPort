@@ -5,7 +5,6 @@ import { audio } from '../utils/audio';
 import { Magnetic } from './ui/Magnetic';
 import { 
   Tv, 
-  X, 
   RotateCcw, 
   Terminal, 
   Sparkles, 
@@ -349,45 +348,59 @@ export const EasterEggPong: React.FC<EasterEggPongProps> = ({
       {/* CRT Television Monitor Frame */}
       <div 
         ref={modalRef}
-        className="relative w-full max-w-4xl max-h-[92vh] flex flex-col bg-[#0b0c10] border-2 border-white/20 rounded-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.95)] overflow-hidden"
+        className="relative w-full max-w-4xl max-h-[92vh] flex flex-col bg-[#070814] border-2 border-[#00F0FF] shadow-[0_0_35px_rgba(0,240,255,0.35),0_25px_60px_-15px_rgba(0,0,0,0.95)] overflow-hidden"
       >
         {/* CRT Scanline & Phosphor Overlay */}
         <div 
-          className="pointer-events-none absolute inset-0 z-30 opacity-40 mix-blend-overlay bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.35)_50%),linear-gradient(90deg,rgba(255,0,0,0.03),rgba(0,255,0,0.01),rgba(0,0,255,0.03))] bg-[length:100%_4px,6px_100%]" 
+          className="pointer-events-none absolute inset-0 z-30 opacity-40 mix-blend-overlay bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.35)_50%),linear-gradient(90deg,rgba(0,240,255,0.03),rgba(74,246,38,0.02),rgba(255,42,133,0.03))] bg-[length:100%_4px,6px_100%]" 
           aria-hidden="true"
         />
 
         {/* Vintage CRT Bezel Header */}
-        <div className="relative z-40 flex items-center justify-between px-4 py-3 bg-obsidian-surface border-b border-white/10 select-none">
+        <div className="relative z-40 flex items-center justify-between px-4 py-2.5 bg-[#D6CFC2] text-[#070814] border-b-2 border-[#2D3645] select-none">
           <div className="flex items-center gap-2 sm:gap-3">
-            <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-accent/20 border border-accent/40 text-accent-coral font-mono text-fluid-micro uppercase tracking-widest">
-              <Radio className="w-3 h-3 animate-pulse" />
-              <span>CRT CH.SURF // TOM BARROW EASTER EGG</span>
+            <div className="flex items-center gap-1.5 px-2 py-0.5 border-2 border-[#2D3645] bg-[#070814] text-[#00F0FF] font-pixel text-[9px] uppercase tracking-wider">
+              <Radio className="w-3 h-3 text-[#4AF626] animate-pulse" />
+              <span>SYS.96 // CH.SURF // EASTER_EGG.ROM</span>
             </div>
-            <span className="hidden md:inline text-white/30 text-xs font-mono">•</span>
-            <span className="hidden md:inline font-mono text-fluid-micro text-alabaster-dim">
+            <span className="hidden md:inline text-[#2D3645] text-xs font-mono">•</span>
+            <span className="hidden md:inline font-pixel text-[9px] text-[#2D3645]">
               MODEL: FP-1994-PONG-OS
             </span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              className="w-5 h-5 flex items-center justify-center border-2 border-[#2D3645] bg-[#D6CFC2] text-[#070814] font-pixel text-[9px] leading-none hover:bg-white"
+              aria-hidden="true"
+            >
+              -
+            </button>
+            <button
+              type="button"
+              className="w-5 h-5 flex items-center justify-center border-2 border-[#2D3645] bg-[#D6CFC2] text-[#070814] font-pixel text-[9px] leading-none hover:bg-white"
+              aria-hidden="true"
+            >
+              +
+            </button>
             <Magnetic>
               <button
                 ref={closeBtnRef}
                 onClick={onClose}
                 aria-label="Close retro CRT channel surfing Easter egg"
-                className="p-1.5 rounded-full bg-white/5 border border-white/10 text-alabaster-dim hover:text-white hover:bg-white/15 transition-all"
+                className="w-5 h-5 flex items-center justify-center border-2 border-[#2D3645] bg-[#FF2A85] text-white hover:bg-red-600 transition-colors font-pixel text-[9px] leading-none"
               >
-                <X className="w-4 h-4" />
+                x
               </button>
             </Magnetic>
           </div>
         </div>
 
         {/* Channel Selector Bar */}
-        <div className="relative z-40 flex items-center justify-between gap-2 px-4 py-2.5 bg-[#0e1017] border-b border-white/10 overflow-x-auto text-xs font-mono">
+        <div className="relative z-40 flex items-center justify-between gap-2 px-4 py-2 bg-[#0D1512] border-b-2 border-[#2D3645] overflow-x-auto text-xs font-mono">
           <div className="flex items-center gap-2">
-            <span className="text-muted tracking-widest uppercase mr-1 hidden sm:inline">Channel:</span>
+            <span className="text-[#00F0FF] font-pixel text-[9px] tracking-wider uppercase mr-1 hidden sm:inline">&gt; CH:</span>
             
             <button
               onClick={() => {
@@ -396,14 +409,14 @@ export const EasterEggPong: React.FC<EasterEggPongProps> = ({
               }}
               aria-label="Switch to Channel 1: Minimalist Pong Arcade"
               aria-pressed={activeChannel === 'pong'}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition-all ${
+              className={`flex items-center gap-1.5 px-2.5 py-1 border-2 font-pixel text-[9px] transition-all ${
                 activeChannel === 'pong'
-                  ? 'bg-accent text-alabaster font-bold shadow-editorial-card'
-                  : 'bg-white/5 text-muted hover:text-alabaster'
+                  ? 'border-[#00F0FF] bg-[#131629] text-[#00F0FF] shadow-[0_0_10px_rgba(0,240,255,0.3)] font-bold'
+                  : 'border-[#2D3645] bg-[#070814] text-[#8E98AA] hover:text-[#F0EFE6] hover:border-[#00F0FF]/50'
               }`}
             >
-              <Tv className="w-3.5 h-3.5" />
-              <span>CH-01: Pong Arcade</span>
+              <Tv className="w-3 h-3" />
+              <span>[1] PONG_ARCADE</span>
             </button>
 
             <button
@@ -413,16 +426,16 @@ export const EasterEggPong: React.FC<EasterEggPongProps> = ({
               }}
               aria-label="Switch to Channel 2: Classified Developer Notes"
               aria-pressed={activeChannel === 'notes'}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition-all ${
+              className={`flex items-center gap-1.5 px-2.5 py-1 border-2 font-pixel text-[9px] transition-all ${
                 activeChannel === 'notes'
-                  ? 'bg-accent text-alabaster font-bold shadow-editorial-card'
-                  : 'bg-white/5 text-muted hover:text-alabaster'
+                  ? 'border-[#FF2A85] bg-[#131629] text-[#FF2A85] shadow-[0_0_10px_rgba(255,42,133,0.3)] font-bold'
+                  : 'border-[#2D3645] bg-[#070814] text-[#8E98AA] hover:text-[#F0EFE6] hover:border-[#FF2A85]/50'
               }`}
             >
-              <Terminal className="w-3.5 h-3.5" />
-              <span>CH-02: Developer Notes</span>
+              <Terminal className="w-3 h-3" />
+              <span>[2] DEV_NOTES</span>
               {isUnlocked ? (
-                <Unlock className="w-3 h-3 text-emerald-400" />
+                <Unlock className="w-3 h-3 text-[#4AF626]" />
               ) : (
                 <Lock className="w-3 h-3 opacity-60" />
               )}
@@ -435,60 +448,60 @@ export const EasterEggPong: React.FC<EasterEggPongProps> = ({
               }}
               aria-label="Switch to Channel 3: Systems & Micro-Labs"
               aria-pressed={activeChannel === 'kernel'}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition-all ${
+              className={`flex items-center gap-1.5 px-2.5 py-1 border-2 font-pixel text-[9px] transition-all ${
                 activeChannel === 'kernel'
-                  ? 'bg-accent text-alabaster font-bold shadow-editorial-card'
-                  : 'bg-white/5 text-muted hover:text-alabaster'
+                  ? 'border-[#4AF626] bg-[#131629] text-[#4AF626] shadow-[0_0_10px_rgba(74,246,38,0.3)] font-bold'
+                  : 'border-[#2D3645] bg-[#070814] text-[#8E98AA] hover:text-[#F0EFE6] hover:border-[#4AF626]/50'
               }`}
             >
-              <Cpu className="w-3.5 h-3.5" />
-              <span>CH-03: POSIX Kernel Lab</span>
+              <Cpu className="w-3 h-3" />
+              <span>[3] POSIX_KERNEL</span>
             </button>
           </div>
 
-          <div className="hidden sm:flex items-center gap-2 text-muted">
-            <span className="text-[10px] uppercase tracking-wider">[HOTKEYS: 1, 2, 3 | ESC]</span>
+          <div className="hidden sm:flex items-center gap-2 text-[#8E98AA]">
+            <span className="font-pixel text-[8px] uppercase tracking-wider text-[#FFCC00]">[HOTKEYS: 1, 2, 3 | ESC]</span>
           </div>
         </div>
 
         {/* CRT Main Screen Body */}
-        <div className="relative flex-1 overflow-y-auto p-4 sm:p-6 bg-[#07080b]">
+        <div className="relative flex-1 overflow-y-auto p-4 sm:p-6 bg-[#070814]">
           {/* CHANNEL 01: PONG MINI-GAME */}
           {activeChannel === 'pong' && (
             <div className="flex flex-col items-center">
               {/* Scoreboard and Status Bar */}
               <div className="w-full flex items-center justify-between mb-3 px-2 font-mono text-sm">
                 <div className="flex items-center gap-3">
-                  <span className="text-accent-coral font-bold flex items-center gap-1">
-                    <span>YOU (CURSOR):</span>
-                    <span className="text-xl px-2 py-0.5 rounded bg-accent/20 border border-accent/30">{playerScore}</span>
+                  <span className="text-[#FF2A85] font-pixel text-xs flex items-center gap-1.5">
+                    <span>YOU:</span>
+                    <span className="text-sm px-2 py-0.5 border-2 border-[#2D3645] bg-[#131629] text-[#FF2A85]">{playerScore}</span>
                   </span>
-                  <span className="text-muted">VS</span>
-                  <span className="text-alabaster font-bold flex items-center gap-1">
+                  <span className="text-[#8E98AA] font-pixel text-[10px]">VS</span>
+                  <span className="text-[#00F0FF] font-pixel text-xs flex items-center gap-1.5">
                     <span>AI:</span>
-                    <span className="text-xl px-2 py-0.5 rounded bg-white/10 border border-white/20">{aiScore}</span>
+                    <span className="text-sm px-2 py-0.5 border-2 border-[#2D3645] bg-[#131629] text-[#00F0FF]">{aiScore}</span>
                   </span>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-muted hidden sm:inline">
-                    Rally: <strong className="text-alabaster font-mono">{rallyCount}</strong>
+                  <span className="text-xs text-[#8E98AA] font-pixel text-[9px] hidden sm:inline">
+                    RALLY: <strong className="text-[#FFCC00] font-pixel">{rallyCount}</strong>
                   </span>
                   <Magnetic>
                     <button
                       onClick={handleResetGame}
                       aria-label="Reset Pong mini-game score"
-                      className="flex items-center gap-1 px-2.5 py-1 rounded bg-white/5 hover:bg-white/15 text-alabaster-dim text-xs font-mono transition-all"
+                      className="flex items-center gap-1 px-2.5 py-1 border-2 border-[#2D3645] bg-[#131629] hover:border-[#00F0FF] text-[#00F0FF] text-xs font-pixel text-[9px] transition-all"
                     >
                       <RotateCcw className="w-3 h-3" />
-                      <span>Reset</span>
+                      <span>RESET</span>
                     </button>
                   </Magnetic>
                 </div>
               </div>
 
               {/* Pong Canvas Arena */}
-              <div className="relative w-full rounded-xl border border-white/20 overflow-hidden shadow-inner bg-[#060608]">
+              <div className="relative w-full border-2 border-[#00F0FF] overflow-hidden bg-[#070814] shadow-[0_0_15px_rgba(0,240,255,0.2)]">
                 <canvas 
                   ref={canvasRef}
                   className="w-full block cursor-ns-resize touch-none"
@@ -496,15 +509,15 @@ export const EasterEggPong: React.FC<EasterEggPongProps> = ({
 
                 {/* Overlaid unlock celebration banner */}
                 {isUnlocked && (
-                  <div className="absolute top-3 left-1/2 -translate-x-1/2 flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400 text-emerald-300 font-mono text-xs tracking-wider uppercase animate-bounce">
-                    <Sparkles className="w-3.5 h-3.5" />
+                  <div className="absolute top-3 left-1/2 -translate-x-1/2 flex items-center gap-2 px-3 py-1 border-2 border-[#4AF626] bg-[#0D1512] text-[#4AF626] font-pixel text-[9px] tracking-wider uppercase animate-bounce">
+                    <Sparkles className="w-3.5 h-3.5 text-[#FFCC00]" />
                     <span>Secret Transmission Unlocked! Check CH-02</span>
                   </div>
                 )}
               </div>
 
               {/* Interactive Help Pill */}
-              <div className="mt-3 text-center font-mono text-fluid-micro text-muted">
+              <div className="mt-3 text-center font-mono text-[11px] text-[#8E98AA]">
                 <span>Move pointer vertically or use [↑ / ↓] / [W / S] keys to steer the left paddle. Rally 3 hits or score 3 points to decrypt hidden developer notes.</span>
               </div>
             </div>
@@ -512,55 +525,55 @@ export const EasterEggPong: React.FC<EasterEggPongProps> = ({
 
           {/* CHANNEL 02: HIDDEN DEVELOPER NOTES */}
           {activeChannel === 'notes' && (
-            <div className="space-y-4 font-mono text-xs text-alabaster-dim leading-relaxed">
-              <div className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10">
+            <div className="space-y-4 font-mono text-xs text-[#F0EFE6] leading-relaxed">
+              <div className="flex items-center justify-between p-3 border-2 border-[#2D3645] bg-[#131629]">
                 <div className="flex items-center gap-2">
                   {isUnlocked ? (
-                    <Unlock className="w-4 h-4 text-emerald-400" />
+                    <Unlock className="w-4 h-4 text-[#4AF626]" />
                   ) : (
-                    <Lock className="w-4 h-4 text-amber-400" />
+                    <Lock className="w-4 h-4 text-[#FFCC00]" />
                   )}
-                  <h3 id="easter-egg-title" className="font-display font-bold text-sm text-alabaster tracking-wide">
+                  <h3 id="easter-egg-title" className="font-pixel text-[11px] text-[#F0EFE6] tracking-wide">
                     {isUnlocked 
                       ? 'CLASSIFIED ARCHITECTURAL TRANSMISSION: DECRYPTED'
                       : 'RESTRICTED ARCHIVES // DECRYPTION REQUIRED'}
                   </h3>
                 </div>
-                <span className="text-[10px] text-muted">TRANSMISSION ID: FP-DEV-2026</span>
+                <span className="font-pixel text-[8px] text-[#8E98AA]">TRANSMISSION ID: FP-DEV-2026</span>
               </div>
 
-              <div className="p-4 rounded-xl bg-obsidian-surface/80 border border-white/10 space-y-3 font-sans text-sm">
-                <h4 className="font-display font-bold text-alabaster text-base flex items-center gap-2">
+              <div className="p-4 border-2 border-[#2D3645] bg-[#131629] space-y-3 font-sans text-sm">
+                <h4 className="font-pixel text-xs text-[#00F0FF] flex items-center gap-2">
                   <span>Architecture Philosophy: "Zero-Gravity Engineering"</span>
                 </h4>
-                <p className="text-muted leading-relaxed">
+                <p className="text-[#8E98AA] leading-relaxed font-mono text-xs">
                   "Most modern portfolios treat motion as an afterthought — slapping cubic bezier transitions onto a Bootstrap grid. Inspired by Tom Barrow and classic editorial typographers, FolioPort treats the browser viewport as an analog canvas governed by rigid Newtonian mechanics."
                 </p>
-                <div className="p-3 rounded-lg bg-[#0e1017] border border-white/5 font-mono text-xs text-accent-coral/90 space-y-1">
+                <div className="p-3 border-2 border-[#2D3645] bg-[#070814] font-mono text-xs text-[#FF2A85] space-y-1">
                   <p>• Hook Architecture: useReveal() synchronizes ScrollTrigger with declarative attributes without DOM overhead.</p>
                   <p>• Vector Physics: Magnetic quickTo setters decouple mouse sampling from React virtual DOM renders.</p>
                   <p>• Procedural Audio: 2ms low-pass filtered triangle waves mimic analog ledger tactile resistance.</p>
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl bg-obsidian-surface/80 border border-white/10 space-y-2">
-                <h4 className="font-display font-bold text-alabaster text-sm">Secret Terminal Commands:</h4>
+              <div className="p-4 border-2 border-[#2D3645] bg-[#131629] space-y-2">
+                <h4 className="font-pixel text-xs text-[#FFCC00]">Secret Terminal Commands:</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 font-mono text-xs">
-                  <div className="p-2 rounded bg-black/40 border border-white/5">
-                    <span className="text-accent-coral">sudo hire moayed</span>
-                    <p className="text-muted text-[11px] mt-0.5">Prefills transmission dispatch form with recruiter payload.</p>
+                  <div className="p-2 border border-[#2D3645] bg-[#070814]">
+                    <span className="text-[#00F0FF] font-pixel text-[9px]">&gt; sudo hire moayed</span>
+                    <p className="text-[#8E98AA] text-[11px] mt-0.5">Prefills transmission dispatch form with recruiter payload.</p>
                   </div>
-                  <div className="p-2 rounded bg-black/40 border border-white/5">
-                    <span className="text-accent-coral">sudo defrag</span>
-                    <p className="text-muted text-[11px] mt-0.5">Re-indexes spatial memory nodes in Matter.js physics.</p>
+                  <div className="p-2 border border-[#2D3645] bg-[#070814]">
+                    <span className="text-[#00F0FF] font-pixel text-[9px]">&gt; sudo defrag</span>
+                    <p className="text-[#8E98AA] text-[11px] mt-0.5">Re-indexes spatial memory nodes in Matter.js physics.</p>
                   </div>
-                  <div className="p-2 rounded bg-black/40 border border-white/5">
-                    <span className="text-accent-coral">dhaka</span>
-                    <p className="text-muted text-[11px] mt-0.5">Prints real-time Asian Edge CDN telemetry & local time.</p>
+                  <div className="p-2 border border-[#2D3645] bg-[#070814]">
+                    <span className="text-[#00F0FF] font-pixel text-[9px]">&gt; dhaka</span>
+                    <p className="text-[#8E98AA] text-[11px] mt-0.5">Prints real-time Asian Edge CDN telemetry & local time.</p>
                   </div>
-                  <div className="p-2 rounded bg-black/40 border border-white/5">
-                    <span className="text-accent-coral">sudo barrow</span>
-                    <p className="text-muted text-[11px] mt-0.5">Re-arms CRT scanlines and procedural harmonic synthesizers.</p>
+                  <div className="p-2 border border-[#2D3645] bg-[#070814]">
+                    <span className="text-[#00F0FF] font-pixel text-[9px]">&gt; sudo barrow</span>
+                    <p className="text-[#8E98AA] text-[11px] mt-0.5">Re-arms CRT scanlines and procedural harmonic synthesizers.</p>
                   </div>
                 </div>
               </div>
@@ -569,22 +582,22 @@ export const EasterEggPong: React.FC<EasterEggPongProps> = ({
 
           {/* CHANNEL 03: POSIX KERNEL TELEMETRY */}
           {activeChannel === 'kernel' && (
-            <div className="space-y-4 font-mono text-xs text-alabaster-dim">
-              <div className="p-3 rounded-lg bg-white/5 border border-white/10 flex items-center justify-between">
-                <span className="text-accent-coral font-bold">LINUX C / POSIX KERNEL WORKFLOW TELEMETRY</span>
-                <span className="text-emerald-400 flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+            <div className="space-y-4 font-mono text-xs text-[#F0EFE6]">
+              <div className="p-3 border-2 border-[#2D3645] bg-[#131629] flex items-center justify-between">
+                <span className="text-[#00F0FF] font-pixel text-[10px]">LINUX C / POSIX KERNEL WORKFLOW TELEMETRY</span>
+                <span className="text-[#4AF626] font-pixel text-[9px] flex items-center gap-1.5">
+                  <span className="w-2 h-2 bg-[#4AF626] animate-ping" />
                   STATUS: 0 LEAKS (VALGRIND CLEAN)
                 </span>
               </div>
 
-              <div className="p-4 rounded-xl bg-obsidian-surface/90 border border-white/10 space-y-3">
-                <h4 className="font-display font-bold text-alabaster text-sm">Low-Level Systems Manifesto:</h4>
-                <p className="text-muted leading-relaxed">
+              <div className="p-4 border-2 border-[#2D3645] bg-[#131629] space-y-3">
+                <h4 className="font-pixel text-xs text-[#FF2A85]">Low-Level Systems Manifesto:</h4>
+                <p className="text-[#8E98AA] leading-relaxed font-mono text-xs">
                   "At East West University, our core operating systems research spans C/C++ POSIX shared memory (shmget, shmat) with hardware spinlocks and multi-process fork() trees communicating over anonymous duplex pipes with microsecond IPC latencies."
                 </p>
 
-                <div className="p-3 rounded bg-black/60 border border-white/5 overflow-x-auto text-[11px] text-emerald-400/90 font-mono">
+                <div className="p-3 border-2 border-[#2D3645] bg-[#070814] overflow-x-auto text-[11px] text-[#4AF626] font-mono">
                   <code>{`/* POSIX Shared Memory IPC Synchronization Benchmark */
 int shm_id = shmget(IPC_PRIVATE, sizeof(telemetry_buffer_t), IPC_CREAT | 0666);
 telemetry_buffer_t *shared = (telemetry_buffer_t *)shmat(shm_id, NULL, 0);
@@ -597,18 +610,18 @@ atomic_flag_clear(&shared->spinlock);
         </div>
 
         {/* Vintage CRT Footer Control Deck */}
-        <div className="relative z-40 flex items-center justify-between px-4 py-3 bg-obsidian-surface border-t border-white/10 font-mono text-xs text-muted">
+        <div className="relative z-40 flex items-center justify-between px-4 py-2.5 bg-[#D6CFC2] text-[#070814] border-t-2 border-[#2D3645] font-mono text-xs">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-            <span>CHANNEL SURF ACTIVE // OPT-IN AUDIO ENABLED</span>
+            <span className="w-2 h-2 bg-[#4AF626] animate-pulse" />
+            <span className="font-pixel text-[9px] text-[#070814]">CHANNEL SURF ACTIVE // OPT-IN AUDIO ENABLED</span>
           </div>
 
           <button
             onClick={onClose}
             aria-label="Return to portfolio page from CRT Easter egg"
-            className="px-3 py-1 rounded bg-white/10 hover:bg-white/20 text-alabaster font-mono text-xs transition-colors"
+            className="px-3 py-1 border-2 border-[#2D3645] bg-[#070814] hover:bg-[#131629] text-[#00F0FF] font-pixel text-[9px] transition-colors"
           >
-            Exit Monitor
+            [ EXIT MONITOR ]
           </button>
         </div>
       </div>

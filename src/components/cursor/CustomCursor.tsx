@@ -131,7 +131,7 @@ export const CustomCursor: React.FC = () => {
       }}
       aria-hidden="true"
     >
-      {/* Subtle Terracotta Shockwave Ring emitted on pointerdown */}
+      {/* Subtle Amber-Gold Shockwave Ring emitted on pointerdown */}
       <div
         ref={shockwaveRef}
         className="absolute rounded-full pointer-events-none"
@@ -140,17 +140,17 @@ export const CustomCursor: React.FC = () => {
           height: 44,
           top: -22,
           left: -22,
-          border: '1.5px solid #B84A27',
+          border: '1.5px solid #FFCC00',
           opacity: 0,
           transformOrigin: 'center center',
-          boxShadow: '0 0 14px rgba(184, 74, 39, 0.45)',
+          boxShadow: '0 0 14px rgba(255, 204, 0, 0.55)',
         }}
       />
 
       {/* Floating Project Image Hover Preview Stack managed by CursorController */}
       <div
         ref={previewRef}
-        className="pointer-events-none absolute top-6 left-6 w-72 h-44 rounded-lg overflow-hidden border border-wk-ash-muted/30 bg-wk-slate-surface shadow-2xl z-[9990]"
+        className="pointer-events-none absolute top-6 left-6 w-72 h-44 border-2 border-[#2D3645] bg-[#131629] shadow-[0_0_20px_rgba(0,0,0,0.8)] z-[9990] overflow-hidden"
         style={{ willChange: 'transform, opacity' }}
       >
         {PROJECT_PREVIEWS.map((proj) => (
@@ -182,10 +182,10 @@ export const CustomCursor: React.FC = () => {
       >
         <defs>
           <linearGradient id="cosmic-arrow-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#090A0D" />
-            <stop offset="100%" stopColor="#12151C" />
+            <stop offset="0%" stopColor="#070814" />
+            <stop offset="100%" stopColor="#131629" />
           </linearGradient>
-          <filter id="terracotta-core-glow" x="-50%" y="-50%" width="200%" height="200%">
+          <filter id="amber-core-glow" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur in="SourceGraphic" stdDeviation="1.2" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
@@ -194,46 +194,46 @@ export const CustomCursor: React.FC = () => {
           </filter>
         </defs>
 
-        {/* Precision geometric arrow body with 1.25px #F2EFE9 stroke to prevent chromostereopsis */}
+        {/* Precision geometric arrow body with 1.25px #F0EFE6 stroke */}
         <path
           d="M 2 2 L 2 22 L 7.5 17 L 12 25.5 L 15.2 24 L 10.7 15.5 L 18.5 15.5 Z"
           fill="url(#cosmic-arrow-grad)"
-          stroke="#F2EFE9"
+          stroke="#F0EFE6"
           strokeWidth="1.25"
           strokeLinejoin="round"
           strokeLinecap="round"
         />
 
-        {/* Glowing --wk-terracotta-pulse core dot */}
+        {/* Glowing --pixel-amber-gold cursor focal spark */}
         <circle
           cx="7.5"
           cy="11.5"
           r="3.2"
-          fill="#B84A27"
+          fill="#FFCC00"
           opacity="0.35"
-          filter="url(#terracotta-core-glow)"
+          filter="url(#amber-core-glow)"
         />
         <circle
           cx="7.5"
           cy="11.5"
           r="1.8"
-          fill="#B84A27"
+          fill="#FFCC00"
         />
         <circle
           cx="7.5"
           cy="11.5"
           r="0.7"
-          fill="#F2EFE9"
+          fill="#F0EFE6"
         />
 
-        {/* Two tiny --wk-alabaster-ink four-point star sparkles */}
+        {/* Two tiny ivory four-point star sparkles */}
         <path
           d="M 5.5 5 Q 5.5 6.5 7 6.5 Q 5.5 6.5 5.5 8 Q 5.5 6.5 4 6.5 Q 5.5 6.5 5.5 5 Z"
-          fill="#F2EFE9"
+          fill="#F0EFE6"
         />
         <path
           d="M 12 13 Q 12 14.2 13.2 14.2 Q 12 14.2 12 15.4 Q 12 14.2 10.8 14.2 Q 12 14.2 12 13 Z"
-          fill="#F2EFE9"
+          fill="#F0EFE6"
         />
       </svg>
 
@@ -258,14 +258,14 @@ export const CustomCursor: React.FC = () => {
             <path d="M 18.5 10.5 L 18.5 17 C 15 19 10.5 23.5 10.5 29 C 10.5 35.35 15.65 40.5 22 40.5 C 28.35 40.5 33.5 35.35 33.5 29 C 33.5 23.5 29 19 25.5 17 L 25.5 10.5 Z" />
           </clipPath>
 
-          {/* Layered cosmic gradient: #090A0D -> #B84A27 terracotta nebula -> #4E9A7F verdigris crest */}
+          {/* Layered Cyber-CRT gradient: #070814 -> #FF2A85 magenta -> #00F0FF cyan crest */}
           <linearGradient id="cosmic-liquid-grad" x1="0" y1="1" x2="0" y2="0">
-            <stop offset="0%" stopColor="#090A0D" />
-            <stop offset="55%" stopColor="#B84A27" />
-            <stop offset="100%" stopColor="#4E9A7F" />
+            <stop offset="0%" stopColor="#070814" />
+            <stop offset="55%" stopColor="#FF2A85" />
+            <stop offset="100%" stopColor="#00F0FF" />
           </linearGradient>
 
-          <filter id="verdigris-bubble-glow" x="-50%" y="-50%" width="200%" height="200%">
+          <filter id="cyan-bubble-glow" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur in="SourceGraphic" stdDeviation="0.8" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
@@ -274,11 +274,11 @@ export const CustomCursor: React.FC = () => {
           </filter>
         </defs>
 
-        {/* Translucent #12151C glass backdrop */}
+        {/* Translucent #131629 glass backdrop */}
         <path
           d="M 18 10 L 18 17 C 14.5 19 9.5 23.5 9.5 29 C 9.5 35.9 15.1 41.5 22 41.5 C 28.9 41.5 34.5 35.9 34.5 29 C 34.5 23.5 29.5 19 26 17 L 26 10 Z"
-          fill="#12151C"
-          fillOpacity="0.82"
+          fill="#131629"
+          fillOpacity="0.85"
         />
 
         {/* Counter-slosh liquid layer inside clip-path */}
@@ -288,66 +288,66 @@ export const CustomCursor: React.FC = () => {
             d="M -10 24.5 Q 6 23 22 24.5 T 54 24.5 L 54 46 L -10 46 Z"
             fill="url(#cosmic-liquid-grad)"
           />
-          {/* Verdigris surface crest */}
+          {/* Cyan surface crest */}
           <path
             d="M 9 25 Q 15.5 23.8 22 25 T 35 25"
-            stroke="#4E9A7F"
+            stroke="#00F0FF"
             strokeWidth="1.2"
             fill="none"
             opacity="0.95"
           />
 
-          {/* Internal Constellation: 4 micro-stars (#F2EFE9) */}
+          {/* Internal Constellation: 4 micro-stars (#FFCC00 & #F0EFE6) */}
           <g>
             <path
               data-star="0"
               d="M 0 -2.2 Q 0 0 2.2 0 Q 0 0 0 2.2 Q 0 0 -2.2 0 Q 0 0 0 -2.2 Z"
-              fill="#F2EFE9"
+              fill="#FFCC00"
             />
             <path
               data-star="1"
               d="M 0 -1.8 Q 0 0 1.8 0 Q 0 0 0 1.8 Q 0 0 -1.8 0 Q 0 0 0 -1.8 Z"
-              fill="#F2EFE9"
+              fill="#F0EFE6"
             />
             <path
               data-star="2"
               d="M 0 -2.0 Q 0 0 2.0 0 Q 0 0 0 2.0 Q 0 0 -2.0 0 Q 0 0 0 -2.0 Z"
-              fill="#F2EFE9"
+              fill="#FFCC00"
             />
             <path
               data-star="3"
               d="M 0 -1.6 Q 0 0 1.6 0 Q 0 0 0 1.6 Q 0 0 -1.6 0 Q 0 0 0 -1.6 Z"
-              fill="#F2EFE9"
+              fill="#F0EFE6"
             />
           </g>
 
-          {/* 2 verdigris alchemical bubbles (#4E9A7F) */}
+          {/* 2 cyan alchemical bubbles (#00F0FF) */}
           <g>
             <circle
               data-bubble="0"
               cx="0"
               cy="0"
               r="1.4"
-              fill="#4E9A7F"
-              filter="url(#verdigris-bubble-glow)"
-              opacity="0.85"
+              fill="#00F0FF"
+              filter="url(#cyan-bubble-glow)"
+              opacity="0.9"
             />
             <circle
               data-bubble="1"
               cx="0"
               cy="0"
               r="1.0"
-              fill="#4E9A7F"
-              filter="url(#verdigris-bubble-glow)"
-              opacity="0.85"
+              fill="#00F0FF"
+              filter="url(#cyan-bubble-glow)"
+              opacity="0.9"
             />
           </g>
         </g>
 
-        {/* Flask Glass Outline: 1.5px --wk-alabaster-ink (#F2EFE9) stroke */}
+        {/* Flask Glass Outline: 1.5px --pixel-ivory-text (#F0EFE6) stroke */}
         <path
           d="M 18 10 L 18 17 C 14.5 19 9.5 23.5 9.5 29 C 9.5 35.9 15.1 41.5 22 41.5 C 28.9 41.5 34.5 35.9 34.5 29 C 34.5 23.5 29.5 19 26 17 L 26 10 Z"
-          stroke="#F2EFE9"
+          stroke="#F0EFE6"
           strokeWidth="1.5"
           strokeLinejoin="round"
           strokeLinecap="round"
@@ -357,7 +357,7 @@ export const CustomCursor: React.FC = () => {
         {/* Diagonal specular glass highlight along left curve */}
         <path
           d="M 13 23 C 11.2 26 11.2 31 13.5 34"
-          stroke="#F2EFE9"
+          stroke="#F0EFE6"
           strokeWidth="1.5"
           strokeLinecap="round"
           fill="none"
@@ -365,18 +365,18 @@ export const CustomCursor: React.FC = () => {
         />
         <path
           d="M 19 12 L 19 15"
-          stroke="#F2EFE9"
+          stroke="#F0EFE6"
           strokeWidth="1.2"
           strokeLinecap="round"
           fill="none"
           opacity="0.45"
         />
 
-        {/* Geometric cork/collar accented in --wk-terracotta-pulse (#B84A27) */}
+        {/* Geometric cork/collar accented in #FFCC00 */}
         <path
           d="M 19 7 L 19.5 3.5 L 24.5 3.5 L 25 7 Z"
-          fill="#B84A27"
-          stroke="#F2EFE9"
+          fill="#FFCC00"
+          stroke="#F0EFE6"
           strokeWidth="1"
           strokeLinejoin="round"
         />
@@ -385,9 +385,8 @@ export const CustomCursor: React.FC = () => {
           y="7"
           width="10"
           height="3"
-          rx="1.5"
-          fill="#12151C"
-          stroke="#F2EFE9"
+          fill="#131629"
+          stroke="#F0EFE6"
           strokeWidth="1.5"
         />
       </svg>

@@ -1,7 +1,9 @@
 import React, { useState, useRef } from 'react';
 import { useReveal } from '../hooks/useReveal';
 import { audio } from '../utils/audio';
+import { chiptuneAudio } from '../utils/chiptuneAudio';
 import { Magnetic } from './ui/Magnetic';
+import { RetroWindow } from './ui/RetroWindow';
 import { 
   Layers, 
   Database, 
@@ -9,9 +11,13 @@ import {
   Sparkles, 
   CheckCircle2, 
   RotateCcw, 
-  ArrowUpRight,
   Zap,
-  Boxes
+  Cpu,
+  Activity,
+  ShieldCheck,
+  Radio,
+  Briefcase,
+  GraduationCap
 } from 'lucide-react';
 
 export interface ArchitectureTech {
@@ -22,79 +28,116 @@ export interface ArchitectureTech {
   capabilities: string[];
   projectIds: string[];
   tag: string;
+  pinId: string;
 }
 
 export interface FlagshipProjectLink {
   id: string;
   title: string;
+  number: string;
   tagline: string;
   githubUrl: string;
-  accent: 'cyan' | 'amber';
+  accent: 'cyan' | 'amber' | 'phosphor';
   layerBadge: string;
+  techTags: string[];
 }
 
-// 5 Flagship Projects as defined in portfolio requirements
+// 6 Flagship Projects as defined in portfolio requirements
 export const FLAGSHIP_PROJECTS: FlagshipProjectLink[] = [
   {
     id: 'mental-defrag',
     title: 'Mental Defrag',
+    number: 'ROM_01',
     tagline: 'Zero-Gravity Spatial Cognitive Obsidian Engine',
     githubUrl: 'https://github.com/watchknight/Mental-Defrag',
     accent: 'cyan',
     layerBadge: 'Spatial Physics & Vector Engine',
+    techTags: ['Matter.js', 'Obsidian AST', 'React 18', 'IndexedDB', 'Vectors'],
   },
   {
     id: 'doclens-bd',
     title: 'DocLensBD',
+    number: 'ROM_02',
     tagline: 'Cloud-Backed Health Intelligence & Diagnostic Pipeline',
     githubUrl: 'https://github.com/watchknight/DocLensBD',
     accent: 'amber',
     layerBadge: 'Cloud Firestore & Staging CI/CD',
+    techTags: ['Cloud Firestore', 'CI/CD Pass', 'React 18', 'Tailwind', 'Firebase'],
   },
   {
     id: 'rannabanna',
     title: 'Rannabanna',
+    number: 'ROM_03',
     tagline: 'Localized Bengali Culinary & Nutrition Engine',
     githubUrl: 'https://github.com/watchknight/Rannabanna',
     accent: 'cyan',
     layerBadge: 'Bengali NLP & Cloud DB Sync',
+    techTags: ['React 18', 'Cloud DB Sync', 'MongoDB', 'IndexedDB', 'Tailwind'],
   },
   {
     id: 'trash-trail',
     title: 'Trash Trail',
+    number: 'ROM_04',
     tagline: 'Kinetic Scroll-Driven Interactive Storytelling Web Architecture',
     githubUrl: 'https://github.com/watchknight/TrashTrail',
     accent: 'amber',
     layerBadge: 'GSAP Inertial Scroll Choreography',
+    techTags: ['GSAP Motion', 'Vanilla Micro-DOM', 'WebGL Shaders', 'SVG Kinematics'],
   },
   {
     id: 'neon-vanguard',
     title: 'Neon Vanguard 2D & OS Kernel Labs',
+    number: 'ROM_05',
     tagline: 'HTML5 2D Canvas Combat Engine & Linux C/C++ OS Kernel Labs',
     githubUrl: 'https://github.com/watchknight/BitForge',
-    accent: 'cyan',
+    accent: 'phosphor',
     layerBadge: 'POSIX IPC Pipes & Shared Memory',
+    techTags: ['C/C++ Systems', 'POSIX shmget/shmat', '120 FPS Canvas', 'Valgrind 0 Leaks'],
+  },
+  {
+    id: 'chronos-aether',
+    title: 'Chronos-Guard & Aether-GL',
+    number: 'ROM_06',
+    tagline: 'Cryptographic Merkle Agent Ledger & Audio-Reactive WebGPU Fluid Studio',
+    githubUrl: 'https://github.com/watchknight',
+    accent: 'cyan',
+    layerBadge: 'WebGPU Shaders & Merkle Ledger',
+    techTags: ['Three.js/GLSL', 'Merkle Tree', 'Vector Cosine', 'TypeScript AST'],
   },
 ];
 
-// The 3 Architectural Layers with cross-project associations
+// The 3 Architectural Layers with cross-project associations matching exact prompt requirements
 export const ARCHITECTURE_LAYERS: {
   key: 'client' | 'server' | 'systems';
+  layerTag: string;
   title: string;
   subtitle: string;
   description: string;
-  accent: 'cyan' | 'amber' | 'multi';
+  accent: 'cyan' | 'amber' | 'phosphor';
+  busChannel: string;
   icon: React.ComponentType<{ className?: string }>;
   techs: ArchitectureTech[];
 }[] = [
   {
     key: 'client',
-    title: 'Client & Motion Layer',
+    layerTag: 'LAYER_01: CLIENT, 3D WEBGL & MOTION',
+    title: 'Client, 3D WebGL & Motion',
     subtitle: 'Layer 01 • Reactive DOM, Viewport Kinematics & Physics',
     description: 'Sub-frame 60/120 FPS rendering pipelines, inertial scroll scrubbing, and state machine UI reconciliation.',
     accent: 'cyan',
+    busChannel: 'BUS_01 // HIGH-SPEED VIEWPORT DMA',
     icon: Sparkles,
     techs: [
+      {
+        id: 'tech-three',
+        name: 'Three.js / GLSL',
+        category: 'client',
+        description: 'Custom vertex/fragment shaders, GPU particle wave mathematics, post-processing composer pipelines, and additive bloom buffers.',
+        capabilities: ['Custom GLSL Shaders', 'RenderPixelatedPass', 'GPU Wave Physics'],
+        projectIds: ['mental-defrag', 'trash-trail', 'chronos-aether'],
+        tag: '3D Graphics Kernel',
+        pinId: 'PIN_GLSL',
+      },
       {
         id: 'tech-react',
         name: 'React 18 / Next.js',
@@ -103,6 +146,7 @@ export const ARCHITECTURE_LAYERS: {
         capabilities: ['Concurrent Mode', 'Custom Hook Primitives', 'SSR / SSG Pipelines'],
         projectIds: ['mental-defrag', 'doclens-bd', 'rannabanna'],
         tag: 'Framework Core',
+        pinId: 'PIN_R18',
       },
       {
         id: 'tech-ts',
@@ -110,8 +154,9 @@ export const ARCHITECTURE_LAYERS: {
         category: 'client',
         description: 'Strict compile-time type verification, abstract syntax tree models, and generic utility algebra.',
         capabilities: ['Strict Type Systems', 'AST Compilation', 'Zero Runtime Overhead'],
-        projectIds: ['mental-defrag', 'doclens-bd'],
+        projectIds: ['mental-defrag', 'doclens-bd', 'chronos-aether'],
         tag: 'Type Safety',
+        pinId: 'PIN_TS5',
       },
       {
         id: 'tech-gsap',
@@ -121,15 +166,7 @@ export const ARCHITECTURE_LAYERS: {
         capabilities: ['Pinned Viewports', 'Micro-Scrubbing', 'GPU Composite Layers'],
         projectIds: ['trash-trail'],
         tag: 'Kinetic Motion',
-      },
-      {
-        id: 'tech-tailwind',
-        name: 'Tailwind CSS',
-        category: 'client',
-        description: 'Fluid mathematical typography formulas, glassmorphic optics, dark mode tokens, and JIT bundling.',
-        capabilities: ['Fluid Clamps', 'Optical Glass Realism', 'Custom CSS Shaders'],
-        projectIds: ['doclens-bd', 'rannabanna'],
-        tag: 'Design System',
+        pinId: 'PIN_GSAP',
       },
       {
         id: 'tech-canvas',
@@ -139,6 +176,7 @@ export const ARCHITECTURE_LAYERS: {
         capabilities: ['120 FPS Pacing', 'Raycast Piercing', 'Dynamic Luminescence'],
         projectIds: ['neon-vanguard'],
         tag: 'Graphics Kernel',
+        pinId: 'PIN_CNV2D',
       },
       {
         id: 'tech-matter',
@@ -148,6 +186,17 @@ export const ARCHITECTURE_LAYERS: {
         capabilities: ['Rigid-Body Solver', 'Zero-G Damping', 'Harmonic Clumping'],
         projectIds: ['mental-defrag'],
         tag: 'Physics Loop',
+        pinId: 'PIN_PHYS',
+      },
+      {
+        id: 'tech-tailwind',
+        name: 'Tailwind CSS & Tokens',
+        category: 'client',
+        description: 'Fluid mathematical typography formulas, glassmorphic optics, dark mode tokens, and JIT bundling.',
+        capabilities: ['Fluid Clamps', 'Optical Glass Realism', 'Custom CSS Shaders'],
+        projectIds: ['doclens-bd', 'rannabanna'],
+        tag: 'Design System',
+        pinId: 'PIN_CSS',
       },
       {
         id: 'tech-vanilla-svg',
@@ -157,17 +206,30 @@ export const ARCHITECTURE_LAYERS: {
         capabilities: ['0 CLS Overhead', 'Direct Event Dispatch', 'Composite Layering'],
         projectIds: ['trash-trail'],
         tag: 'Bare Micro-DOM',
+        pinId: 'PIN_DOM',
       },
     ],
   },
   {
     key: 'server',
-    title: 'Server & Data Layer',
+    layerTag: 'LAYER_02: DISTRIBUTED SERVER & DATA',
+    title: 'Distributed Server & Data',
     subtitle: 'Layer 02 • Distributed Storage, Offline First & Pipelines',
     description: 'Event-driven asynchronous services, resilient multi-client sync, continuous integration, and vector semantics.',
     accent: 'amber',
+    busChannel: 'BUS_02 // FAULT-TOLERANT CLOUD FABRIC',
     icon: Database,
     techs: [
+      {
+        id: 'tech-firestore',
+        name: 'Cloud Firestore',
+        category: 'server',
+        description: 'Real-time WebSocket snapshot streams, multi-region fault tolerance, and offline mutation queues.',
+        capabilities: ['Realtime Listeners', '< 45ms Sync', 'Offline Write Cache'],
+        projectIds: ['doclens-bd'],
+        tag: 'Cloud DB',
+        pinId: 'PIN_FSTORE',
+      },
       {
         id: 'tech-node',
         name: 'Node.js & Express',
@@ -176,6 +238,7 @@ export const ARCHITECTURE_LAYERS: {
         capabilities: ['Non-Blocking IO', 'Streaming Payloads', 'Stateless APIs'],
         projectIds: ['doclens-bd', 'rannabanna'],
         tag: 'Runtime Engine',
+        pinId: 'PIN_NODE',
       },
       {
         id: 'tech-postgres',
@@ -185,6 +248,7 @@ export const ARCHITECTURE_LAYERS: {
         capabilities: ['ACID Compliance', 'Relational Schemas', 'Indexing & Queries'],
         projectIds: ['doclens-bd'],
         tag: 'Relational DB',
+        pinId: 'PIN_PG',
       },
       {
         id: 'tech-mongo',
@@ -194,15 +258,7 @@ export const ARCHITECTURE_LAYERS: {
         capabilities: ['Aggregation Pipeline', 'BSON Documents', 'Dynamic Collections'],
         projectIds: ['rannabanna'],
         tag: 'Document Store',
-      },
-      {
-        id: 'tech-firestore',
-        name: 'Cloud Firestore',
-        category: 'server',
-        description: 'Real-time WebSocket snapshot streams, multi-region fault tolerance, and offline mutation queues.',
-        capabilities: ['Realtime Listeners', '< 45ms Sync', 'Offline Write Cache'],
-        projectIds: ['doclens-bd'],
-        tag: 'Cloud DB',
+        pinId: 'PIN_MONGO',
       },
       {
         id: 'tech-auth',
@@ -212,6 +268,7 @@ export const ARCHITECTURE_LAYERS: {
         capabilities: ['RBAC Security Rules', 'Cryptographic Tokens', 'Field Encryption'],
         projectIds: ['doclens-bd'],
         tag: 'Security & Auth',
+        pinId: 'PIN_AUTH',
       },
       {
         id: 'tech-idb',
@@ -221,6 +278,7 @@ export const ARCHITECTURE_LAYERS: {
         capabilities: ['0ms Local Query', 'Structured Clones', 'Offline-First Fallback'],
         projectIds: ['mental-defrag', 'rannabanna'],
         tag: 'Client Storage',
+        pinId: 'PIN_IDB',
       },
       {
         id: 'tech-sync',
@@ -230,6 +288,7 @@ export const ARCHITECTURE_LAYERS: {
         capabilities: ['Conflict Resolution', 'Optimistic UI', 'Packet Reconciliation'],
         projectIds: ['rannabanna', 'doclens-bd'],
         tag: 'Sync Engine',
+        pinId: 'PIN_SYNC',
       },
       {
         id: 'tech-cicd',
@@ -239,6 +298,7 @@ export const ARCHITECTURE_LAYERS: {
         capabilities: ['14/14 Automated Pass', 'Multi-Platform Matrix', 'Zero-Downtime Push'],
         projectIds: ['doclens-bd'],
         tag: 'Automation CI',
+        pinId: 'PIN_CICD',
       },
       {
         id: 'tech-vectors',
@@ -246,17 +306,20 @@ export const ARCHITECTURE_LAYERS: {
         category: 'server',
         description: 'Client-side cosine similarity spatial distance matrices enabling semantic thought clumping and node repulsion.',
         capabilities: ['Cosine Similarity', 'Local Dimension Index', 'Dynamic Repulsion'],
-        projectIds: ['mental-defrag'],
+        projectIds: ['mental-defrag', 'chronos-aether'],
         tag: 'Semantic Vectors',
+        pinId: 'PIN_VEC',
       },
     ],
   },
   {
     key: 'systems',
-    title: 'Linux & Core CSE Layer',
+    layerTag: 'LAYER_03: LINUX KERNEL & C/C++ POSIX IPC',
+    title: 'Linux Kernel & C/C++ POSIX IPC',
     subtitle: 'Layer 03 • Ring-0 Syscalls, POSIX IPC & Kernel Primitives',
     description: 'Deterministic memory safety, anonymous pipes, shared memory segments, process trees, and compiler AST parsing.',
-    accent: 'multi',
+    accent: 'phosphor',
+    busChannel: 'BUS_03 // RING-0 KERNEL POSIX BUS',
     icon: Terminal,
     techs: [
       {
@@ -267,6 +330,17 @@ export const ARCHITECTURE_LAYERS: {
         capabilities: ['Manual Alloc (malloc/free)', 'Byte Alignment', 'Hardware Locality'],
         projectIds: ['neon-vanguard'],
         tag: 'Low-Level Core',
+        pinId: 'PIN_CPP',
+      },
+      {
+        id: 'tech-shm',
+        name: 'POSIX shmget / shmat',
+        category: 'systems',
+        description: 'Zero-copy inter-process memory regions synchronized via atomic spinlocks and POSIX semaphore locks.',
+        capabilities: ['shmget & shmat', 'Zero-Copy Ring Buffer', 'Spinlock Safety'],
+        projectIds: ['neon-vanguard'],
+        tag: 'Kernel Shared RAM',
+        pinId: 'PIN_SHM',
       },
       {
         id: 'tech-ipc-pipes',
@@ -276,15 +350,7 @@ export const ARCHITECTURE_LAYERS: {
         capabilities: ['Anonymous Pipes', '< 1.2μs IPC Latency', 'Duplex Data Stream'],
         projectIds: ['neon-vanguard'],
         tag: 'Process Streams',
-      },
-      {
-        id: 'tech-shm',
-        name: 'POSIX Shared Memory (shmget / shmat)',
-        category: 'systems',
-        description: 'Zero-copy inter-process memory regions synchronized via atomic spinlocks and POSIX semaphore locks.',
-        capabilities: ['shmget & shmat', 'Zero-Copy Ring Buffer', 'Spinlock Safety'],
-        projectIds: ['neon-vanguard'],
-        tag: 'Kernel Shared RAM',
+        pinId: 'PIN_PIPES',
       },
       {
         id: 'tech-fork',
@@ -294,6 +360,7 @@ export const ARCHITECTURE_LAYERS: {
         capabilities: ['fork() Trees', 'Zombie Reaping', 'POSIX Signals'],
         projectIds: ['neon-vanguard'],
         tag: 'Process Lifecycle',
+        pinId: 'PIN_FORK',
       },
       {
         id: 'tech-bash',
@@ -303,6 +370,7 @@ export const ARCHITECTURE_LAYERS: {
         capabilities: ['Bash Scripting', 'Syscall Tracing', 'Automated Toolchains'],
         projectIds: ['neon-vanguard'],
         tag: 'Linux Environment',
+        pinId: 'PIN_BASH',
       },
       {
         id: 'tech-valgrind',
@@ -312,6 +380,7 @@ export const ARCHITECTURE_LAYERS: {
         capabilities: ['0 Heap Leaks', 'Cache Boundary Check', 'GDB Telemetry'],
         projectIds: ['neon-vanguard'],
         tag: 'Safety & Profiling',
+        pinId: 'PIN_VALG',
       },
       {
         id: 'tech-ast',
@@ -321,8 +390,55 @@ export const ARCHITECTURE_LAYERS: {
         capabilities: ['Lossless AST Sync', 'JSON Graph Compiler', 'Bi-Directional Schema'],
         projectIds: ['mental-defrag'],
         tag: 'AST Compilation',
+        pinId: 'PIN_AST',
+      },
+      {
+        id: 'tech-merkle',
+        name: 'Cryptographic Merkle Engine',
+        category: 'systems',
+        description: 'Zero-knowledge verification structures, cryptographic Merkle tree hashes, and deterministic agent ledger state integrity.',
+        capabilities: ['SHA-256 Ledger', 'Merkle Proofs', 'Cryptographic Audit'],
+        projectIds: ['chronos-aether'],
+        tag: 'Merkle Ledger',
+        pinId: 'PIN_MRK',
       },
     ],
+  },
+];
+
+// 4 Authority Metrics as defined in requirements
+const AUTHORITY_METRICS = [
+  {
+    target: '4+',
+    label: '4+ YEARS CRAFT',
+    sub: 'SYSTEMS & FULL-STACK CRAFT',
+    accent: 'cyan',
+    chipCode: 'METRIC_01',
+    detail: 'Academic & Production Engineering',
+  },
+  {
+    target: '120',
+    label: '120 FPS CANVAS PACING',
+    sub: 'SUB-FRAME REAL-TIME PACING',
+    accent: 'cyan',
+    chipCode: 'METRIC_02',
+    detail: 'Combat Loop & Collision Raycasting',
+  },
+  {
+    target: '100%',
+    label: '100% OBSIDIAN AST PARITY',
+    sub: 'BIDIRECTIONAL VECTOR GRAPH',
+    accent: 'amber',
+    chipCode: 'METRIC_03',
+    detail: 'Lossless .canvas JSON Serialization',
+  },
+  {
+    target: '0',
+    label: '0 POSIX C MEMORY LEAKS',
+    sub: 'VALGRIND AUDITED CLEAN PIPES',
+    accent: 'amber',
+    chipCode: 'METRIC_04',
+    detail: 'Deterministic Shared RAM (shmget)',
   },
 ];
 
@@ -330,47 +446,32 @@ export const SkillMatrix: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
   useReveal(sectionRef);
 
-  const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
   const [activeTechId, setActiveTechId] = useState<string | null>(null);
   const [lockedMode, setLockedMode] = useState<boolean>(false);
+  const [activeMobileLayer, setActiveMobileLayer] = useState<'all' | 'client' | 'server' | 'systems'>('all');
+  const [activeBiosTab, setActiveBiosTab] = useState<number>(0);
+  const [isBiosWiping, setIsBiosWiping] = useState<boolean>(false);
+
+  const handleBiosTabSwitch = (tabIndex: number) => {
+    if (activeBiosTab === tabIndex) return;
+    chiptuneAudio.playPixelTick();
+    setIsBiosWiping(true);
+    setActiveBiosTab(tabIndex);
+    setTimeout(() => {
+      setIsBiosWiping(false);
+    }, 150);
+  };
 
   // Compute active associations
   const activeTech = activeTechId 
     ? ARCHITECTURE_LAYERS.flatMap(l => l.techs).find(t => t.id === activeTechId) 
     : null;
 
-  const activeProject = activeProjectId 
-    ? FLAGSHIP_PROJECTS.find(p => p.id === activeProjectId) 
-    : null;
-
-  // Handler for project selection/hover with procedural Web Audio feedback
-  const handleProjectHover = (projectId: string | null) => {
-    if (lockedMode) return;
-    setActiveProjectId(projectId);
-    if (projectId) {
-      setActiveTechId(null);
-      audio.playTick();
-    }
-  };
-
-  const handleProjectClick = (projectId: string) => {
-    audio.playChord();
-    if (activeProjectId === projectId && lockedMode) {
-      setLockedMode(false);
-      setActiveProjectId(null);
-    } else {
-      setActiveProjectId(projectId);
-      setActiveTechId(null);
-      setLockedMode(true);
-    }
-  };
-
   // Handler for tech selection/hover with procedural Web Audio feedback
   const handleTechHover = (techId: string | null) => {
     if (lockedMode) return;
     setActiveTechId(techId);
     if (techId) {
-      setActiveProjectId(null);
       audio.playTick();
     }
   };
@@ -382,80 +483,88 @@ export const SkillMatrix: React.FC = () => {
       setActiveTechId(null);
     } else {
       setActiveTechId(techId);
-      setActiveProjectId(null);
       setLockedMode(true);
     }
   };
 
   const handleReset = () => {
     audio.playChord();
-    setActiveProjectId(null);
     setActiveTechId(null);
     setLockedMode(false);
   };
 
   const handleSectionMouseLeave = () => {
     if (lockedMode) return;
-    setActiveProjectId(null);
     setActiveTechId(null);
   };
 
-  // Helpers to test highlighting state
-  const isProjectHighlighted = (projectId: string) => {
-    if (activeProjectId === projectId) return true;
-    if (activeTech) {
-      return activeTech.projectIds.includes(projectId);
-    }
-    return false;
-  };
-
   const isTechHighlighted = (tech: ArchitectureTech) => {
-    if (activeTechId === tech.id) return true;
-    if (activeProjectId) {
-      return tech.projectIds.includes(activeProjectId);
-    }
-    return false;
+    return activeTechId === tech.id;
   };
 
-  const hasAnyFilter = Boolean(activeProjectId || activeTechId);
+  const hasAnyFilter = Boolean(activeTechId);
 
   return (
     <section 
       ref={sectionRef} 
       id="systems" 
       onMouseLeave={handleSectionMouseLeave}
-      className="py-24 md:py-32 relative bg-obsidian text-slate-100 overflow-hidden"
+      className="py-24 md:py-32 relative bg-[#070814] text-[#F0EFE6] overflow-hidden border-t-2 border-[#2D3645] scroll-mt-[68px]"
     >
-      {/* Subtle ambient lighting flares behind the 3 columns */}
-      <div data-parallax="0.15" className="pointer-events-none absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-mint/5 rounded-full blur-3xl -z-10" />
-      <div data-parallax="0.2" className="pointer-events-none absolute bottom-1/4 right-1/4 w-96 h-96 bg-amber-warm/5 rounded-full blur-3xl -z-10" />
+      {/* 90s Cyberdeck Motherboard PCB Ground Grid Overlay */}
+      <div 
+        className="pointer-events-none absolute inset-0 opacity-[0.035] bg-[linear-gradient(to_right,#00F0FF_1px,transparent_1px),linear-gradient(to_bottom,#00F0FF_1px,transparent_1px)] bg-[size:32px_32px] -z-10" 
+        aria-hidden="true"
+      />
+
+      {/* Ambient Phosphor Flares behind the motherboard */}
+      <div data-parallax="0.15" className="pointer-events-none absolute top-1/4 left-1/6 w-96 h-96 bg-[#00F0FF]/5 rounded-full blur-3xl -z-10" />
+      <div data-parallax="0.2" className="pointer-events-none absolute bottom-1/4 right-1/6 w-96 h-96 bg-[#FFCC00]/5 rounded-full blur-3xl -z-10" />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         
-        {/* Section Header */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-8 gap-6">
-          <div className="max-w-2xl">
-            <div data-anim className="flex items-center gap-2 font-mono text-fluid-micro text-cyan-mint uppercase tracking-widest mb-3">
-              <Layers className="w-4 h-4 text-cyan-mint animate-pulse" />
-              <span>Cognitive Competency Matrix • Architectural Map</span>
+        {/* ========================================================================= */}
+        {/* SECTION HEADER: UNIFIED PHILOSOPHY & MOTHERBOARD ARCHITECTURE MAP        */}
+        {/* ========================================================================= */}
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-10 gap-6">
+          <div className="max-w-3xl">
+            <div data-anim className="flex items-center gap-2 font-pixel text-[10px] text-[#00F0FF] uppercase tracking-widest mb-3">
+              <Layers className="w-4 h-4 text-[#00F0FF] animate-pulse" />
+              <span>&gt; [03] ARCHITECTURAL PHILOSOPHY // CYBERDECK MOTHERBOARD &amp; SYSTEMS MAP</span>
             </div>
-            <div className="overflow-hidden">
-              <h2 data-mask className="font-display font-black text-fluid-h1 text-white tracking-tight uppercase">
-                Systems & <span className="text-cyan-mint">Architecture</span>
+            
+            <div className="overflow-visible">
+              <h2 
+                data-anim 
+                className="font-display uppercase text-white"
+                style={{
+                  fontFamily: "'Space Grotesk', 'Syne', sans-serif",
+                  fontWeight: 800,
+                  letterSpacing: '-0.035em',
+                  fontSize: 'clamp(1.85rem, 4vw, 3.25rem)',
+                  lineHeight: 1.05,
+                  overflow: 'visible',
+                }}
+              >
+                <span className="inline-block" style={{ overflowWrap: 'normal', wordBreak: 'keep-all', maxWidth: '100%', overflow: 'visible' }}>MOTHERBOARD</span> &amp; <span className="text-[#00F0FF]">SYSTEMS MATRIX</span>
               </h2>
             </div>
-            <p data-anim data-delay="0.1" className="font-body text-fluid-body text-slate-400 mt-3 leading-relaxed">
-              Replacing abstract skill percentages with an interactive 3-column architectural dependency graph. 
-              Delivering verified resilience: from deterministic C POSIX shared-memory pipelines to 120 FPS WebGL rendering and distributed reactive state fabrics.
+            
+            <p data-anim data-delay="0.1" className="font-body text-fluid-body text-[#D6CFC2] mt-3 leading-relaxed">
+              Merging core architectural philosophy with an interactive 3-tier competency motherboard. 
+              Eliminating abstract skill percentages in favor of verified engineering proofs: from deterministic Linux POSIX shared-memory pipelines 
+              to sub-frame 120 FPS WebGL rendering and resilient cloud state fabrics.
             </p>
           </div>
 
-          {/* Interactive Mode Ribbon Indicator */}
+          {/* Interactive Tracer Ribbon & Mode Controls */}
           <div data-anim data-delay="0.15" className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-            <div className="px-4 py-2 rounded-xl bg-carbon-surface/80 border border-white/10 backdrop-blur-md flex items-center gap-2 text-fluid-micro font-mono">
-              <span className="w-2 h-2 rounded-full bg-cyan-mint animate-ping" />
-              <span className="text-slate-300">Bi-Directional Project Tracer:</span>
-              <span className="text-cyan-mint font-semibold">Active</span>
+            <div className="px-3.5 py-2 bg-[#131629] border-2 border-[#2D3645] shadow-[2px_2px_0_0_#070814] flex items-center gap-2 font-pixel text-[9px]">
+              <span className="w-2 h-2 rounded-full bg-[#4AF626] animate-ping" />
+              <span className="text-[#D6CFC2]">PCB TRACER:</span>
+              <span className="text-[#00F0FF] font-bold">
+                {lockedMode ? 'PINNED' : activeTech ? 'ACTIVE' : 'IDLE'}
+              </span>
             </div>
 
             {hasAnyFilter && (
@@ -463,166 +572,297 @@ export const SkillMatrix: React.FC = () => {
                 <button
                   onClick={handleReset}
                   aria-label="Reset tracer and clear active project or technology filter"
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-slate-200 hover:text-white transition-colors text-fluid-micro font-mono border border-white/10"
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[#FF2A85] text-white hover:bg-[#ff459b] font-pixel text-[9px] border-2 border-white shadow-[2px_2px_0_0_#070814] active:scale-95 transition-all"
                 >
-                  <RotateCcw className="w-3.5 h-3.5 text-cyan-mint" />
-                  <span>Reset Tracer</span>
+                  <RotateCcw className="w-3 h-3 text-white" />
+                  <span>[ RESET TRACE ]</span>
                 </button>
               </Magnetic>
             )}
           </div>
         </div>
 
-        {/* Drawn Divider Line */}
-        <div data-draw className="w-full h-px bg-white/10 mb-12" />
+        {/* Drawn Top PCB Bus Line */}
+        <div data-draw className="w-full h-px bg-[#2D3645] mb-10" />
 
-        {/* Flagship Projects Architectural Tracer Bar */}
-        <div data-anim className="mb-14 p-6 rounded-2xl bg-carbon/75 border border-white/10 backdrop-blur-xl shadow-liquid-card">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-            <div className="flex items-center gap-2 font-mono text-fluid-micro text-slate-300 uppercase tracking-wider">
-              <Boxes className="w-4 h-4 text-cyan-mint" />
-              <span>Flagship Engineered Architectures (Hover or click to isolate stack)</span>
+        {/* ========================================================================= */}
+        {/* 1. 8-BIT LED TELEMETRY COUNTERS (Glowing 90s Digital Pixel Readouts)       */}
+        {/* ========================================================================= */}
+        <div className="mb-14">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2 font-pixel text-[10px] text-[#FFCC00] uppercase tracking-wider">
+              <Activity className="w-3.5 h-3.5 text-[#FFCC00] animate-pulse" />
+              <span>&gt; 8-BIT LED TELEMETRY READOUTS // HARDWARE AUTHORITY SPEC</span>
             </div>
-            <span className="font-mono text-fluid-micro text-slate-500">
-              {lockedMode ? '🔒 Pinned Selection (Click again to unlock)' : '⚡ Live Hover Trace'}
+            <span className="font-mono text-[10px] text-[#8E98AA] hidden sm:inline">
+              SYS.96 BUS CLOCK // REAL-TIME CALIBRATED
             </span>
           </div>
 
-          <div data-stagger="0.08" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-            {FLAGSHIP_PROJECTS.map((project) => {
-              const highlighted = isProjectHighlighted(project.id);
-              const isSelected = activeProjectId === project.id;
-              const isDimmed = hasAnyFilter && !highlighted;
+          <div 
+            data-stagger="0.08" 
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5"
+          >
+            {AUTHORITY_METRICS.map((metric, idx) => {
+              const isCyan = metric.accent === 'cyan';
+
+              const borderGlow = isCyan
+                ? 'border-[var(--tech-cyan-wave,#00F0FF)] shadow-[0_0_15px_rgba(0,240,255,0.35),2px_2px_0_0_#070814]'
+                : 'border-[var(--pixel-amber-gold,#FFCC00)] shadow-[0_0_15px_rgba(255,204,0,0.35),2px_2px_0_0_#070814]';
+
+              const textGlow = isCyan
+                ? 'text-[#00F0FF] drop-shadow-[0_0_8px_rgba(0,240,255,0.6)]'
+                : idx === 3
+                ? 'text-[#4AF626] drop-shadow-[0_0_8px_rgba(74,246,38,0.6)]'
+                : 'text-[#FFCC00] drop-shadow-[0_0_8px_rgba(255,204,0,0.6)]';
 
               return (
                 <div
-                  key={project.id}
-                  onMouseEnter={() => handleProjectHover(project.id)}
-                  onClick={() => handleProjectClick(project.id)}
-                  className={`relative p-3.5 rounded-xl border transition-all duration-300 cursor-pointer select-none flex flex-col justify-between ${
-                    isSelected
-                      ? 'bg-wk-slate-surface border-wk-verdigris-signal shadow-editorial-card scale-[1.02]'
-                      : highlighted
-                      ? 'bg-white/10 border-wk-verdigris-signal/60 shadow-editorial-card'
-                      : isDimmed
-                      ? 'opacity-35 bg-obsidian-surface/40 border-white/5 grayscale-[50%]'
-                      : 'bg-obsidian-surface/80 border-white/10 hover:border-white/25 hover:bg-carbon-surface/90'
-                  }`}
+                  key={idx}
+                  onMouseEnter={() => audio.playTick()}
+                  className={`relative p-4 sm:p-5 bg-[#0D1512] border-2 ${borderGlow} transition-all duration-200 group flex flex-col justify-between`}
                 >
-                  <div>
-                    <div className="flex items-center justify-between gap-1 mb-1.5">
-                      <span className={`w-2 h-2 rounded-full ${
-                        isSelected 
-                          ? 'bg-wk-terracotta-pulse' 
-                          : highlighted 
-                          ? 'bg-wk-verdigris-signal' 
-                          : 'bg-muted/60'
-                      }`} />
-                      <span className="font-mono text-[10px] text-slate-500 uppercase">
-                        {project.accent === 'cyan' ? 'High Performance' : 'Cloud / Web'}
-                      </span>
-                    </div>
+                  {/* Subtle LED segment grid background */}
+                  <div 
+                    className="pointer-events-none absolute inset-0 opacity-[0.08] bg-[radial-gradient(#4AF626_1px,transparent_1px)] bg-[size:8px_8px]"
+                    aria-hidden="true"
+                  />
 
-                    <h4 className="font-display font-bold text-fluid-sm text-white group-hover:text-cyan-mint transition-colors">
-                      {project.title}
-                    </h4>
-                    <p className="font-body text-fluid-micro text-slate-400 mt-1 line-clamp-2 leading-relaxed">
-                      {project.tagline}
-                    </p>
+                  {/* Header: Chip Code & Hardware Status */}
+                  <div className="flex items-center justify-between mb-3 border-b border-[#2D3645] pb-2">
+                    <span className="font-pixel text-[8px] text-[#8E98AA]">
+                      {metric.chipCode}
+                    </span>
+                    <span className="font-pixel text-[8px] px-1.5 py-0.5 bg-[#131629] border border-[#2D3645] text-[#4AF626] flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#4AF626] animate-ping" />
+                      LIVE
+                    </span>
                   </div>
 
-                  <div className="mt-3 pt-2 border-t border-white/5 flex items-center justify-between text-fluid-micro font-mono">
-                    <span className="text-cyan-mint/90 truncate max-w-[120px]">
-                      {project.layerBadge}
-                    </span>
-                    <a
-                      href={project.githubUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="p-1 rounded hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
-                      title="Inspect Source Code"
-                      aria-label={`Inspect source code for ${project.title}`}
-                    >
-                      <ArrowUpRight className="w-3.5 h-3.5" />
-                    </a>
+                  {/* Digital Pixel Counter Readout */}
+                  <div className="my-2">
+                    <div className="flex items-baseline gap-2">
+                      <span 
+                        data-counter={metric.target}
+                        className={`font-pixel text-3xl sm:text-4xl ${textGlow} tracking-wider`}
+                      >
+                        {metric.target}
+                      </span>
+                    </div>
+                    <div className="font-pixel text-[10px] text-[#F0EFE6] mt-2 tracking-wider leading-tight">
+                      {metric.label}
+                    </div>
+                  </div>
+
+                  {/* Footer detail description */}
+                  <div className="pt-2 border-t border-[#2D3645]/80 mt-2 font-mono text-[10px] text-[#D6CFC2] leading-snug">
+                    <div className="text-[#8E98AA] text-[9px] uppercase font-pixel tracking-tighter">
+                      {metric.sub}
+                    </div>
+                    <div className="text-[#00F0FF] text-[10px] mt-0.5 font-medium break-words leading-tight">
+                      {metric.detail}
+                    </div>
                   </div>
                 </div>
               );
             })}
           </div>
-
-          {/* Active Diagnostic HUD Banner */}
-          {hasAnyFilter && (
-            <div className="mt-4 pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-fluid-micro font-mono animate-in fade-in duration-200">
-              <div className="flex items-center gap-2">
-                <Zap className="w-3.5 h-3.5 text-cyan-mint" />
-                {activeProject && (
-                  <span className="text-slate-200">
-                    Inspecting Stack for <strong className="text-cyan-mint">{activeProject.title}</strong>: Highlighting all connected layer primitives below.
-                  </span>
-                )}
-                {activeTech && (
-                  <span className="text-slate-200">
-                    Technology <strong className="text-cyan-mint">{activeTech.name}</strong> is deployed in:{' '}
-                    <span className="text-amber-warm font-semibold">
-                      {activeTech.projectIds
-                        .map((id) => FLAGSHIP_PROJECTS.find((p) => p.id === id)?.title)
-                        .filter(Boolean)
-                        .join(' • ')}
-                    </span>
-                  </span>
-                )}
-              </div>
-
-              <span className="text-slate-400">
-                Tip: Click any item to lock selection
-              </span>
-            </div>
-          )}
         </div>
 
-        {/* 3-Column Architectural Map with data-stagger */}
-        <div data-stagger="0.12" className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Active Technology Diagnostic Circuit Route Notice */}
+        {activeTech && (
+          <div className="mb-4 px-4 py-2 bg-[#0D1512] border border-[#00F0FF]/40 shadow-[0_0_10px_rgba(0,240,255,0.15)] flex flex-wrap items-center justify-between gap-3 font-pixel text-[9px] animate-in fade-in duration-150">
+            <div className="flex items-center gap-2">
+              <Zap className="w-3.5 h-3.5 text-[#00F0FF]" />
+              <span className="text-[#D6CFC2]">
+                Technology <strong className="text-[#00F0FF]">{activeTech.name}</strong> is deployed in:{' '}
+                <span className="text-[#FFCC00]">
+                  {activeTech.projectIds
+                    .map((id) => FLAGSHIP_PROJECTS.find((p) => p.id === id)?.title)
+                    .filter(Boolean)
+                    .join(' • ')}
+                </span>
+              </span>
+            </div>
+            <span className="text-[#8E98AA] text-[8px]">
+              CIRCUIT ROUTE ACTIVE
+            </span>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* INTERACTIVE MOTHERBOARD PCB CIRCUIT TRACE BUS (Visual Interconnect)       */}
+        {/* ========================================================================= */}
+        <div className="mb-6 px-2 hidden md:block">
+          <div className="relative py-2 bg-[#0D1512] border-2 border-[#2D3645] shadow-[inset_0_0_10px_rgba(0,0,0,0.8)] px-4">
+            <div className="flex items-center justify-between font-pixel text-[8px] text-[#8E98AA] mb-1">
+              <span>MOTHERBOARD PCB BUS // HIGH-SPEED INTERCONNECT TRACES</span>
+              <span className="text-[#4AF626] flex items-center gap-1">
+                <Radio className="w-3 h-3 animate-pulse" />
+                {hasAnyFilter ? 'PULSE ROUTING: ACTIVE' : 'BUS READY: 120 FPS DMA'}
+              </span>
+            </div>
+
+            {/* Motherboard Circuit SVG Bus */}
+            <svg 
+              className="w-full h-8 overflow-visible" 
+              viewBox="0 0 1000 32" 
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              {/* Ground Circuit Tracks */}
+              <line x1="0" y1="8" x2="1000" y2="8" stroke="#1B2236" strokeWidth="2" strokeDasharray="6 4" />
+              <line x1="0" y1="16" x2="1000" y2="16" stroke="#1B2236" strokeWidth="2" strokeDasharray="8 4" />
+              <line x1="0" y1="24" x2="1000" y2="24" stroke="#1B2236" strokeWidth="2" strokeDasharray="6 4" />
+
+              {/* Dynamic Animated Pulse Line when active */}
+              {hasAnyFilter && (
+                <>
+                  <line 
+                    x1="0" 
+                    y1="16" 
+                    x2="1000" 
+                    y2="16" 
+                    stroke="var(--tech-cyan-wave, #00F0FF)" 
+                    strokeWidth="3" 
+                    strokeDasharray="20 15" 
+                    className="animate-pcb-pulse"
+                  />
+                  <line 
+                    x1="0" 
+                    y1="8" 
+                    x2="1000" 
+                    y2="8" 
+                    stroke="var(--pixel-phosphor-green, #4AF626)" 
+                    strokeWidth="2" 
+                    strokeDasharray="15 25" 
+                    className="animate-pcb-pulse-fast"
+                  />
+                  <line 
+                    x1="0" 
+                    y1="24" 
+                    x2="1000" 
+                    y2="24" 
+                    stroke="var(--pixel-amber-gold, #FFCC00)" 
+                    strokeWidth="2" 
+                    strokeDasharray="18 20" 
+                    className="animate-pcb-pulse"
+                  />
+                </>
+              )}
+
+              {/* Solder Joints / Vias */}
+              {[50, 150, 250, 350, 450, 550, 650, 750, 850, 950].map((cx) => (
+                <circle 
+                  key={cx} 
+                  cx={cx} 
+                  cy="16" 
+                  r="3.5" 
+                  fill={hasAnyFilter ? 'var(--tech-cyan-wave, #00F0FF)' : '#2D3645'} 
+                  stroke="#070814" 
+                  strokeWidth="1.5" 
+                />
+              ))}
+            </svg>
+          </div>
+        </div>
+
+        {/* Mobile Layer Selector Tabs (Visible on < lg, Hidden on Desktop) */}
+        <div className="flex lg:hidden items-center gap-1.5 mb-4 overflow-x-auto pb-1 select-none">
+          <span className="font-pixel text-[8px] text-[#8E98AA] mr-1 shrink-0">VIEW LAYER:</span>
+          {[
+            { key: 'all', label: 'ALL (24)' },
+            { key: 'client', label: '01: CLIENT (7)' },
+            { key: 'server', label: '02: SERVER (9)' },
+            { key: 'systems', label: '03: SYSTEMS (8)' },
+          ].map((tab) => {
+            const isActive = activeMobileLayer === tab.key;
+            return (
+              <button
+                key={tab.key}
+                type="button"
+                onClick={() => {
+                  audio.playTick();
+                  setActiveMobileLayer(tab.key as any);
+                }}
+                className={`font-pixel text-[8px] px-2.5 py-1.5 border-2 transition-all shrink-0 ${
+                  isActive
+                    ? 'bg-[#131629] border-[#00F0FF] text-[#00F0FF] shadow-[0_0_8px_rgba(0,240,255,0.4)]'
+                    : 'bg-[#070814] border-[#2D3645] text-[#8E98AA] hover:border-[#D6CFC2]'
+                }`}
+              >
+                [ {tab.label} ]
+              </button>
+            );
+          })}
+        </div>
+
+        {/* ========================================================================= */}
+        {/* 3. 3-COLUMN ARCHITECTURAL LAYERS (Interconnected Pixel-Circuit Columns)   */}
+        {/* ========================================================================= */}
+        <div data-stagger="0.12" className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12 items-start">
           {ARCHITECTURE_LAYERS.map((layer) => {
             const Icon = layer.icon;
             const isCyan = layer.accent === 'cyan';
             const isAmber = layer.accent === 'amber';
-            const accentClass = isCyan ? 'text-cyan-mint' : isAmber ? 'text-amber-warm' : 'text-emerald-400';
-            const badgeBg = isCyan ? 'bg-cyan-mint/10 border-cyan-mint/30' : isAmber ? 'bg-amber-warm/10 border-amber-warm/30' : 'bg-emerald-500/10 border-emerald-500/30';
+
+            const accentClass = isCyan ? 'text-[#00F0FF]' : isAmber ? 'text-[#FFCC00]' : 'text-[#4AF626]';
+            const badgeBg = isCyan 
+              ? 'bg-[#00F0FF]/10 border-[#00F0FF]' 
+              : isAmber 
+              ? 'bg-[#FFCC00]/10 border-[#FFCC00]' 
+              : 'bg-[#4AF626]/10 border-[#4AF626]';
+
+            const isVisibleOnMobile = activeMobileLayer === 'all' || activeMobileLayer === layer.key;
 
             return (
               <div
                 key={layer.key}
-                className="skill-layer-column flex flex-col"
+                className={`skill-layer-column flex flex-col ${isVisibleOnMobile ? 'flex' : 'hidden lg:flex'}`}
               >
-                {/* Column Glass Container */}
-                <div className="h-full rounded-2xl bg-carbon/80 border border-white/10 backdrop-blur-2xl shadow-liquid-card flex flex-col justify-between overflow-hidden">
+                {/* Column RetroWindow Container */}
+                <RetroWindow
+                  title={layer.layerTag}
+                  tag={layer.key.toUpperCase()}
+                  variant={isCyan ? 'cyan' : isAmber ? 'amber' : 'phosphor'}
+                  className="h-full flex flex-col justify-between"
+                  bodyClassName="p-0 flex flex-col justify-between h-full bg-[#0D1512]/95"
+                  statusBar={
+                    <div className="flex items-center justify-between w-full font-pixel text-[8px] gap-2">
+                      <span className="break-words">{layer.busChannel}</span>
+                      <span className={`${accentClass} shrink-0`}>{layer.techs.length} NODES VERIFIED</span>
+                    </div>
+                  }
+                >
                   
                   {/* Layer Header */}
-                  <div className="p-6 md:p-7 border-b border-white/10 bg-obsidian-surface/60">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className={`p-2.5 rounded-xl border ${badgeBg}`}>
-                        <Icon className={`w-5 h-5 ${accentClass}`} />
+                  <div className="p-3.5 sm:p-4 border-b-2 border-[#2D3645] bg-[#131629]/95 shrink-0">
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <div className={`p-1.5 border-2 shrink-0 ${badgeBg}`}>
+                          <Icon className={`w-4 h-4 ${accentClass}`} />
+                        </div>
+                        <div className="min-w-0">
+                          <h3 className="font-pixel text-[11px] sm:text-xs text-white leading-tight break-words">
+                            {layer.title}
+                          </h3>
+                          <div className="font-mono text-[9px] text-[#00F0FF] mt-0.5 break-words">
+                            {layer.subtitle}
+                          </div>
+                        </div>
                       </div>
-                      <span className={`font-mono text-fluid-micro uppercase tracking-wider px-2.5 py-1 rounded-full border ${badgeBg} ${accentClass}`}>
-                        {layer.key === 'client' ? 'Viewport & DOM' : layer.key === 'server' ? 'State & Fabric' : 'Ring-0 & IPC'}
+                      <span className={`font-pixel text-[8px] uppercase tracking-wider px-1.5 py-0.5 border-2 shrink-0 ${badgeBg} ${accentClass}`}>
+                        {layer.key === 'client' ? 'VIEWPORT' : layer.key === 'server' ? 'FABRIC' : 'RING-0'}
                       </span>
                     </div>
 
-                    <h3 className="font-display font-extrabold text-fluid-h3 text-white">
-                      {layer.title}
-                    </h3>
-                    <div className="font-mono text-fluid-micro text-slate-400 mt-1 mb-3">
-                      {layer.subtitle}
-                    </div>
-                    <p className="font-body text-fluid-sm text-slate-400 leading-relaxed">
+                    <p className="font-body text-[11px] text-[#D6CFC2] leading-snug break-words">
                       {layer.description}
                     </p>
                   </div>
 
-                  {/* Technology Modules List */}
-                  <div className="p-6 space-y-3.5 flex-1 overscroll-contain">
+                  {/* Technology Modules List - Scrollable Retro Bay */}
+                  <div className="p-2.5 sm:p-3 space-y-2.5 max-h-[390px] overflow-y-auto overscroll-contain crt-scrollbar">
                     {layer.techs.map((tech) => {
                       const highlighted = isTechHighlighted(tech);
                       const isSelected = activeTechId === tech.id;
@@ -638,68 +878,72 @@ export const SkillMatrix: React.FC = () => {
                           key={tech.id}
                           onMouseEnter={() => handleTechHover(tech.id)}
                           onClick={() => handleTechClick(tech.id)}
-                          className={`group relative p-4 rounded-xl border transition-all duration-300 cursor-pointer select-none ${
+                          className={`group relative p-2.5 sm:p-3 border-2 transition-all duration-150 cursor-pointer select-none ${
                             isSelected
-                              ? 'bg-wk-slate-surface border-wk-verdigris-signal shadow-editorial-card scale-[1.01]'
+                              ? 'bg-[#0C2430] border-[#00F0FF] shadow-[0_0_12px_rgba(0,240,255,0.4)] scale-[1.01]'
                               : highlighted
-                              ? 'bg-white/10 border-wk-verdigris-signal/70 shadow-editorial-card'
+                              ? 'bg-[#171B33] border-[#4AF626] shadow-[0_0_10px_rgba(74,246,38,0.3)]'
                               : isDimmed
-                              ? 'opacity-30 bg-obsidian-surface/40 border-white/5 grayscale-[60%]'
-                              : 'bg-obsidian-surface/75 border-white/5 hover:border-white/20 hover:bg-carbon-surface/90'
+                              ? 'opacity-30 bg-[#0D1512] border-[#2D3645]/40 grayscale'
+                              : 'bg-[#131629] border-[#2D3645] hover:border-[#00F0FF] hover:bg-[#171B33]'
                           }`}
                         >
-                          <div className="flex items-start justify-between gap-2 mb-2">
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <span className="font-display font-bold text-fluid-sm text-white group-hover:text-cyan-mint transition-colors">
-                                  {tech.name}
-                                </span>
-                                {highlighted && (
-                                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-mint animate-ping" />
-                                )}
-                              </div>
-                              <span className="font-mono text-[10px] text-slate-500 uppercase tracking-wider">
+                          {/* Card Micro-Header: Pin ID, Tag & ROMs badge */}
+                          <div className="flex items-center justify-between gap-2 mb-1">
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <span className="font-pixel text-[7px] text-[#8E98AA] px-1 py-0.5 bg-[#070814] border border-[#2D3645] shrink-0">
+                                {tech.pinId}
+                              </span>
+                              <span className="font-mono text-[8.5px] text-[#8E98AA] uppercase tracking-wider break-words">
                                 {tech.tag}
                               </span>
                             </div>
-
-                            <span className="font-mono text-[11px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300 shrink-0">
-                              {tech.projectIds.length} {tech.projectIds.length === 1 ? 'Project' : 'Projects'}
+                            <span className="font-pixel text-[7px] px-1.5 py-0.5 bg-[#070814] border border-[#2D3645] text-[#D6CFC2] shrink-0">
+                              {tech.projectIds.length} {tech.projectIds.length === 1 ? 'ROM' : 'ROMs'}
                             </span>
                           </div>
 
-                          <p className="font-body text-fluid-micro text-slate-400 mb-3 leading-relaxed">
+                          {/* Tech Title - Clean, prominent, full visibility without truncation */}
+                          <div className="flex items-center gap-2 mb-1.5">
+                            <h4 className="font-pixel text-[10px] sm:text-[11px] text-white group-hover:text-[#00F0FF] transition-colors leading-tight break-words">
+                              {tech.name}
+                            </h4>
+                            {highlighted && (
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#4AF626] animate-ping shrink-0" />
+                            )}
+                          </div>
+
+                          <p className="font-body text-[10.5px] text-[#D6CFC2] mb-2 leading-relaxed break-words">
                             {tech.description}
                           </p>
 
                           {/* Architectural Capabilities Chips */}
-                          <div className="flex flex-wrap gap-1.5 mb-3">
+                          <div className="flex flex-wrap gap-1 mb-2">
                             {tech.capabilities.map((cap, i) => (
                               <span
                                 key={i}
-                                className="font-mono text-[10px] px-2 py-0.5 rounded bg-carbon-elevated/80 border border-white/5 text-slate-300"
+                                className="font-mono text-[8px] px-1.5 py-0.5 bg-[#070814] border border-[#2D3645] text-[#8E98AA]"
                               >
-                                {cap}
+                                &gt; {cap}
                               </span>
                             ))}
                           </div>
 
                           {/* Connected Project Badges */}
-                          <div className="pt-2.5 border-t border-white/5 flex flex-wrap items-center gap-1.5">
-                            <span className="font-mono text-[10px] text-slate-500 uppercase tracking-widest mr-1">
-                              Deployed in:
+                          <div className="pt-1.5 border-t border-[#2D3645]/60 flex flex-wrap items-center gap-1">
+                            <span className="font-pixel text-[7px] text-[#8E98AA] uppercase tracking-wider mr-0.5">
+                              Traced In:
                             </span>
                             {connectedProjectTitles.map((title, i) => {
-                              const isThisProjectActive = activeProjectId 
-                                && FLAGSHIP_PROJECTS.find(p => p.id === activeProjectId)?.title === title;
+                              const isThisProjectActive = isSelected;
 
                               return (
                                 <span
                                   key={i}
-                                  className={`font-mono text-[10px] px-2 py-0.5 rounded transition-colors ${
+                                  className={`font-pixel text-[7px] px-1.5 py-0.5 border transition-colors ${
                                     isThisProjectActive
-                                      ? 'bg-accent-coral text-alabaster font-bold shadow-editorial-card'
-                                      : 'bg-white/5 text-alabaster-dim border border-white/10'
+                                      ? 'bg-[#FF2A85] text-white border-white font-bold shadow-[0_0_8px_rgba(255,42,133,0.5)]'
+                                      : 'bg-[#070814] text-[#00F0FF] border-[#2D3645]'
                                   }`}
                                 >
                                   {title}
@@ -713,26 +957,221 @@ export const SkillMatrix: React.FC = () => {
                   </div>
 
                   {/* Column Footer */}
-                  <div className="p-4 md:p-5 bg-obsidian-surface/60 border-t border-white/10 flex items-center justify-between font-mono text-fluid-micro text-slate-400">
+                  <div className="p-2.5 sm:p-3 bg-[#131629] border-t-2 border-[#2D3645] flex items-center justify-between font-pixel text-[8px] text-[#8E98AA] shrink-0">
                     <span className="flex items-center gap-1.5">
-                      <CheckCircle2 className={`w-3.5 h-3.5 ${accentClass}`} />
-                      <span>Zero Fluff • Verified Specs</span>
+                      <CheckCircle2 className={`w-3.5 h-3.5 ${accentClass} shrink-0`} />
+                      <span className="text-[#D6CFC2]">Verified Specs</span>
                     </span>
-                    <span className="text-slate-500">
-                      {layer.techs.length} Modules
+                    <span className="text-[#00F0FF] flex items-center gap-1 font-mono text-[9px]">
+                      <span>{layer.techs.length} NODES</span>
+                      <span className="text-[#8E98AA]">(SCROLL)</span>
                     </span>
                   </div>
 
-                </div>
+                </RetroWindow>
               </div>
             );
           })}
         </div>
 
+        {/* ========================================================================= */}
+        {/* 4. FLAGSHIP PROJECT ROM CARTRIDGES // HARDWARE EXECUTION MODULES          */}
+        {/* ========================================================================= */}
+        <div data-anim className="mb-12">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2 font-pixel text-[10px] text-[#00F0FF] uppercase tracking-wider">
+              <Zap className="w-3.5 h-3.5 text-[#00F0FF] animate-pulse" />
+              <span>&gt; FLAGSHIP ROM CARTRIDGES // HARDWARE EXECUTION MODULES</span>
+            </div>
+            <span className="font-mono text-[10px] text-[#8E98AA] hidden sm:inline">
+              SYS.96 ROM ARCHIVE // 6 PROOF CORES
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {FLAGSHIP_PROJECTS.map((project) => {
+              const isCyan = project.accent === 'cyan';
+              const isAmber = project.accent === 'amber';
+              const accentColor = isCyan ? 'text-[#00F0FF]' : isAmber ? 'text-[#FFCC00]' : 'text-[#4AF626]';
+              const badgeBg = isCyan ? 'bg-[#00F0FF]/10 text-[#00F0FF]' : isAmber ? 'bg-[#FFCC00]/10 text-[#FFCC00]' : 'bg-[#4AF626]/10 text-[#4AF626]';
+
+              return (
+                <div
+                  key={project.id}
+                  className="bg-[#0D1512] border-2 border-[#2D3645] hover:border-[#00F0FF] transition-all duration-200 p-4 flex flex-col justify-between shadow-[2px_2px_0_0_#070814] group"
+                >
+                  <div>
+                    {/* Cartridge Header */}
+                    <div className="flex items-center justify-between border-b border-[#2D3645] pb-2 mb-3">
+                      <span className="font-pixel text-[8px] px-1.5 py-0.5 bg-[#131629] border border-[#2D3645] text-[#8E98AA]">
+                        {project.number}
+                      </span>
+                      <span className={`font-pixel text-[8px] uppercase tracking-wider ${accentColor}`}>
+                        ROM CARTRIDGE
+                      </span>
+                    </div>
+
+                    {/* Title */}
+                    <h4 className="font-pixel text-xs text-white mb-1.5 leading-snug break-words group-hover:text-[#00F0FF] transition-colors">
+                      {project.title}
+                    </h4>
+
+                    {/* Tagline */}
+                    <p className="font-body text-[11px] text-[#D6CFC2] mb-3 leading-relaxed break-words">
+                      {project.tagline}
+                    </p>
+
+                    {/* Layer Badge with zero truncation */}
+                    <div className="mb-3">
+                      <span className={`inline-block font-mono text-[9px] px-2 py-0.5 border border-[#2D3645] ${badgeBg} whitespace-normal break-words`}>
+                        &gt; {project.layerBadge}
+                      </span>
+                    </div>
+
+                    {/* Tech Tags */}
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      {project.techTags.map((tag, tIdx) => (
+                        <span
+                          key={tIdx}
+                          className="font-mono text-[8px] px-1.5 py-0.5 bg-[#070814] border border-[#2D3645] text-[#8E98AA] whitespace-normal"
+                        >
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Cartridge Footer Link */}
+                  <div className="pt-2.5 border-t border-[#2D3645] flex items-center justify-between font-pixel text-[8px]">
+                    <span className="text-[#8E98AA]">STATUS: VERIFIED</span>
+                    <a
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#00F0FF] hover:underline flex items-center gap-1"
+                    >
+                      <span>[ REPO ]</span>
+                      <span>&gt;</span>
+                    </a>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* ========================================================================= */}
+        {/* 5. 90s BIOS HARDWARE VERIFICATION ROM READOUT                             */}
+        {/* ========================================================================= */}
+        <div data-anim className="mb-8">
+          <RetroWindow
+            title="WATCHKNIGHT_OS // BIOS_ROM_VERIFY.SYS (REV 4.51PG)"
+            tag="ROM_BIOS"
+            variant="phosphor"
+            statusBar={
+              <div className="flex flex-wrap items-center justify-between w-full font-pixel text-[8px]">
+                <span className="text-[#4AF626]">[F1] HELP  [F5] OLD VALUES  [F7] LOAD DEFAULTS  [F10] SAVE &amp; CMOS WRITE</span>
+                <span className="text-[#FFCC00]">ALL HARDWARE MODULES PASS POST (100% OK)</span>
+              </div>
+            }
+          >
+            {/* BIOS Setup Header */}
+            <div className="border-b-2 border-[#2D3645] pb-4 mb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 font-pixel text-[10px] text-[#4AF626]">
+                <div className="flex items-center gap-2">
+                  <Cpu className="w-4 h-4 text-[#4AF626] animate-pulse" />
+                  <span>ROM PCI/ISA BIOS (2A69KM4B) // MODULAR CSE ARCHITECTURE</span>
+                </div>
+                <span className="text-[#FFCC00]">COPYRIGHT (C) 1996-2026 WATCHKNIGHT_OS SYS.96</span>
+              </div>
+              <div className="font-mono text-[11px] text-[#8E98AA] mt-1">
+                HARDWARE PLATFORM: EAST WEST UNIVERSITY CSE SYSTEMS LAB (DHAKA-BD • 23.7644° N, 90.4252° E • UTC+6)
+              </div>
+            </div>
+
+            {/* BIOS Setup Table Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              
+              {/* Left Column: Academic Timeline & Institutional Verification */}
+              <div className="space-y-3 font-mono text-[11px]">
+                <div className="font-pixel text-[9px] text-[#00F0FF] border-b border-[#2D3645] pb-1 uppercase tracking-wider flex items-center justify-between">
+                  <span>[ SYSTEM RECORD: ACADEMIC CREDENTIAL ROM ]</span>
+                  <span className="text-[#4AF626]">VERIFIED</span>
+                </div>
+
+                <div className="bg-[#070814] p-3.5 border border-[#2D3645] space-y-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="text-[#8E98AA] shrink-0 font-pixel text-[9px]">INSTITUTION:</span>
+                    <span className="text-white text-right font-bold">East West University (EWU)</span>
+                  </div>
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="text-[#8E98AA] shrink-0 font-pixel text-[9px]">DEPARTMENT:</span>
+                    <span className="text-[#D6CFC2] text-right">Computer Science &amp; Engineering (CSE)</span>
+                  </div>
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="text-[#8E98AA] shrink-0 font-pixel text-[9px]">TIMELINE:</span>
+                    <span className="text-[#FFCC00] text-right font-pixel text-[10px]">2021 – PRESENT (SENIOR STANDING)</span>
+                  </div>
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="text-[#8E98AA] shrink-0 font-pixel text-[9px]">LOCATION:</span>
+                    <span className="text-[#D6CFC2] text-right">Dhaka, Bangladesh (UTC+6)</span>
+                  </div>
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="text-[#8E98AA] shrink-0 font-pixel text-[9px]">CURRICULUM:</span>
+                    <span className="text-[#00F0FF] text-right text-[10px]">OS Kernel, Algorithms, Distributed DB, Compilers</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: SHA-256 Authenticated System Record */}
+              <div className="space-y-3 font-mono text-[11px]">
+                <div className="font-pixel text-[9px] text-[#00F0FF] border-b border-[#2D3645] pb-1 uppercase tracking-wider flex items-center justify-between">
+                  <span>[ CRYPTOGRAPHIC ROM TELEMETRY // POST CHECK ]</span>
+                  <span className="text-[#4AF626]">POST 000 OK</span>
+                </div>
+
+                <div className="bg-[#070814] p-3.5 border border-[#2D3645] space-y-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[#8E98AA] font-pixel text-[9px]">SYSTEM CHECKSUM:</span>
+                    <span className="font-pixel text-[9px] text-[#4AF626]">SHA-256 AUTHENTICATED</span>
+                  </div>
+                  <div className="p-1.5 bg-[#131629] border border-[#2D3645] font-mono text-[9px] text-[#00F0FF] break-all leading-tight">
+                    SHA-256: 8F4A2B9C7D1E0F3A6B5C4D3E2F1A0B9C8D7E6F5A4B3C2D1E0F9A8B7C6D5E4F3A
+                  </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[#8E98AA] font-pixel text-[9px]">VALGRIND MEM AUDIT:</span>
+                    <span className="text-[#4AF626] font-bold">0 LEAKS // CLEAN EXIT (0 BYTES / 0 BLOCKS)</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[#8E98AA] font-pixel text-[9px]">CANVAS PACING:</span>
+                    <span className="text-[#00F0FF] font-bold">120 FPS STABLE // ZERO JANK</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[#8E98AA] font-pixel text-[9px]">OBSIDIAN AST PARITY:</span>
+                    <span className="text-[#FFCC00] font-bold">100% BIDIRECTIONAL SCHEMA SYNC</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            {/* BIOS Security Notice Footnote */}
+            <div className="mt-4 pt-3 border-t border-[#2D3645] flex flex-col sm:flex-row items-center justify-between gap-2 font-mono text-[10px] text-[#8E98AA]">
+              <span className="flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-[#4AF626]" />
+                <span>ROM Hardware Hash signed by East West University CSE workstation node (@watchknight).</span>
+              </span>
+              <span className="text-[#4AF626] font-pixel text-[8px]">
+                BOOT SEQUENCE: FLOPPY (A:) → ROM CARTRIDGE (C:) → POSIX RAM
+              </span>
+            </div>
+          </RetroWindow>
+        </div>
+
         {/* Matrix Philosophy Footer */}
-        <div className="mt-12 text-center">
-          <p className="font-mono text-fluid-micro text-slate-500">
-            Systems architecture audited across East West University Computer Science & Engineering labs and production deployments.
+        <div className="mt-10 text-center">
+          <p className="font-pixel text-[9px] text-[#8E98AA]">
+            WATCHKNIGHT_OS // SYS.96 SYSTEMS ARCHITECTURE • AUDITED ACROSS EWU LABS &amp; PRODUCTION DEPLOYMENTS
           </p>
         </div>
 

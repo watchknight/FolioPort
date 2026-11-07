@@ -856,7 +856,7 @@ export const RenderPassInspector: React.FC = () => {
           onPointerDown={handlePointerDown}
           onPointerUp={handlePointerUp}
           onPointerLeave={handlePointerLeave}
-          className={`relative w-full h-[520px] sm:h-[600px] lg:h-[660px] rounded-3xl bg-obsidian-card/90 border border-white/10 shadow-editorial-elevated overflow-hidden select-none transition-colors duration-[450ms] ${
+          className={`relative w-full h-[520px] sm:h-[600px] lg:h-[660px] border-2 border-[#00F0FF] bg-[#070814] shadow-[0_0_30px_rgba(0,240,255,0.25)] overflow-hidden select-none transition-colors duration-[450ms] ${
             isInteracting ? 'cursor-grabbing' : 'cursor-grab'
           }`}
           data-cursor="pointer"
@@ -870,36 +870,36 @@ export const RenderPassInspector: React.FC = () => {
 
           {/* TOP-LEFT HUD OVERLAY: Technical Dossier & Telemetry Strip */}
           <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-20 pointer-events-none">
-            <div className="p-3 sm:p-4 rounded-2xl bg-obsidian-card/85 backdrop-blur-xl border border-white/10 shadow-editorial-card space-y-2 font-mono text-[11px] max-w-[280px] sm:max-w-[320px]">
+            <div className="p-3 sm:p-4 border-2 border-[#2D3645] bg-[#131629]/95 backdrop-blur-xl shadow-[0_0_15px_rgba(0,0,0,0.8)] space-y-2 font-mono text-[11px] max-w-[280px] sm:max-w-[320px]">
               
               <div className="flex items-center justify-between border-b border-white/10 pb-2">
-                <span className="flex items-center gap-1.5 text-accent-coral font-bold tracking-wider uppercase text-[10px]">
+                <span className="flex items-center gap-1.5 text-[#FF2A85] font-pixel text-[9px] tracking-wider uppercase">
                   <Activity className="w-3.5 h-3.5 animate-pulse" />
                   <span>PASS: {activePassConfig.label.toUpperCase()}</span>
                 </span>
-                <span className="text-white/40 text-[9px] px-1.5 py-0.5 rounded bg-white/5 border border-white/5">
+                <span className="text-[#00F0FF] text-[9px] px-1.5 py-0.5 border border-[#2D3645] bg-[#070814] font-pixel text-[8px]">
                   {activePassConfig.badge}
                 </span>
               </div>
 
-              <div className="text-alabaster font-semibold text-xs leading-snug">
+              <div className="text-[#F0EFE6] font-semibold text-xs leading-snug">
                 {activePassConfig.subtitle}
               </div>
 
-              <p className="text-alabaster-dim text-[10px] leading-relaxed hidden sm:block">
+              <p className="text-[#8E98AA] text-[10px] leading-relaxed hidden sm:block">
                 {activePassConfig.description}
               </p>
 
               {/* Real-time Telemetry Metrics */}
               <div className="grid grid-cols-2 gap-2 pt-1 border-t border-white/10 text-[10px]">
                 <div>
-                  <span className="text-muted block text-[9px] uppercase">Telemetry</span>
-                  <span ref={fpsRef} className="text-emerald-400 font-bold">60 FPS</span>
+                  <span className="text-[#8E98AA] block text-[9px] font-pixel text-[8px] uppercase">Telemetry</span>
+                  <span ref={fpsRef} className="text-[#4AF626] font-bold">60 FPS</span>
                   <span className="text-white/30 text-[9px] ml-1">Solid</span>
                 </div>
                 <div>
-                  <span className="text-muted block text-[9px] uppercase">Pointer [X, Y]</span>
-                  <span ref={pointerCoordsRef} className="text-accent-coral font-semibold">+0.00, +0.00</span>
+                  <span className="text-[#8E98AA] block text-[9px] font-pixel text-[8px] uppercase">Pointer [X, Y]</span>
+                  <span ref={pointerCoordsRef} className="text-[#00F0FF] font-semibold">+0.00, +0.00</span>
                 </div>
               </div>
 
@@ -919,15 +919,15 @@ export const RenderPassInspector: React.FC = () => {
                 });
               }}
               aria-label={`Toggle auto-rotation, currently ${autoRotate ? 'enabled' : 'disabled'}`}
-              className={`p-2.5 rounded-xl border backdrop-blur-xl font-mono text-[11px] transition-all active:scale-95 flex items-center gap-1.5 ${
+              className={`p-2 sm:p-2.5 border-2 backdrop-blur-xl font-pixel text-[9px] transition-all active:scale-95 flex items-center gap-1.5 ${
                 autoRotate 
-                  ? 'bg-accent/20 border-accent/40 text-accent-coral' 
-                  : 'bg-obsidian-card/80 border-white/10 text-muted hover:text-white'
+                  ? 'bg-[#131629] border-[#00F0FF] text-[#00F0FF] shadow-[0_0_10px_rgba(0,240,255,0.3)]' 
+                  : 'bg-[#070814]/90 border-[#2D3645] text-[#8E98AA] hover:text-[#F0EFE6] hover:border-[#00F0FF]/50'
               }`}
               title="Toggle orbital auto-rotation"
             >
               <RotateCcw className={`w-3.5 h-3.5 ${autoRotate ? 'animate-spin' : ''}`} style={{ animationDuration: '6s' }} />
-              <span className="hidden sm:inline">{autoRotate ? 'Orbit On' : 'Orbit Paused'}</span>
+              <span className="hidden sm:inline">{autoRotate ? 'ORBIT: ON' : 'ORBIT: OFF'}</span>
             </button>
 
             {/* Ripple Pulse Wave Generator */}
@@ -938,29 +938,29 @@ export const RenderPassInspector: React.FC = () => {
                 triggerRippleWave();
               }}
               aria-label="Inject fluid shockwave ripple into shader uniforms"
-              className="p-2.5 rounded-xl bg-obsidian-card/80 hover:bg-accent/20 border border-white/10 hover:border-accent/40 text-alabaster hover:text-accent-coral backdrop-blur-xl font-mono text-[11px] transition-all active:scale-95 flex items-center gap-1.5"
+              className="p-2 sm:p-2.5 border-2 border-[#2D3645] bg-[#070814]/90 hover:bg-[#131629] hover:border-[#FF2A85] text-[#F0EFE6] hover:text-[#FF2A85] backdrop-blur-xl font-pixel text-[9px] transition-all active:scale-95 flex items-center gap-1.5"
               title="Inject dynamic fluid ripple into shader uniforms"
             >
-              <Zap className="w-3.5 h-3.5 text-accent-coral" />
-              <span className="hidden sm:inline">Pulse Ripple</span>
+              <Zap className="w-3.5 h-3.5 text-[#FF2A85]" />
+              <span className="hidden sm:inline">PULSE RIPPLE</span>
             </button>
           </div>
 
           {/* ================================================================ */}
-          {/* INTERACTIVE HUD TOOLBAR: 6 REAL-TIME RENDER-PASS TOGGLE PILLS     */}
+          {/* INTERACTIVE HUD TOOLBAR: 6 REAL-TIME RENDER-PASS TOGGLE BUTTONS  */}
           {/* OVERLAID ON THE CANVAS CORNER (GUILLAUME COLOMBEL ARCHITECTURE)  */}
           {/* ================================================================ */}
           <div className="absolute bottom-4 sm:bottom-6 right-4 sm:right-6 left-4 sm:left-auto z-20 flex flex-col items-center sm:items-end">
             
-            <div className="w-full sm:w-auto p-1.5 sm:p-2 rounded-2xl bg-obsidian-card/90 backdrop-blur-2xl border border-white/15 shadow-editorial-elevated flex items-center justify-between sm:justify-start gap-1 sm:gap-2">
+            <div className="w-full sm:w-auto p-1.5 border-2 border-[#2D3645] bg-[#070814]/95 backdrop-blur-2xl shadow-[0_0_20px_rgba(0,0,0,0.8)] flex items-center justify-between sm:justify-start gap-1 sm:gap-2">
               
               {/* Hotkey hint label */}
               <div className="hidden lg:flex items-center gap-1.5 pl-2.5 pr-2 font-mono text-[10px] text-muted border-r border-white/10 shrink-0">
-                <Layers className="w-3.5 h-3.5 text-accent-coral" />
-                <span className="uppercase tracking-wider font-semibold">Passes</span>
+                <Layers className="w-3.5 h-3.5 text-[#00F0FF]" />
+                <span className="uppercase tracking-wider font-pixel text-[8px] text-[#00F0FF]">Passes</span>
               </div>
 
-              {/* The 6 Render-Pass Toggle Pills */}
+              {/* The 6 Render-Pass Toggle Buttons */}
               <div 
                 className="grid grid-cols-6 sm:flex sm:items-center gap-1 sm:gap-1.5 w-full sm:w-auto" 
                 role="tablist" 
@@ -979,27 +979,27 @@ export const RenderPassInspector: React.FC = () => {
                         e.stopPropagation();
                         handlePassSelect(pass.id);
                       }}
-                      className={`relative flex flex-col items-center justify-center py-2 sm:py-2.5 px-1.5 sm:px-3 rounded-xl font-mono transition-all duration-200 select-none ${
+                      className={`relative flex flex-col items-center justify-center py-1.5 sm:py-2 px-2 sm:px-3 border-2 font-mono transition-all duration-200 select-none ${
                         isActive
-                          ? 'bg-accent text-alabaster shadow-editorial-card font-black scale-[1.02]'
-                          : 'text-muted-light hover:text-alabaster hover:bg-white/5 border border-transparent'
+                          ? 'border-[#00F0FF] bg-[#131629] text-[#00F0FF] shadow-[0_0_10px_rgba(0,240,255,0.3)] font-bold'
+                          : 'border-transparent text-[#8E98AA] hover:text-[#F0EFE6] hover:border-[#2D3645]'
                       }`}
                     >
                       {/* Active indicator dot */}
                       {isActive && (
                         <span 
-                          className="absolute -top-1 w-1.5 h-1.5 rounded-full bg-white shadow-glow-cyan animate-pulse" 
+                          className="absolute -top-1 w-1.5 h-1.5 bg-[#00F0FF] shadow-[0_0_6px_#00F0FF] animate-pulse" 
                           aria-hidden="true" 
                         />
                       )}
 
-                      <span className="text-[11px] sm:text-xs tracking-tight uppercase font-bold leading-tight truncate">
+                      <span className="text-[10px] sm:text-xs tracking-tight uppercase font-bold leading-tight truncate">
                         {pass.label}
                       </span>
 
                       {/* Hotkey Cue [1 - 6] */}
                       <span className={`text-[9px] mt-0.5 tracking-wider hidden sm:block ${
-                        isActive ? 'text-white/80' : 'text-white/30'
+                        isActive ? 'text-[#00F0FF]' : 'text-white/30'
                       }`}>
                         [{pass.key}]
                       </span>
@@ -1012,7 +1012,7 @@ export const RenderPassInspector: React.FC = () => {
 
             {/* Corner Keyboard Hotkey Prompt */}
             <div className="mt-2 text-right font-mono text-[10px] text-white/40 hidden sm:block">
-              Click & drag to inspect • Hotkeys <kbd className="px-1.5 py-0.2 rounded bg-white/10 text-accent-coral border border-white/10">1</kbd> through <kbd className="px-1.5 py-0.2 rounded bg-white/10 text-accent-coral border border-white/10">6</kbd>
+              Click & drag to inspect • Hotkeys <kbd className="px-1.5 py-0.2 border border-[#2D3645] bg-[#131629] text-[#00F0FF]">1</kbd> through <kbd className="px-1.5 py-0.2 border border-[#2D3645] bg-[#131629] text-[#00F0FF]">6</kbd>
             </div>
           </div>
 
@@ -1028,22 +1028,22 @@ export const RenderPassInspector: React.FC = () => {
               <div
                 key={pass.id}
                 onClick={() => handlePassSelect(pass.id)}
-                className={`p-3.5 sm:p-4 rounded-2xl border transition-all duration-200 cursor-pointer ${
+                className={`p-3 sm:p-3.5 border-2 transition-all duration-200 cursor-pointer ${
                   isActive
-                    ? 'bg-accent/15 border-accent text-alabaster shadow-editorial-card ring-1 ring-accent'
-                    : 'bg-obsidian-card/60 hover:bg-obsidian-card border-white/10 text-muted hover:border-white/20'
+                    ? 'border-[#00F0FF] bg-[#131629] text-[#F0EFE6] shadow-[0_0_15px_rgba(0,240,255,0.25)]'
+                    : 'border-[#2D3645] bg-[#070814]/80 hover:bg-[#131629] text-[#8E98AA] hover:border-[#00F0FF]/50'
                 }`}
               >
                 <div className="flex items-center justify-between font-mono text-[10px] mb-1.5">
-                  <span className="text-accent-coral font-bold">0{pass.key}</span>
-                  <span className={`text-[9px] px-1 rounded ${isActive ? 'bg-accent text-alabaster' : 'bg-white/5 text-white/40'}`}>
+                  <span className="text-[#00F0FF] font-pixel text-[9px]">0{pass.key}</span>
+                  <span className={`text-[8px] px-1 border border-[#2D3645] ${isActive ? 'bg-[#00F0FF] text-[#070814] font-bold' : 'bg-[#070814] text-[#8E98AA]'}`}>
                     {pass.badge}
                   </span>
                 </div>
-                <div className={`font-display font-bold text-xs uppercase mb-1 ${isActive ? 'text-alabaster' : 'text-slate-200'}`}>
-                  {pass.label} Pass
+                <div className={`font-pixel text-[10px] uppercase mb-1 ${isActive ? 'text-[#00F0FF]' : 'text-[#F0EFE6]'}`}>
+                  {pass.label}
                 </div>
-                <p className="font-mono text-[9px] text-muted-light line-clamp-3 leading-snug">
+                <p className="font-mono text-[9px] text-[#8E98AA] line-clamp-3 leading-snug">
                   {pass.description}
                 </p>
               </div>

@@ -1,0 +1,17 @@
+@import './styles/index.css';
+
+/**
+ * WATCHKNIGHT_OS // SYS.96 — Dual-Register Cyber-CRT Color Palette
+ */
+:root {
+  --crt-void-bg: #070814;
+  --crt-phosphor-dark: #0D1512;
+  --crt-panel-slate: #131629;
+  --crt-bezel-putty: #D6CFC2;
+  --crt-bezel-shadow: #2D3645;
+  --tech-cyan-wave: #00F0FF;
+  --tech-magenta-crest: #FF2A85;
+  --pixel-phosphor-green: #4AF626;
+  --pixel-amber-gold: #FFCC00;
+  --pixel-ivory-text: #F0EFE6;
+}

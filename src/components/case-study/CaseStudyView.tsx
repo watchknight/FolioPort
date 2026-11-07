@@ -9,6 +9,7 @@ import {
   RannabannaPreview,
   TrashTrailPreview,
   NeonVanguardPreview,
+  ChronosAetherPreview,
 } from '../ProjectsShowcase';
 import { GithubIcon } from '../ui/Icons';
 import {
@@ -18,7 +19,6 @@ import {
   CheckCircle2,
   AlertCircle,
   Terminal as TerminalIcon,
-  X,
   Compass,
   Sparkles,
   Calendar,
@@ -172,38 +172,38 @@ export const CaseStudyView: React.FC = () => {
       />
 
       {/* STICKY TOP HUD CONTROLS */}
-      <header className="sticky top-0 left-0 right-0 z-30 flex items-center justify-between px-4 sm:px-8 py-3.5 bg-obsidian/85 backdrop-blur-2xl border-b border-white/10">
+      <header className="sticky top-0 left-0 right-0 z-30 flex items-center justify-between px-4 sm:px-8 py-2.5 bg-[#070814]/95 backdrop-blur-2xl border-b-2 border-[#2D3645]">
         {/* Return to Index */}
         <button
           ref={backButtonRef}
           type="button"
           onClick={closeCaseStudy}
           aria-label="Return to Project Index"
-          className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-alabaster hover:text-white font-mono text-xs font-semibold transition-all active:scale-95"
+          className="flex items-center gap-2 px-3 py-1.5 border-2 border-[#2D3645] bg-[#131629] hover:border-[#00F0FF] text-[#F0EFE6] hover:text-[#00F0FF] font-pixel text-[9px] transition-all active:scale-95"
         >
-          <ArrowLeft className="w-4 h-4 text-accent-coral" />
-          <span>Back to Projects</span>
-          <span className="hidden sm:inline text-[10px] text-muted ml-1">[ESC]</span>
+          <ArrowLeft className="w-3.5 h-3.5 text-[#00F0FF]" />
+          <span>&lt; PROJECTS</span>
+          <span className="hidden sm:inline text-[#8E98AA] ml-1">[ESC]</span>
         </button>
 
         {/* Center: Case Study Monogram & Slide Counter */}
-        <div className="flex items-center gap-2 font-mono text-xs">
-          <span className="text-accent-coral font-bold">{activeProject.number}</span>
-          <span className="text-white/20">/</span>
-          <span className="text-alabaster-dim">05</span>
-          <span className="text-white/20 hidden sm:inline">•</span>
-          <span className="text-alabaster-dim hidden sm:inline font-semibold uppercase tracking-wider">
+        <div className="flex items-center gap-2 font-pixel text-[10px]">
+          <span className="text-[#00F0FF] font-bold">{activeProject.number}</span>
+          <span className="text-[#2D3645]">/</span>
+          <span className="text-[#8E98AA]">05</span>
+          <span className="text-[#2D3645] hidden sm:inline">•</span>
+          <span className="text-[#F0EFE6] hidden sm:inline uppercase tracking-wider">
             {activeProject.title}
           </span>
         </div>
 
         {/* Right: Quick Action Controls (Prev/Next & Close) */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <button
             type="button"
             onClick={(e) => prevCaseStudy(e.currentTarget as HTMLElement)}
             aria-label="Navigate to previous project case study"
-            className="p-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-alabaster transition-all active:scale-95"
+            className="w-7 h-7 flex items-center justify-center border-2 border-[#2D3645] bg-[#131629] text-[#F0EFE6] hover:border-[#00F0FF] hover:text-[#00F0FF] transition-all active:scale-95"
             title="Previous project"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
@@ -212,20 +212,20 @@ export const CaseStudyView: React.FC = () => {
             type="button"
             onClick={(e) => nextCaseStudy(e.currentTarget as HTMLElement)}
             aria-label="Navigate to next project case study"
-            className="p-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-alabaster transition-all active:scale-95"
+            className="w-7 h-7 flex items-center justify-center border-2 border-[#2D3645] bg-[#131629] text-[#F0EFE6] hover:border-[#00F0FF] hover:text-[#00F0FF] transition-all active:scale-95"
             title="Next project"
           >
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
-          <div className="h-4 w-px bg-white/10 mx-1" />
+          <div className="h-4 w-px bg-[#2D3645] mx-1" />
           <button
             type="button"
             onClick={closeCaseStudy}
             aria-label="Close Case Study"
-            className="p-2 rounded-full bg-accent/20 hover:bg-accent text-accent-coral hover:text-alabaster border border-accent/30 transition-all active:scale-95"
+            className="w-7 h-7 flex items-center justify-center border-2 border-[#2D3645] bg-[#FF2A85] text-white hover:bg-red-600 font-pixel text-[10px] transition-all active:scale-95"
             title="Close"
           >
-            <X className="w-4 h-4" />
+            x
           </button>
         </div>
       </header>
@@ -339,9 +339,9 @@ export const CaseStudyView: React.FC = () => {
                     href={activeProject.liveUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent text-alabaster font-bold text-xs hover:bg-accent-coral transition-colors shadow-editorial-card"
+                    className="inline-flex items-center gap-1.5 px-3 py-1 border-2 border-[#2D3645] bg-[#131629] text-[#00F0FF] hover:border-[#00F0FF] font-pixel text-[9px] transition-colors"
                   >
-                    <span>Live Spec</span>
+                    <span>[ LIVE_SPEC ]</span>
                     <ExternalLink className="w-3 h-3" />
                   </a>
                 )}
@@ -349,7 +349,7 @@ export const CaseStudyView: React.FC = () => {
                   href={activeProject.githubUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="p-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-alabaster transition-colors"
+                  className="w-7 h-7 flex items-center justify-center border-2 border-[#2D3645] bg-[#131629] text-[#F0EFE6] hover:border-[#00F0FF] hover:text-[#00F0FF] transition-colors"
                   aria-label={`GitHub Repository for ${activeProject.title}`}
                   title="GitHub Repository"
                 >
@@ -368,9 +368,9 @@ export const CaseStudyView: React.FC = () => {
         {/* Narrative Section 1: Problem vs Solution Dual-Ledger */}
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Problem Block */}
-          <div className="case-narrative-anim narrative-block lg:col-span-6 p-6 sm:p-8 rounded-3xl bg-obsidian-card/90 border border-white/10 shadow-editorial-card space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/25 font-mono text-fluid-micro text-rose-400 font-semibold uppercase tracking-wider">
-              <AlertCircle className="w-3.5 h-3.5 text-rose-400" />
+          <div className="case-narrative-anim narrative-block lg:col-span-6 p-6 sm:p-8 border-2 border-[#2D3645] bg-[#131629] shadow-[0_0_20px_rgba(0,0,0,0.8)] space-y-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 border-2 border-[#FF2A85] bg-[#070814] font-pixel text-[9px] text-[#FF2A85] uppercase tracking-wider">
+              <AlertCircle className="w-3.5 h-3.5 text-[#FF2A85]" />
               <span>THE PROBLEM &amp; SYSTEM BOTTLENECK</span>
             </div>
 
@@ -382,8 +382,8 @@ export const CaseStudyView: React.FC = () => {
               {activeProject.problem.description}
             </p>
 
-            <div className="p-4 rounded-2xl bg-obsidian/80 border border-rose-500/20 font-mono text-xs text-rose-300">
-              <span className="font-bold text-rose-400 block mb-1 uppercase tracking-wider text-[10px]">
+            <div className="p-4 border-2 border-[#2D3645] bg-[#070814] font-mono text-xs text-[#FF2A85]">
+              <span className="font-pixel text-[9px] text-[#FF2A85] block mb-1 uppercase tracking-wider">
                 Critical Bottleneck Analysis:
               </span>
               {activeProject.problem.bottleneck}
@@ -391,9 +391,9 @@ export const CaseStudyView: React.FC = () => {
           </div>
 
           {/* Solution Block */}
-          <div className="case-narrative-anim narrative-block lg:col-span-6 p-6 sm:p-8 rounded-3xl bg-obsidian-card/90 border border-white/10 shadow-editorial-card space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 font-mono text-fluid-micro text-emerald-400 font-semibold uppercase tracking-wider">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+          <div className="case-narrative-anim narrative-block lg:col-span-6 p-6 sm:p-8 border-2 border-[#00F0FF] bg-[#131629] shadow-[0_0_25px_rgba(0,240,255,0.2)] space-y-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 border-2 border-[#4AF626] bg-[#0D1512] font-pixel text-[9px] text-[#4AF626] font-semibold uppercase tracking-wider">
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#4AF626]" />
               <span>ARCHITECTURAL RESOLUTION</span>
             </div>
 
@@ -407,13 +407,13 @@ export const CaseStudyView: React.FC = () => {
 
             {/* Architectural Mechanics List */}
             <div className="space-y-2 pt-2 border-t border-white/10">
-              <span className="font-mono text-fluid-micro text-muted uppercase tracking-wider block font-semibold">
+              <span className="font-mono text-fluid-micro text-[#00F0FF] uppercase tracking-wider block font-semibold">
                 Core Architectural Mechanics:
               </span>
               <ul className="space-y-2 font-mono text-xs text-alabaster-dim">
                 {activeProject.solution.architecture.map((item, idx) => (
                   <li key={idx} className="flex items-start gap-2">
-                    <span className="text-accent-coral mt-0.5">❯</span>
+                    <span className="text-[#00F0FF] mt-0.5">❯</span>
                     <span>{item}</span>
                   </li>
                 ))}
@@ -426,14 +426,14 @@ export const CaseStudyView: React.FC = () => {
         <section className="case-narrative-anim space-y-6">
           <div className="flex items-center justify-between border-b border-white/10 pb-4">
             <div>
-              <div className="font-mono text-fluid-micro text-accent-coral uppercase tracking-widest">
+              <div className="font-pixel text-[9px] text-[#00F0FF] uppercase tracking-widest">
                 QUANTIFIED VALIDATION // PRODUCTION METRICS
               </div>
               <h3 className="font-display font-black text-2xl sm:text-3xl text-alabaster uppercase tracking-tight">
                 Empirical Telemetry &amp; Impact
               </h3>
             </div>
-            <span className="font-mono text-fluid-micro text-muted hidden sm:inline">
+            <span className="font-pixel text-[8px] text-[#8E98AA] hidden sm:inline">
               100% Deterministic Benchmarks
             </span>
           </div>
@@ -442,12 +442,12 @@ export const CaseStudyView: React.FC = () => {
             {activeProject.impact.metrics.map((m, mIdx) => (
               <div
                 key={mIdx}
-                className="p-6 rounded-2xl bg-obsidian-surface/90 border border-white/10 shadow-editorial-card space-y-2 font-mono"
+                className="p-6 border-2 border-[#2D3645] bg-[#131629] shadow-[0_0_15px_rgba(0,0,0,0.6)] space-y-2 font-mono"
               >
-                <div className="text-fluid-micro text-muted uppercase tracking-widest">
+                <div className="text-fluid-micro text-[#8E98AA] font-pixel text-[8px] uppercase tracking-widest">
                   {m.label}
                 </div>
-                <div className="text-3xl sm:text-4xl font-black text-accent-coral font-display">
+                <div className="text-3xl sm:text-4xl font-black text-[#FFCC00] font-display">
                   {m.value}
                 </div>
                 <div className="text-fluid-micro text-alabaster-dim">{m.detail}</div>
@@ -463,34 +463,35 @@ export const CaseStudyView: React.FC = () => {
         {/* Narrative Section 3: Embedded Interactive Simulation Sandbox */}
         <section className="case-narrative-anim space-y-4">
           <div className="flex items-center justify-between border-b border-white/10 pb-3">
-            <div className="flex items-center gap-2 font-mono text-fluid-micro text-accent-coral uppercase tracking-wider">
-              <TerminalIcon className="w-4 h-4 text-accent-coral" />
+            <div className="flex items-center gap-2 font-pixel text-[9px] text-[#00F0FF] uppercase tracking-wider">
+              <TerminalIcon className="w-4 h-4 text-[#00F0FF]" />
               <span>LIVE INTERACTIVE SIMULATION SANDBOX</span>
             </div>
-            <span className="font-mono text-fluid-micro text-muted">
+            <span className="font-pixel text-[8px] text-[#8E98AA]">
               Interactive WebGL / Canvas / Telemetry
             </span>
           </div>
 
-          <div className="w-full min-h-[380px] sm:min-h-[440px] rounded-3xl overflow-hidden border border-white/15 bg-obsidian-surface shadow-editorial-elevated">
+          <div className="w-full min-h-[380px] sm:min-h-[440px] border-2 border-[#00F0FF] overflow-hidden bg-[#070814] shadow-[0_0_20px_rgba(0,240,255,0.2)]">
             {activeProject.previewType === 'mental-defrag' && <MentalDefragPreview />}
             {activeProject.previewType === 'doclens' && <DocLensBDPreview />}
             {activeProject.previewType === 'rannabanna' && <RannabannaPreview />}
             {activeProject.previewType === 'trash-trail' && <TrashTrailPreview />}
             {activeProject.previewType === 'neon-vanguard' && <NeonVanguardPreview />}
+            {activeProject.previewType === 'chronos-aether' && <ChronosAetherPreview />}
           </div>
         </section>
 
         {/* Narrative Section 4: Complete Technology Stack Badges */}
         <section className="case-narrative-anim space-y-4 pt-4 border-t border-white/10">
-          <div className="font-mono text-fluid-micro text-muted uppercase tracking-widest">
+          <div className="font-pixel text-[9px] text-[#8E98AA] uppercase tracking-widest">
             ENGINEERING STACK &amp; SPECIFICATIONS
           </div>
           <div className="flex flex-wrap gap-2 font-mono text-xs">
             {activeProject.techStack.map((tech) => (
               <span
                 key={tech}
-                className="px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-alabaster hover:border-accent-coral/50 transition-colors"
+                className="px-3 py-1.5 border-2 border-[#2D3645] bg-[#070814] text-[#00F0FF] hover:border-[#00F0FF] transition-colors"
               >
                 #{tech}
               </span>
@@ -503,12 +504,12 @@ export const CaseStudyView: React.FC = () => {
           "NEXT PROJECT" FOOTER (TRANSITIONS DIRECTLY INTO NEXT WORK ITEM)
          ========================================================================= */}
       {nextProject && (
-        <footer className="w-full border-t border-white/15 bg-gradient-to-t from-black via-obsidian-card to-obsidian py-16 sm:py-24">
+        <footer className="w-full border-t-2 border-[#2D3645] bg-gradient-to-t from-black via-[#131629] to-[#070814] py-16 sm:py-24">
           <div className="container mx-auto px-4 sm:px-6 lg:px-12 max-w-7xl">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-8">
               <div>
-                <span className="font-mono text-fluid-micro text-accent-coral uppercase tracking-widest flex items-center gap-2">
-                  <Compass className="w-4 h-4" />
+                <span className="font-pixel text-[9px] text-[#00F0FF] uppercase tracking-widest flex items-center gap-2">
+                  <Compass className="w-4 h-4 text-[#FF2A85]" />
                   <span>CONTINUE THE NARRATIVE</span>
                 </span>
                 <h4 className="font-display font-extrabold text-2xl sm:text-3xl text-alabaster uppercase tracking-tight mt-1">
@@ -516,8 +517,8 @@ export const CaseStudyView: React.FC = () => {
                 </h4>
               </div>
 
-              <div className="font-mono text-fluid-micro text-muted">
-                {nextProject.number} / 05 • Click to morph
+              <div className="font-pixel text-[9px] text-[#8E98AA]">
+                {nextProject.number} / {FLAGSHIP_PROJECTS.length.toString().padStart(2, '0')} • Click to morph
               </div>
             </div>
 
@@ -526,19 +527,19 @@ export const CaseStudyView: React.FC = () => {
               type="button"
               onClick={(e) => nextCaseStudy(e.currentTarget as HTMLElement)}
               aria-label={`Transition directly to next case study: ${nextProject.title}`}
-              className="next-case-study-btn group w-full p-8 sm:p-12 rounded-3xl bg-obsidian-surface hover:bg-carbon-elevated border border-white/15 hover:border-accent-coral/50 shadow-editorial-elevated transition-all duration-300 text-left flex flex-col md:flex-row md:items-center justify-between gap-6"
+              className="next-case-study-btn group w-full p-8 sm:p-12 border-2 border-[#2D3645] hover:border-[#00F0FF] bg-[#131629] shadow-[0_0_30px_rgba(0,0,0,0.8)] transition-all duration-300 text-left flex flex-col md:flex-row md:items-center justify-between gap-6"
             >
               <div className="space-y-3 max-w-2xl">
                 <div className="flex items-center gap-3">
-                  <span className="font-mono font-black text-xl text-accent-coral">
+                  <span className="font-mono font-black text-xl text-[#00F0FF]">
                     {nextProject.number}
                   </span>
-                  <span className="font-mono text-fluid-micro text-muted uppercase tracking-wider">
+                  <span className="font-pixel text-[9px] text-[#8E98AA] uppercase tracking-wider">
                     {nextProject.category}
                   </span>
                 </div>
 
-                <h3 className="font-display font-black text-3xl sm:text-5xl lg:text-6xl text-alabaster group-hover:text-accent-coral transition-colors uppercase tracking-tight">
+                <h3 className="font-display font-black text-3xl sm:text-5xl lg:text-6xl text-alabaster group-hover:text-[#00F0FF] transition-colors uppercase tracking-tight">
                   {nextProject.title}
                 </h3>
 
@@ -549,7 +550,7 @@ export const CaseStudyView: React.FC = () => {
 
               {/* Huge Morph Action Arrow */}
               <div className="flex items-center gap-4 shrink-0">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-accent/20 group-hover:bg-accent border border-accent/40 flex items-center justify-center text-accent-coral group-hover:text-alabaster transition-all group-hover:scale-110 shadow-editorial-card">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 border-2 border-[#2D3645] group-hover:border-[#00F0FF] bg-[#070814] group-hover:bg-[#131629] flex items-center justify-center text-[#00F0FF] transition-all group-hover:scale-105 shadow-[0_0_15px_rgba(0,240,255,0.2)]">
                   <ArrowRight className="w-7 h-7 sm:w-8 sm:h-8 transition-transform group-hover:translate-x-1" />
                 </div>
               </div>

@@ -125,8 +125,8 @@ export const SvgCurtain = forwardRef<SvgCurtainHandle, {}>((_props, ref) => {
       >
         <defs>
           <linearGradient id="curtainGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="var(--accent-rust, #A74024)" />
-            <stop offset="100%" stopColor="var(--bg-obsidian, #0A0A0A)" />
+            <stop offset="0%" stopColor="var(--tech-magenta-crest, #FF2A85)" />
+            <stop offset="100%" stopColor="var(--crt-void-bg, #070814)" />
           </linearGradient>
         </defs>
         <path
