@@ -4,6 +4,7 @@ uniform vec3 u_troughColor;
 uniform vec3 u_crestColor;
 uniform vec3 u_accentColor;
 uniform float u_paletteMorph;
+uniform float u_isLightMode;
 
 varying float v_elevation;
 varying vec2 v_uv;
@@ -41,6 +42,27 @@ void main() {
     finalColor = mix(finalColor, morphedFinal, clamp(u_paletteMorph, 0.0, 1.0));
   }
 
+  // DAYLIGHT_CAD // SYS.96 High-Contrast Blueprint Interpolation
+  if (u_isLightMode > 0.001) {
+    vec3 cobaltBlueprint = vec3(0.0, 0.3216, 1.0);
+    vec3 laserCrimson = vec3(0.851, 0.0157, 0.3216);
+    vec3 graphiteInk = vec3(0.102, 0.1137, 0.1412);
+    vec3 burntAmber = vec3(0.784, 0.353, 0.0);
+
+    vec3 lightBaseColor = mix(cobaltBlueprint, laserCrimson, mixStrength);
+    float intersectionDepth = smoothstep(0.25, -0.4, v_elevation);
+    lightBaseColor = mix(lightBaseColor, graphiteInk, intersectionDepth * 0.4);
+
+    vec3 lightFinal = mix(lightBaseColor, burntAmber, cursorGlow * 0.35);
+    finalColor = mix(finalColor, lightFinal, clamp(u_isLightMode, 0.0, 1.0));
+  }
+
+  // Alpha calibration: NormalBlending in light mode needs solid visibility
   gl_FragColor = vec4(finalColor, alpha * 0.9);
-  gl_FragColor.rgb = min(gl_FragColor.rgb, vec3(0.72));
+  if (u_isLightMode > 0.001) {
+    gl_FragColor.a = clamp(alpha * 1.35, 0.45, 0.96);
+  } else {
+    // Dark mode luminance safety clamp
+    gl_FragColor.rgb = min(gl_FragColor.rgb, vec3(0.72));
+  }
 }

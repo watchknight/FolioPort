@@ -13,6 +13,7 @@ import React, {
 } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useTheme } from '../context/ThemeContext';
 import { chiptuneAudio } from '../utils/chiptuneAudio';
 import { watchknightAudio } from '../audio/WatchknightAudioEngine';
 import {
@@ -75,6 +76,8 @@ const ShutterBottomBar: React.FC<{
   ledsRef,
   containerRef,
 }) => {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const [isHovered, setIsHovered] = useState(false);
   const [isOpening, setIsOpening] = useState(false);
 
@@ -240,11 +243,11 @@ const ShutterBottomBar: React.FC<{
             className="shutter-slat w-full transform-gpu"
             style={{
               height: '6px',
-              backgroundColor: '#131629',
-              borderTop: '1px solid rgba(0, 240, 255, 0.3)',
-              borderBottom: '1px solid #070814',
+              backgroundColor: isLight ? '#D8D2C5' : '#131629',
+              borderTop: isLight ? '1px solid rgba(255, 255, 255, 0.85)' : '1px solid rgba(0, 240, 255, 0.3)',
+              borderBottom: isLight ? '1px solid #1A1D24' : '1px solid #070814',
               transformOrigin: 'top center',
-              boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.08)',
+              boxShadow: isLight ? 'inset 0 1px 0 rgba(255, 255, 255, 0.95)' : 'inset 0 1px 0 rgba(255, 255, 255, 0.08)',
             }}
           />
         ))}
@@ -252,9 +255,13 @@ const ShutterBottomBar: React.FC<{
 
       {/* 2. Reinforced Bottom Locking Bar */}
       <div
-        className="shutter-lock-bar w-full h-[36px] px-3 sm:px-6 flex items-center justify-between border-t-2 border-b-2 border-[#2D3645] bg-[#0D1512] transition-colors"
+        className={`shutter-lock-bar w-full h-[36px] px-3 sm:px-6 flex items-center justify-between border-t-2 border-b-2 transition-colors ${
+          isLight
+            ? 'border-[#1A1D24] bg-[#D8D2C5]'
+            : 'border-[#2D3645] bg-[#0D1512]'
+        }`}
         style={{
-          boxShadow: '0 6px 16px rgba(0, 0, 0, 0.85)',
+          boxShadow: isLight ? '0 6px 16px rgba(26, 29, 36, 0.35)' : '0 6px 16px rgba(0, 0, 0, 0.85)',
         }}
       >
         {/* Left LED & Lock Status */}
@@ -270,10 +277,10 @@ const ShutterBottomBar: React.FC<{
                 : 'bg-[#4AF626] shadow-[0_0_8px_#4AF626]'
             }`}
           />
-          <span className={isOpening ? 'text-[#FFCC00] font-bold' : 'text-[#4AF626]'}>
+          <span className={isOpening ? 'text-[#FFCC00] font-bold' : (isLight ? 'text-[#007A33]' : 'text-[#4AF626]')}>
             {isOpening ? 'OPENING [▲]' : 'LOCKED [●]'}
           </span>
-          <span className="hidden md:inline text-white/35 font-pixel text-[8px]">
+          <span className={`hidden md:inline font-pixel text-[8px] ${isLight ? 'text-[#1A1D24]/60' : 'text-white/35'}`}>
             {`// BAY_${bayNumber} // ${title.toUpperCase().replace(/\s+/g, '_')}`}
           </span>
         </div>
@@ -286,7 +293,11 @@ const ShutterBottomBar: React.FC<{
               type="button"
               onClick={handlePrevBay}
               onMouseEnter={() => chiptuneAudio.playPixelTick()}
-              className="prev-bay-btn px-2.5 py-1 bg-[#131629] border border-[#2D3645] hover:border-[#00F0FF] text-[#D6CFC2] hover:text-[#00F0FF] font-pixel text-[8px] sm:text-[9px] transition-all flex items-center gap-1 active:translate-y-0.5"
+              className={`prev-bay-btn px-2.5 py-1 border font-pixel text-[8px] sm:text-[9px] transition-all flex items-center gap-1 active:translate-y-0.5 ${
+                isLight
+                  ? 'bg-[#FFFFFF] border-[#1A1D24]/30 hover:border-[#0052FF] text-[#3F4654] hover:text-[#0052FF]'
+                  : 'bg-[#131629] border-[#2D3645] hover:border-[#00F0FF] text-[#D6CFC2] hover:text-[#00F0FF]'
+              }`}
               aria-label="Scroll back to previous bay"
             >
               <span>[ ▼ PREV BAY ]</span>
@@ -302,14 +313,18 @@ const ShutterBottomBar: React.FC<{
             onMouseLeave={handleHoverEnd}
             onFocus={handleHoverStart}
             onBlur={handleHoverEnd}
-            className="quick-lift-btn relative px-3 sm:px-4 py-1.5 bg-[#131629] border-2 border-[#D6CFC2] border-b-[#2D3645] border-r-[#2D3645] text-[#00F0FF] hover:text-[#FFCC00] font-pixel text-[9px] sm:text-[10px] tracking-wider transition-all duration-150 active:translate-y-0.5 shadow-[2px_2px_0_0_#070814] flex items-center gap-2 group cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#00F0FF]"
+            className={`quick-lift-btn relative px-3 sm:px-4 py-1.5 font-pixel text-[9px] sm:text-[10px] tracking-wider transition-all duration-150 active:translate-y-0.5 flex items-center gap-2 group cursor-pointer focus:outline-none ${
+              isLight
+                ? 'bg-[#FFFFFF] border-2 border-[#1A1D24] text-[#0052FF] hover:text-[#C85A00] shadow-[2px_2px_0_0_#C8C1B4] focus:ring-1 focus:ring-[#0052FF]'
+                : 'bg-[#131629] border-2 border-[#D6CFC2] border-b-[#2D3645] border-r-[#2D3645] text-[#00F0FF] hover:text-[#FFCC00] shadow-[2px_2px_0_0_#070814] focus:ring-1 focus:ring-[#00F0FF]'
+            }`}
             aria-label={
               index < total - 1
                 ? `Lift shutter and unlock Bay ${nextBayNumber}`
                 : 'Return to top of deck'
             }
           >
-            <span className="text-[#4AF626] group-hover:text-[#FFCC00] transition-colors">▲</span>
+            <span className={isLight ? 'text-[#007A33] group-hover:text-[#C85A00] transition-colors' : 'text-[#4AF626] group-hover:text-[#FFCC00] transition-colors'}>▲</span>
             <span>
               {index < total - 1
                 ? `[ ▲ LIFT SHUTTER // UNLOCK BAY_${nextBayNumber} ▲ ]`
@@ -321,15 +336,21 @@ const ShutterBottomBar: React.FC<{
         {/* Right: Cyber-Hazard Diagonal Stripes & Right LED */}
         <div className="flex items-center gap-3">
           <div
-            className="hazard-stripes hidden sm:block w-20 md:w-32 h-3.5 border border-[#2D3645] transition-all"
+            className={`hazard-stripes hidden sm:block w-20 md:w-32 h-3.5 border transition-all ${
+              isLight ? 'border-[#1A1D24]' : 'border-[#2D3645]'
+            }`}
             style={{
-              background: isHovered
+              background: isLight
+                ? isHovered
+                  ? 'repeating-linear-gradient(-45deg, #C85A00, #C85A00 6px, #1A1D24 6px, #1A1D24 12px)'
+                  : 'repeating-linear-gradient(-45deg, #0052FF, #0052FF 6px, #1A1D24 6px, #1A1D24 12px)'
+                : isHovered
                 ? 'repeating-linear-gradient(-45deg, #FFCC00, #FFCC00 6px, #070814 6px, #070814 12px)'
                 : 'repeating-linear-gradient(-45deg, #00F0FF, #00F0FF 6px, #070814 6px, #070814 12px)',
             }}
           />
           <div className="flex items-center gap-2 font-mono text-[9px] sm:text-[10px]">
-            <span className={`hidden sm:inline ${isOpening ? 'text-[#FFCC00] font-bold' : 'text-[#4AF626]'}`}>
+            <span className={`hidden sm:inline ${isOpening ? 'text-[#FFCC00] font-bold' : (isLight ? 'text-[#007A33]' : 'text-[#4AF626]')}`}>
               {isOpening ? 'OPENING [▲]' : 'LOCKED [●]'}
             </span>
             <span
@@ -395,6 +416,8 @@ export const ShutterLayer: React.FC<ShutterLayerProps> = ({
   const hudTagRef = useRef<HTMLDivElement | null>(null);
 
   const context = useContext(ShutterDeckContext);
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const activeSectorCode = sectorCode || String(index + 1).padStart(2, '0');
   const fullTag = formatSectorTag(activeSectorCode, title);
   const isFirstSector = index === 0;
@@ -506,10 +529,12 @@ export const ShutterLayer: React.FC<ShutterLayerProps> = ({
         ref={innerRef}
         className="shutter-inner w-full transform-gpu relative flex flex-col"
         style={{
-          boxShadow:
-            '0 36px 70px rgba(0, 0, 0, 0.95), 0 4px 20px rgba(0, 240, 255, 0.18)',
-          background:
-            'linear-gradient(180deg, rgba(7, 8, 20, 0.90) 0%, rgba(13, 21, 18, 0.94) 100%)',
+          boxShadow: isLight
+            ? '0 36px 70px rgba(0, 0, 0, 0.15), 0 4px 20px rgba(0, 82, 255, 0.12)'
+            : '0 36px 70px rgba(0, 0, 0, 0.95), 0 4px 20px rgba(0, 240, 255, 0.18)',
+          background: isLight
+            ? 'linear-gradient(180deg, rgba(242, 239, 233, 0.90) 0%, rgba(230, 225, 214, 0.94) 100%)'
+            : 'linear-gradient(180deg, rgba(7, 8, 20, 0.90) 0%, rgba(13, 21, 18, 0.94) 100%)',
           backdropFilter: 'blur(8px)',
           WebkitBackdropFilter: 'blur(8px)',
         }}
@@ -521,28 +546,45 @@ export const ShutterLayer: React.FC<ShutterLayerProps> = ({
             aria-hidden="true"
           >
             {/* 2px glowing cyan/magenta electron beam */}
-            <div className="relative w-full h-[2px] bg-[#0D1512] overflow-hidden">
+            <div className={`relative w-full h-[2px] overflow-hidden ${isLight ? 'bg-[#D8D2C5]' : 'bg-[#0D1512]'}`}>
               <div
                 ref={beamRef}
-                className="crt-hsync-beam h-[2px] w-full transform-gpu bg-gradient-to-r from-[#00F0FF] via-[#FF2A85] to-[#4AF626]"
+                className={`crt-hsync-beam h-[2px] w-full transform-gpu ${
+                  isLight
+                    ? 'bg-gradient-to-r from-[#0052FF] via-[#D90452] to-[#007A33]'
+                    : 'bg-gradient-to-r from-[#00F0FF] via-[#FF2A85] to-[#4AF626]'
+                }`}
                 style={{
                   transformOrigin: 'left center',
                   transform: 'scaleX(0)',
-                  boxShadow:
-                    '0 0 10px #00F0FF, 0 0 20px #FF2A85, 0 0 30px #4AF626, inset 0 0 4px #FFFFFF',
+                  boxShadow: isLight
+                    ? '0 0 10px #0052FF, 0 0 20px #D90452, 0 0 30px #007A33, inset 0 0 4px #FFFFFF'
+                    : '0 0 10px #00F0FF, 0 0 20px #FF2A85, 0 0 30px #4AF626, inset 0 0 4px #FFFFFF',
                 }}
               />
             </div>
 
             {/* Monospace HUD Telemetry Readout */}
-            <div className="crt-hsync-hud mt-2 flex items-center justify-between font-mono text-[9px] sm:text-[10px] tracking-wider text-[#00F0FF]">
-              <div className="inline-flex items-center gap-2 px-2.5 py-0.5 bg-[#0D1512]/95 border border-[#00F0FF]/40 shadow-[0_0_10px_rgba(0,240,255,0.25)] text-[#00F0FF] font-mono tracking-wider font-semibold backdrop-blur-md">
-                <span className="w-1.5 h-1.5 bg-[#4AF626] rounded-full animate-pulse shrink-0" />
+            <div className={`crt-hsync-hud mt-2 flex items-center justify-between font-mono text-[9px] sm:text-[10px] tracking-wider ${
+              isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'
+            }`}>
+              <div className={`inline-flex items-center gap-2 px-2.5 py-0.5 font-mono tracking-wider font-semibold backdrop-blur-md ${
+                isLight
+                  ? 'bg-[#FFFFFF]/95 border border-[#0052FF]/40 shadow-[2px_2px_0_0_#C8C1B4] text-[#0052FF]'
+                  : 'bg-[#0D1512]/95 border border-[#00F0FF]/40 shadow-[0_0_10px_rgba(0,240,255,0.25)] text-[#00F0FF]'
+              }`}>
+                <span className={`w-1.5 h-1.5 rounded-full animate-pulse shrink-0 ${
+                  isLight ? 'bg-[#007A33]' : 'bg-[#4AF626]'
+                }`} />
                 <span ref={hudTagRef}>{initialTelemetry}</span>
               </div>
 
-              <div className="text-[#FF2A85] font-pixel text-[8px] tracking-tight hidden sm:flex items-center gap-1.5 opacity-80">
-                <span className="w-1.5 h-1.5 bg-[#FF2A85] rounded-full animate-ping" />
+              <div className={`font-pixel text-[8px] tracking-tight hidden sm:flex items-center gap-1.5 opacity-80 ${
+                isLight ? 'text-[#D90452]' : 'text-[#FF2A85]'
+              }`}>
+                <span className={`w-1.5 h-1.5 rounded-full animate-ping ${
+                  isLight ? 'bg-[#D90452]' : 'bg-[#FF2A85]'
+                }`} />
                 <span>H-SYNC: 15.734 kHz // ELECTRON_BEAM_ACTIVE</span>
               </div>
             </div>

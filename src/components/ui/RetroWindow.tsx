@@ -63,6 +63,11 @@ export const RetroWindow: React.FC<RetroWindowProps> = ({
       className={`relative bg-[#131629] text-[#F0EFE6] transition-all duration-200 ${borderStyles[variant]} ${
         isMaximized ? 'fixed inset-4 z-50 overflow-auto' : ''
       } ${className}`}
+      style={{
+        backgroundColor: 'var(--crt-panel-slate, #131629)',
+        color: 'var(--pixel-ivory-text, #F0EFE6)',
+        ...props.style,
+      }}
       {...props}
     >
       {/* 90s Titlebar with controls and dotted drag handle */}
@@ -121,14 +126,14 @@ export const RetroWindow: React.FC<RetroWindowProps> = ({
 
       {/* Window Body */}
       {!isMinimized && (
-        <div className={`relative bg-[#0D1512]/90 p-4 sm:p-5 ${bodyClassName}`}>
+        <div className={`relative ${bodyClassName.includes('bg-') ? '' : 'bg-[var(--crt-phosphor-dark,#0D1512)]'} p-4 sm:p-5 ${bodyClassName}`}>
           {children}
         </div>
       )}
 
       {/* Optional 90s Status Bar */}
       {statusBar && !isMinimized && (
-        <div className="flex items-center justify-between px-3 py-1 bg-[#131629] border-t-2 border-[#2D3645] text-[10px] font-mono text-[#8E98AA]">
+        <div className="flex items-center justify-between px-3 py-1 bg-[var(--crt-panel-slate,#131629)] border-t-2 border-[var(--crt-bezel-shadow,#2D3645)] text-[10px] font-mono text-[var(--text-secondary,#8E98AA)]">
           {statusBar}
         </div>
       )}

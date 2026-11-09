@@ -7,6 +7,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useTransition } from '../context/TransitionContext';
+import { useTheme } from '../context/ThemeContext';
 import { watchknightAudio } from '../audio/WatchknightAudioEngine';
 import { chiptuneAudio } from '../utils/chiptuneAudio';
 import { GithubIcon } from './ui/Icons';
@@ -1477,6 +1478,8 @@ export const generateParticleFormation = (projectIndex: number, count: number): 
 
 export const ProjectsShowcase: React.FC = () => {
   const { openCaseStudy } = useTransition();
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
 
   const sectionRef = useRef<HTMLElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -1504,6 +1507,10 @@ export const ProjectsShowcase: React.FC = () => {
   const sceneRef = useRef<THREE.Scene | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const keyLightRef = useRef<THREE.DirectionalLight | null>(null);
+  const fillLightRef = useRef<THREE.DirectionalLight | null>(null);
+  const ambLightRef = useRef<THREE.AmbientLight | null>(null);
+  const pointAccentRef = useRef<THREE.PointLight | null>(null);
   const composerRef = useRef<EffectComposer | null>(null);
   const renderPassRef = useRef<RenderPass | null>(null);
   const pixelatedPassRef = useRef<RenderPixelatedPass | null>(null);
@@ -1833,28 +1840,32 @@ export const ProjectsShowcase: React.FC = () => {
     cameraRef.current = camera;
 
     // 4. Studio Illumination (Calibrated to prevent blown-out bloom)
-    const ambLight = new THREE.AmbientLight(0xffffff, 0.5);
+    const ambLight = new THREE.AmbientLight(0xffffff, isLight ? 0.8 : 0.5);
     scene.add(ambLight);
+    ambLightRef.current = ambLight;
 
-    const keyLight = new THREE.DirectionalLight(0x00F0FF, 1.6);
+    const keyLight = new THREE.DirectionalLight(isLight ? 0x0052FF : 0x00F0FF, isLight ? 1.4 : 1.6);
     keyLight.position.set(4, 5, 4);
     scene.add(keyLight);
+    keyLightRef.current = keyLight;
 
-    const fillLight = new THREE.DirectionalLight(0xFF2A85, 1.2);
+    const fillLight = new THREE.DirectionalLight(isLight ? 0xD90452 : 0xFF2A85, isLight ? 1.0 : 1.2);
     fillLight.position.set(-4, -3, -3);
     scene.add(fillLight);
+    fillLightRef.current = fillLight;
 
-    const pointAccent = new THREE.PointLight(0x4AF626, 1.5, 10);
+    const pointAccent = new THREE.PointLight(isLight ? 0x007A33 : 0x4AF626, 1.5, 10);
     pointAccent.position.set(0, 2, 3);
     scene.add(pointAccent);
+    pointAccentRef.current = pointAccent;
 
     // 5. Build Materials for All 6 Passes
     const beautyUniforms = {
       uTime: { value: 0 },
       uMouse: { value: new THREE.Vector2(0, 0) },
       uRipple: { value: 0 },
-      uRimColor: { value: new THREE.Color(0x00F0FF) },
-      uBaseCore: { value: new THREE.Color(0x070814) },
+      uRimColor: { value: new THREE.Color(isLight ? 0x0052FF : 0x00F0FF) },
+      uBaseCore: { value: new THREE.Color(isLight ? 0x181B24 : 0x070814) },
     };
     beautyUniformsRef.current = beautyUniforms;
 
@@ -1932,7 +1943,7 @@ export const ProjectsShowcase: React.FC = () => {
     });
 
     const wireframeMaterial = new THREE.MeshBasicMaterial({
-      color: 0x00F0FF,
+      color: isLight ? 0x0052FF : 0x00F0FF,
       wireframe: true,
     });
 
@@ -2028,10 +2039,10 @@ export const ProjectsShowcase: React.FC = () => {
     // [01] Mental Defrag: Multi-layered geometric hologram (Dark obsidian core, cyan/magenta cage, vertex cloud & orbital nodes)
     const g01 = new THREE.Group();
 
-    // Dark translucent obsidian core (#070814, opacity: 0.8) with sharp 3D facets
+    // Dark translucent obsidian core (#070814 in dark, #181B24 in light, opacity: 0.8) with sharp 3D facets
     const geom01 = new THREE.IcosahedronGeometry(1.2, 0);
     const coreMat01 = new THREE.MeshStandardMaterial({
-      color: 0x070814,
+      color: isLight ? 0x181B24 : 0x070814,
       roughness: 0.15,
       metalness: 0.85,
       transparent: true,
@@ -2042,10 +2053,10 @@ export const ProjectsShowcase: React.FC = () => {
     registerMesh(m01, true);
     g01.add(m01);
 
-    // Outer cyan wireframe cage
+    // Outer cyan/cobalt wireframe cage
     const cageGeom01 = new THREE.IcosahedronGeometry(1.38, 0);
     const cageMat01 = new THREE.MeshBasicMaterial({
-      color: 0x00F0FF,
+      color: isLight ? 0x0052FF : 0x00F0FF,
       wireframe: true,
       transparent: true,
       opacity: 0.8,
@@ -2055,10 +2066,10 @@ export const ProjectsShowcase: React.FC = () => {
     cage01.userData = { originalMaterial: cageMat01, isCage: true };
     g01.add(cage01);
 
-    // Outer magenta gimbal ring
+    // Outer magenta/crimson gimbal ring
     const gimbalGeom01 = new THREE.TorusGeometry(1.65, 0.015, 16, 64);
     const gimbalMat01 = new THREE.MeshBasicMaterial({
-      color: 0xFF2A85,
+      color: isLight ? 0xD90452 : 0xFF2A85,
       transparent: true,
       opacity: 0.85,
     });
@@ -2072,11 +2083,11 @@ export const ProjectsShowcase: React.FC = () => {
     // Outer vertex cloud around facets
     const cloudGeom01 = new THREE.IcosahedronGeometry(1.5, 1);
     const cloudMat01 = new THREE.PointsMaterial({
-      color: 0xFF2A85,
+      color: isLight ? 0xD90452 : 0xFF2A85,
       size: 0.045,
       transparent: true,
       opacity: 0.9,
-      blending: THREE.AdditiveBlending,
+      blending: isLight ? THREE.NormalBlending : THREE.AdditiveBlending,
     });
     const cloud01 = new THREE.Points(cloudGeom01, cloudMat01);
     cloud01.frustumCulled = false;
@@ -2086,7 +2097,7 @@ export const ProjectsShowcase: React.FC = () => {
     for (let i = 0; i < 6; i++) {
       const angle = (i / 6) * Math.PI * 2;
       const satelliteGeom = new THREE.BoxGeometry(0.2, 0.2, 0.2);
-      const satMat = new THREE.MeshBasicMaterial({ color: 0x00F0FF, wireframe: true });
+      const satMat = new THREE.MeshBasicMaterial({ color: isLight ? 0x0052FF : 0x00F0FF, wireframe: true });
       const sat = new THREE.Mesh(satelliteGeom, satMat);
       registerMesh(sat, false);
       sat.position.set(Math.cos(angle) * 2.1, Math.sin(angle * 2) * 0.8, Math.sin(angle) * 2.1);
@@ -2212,8 +2223,8 @@ export const ProjectsShowcase: React.FC = () => {
       uMorphProgress: { value: 1.0 },
       uMouse: { value: new THREE.Vector2(0, 0) },
       uRipple: { value: 0 },
-      uColorA: { value: new THREE.Color(0x00F0FF) },
-      uColorB: { value: new THREE.Color(0x00F0FF) },
+      uColorA: { value: new THREE.Color(isLight ? 0x0052FF : 0x00F0FF) },
+      uColorB: { value: new THREE.Color(isLight ? 0xD90452 : 0x00F0FF) },
     };
     particleUniformsRef.current = particleUniforms;
 
@@ -2268,7 +2279,7 @@ export const ProjectsShowcase: React.FC = () => {
         }
       `,
       transparent: true,
-      blending: THREE.AdditiveBlending,
+      blending: isLight ? THREE.NormalBlending : THREE.AdditiveBlending,
       depthWrite: false,
     });
 
@@ -2415,6 +2426,94 @@ export const ProjectsShowcase: React.FC = () => {
     };
   }, []);
 
+  // Synchronize Three.js Hologram materials & lighting with global theme
+  useEffect(() => {
+    const isLightMode = theme === 'light';
+    if (keyLightRef.current) {
+      keyLightRef.current.color.setHex(isLightMode ? 0x0052FF : 0x00F0FF);
+      keyLightRef.current.intensity = isLightMode ? 1.4 : 1.6;
+    }
+    if (fillLightRef.current) {
+      fillLightRef.current.color.setHex(isLightMode ? 0xD90452 : 0xFF2A85);
+      fillLightRef.current.intensity = isLightMode ? 1.0 : 1.2;
+    }
+    if (ambLightRef.current) {
+      ambLightRef.current.intensity = isLightMode ? 0.8 : 0.5;
+    }
+    if (pointAccentRef.current) {
+      pointAccentRef.current.color.setHex(isLightMode ? 0x007A33 : 0x4AF626);
+    }
+    if (beautyUniformsRef.current) {
+      gsap.to(beautyUniformsRef.current.uBaseCore.value, {
+        r: isLightMode ? 0x18 / 255 : 0x07 / 255,
+        g: isLightMode ? 0x1b / 255 : 0x08 / 255,
+        b: isLightMode ? 0x24 / 255 : 0x14 / 255,
+        duration: 0.45,
+      });
+      gsap.to(beautyUniformsRef.current.uRimColor.value, {
+        r: isLightMode ? 0x00 : 0x00,
+        g: isLightMode ? 0x52 / 255 : 0xf0 / 255,
+        b: 1.0,
+        duration: 0.45,
+      });
+    }
+    if (particleUniformsRef.current) {
+      gsap.to(particleUniformsRef.current.uColorA.value, {
+        r: isLightMode ? 0x00 : 0x00,
+        g: isLightMode ? 0x52 / 255 : 0xf0 / 255,
+        b: 1.0,
+        duration: 0.45,
+      });
+      gsap.to(particleUniformsRef.current.uColorB.value, {
+        r: isLightMode ? 0xd9 / 255 : 0.0,
+        g: isLightMode ? 0x04 / 255 : 0xf0 / 255,
+        b: isLightMode ? 0x52 / 255 : 1.0,
+        duration: 0.45,
+      });
+    }
+    if (particleSystemRef.current?.material && particleSystemRef.current.material instanceof THREE.Material) {
+      particleSystemRef.current.material.blending = isLightMode ? THREE.NormalBlending : THREE.AdditiveBlending;
+      particleSystemRef.current.material.needsUpdate = true;
+    }
+    if (materialsRef.current?.wireframe instanceof THREE.MeshBasicMaterial) {
+      materialsRef.current.wireframe.color.setHex(isLightMode ? 0x0052FF : 0x00F0FF);
+    }
+    if (materialsRef.current?.pixel instanceof THREE.MeshStandardMaterial) {
+      materialsRef.current.pixel.color.setHex(isLightMode ? 0x0052FF : 0x00F0FF);
+    }
+    // Update core meshes, wireframe cages, and particle clouds in the 6 meshes
+    projectMeshesRef.current.forEach((group) => {
+      group.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          if (child.name === 'project-core-mesh' && child.material instanceof THREE.MeshStandardMaterial) {
+            child.material.color.setHex(isLightMode ? 0x181B24 : 0x070814);
+          } else if (child.name === 'project-gimbal-mesh' && child.material instanceof THREE.MeshBasicMaterial) {
+            child.material.color.setHex(isLightMode ? 0xD90452 : 0xFF2A85);
+          } else if (child.material instanceof THREE.MeshBasicMaterial) {
+            const hex = child.material.color.getHex();
+            if (isLightMode) {
+              if (hex === 0x00F0FF || hex === 0x0052FF) {
+                child.material.color.setHex(0x0052FF);
+              } else if (hex === 0xFF2A85 || hex === 0xD90452) {
+                child.material.color.setHex(0xD90452);
+              }
+            } else {
+              if (hex === 0x0052FF || hex === 0x00F0FF) {
+                child.material.color.setHex(0x00F0FF);
+              } else if (hex === 0xD90452 || hex === 0xFF2A85) {
+                child.material.color.setHex(0xFF2A85);
+              }
+            }
+          }
+        } else if (child instanceof THREE.Points && child.material instanceof THREE.PointsMaterial) {
+          child.material.color.setHex(isLightMode ? 0xD90452 : 0xFF2A85);
+          child.material.blending = isLightMode ? THREE.NormalBlending : THREE.AdditiveBlending;
+          child.material.needsUpdate = true;
+        }
+      });
+    });
+  }, [theme]);
+
   // --------------------------------------------------------------------------
   // POINTER TRACKING ON VIEWPORT
   // --------------------------------------------------------------------------
@@ -2487,7 +2586,11 @@ export const ProjectsShowcase: React.FC = () => {
   return (
     <section
       ref={sectionRef}
-      className="projects-showcase relative bg-[#070814] text-[#F0EFE6] py-12 sm:py-16 overflow-hidden select-none font-mono"
+      className="projects-showcase relative bg-[#070814] text-[#F0EFE6] py-12 sm:py-16 overflow-hidden select-none font-mono transition-colors duration-300"
+      style={{
+        backgroundColor: 'var(--crt-void-bg, #070814)',
+        color: 'var(--pixel-ivory-text, #F0EFE6)',
+      }}
       aria-label="Unified Flagship Work Showcase & 3D Hologram Inspector"
     >
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -2542,11 +2645,13 @@ export const ProjectsShowcase: React.FC = () => {
           {/* ZONE 1 (LEFT): RETRO 90s BRACKET & ROM CARTRIDGE INDEX           */}
           {/* ---------------------------------------------------------------- */}
           <div className="lg:col-span-6 flex flex-col space-y-3">
-            <div className="flex items-center justify-between px-2 py-1 bg-[#131629] border border-[#2D3645] text-[10px]">
-              <span className="text-[#00F0FF] font-bold font-pixel">
+            <div className={`flex items-center justify-between px-2 py-1 border text-[10px] ${
+              isLight ? 'bg-[#FFFFFF] border-[#1A1D24]/20' : 'bg-[#131629] border-[#2D3645]'
+            }`}>
+              <span className={`font-bold font-pixel ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'}`}>
                 ROM SLOTS [01 - 06] // LOADED
               </span>
-              <span className="text-[#8E98AA]">CLICK TO ENGAGE WORKSPACE</span>
+              <span className={isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'}>CLICK TO ENGAGE WORKSPACE</span>
             </div>
 
             <div className="space-y-2">
@@ -2577,7 +2682,11 @@ export const ProjectsShowcase: React.FC = () => {
                     aria-pressed={isActive}
                     className={`group w-full p-3 transition-all duration-200 border-2 cursor-pointer ${
                       isActive
-                        ? 'bg-[#0D1512] border-[#00F0FF] shadow-[0_0_12px_rgba(0,240,255,0.25)]'
+                        ? isLight
+                          ? 'bg-[#FFFFFF] border-[#0052FF] shadow-[0_0_12px_rgba(0,82,255,0.25)]'
+                          : 'bg-[#0D1512] border-[#00F0FF] shadow-[0_0_12px_rgba(0,240,255,0.25)]'
+                        : isLight
+                        ? 'bg-[#FAF8F5] border-[#1A1D24]/20 hover:border-[#0052FF] hover:bg-[#FFFFFF]'
                         : 'bg-[#131629]/90 border-[#2D3645] hover:border-[#D6CFC2] hover:bg-[#131629]'
                     }`}
                   >
@@ -2586,56 +2695,68 @@ export const ProjectsShowcase: React.FC = () => {
                       
                       {/* Col 1-5: Pixel Index Bracket + Project Title */}
                       <div className="sm:col-span-12 lg:col-span-5 flex items-center gap-2.5 min-w-0">
-                        <span className={`font-pixel text-xs shrink-0 ${isActive ? 'text-[#00F0FF]' : 'text-[#8E98AA]'}`}>
+                        <span className={`font-pixel text-xs shrink-0 ${
+                          isActive
+                            ? isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'
+                            : isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'
+                        }`}>
                           [{project.number}]
                         </span>
-                        <h3 className={`font-bold text-sm tracking-tight leading-snug break-words ${isActive ? 'text-[#F0EFE6]' : 'text-[#8E98AA] group-hover:text-[#F0EFE6]'}`}>
+                        <h3 className={`font-bold text-sm tracking-tight leading-snug break-words ${
+                          isActive
+                            ? isLight ? 'text-[#11131A]' : 'text-[#F0EFE6]'
+                            : isLight ? 'text-[#3F4654] group-hover:text-[#11131A]' : 'text-[#8E98AA] group-hover:text-[#F0EFE6]'
+                        }`}>
                           {project.title}
                         </h3>
                       </div>
 
                       {/* Col 6-8: Role */}
                       <div className="hidden sm:block sm:col-span-4 lg:col-span-3 min-w-0">
-                        <span className="block text-[8px] text-[#8E98AA] uppercase tracking-wider">Role</span>
-                        <span className="text-[11px] text-[#D6CFC2] leading-tight block break-words">
+                        <span className={`block text-[8px] uppercase tracking-wider ${isLight ? 'text-[#3F4654]/70' : 'text-[#8E98AA]'}`}>Role</span>
+                        <span className={`text-[11px] leading-tight block break-words ${isLight ? 'text-[#3F4654]' : 'text-[#D6CFC2]'}`}>
                           {project.role}
                         </span>
                       </div>
 
                       {/* Col 9-10: Services / Stack */}
                       <div className="hidden md:block sm:col-span-4 md:col-span-4 lg:col-span-2 min-w-0">
-                        <span className="block text-[8px] text-[#8E98AA] uppercase tracking-wider">Stack</span>
-                        <span className="text-[11px] text-[#00F0FF] leading-tight block break-words">
+                        <span className={`block text-[8px] uppercase tracking-wider ${isLight ? 'text-[#3F4654]/70' : 'text-[#8E98AA]'}`}>Stack</span>
+                        <span className={`text-[11px] leading-tight block break-words ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'}`}>
                           {project.coreStack}
                         </span>
                       </div>
 
                       {/* Col 11: Year */}
                       <div className="hidden sm:block sm:col-span-2 md:col-span-2 lg:col-span-1 min-w-0">
-                        <span className="block text-[8px] text-[#8E98AA] uppercase tracking-wider">Year</span>
-                        <span className="text-[11px] text-[#F0EFE6]">{project.year}</span>
+                        <span className={`block text-[8px] uppercase tracking-wider ${isLight ? 'text-[#3F4654]/70' : 'text-[#8E98AA]'}`}>Year</span>
+                        <span className={`text-[11px] ${isLight ? 'text-[#11131A]' : 'text-[#F0EFE6]'}`}>{project.year}</span>
                       </div>
 
                       {/* Col 12: Action Trigger */}
                       <div className="flex sm:hidden lg:flex items-center justify-between sm:justify-end gap-2 sm:col-span-2 md:col-span-2 lg:col-span-1 shrink-0">
-                        <span className={`w-2 h-2 rounded-full ${isActive ? 'bg-[#4AF626] animate-pulse' : 'bg-[#2D3645]'}`} />
-                        <ChevronRight className={`w-3.5 h-3.5 ${isActive ? 'text-[#00F0FF] translate-x-0.5' : 'text-[#8E98AA]'}`} />
+                        <span className={`w-2 h-2 rounded-full ${isActive ? (isLight ? 'bg-[#007A33] animate-pulse' : 'bg-[#4AF626] animate-pulse') : (isLight ? 'bg-[#C8C1B4]' : 'bg-[#2D3645]')}`} />
+                        <ChevronRight className={`w-3.5 h-3.5 ${isActive ? (isLight ? 'text-[#0052FF] translate-x-0.5' : 'text-[#00F0FF] translate-x-0.5') : (isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]')}`} />
                       </div>
                     </div>
 
                     {/* ROM Cartridge Telemetry Sub-bar */}
-                    <div className="mt-2.5 pt-2 border-t border-[#2D3645] flex items-center justify-between text-[10px]">
+                    <div className={`mt-2.5 pt-2 border-t flex items-center justify-between text-[10px] ${
+                      isLight ? 'border-[#1A1D24]/15' : 'border-[#2D3645]'
+                    }`}>
                       <div className="flex items-center gap-2">
                         <span className={`px-1.5 py-0.5 text-[8px] font-bold ${
-                          isActive ? 'bg-[#00F0FF] text-[#070814]' : 'bg-[#070814] text-[#8E98AA] border border-[#2D3645]'
+                          isActive
+                            ? isLight ? 'bg-[#0052FF] text-[#FFFFFF]' : 'bg-[#00F0FF] text-[#070814]'
+                            : isLight ? 'bg-[#EDE8DE] text-[#3F4654] border border-[#1A1D24]/20' : 'bg-[#070814] text-[#8E98AA] border border-[#2D3645]'
                         }`}>
                           {isActive ? 'ROM: ENGAGED' : 'ROM: READY'}
                         </span>
-                        <span className="text-[#8E98AA]">
-                          p99: <span className="text-[#FFCC00] font-bold">{project.p99Latency}</span>
+                        <span className={isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'}>
+                          p99: <span className={`font-bold ${isLight ? 'text-[#C85A00]' : 'text-[#FFCC00]'}`}>{project.p99Latency}</span>
                         </span>
-                        <span className="text-[#8E98AA] hidden sm:inline">
-                          • <span className="text-[#4AF626]">{project.fpsMetric}</span>
+                        <span className={`${isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'} hidden sm:inline`}>
+                          • <span className={isLight ? 'text-[#007A33]' : 'text-[#4AF626]'}>{project.fpsMetric}</span>
                         </span>
                       </div>
 
@@ -2645,7 +2766,11 @@ export const ProjectsShowcase: React.FC = () => {
                           e.stopPropagation();
                           openDossierForProject(idx);
                         }}
-                        className="px-2 py-0.5 bg-[#131629] hover:bg-[#00F0FF]/20 text-[#00F0FF] border border-[#00F0FF]/40 text-[9px] font-pixel transition-all"
+                        className={`px-2 py-0.5 text-[9px] font-pixel transition-all border ${
+                          isLight
+                            ? 'bg-[#FFFFFF] hover:bg-[#0052FF]/10 text-[#0052FF] border-[#0052FF]/40'
+                            : 'bg-[#131629] hover:bg-[#00F0FF]/20 text-[#00F0FF] border border-[#00F0FF]/40'
+                        }`}
                       >
                         [ INSPECT ARCHITECTURE ]
                       </button>
@@ -2662,31 +2787,43 @@ export const ProjectsShowcase: React.FC = () => {
           <div id="render-pass-inspector" className="lg:col-span-6 flex flex-col space-y-3 lg:sticky lg:top-20 self-start">
             
             {/* Viewport Outer Frame */}
-            <div className="w-full border-2 border-[#D6CFC2] border-b-[#2D3645] border-r-[#2D3645] bg-[#0D1512] overflow-hidden flex flex-col">
+            <div className={`w-full border-2 overflow-hidden flex flex-col ${
+              isLight
+                ? 'border-[#1A1D24] bg-[#FAF8F5] shadow-[4px_4px_0_0_#C8C1B4]'
+                : 'border-[#D6CFC2] border-b-[#2D3645] border-r-[#2D3645] bg-[#0D1512]'
+            }`}>
               
               {/* Bezel Titlebar with Live Telemetry */}
-              <div className="flex items-center justify-between px-3 py-1.5 bg-[#D6CFC2] text-[#070814] font-bold text-[10px]">
+              <div className={`flex items-center justify-between px-3 py-1.5 font-bold text-[10px] ${
+                isLight ? 'bg-[#D8D2C5] text-[#11131A]' : 'bg-[#D6CFC2] text-[#070814]'
+              }`}>
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#FF2A85] animate-ping" />
+                  <span className={`w-2 h-2 rounded-full animate-ping ${isLight ? 'bg-[#D90452]' : 'bg-[#FF2A85]'}`} />
                   <span className="font-pixel">
                     HOLO_VIEWPORT // [{activeProject.number}] {activeProject.title.toUpperCase()}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 font-mono">
-                  <span ref={fpsRef} className="px-1.5 py-0.5 bg-[#070814] text-[#4AF626] border border-[#2D3645]">
+                  <span ref={fpsRef} className={`px-1.5 py-0.5 border ${
+                    isLight ? 'bg-[#FFFFFF] text-[#007A33] border-[#1A1D24]/20' : 'bg-[#070814] text-[#4AF626] border-[#2D3645]'
+                  }`}>
                     120 FPS
                   </span>
-                  <span ref={coordsRef} className="hidden sm:inline-block px-1.5 py-0.5 bg-[#070814] text-[#00F0FF] border border-[#2D3645]">
+                  <span ref={coordsRef} className={`hidden sm:inline-block px-1.5 py-0.5 border ${
+                    isLight ? 'bg-[#FFFFFF] text-[#0052FF] border-[#1A1D24]/20' : 'bg-[#070814] text-[#00F0FF] border-[#2D3645]'
+                  }`}>
                     +0.00, +0.00
                   </span>
                 </div>
               </div>
 
               {/* 6 Real-Time Shader Pass Switches Directly on the Viewport Frame */}
-              <div className="p-2 bg-[#131629] border-b border-[#2D3645]">
-                <div className="text-[9px] text-[#8E98AA] mb-1.5 flex items-center justify-between">
-                  <span className="text-[#00F0FF] font-pixel">REAL-TIME SHADER PASS SWITCHES [KEYS 1-6]:</span>
-                  <span className="text-[#FFCC00]">PIXEL_PASS: RENDERPIXELATEDPASS</span>
+              <div className={`p-2 border-b ${
+                isLight ? 'bg-[#F2EFE9] border-[#1A1D24]/15' : 'bg-[#131629] border-[#2D3645]'
+              }`}>
+                <div className="text-[9px] mb-1.5 flex items-center justify-between">
+                  <span className={`font-pixel ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'}`}>REAL-TIME SHADER PASS SWITCHES [KEYS 1-6]:</span>
+                  <span className={isLight ? 'text-[#C85A00]' : 'text-[#FFCC00]'}>PIXEL_PASS: RENDERPIXELATEDPASS</span>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
                   {SHADER_PASSES.map((pass) => {
@@ -2700,13 +2837,21 @@ export const ProjectsShowcase: React.FC = () => {
                         aria-pressed={isPassActive}
                         className={`px-2 py-1.5 text-left text-[9px] font-pixel border transition-all ${
                           isPassActive
-                            ? 'bg-[#00F0FF] text-[#070814] border-[#D6CFC2] font-bold shadow-[0_0_8px_rgba(0,240,255,0.4)]'
+                            ? isLight
+                              ? 'bg-[#0052FF] text-[#FFFFFF] border-[#0052FF] font-bold shadow-[0_0_8px_rgba(0,82,255,0.4)]'
+                              : 'bg-[#00F0FF] text-[#070814] border-[#D6CFC2] font-bold shadow-[0_0_8px_rgba(0,240,255,0.4)]'
+                            : isLight
+                            ? 'bg-[#FFFFFF] text-[#3F4654] border-[#1A1D24]/20 hover:border-[#0052FF] hover:text-[#0052FF]'
                             : 'bg-[#0D1512] text-[#8E98AA] border-[#2D3645] hover:border-[#00F0FF] hover:text-[#F0EFE6]'
                         }`}
                       >
                         <div className="flex items-center justify-between">
                           <span>{pass.label}</span>
-                          <span className={`w-1.5 h-1.5 ${isPassActive ? 'bg-[#070814]' : 'bg-[#4AF626]'}`} />
+                          <span className={`w-1.5 h-1.5 ${
+                            isPassActive
+                              ? isLight ? 'bg-[#FFFFFF]' : 'bg-[#070814]'
+                              : isLight ? 'bg-[#007A33]' : 'bg-[#4AF626]'
+                          }`} />
                         </div>
                       </button>
                     );
@@ -2720,33 +2865,52 @@ export const ProjectsShowcase: React.FC = () => {
                 onPointerMove={handlePointerMove}
                 onPointerDown={handlePointerDown}
                 onPointerUp={handlePointerUp}
-                className="relative w-full h-[340px] sm:h-[400px] bg-[#070814] cursor-grab active:cursor-grabbing overflow-hidden"
+                className={`relative w-full h-[340px] sm:h-[400px] cursor-grab active:cursor-grabbing overflow-hidden transition-colors duration-300 ${
+                  isLight ? 'bg-[#EAE5DB]' : 'bg-[#070814]'
+                }`}
+                style={{
+                  backgroundColor: isLight ? '#EAE5DB' : '#070814',
+                }}
               >
                 <canvas ref={canvasRef} className="w-full h-full block" />
 
-                {/* CRT Scanline & Grid HUD Overlay */}
+                {/* CRT Scanline & Grid HUD Overlay / Blueprint Drafting Grid */}
                 <div
-                  className="absolute inset-0 pointer-events-none"
+                  className="absolute inset-0 pointer-events-none transition-all duration-300"
                   style={{
-                    backgroundImage: 'linear-gradient(rgba(13, 21, 18, 0) 50%, rgba(0, 0, 0, 0.25) 50%)',
-                    backgroundSize: '100% 4px',
-                    opacity: 0.08,
+                    backgroundImage: isLight
+                      ? 'linear-gradient(rgba(0, 82, 255, 0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 82, 255, 0.15) 1px, transparent 1px)'
+                      : 'linear-gradient(rgba(13, 21, 18, 0) 50%, rgba(0, 0, 0, 0.25) 50%)',
+                    backgroundSize: isLight ? '24px 24px' : '100% 4px',
+                    opacity: isLight ? 0.9 : 0.08,
                   }}
                   aria-hidden="true"
                 />
 
                 {/* Corner Geometric Reticle Badges */}
-                <div className="absolute top-2 left-2 text-[9px] text-[#00F0FF] bg-[#0D1512]/90 border border-[#2D3645] px-2 py-1 pointer-events-none space-y-0.5">
-                  <div>GEOMETRY: <span className="text-[#F0EFE6] font-bold">{activeProject.holoGeometryName}</span></div>
-                  <div>SURFACE_TRIS: <span className="text-[#4AF626]">{activeProject.trisCount}</span></div>
+                <div className={`absolute top-2 left-2 text-[9px] px-2 py-1 pointer-events-none space-y-0.5 border ${
+                  isLight
+                    ? 'text-[#0052FF] bg-[#FFFFFF]/90 border-[#1A1D24]/20 shadow-sm'
+                    : 'text-[#00F0FF] bg-[#0D1512]/90 border-[#2D3645]'
+                }`}>
+                  <div>GEOMETRY: <span className={isLight ? 'text-[#11131A] font-bold' : 'text-[#F0EFE6] font-bold'}>{activeProject.holoGeometryName}</span></div>
+                  <div>SURFACE_TRIS: <span className={isLight ? 'text-[#007A33]' : 'text-[#4AF626]'}>{activeProject.trisCount}</span></div>
                 </div>
 
-                <div className="absolute top-2 right-2 text-[9px] text-[#FF2A85] bg-[#0D1512]/90 border border-[#2D3645] px-2 py-1 pointer-events-none space-y-0.5">
-                  <div>PASS_MODE: <span className="text-[#F0EFE6] font-bold">{activePass.toUpperCase()}</span></div>
-                  <div>PASS_BADGE: <span className="text-[#FFCC00]">{SHADER_PASSES.find((p) => p.id === activePass)?.badge}</span></div>
+                <div className={`absolute top-2 right-2 text-[9px] px-2 py-1 pointer-events-none space-y-0.5 border ${
+                  isLight
+                    ? 'text-[#D90452] bg-[#FFFFFF]/90 border-[#1A1D24]/20 shadow-sm'
+                    : 'text-[#FF2A85] bg-[#0D1512]/90 border-[#2D3645]'
+                }`}>
+                  <div>PASS_MODE: <span className={isLight ? 'text-[#11131A] font-bold' : 'text-[#F0EFE6] font-bold'}>{activePass.toUpperCase()}</span></div>
+                  <div>PASS_BADGE: <span className={isLight ? 'text-[#C85A00]' : 'text-[#FFCC00]'}>{SHADER_PASSES.find((p) => p.id === activePass)?.badge}</span></div>
                 </div>
 
-                <div className="absolute bottom-2 left-2 text-[9px] text-[#8E98AA] bg-[#0D1512]/90 border border-[#2D3645] px-2 py-1 pointer-events-none">
+                <div className={`absolute bottom-2 left-2 text-[9px] px-2 py-1 pointer-events-none border ${
+                  isLight
+                    ? 'text-[#3F4654] bg-[#FFFFFF]/90 border-[#1A1D24]/20'
+                    : 'text-[#8E98AA] bg-[#0D1512]/90 border-[#2D3645]'
+                }`}>
                   DRAG: ROTATE 3D • CLICK: SHOCKWAVE PULSE
                 </div>
 
@@ -2759,7 +2923,11 @@ export const ProjectsShowcase: React.FC = () => {
                       autoRotateRef.current = !autoRotateRef.current;
                       watchknightAudio.playHoverTick(0);
                     }}
-                    className="px-2 py-0.5 bg-[#131629] hover:bg-[#00F0FF]/20 text-[#00F0FF] border border-[#2D3645] text-[9px]"
+                    className={`px-2 py-0.5 text-[9px] border transition-colors ${
+                      isLight
+                        ? 'bg-[#FFFFFF] hover:bg-[#0052FF]/10 text-[#0052FF] border-[#1A1D24]/30'
+                        : 'bg-[#131629] hover:bg-[#00F0FF]/20 text-[#00F0FF] border border-[#2D3645]'
+                    }`}
                   >
                     AUTO-ROT: {autoRotate ? 'ON' : 'OFF'}
                   </button>
@@ -2769,7 +2937,11 @@ export const ProjectsShowcase: React.FC = () => {
                       rippleEnergyRef.current = 1.5;
                       watchknightAudio.playSpatialClick(0, 0, -1);
                     }}
-                    className="px-2 py-0.5 bg-[#131629] hover:bg-[#FF2A85]/20 text-[#FF2A85] border border-[#2D3645] text-[9px]"
+                    className={`px-2 py-0.5 text-[9px] border transition-colors ${
+                      isLight
+                        ? 'bg-[#FFFFFF] hover:bg-[#D90452]/10 text-[#D90452] border-[#1A1D24]/30'
+                        : 'bg-[#131629] hover:bg-[#FF2A85]/20 text-[#FF2A85] border border-[#2D3645]'
+                    }`}
                   >
                     PULSE WAVE
                   </button>
@@ -2777,14 +2949,20 @@ export const ProjectsShowcase: React.FC = () => {
               </div>
 
               {/* Viewport Footer Telemetry Bar */}
-              <div className="p-2.5 bg-[#131629] border-t border-[#2D3645] flex items-center justify-between text-[10px]">
-                <div className="text-[#8E98AA] leading-snug pr-2">
-                  <span className="text-[#00F0FF] font-bold">INFO:</span> {SHADER_PASSES.find((p) => p.id === activePass)?.description}
+              <div className={`p-2.5 border-t flex items-center justify-between text-[10px] ${
+                isLight ? 'bg-[#F2EFE9] border-[#1A1D24]/20' : 'bg-[#131629] border-[#2D3645]'
+              }`}>
+                <div className={`${isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'} leading-snug pr-2`}>
+                  <span className={`${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'} font-bold`}>INFO:</span> {SHADER_PASSES.find((p) => p.id === activePass)?.description}
                 </div>
                 <button
                   type="button"
                   onClick={() => openDossierForProject(activeProjectIndex)}
-                  className="shrink-0 px-2.5 py-1 bg-[#4AF626] hover:bg-[#6ef750] text-[#070814] font-bold font-pixel text-[9px] active:translate-y-0.5"
+                  className={`shrink-0 px-2.5 py-1 font-bold font-pixel text-[9px] active:translate-y-0.5 ${
+                    isLight
+                      ? 'bg-[#007A33] hover:bg-[#006028] text-[#FFFFFF]'
+                      : 'bg-[#4AF626] hover:bg-[#6ef750] text-[#070814]'
+                  }`}
                 >
                   [ OPEN DOSSIER ]
                 </button>

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import gsap from 'gsap';
 import { useLenis } from '../hooks/useLenis';
+import { useTheme } from '../context/ThemeContext';
 import { PORTFOLIO_DATA } from '../data/portfolioData';
 import { audio } from '../utils/audio';
 import { chiptuneAudio } from '../utils/chiptuneAudio';
@@ -710,6 +711,8 @@ const CyberKnightArcade: React.FC<ArcadeProps> = ({ onExit, phosphorMode }) => {
 // MAIN TERMINAL LAB COMPONENT
 // =========================================================================
 export const TerminalLab: React.FC = () => {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const { scrollTo } = useLenis();
   const [inputVal, setInputVal] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
@@ -1432,7 +1435,11 @@ export const TerminalLab: React.FC = () => {
   return (
     <section 
       id="terminal" 
-      className="py-24 md:py-32 relative bg-[#070814] text-[#F0EFE6] border-t-2 border-[#2D3645] overflow-hidden"
+      className="py-24 md:py-32 relative bg-[#070814] text-[#F0EFE6] border-t-2 border-[#2D3645] overflow-hidden transition-colors duration-300"
+      style={{
+        backgroundColor: 'var(--crt-void-bg, #070814)',
+        color: 'var(--pixel-ivory-text, #F0EFE6)',
+      }}
     >
       {/* 90s Cyberdeck PCB Background Grid */}
       <div 
@@ -1451,14 +1458,14 @@ export const TerminalLab: React.FC = () => {
         
         {/* Section Header */}
         <div className="text-center mb-10 max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 font-pixel text-[10px] text-[#00F0FF] uppercase tracking-widest mb-3 px-3.5 py-1.5 bg-[#131629] border-2 border-[#2D3645] shadow-[2px_2px_0_0_#070814]">
-            <TerminalIcon className="w-3.5 h-3.5 text-[#00F0FF] animate-pulse" />
+          <div className={`inline-flex items-center gap-2 font-pixel text-[10px] ${isLight ? 'text-[#0052FF] bg-[#FFFFFF] border-[#1A1D24] shadow-[2px_2px_0_0_#C8C1B4]' : 'text-[#00F0FF] bg-[#131629] border-[#2D3645] shadow-[2px_2px_0_0_#070814]'} uppercase tracking-widest mb-3 px-3.5 py-1.5 border-2`}>
+            <TerminalIcon className={`w-3.5 h-3.5 ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'} animate-pulse`} />
             <span>&gt; [05] TERMINAL // 90s PHOSPHOR CRT UBUNTU 24.04.1 LTS</span>
           </div>
 
           <div className="overflow-visible">
             <h2 
-              className="font-display uppercase text-white"
+              className={`font-display uppercase ${isLight ? 'text-[#11131A]' : 'text-white'}`}
               style={{
                 fontFamily: "'Space Grotesk', 'Syne', sans-serif",
                 fontWeight: 800,
@@ -1467,11 +1474,11 @@ export const TerminalLab: React.FC = () => {
                 lineHeight: 1.05,
               }}
             >
-              SYSTEMS <span className="text-[#00F0FF]">TERMINAL &amp; ARCADE</span>
+              SYSTEMS <span className={isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'}>TERMINAL &amp; ARCADE</span>
             </h2>
           </div>
 
-          <p className="font-body text-fluid-body text-[#D6CFC2] mt-2 leading-relaxed">
+          <p className={`font-body text-fluid-body ${isLight ? 'text-[#3F4654]' : 'text-[#D6CFC2]'} mt-2 leading-relaxed`}>
             Authentic 90s deep green/amber phosphor CRT terminal connected to East West University CSE environment. 
             Run live POSIX telemetry queries, inspect flagship project repos, elevate root access via &apos;sudo hire moayed&apos;, 
             or launch the inline 8-bit Cyber-Knight Wave Runner mini-game via &apos;arcade&apos;.
@@ -1483,9 +1490,9 @@ export const TerminalLab: React.FC = () => {
         {/* ========================================================================= */}
         <div 
           onClick={handleTerminalWindowClick}
-          className={`border-4 border-[#2D3645] bg-[#070D0A] ${phosphorGlowShadow} transition-all duration-300 cursor-text relative overflow-hidden ${
-            isExpanded ? 'ring-2 ring-[#00F0FF]' : ''
-          } ${showShaderPulse ? 'ring-4 ring-[#FF2A85] shadow-[0_0_30px_rgba(255,42,133,0.8)]' : ''}`}
+          className={`border-4 ${isLight ? 'border-[#1A1D24] bg-[#E5DFD3] shadow-[4px_4px_0_0_#C8C1B4]' : 'border-[#2D3645] bg-[#070D0A]'} ${phosphorGlowShadow} transition-all duration-300 cursor-text relative overflow-hidden ${
+            isExpanded ? (isLight ? 'ring-2 ring-[#0052FF]' : 'ring-2 ring-[#00F0FF]') : ''
+          } ${showShaderPulse ? (isLight ? 'ring-4 ring-[#D90452] shadow-[0_0_30px_rgba(217,4,82,0.8)]' : 'ring-4 ring-[#FF2A85] shadow-[0_0_30px_rgba(255,42,133,0.8)]') : ''}`}
         >
           {/* Subtle CRT Scanline Overlay across entire monitor face */}
           <div 
@@ -1500,18 +1507,18 @@ export const TerminalLab: React.FC = () => {
           />
 
           {/* Authentic 90s Retro Window Titlebar with Putty/Slate Styling */}
-          <div className="bg-[#131629] px-3 py-2 border-b-2 border-[#2D3645] flex items-center justify-between select-none relative z-30">
+          <div className={`${isLight ? 'bg-[#D8D2C5] border-b-2 border-[#1A1D24] text-[#11131A]' : 'bg-[#131629] border-b-2 border-[#2D3645] text-[#F0EFE6]'} px-3 py-2 flex items-center justify-between select-none relative z-30`}>
             {/* Left: Glyph & Prompt */}
             <div className="flex items-center gap-2">
-              <span className={`font-pixel text-[8px] px-1.5 py-0.5 bg-black/60 border border-white/20 ${phosphorTextColor}`}>
+              <span className={`font-pixel text-[8px] px-1.5 py-0.5 ${isLight ? 'bg-white/80 border border-[#1A1D24]/30' : 'bg-black/60 border border-white/20'} ${phosphorTextColor}`}>
                 SYS.96
               </span>
-              <span className="font-pixel text-[10px] text-[#00F0FF] hidden sm:inline-flex items-center gap-1.5">
+              <span className={`font-pixel text-[10px] ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'} hidden sm:inline-flex items-center gap-1.5`}>
                 <span>&gt; UBUNTU_CRT.EXE</span>
-                <span className="text-[#8E98AA]">|</span>
+                <span className={isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'}>|</span>
                 <span className={phosphorTextColor}>moayed@ewu-cse:~ (24.04.1 LTS)</span>
               </span>
-              <span className="font-pixel text-[10px] text-[#00F0FF] sm:hidden">
+              <span className={`font-pixel text-[10px] ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'} sm:hidden`}>
                 &gt; UBUNTU_CRT
               </span>
             </div>
@@ -1531,11 +1538,11 @@ export const TerminalLab: React.FC = () => {
                   setPhosphorMode(prev => prev === 'green' ? 'amber' : 'green');
                   audio.playTick();
                 }}
-                className="px-2 py-0.5 bg-[#070814] border border-[#2D3645] hover:border-[#00F0FF] font-pixel text-[8px] text-[#D6CFC2] flex items-center gap-1"
+                className={`px-2 py-0.5 ${isLight ? 'bg-white text-[#11131A] border border-[#1A1D24]/40 hover:border-[#0052FF]' : 'bg-[#070814] text-[#D6CFC2] border border-[#2D3645] hover:border-[#00F0FF]'} font-pixel text-[8px] flex items-center gap-1`}
                 title="Toggle Phosphor Mode (Green P1 / Amber P3)"
                 aria-label="Toggle CRT Phosphor Mode"
               >
-                <Tv className="w-2.5 h-2.5 text-[#00F0FF]" />
+                <Tv className={`w-2.5 h-2.5 ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'}`} />
                 <span className="hidden md:inline">CRT:</span>
                 <span className={phosphorTextColor}>{phosphorMode.toUpperCase()}</span>
               </button>
@@ -1748,9 +1755,9 @@ export const TerminalLab: React.FC = () => {
               )}
 
               {/* Clickable Quick-Command Chips including $arcade */}
-              <div className="px-4 py-3 bg-[#131629] border-t-2 border-[#2D3645] flex flex-wrap items-center gap-2 select-none relative z-30">
-                <span className="font-pixel text-[8px] text-[#8E98AA] flex items-center gap-1 mr-1">
-                  <CornerDownLeft className="w-3 h-3 text-[#00F0FF]" /> Quick exec:
+              <div className={`px-4 py-3 ${isLight ? 'bg-[#E5DFD3] border-t-2 border-[#1A1D24]' : 'bg-[#131629] border-t-2 border-[#2D3645]'} flex flex-wrap items-center gap-2 select-none relative z-30`}>
+                <span className={`font-pixel text-[8px] ${isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'} flex items-center gap-1 mr-1`}>
+                  <CornerDownLeft className={`w-3 h-3 ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'}`} /> Quick exec:
                 </span>
 
                 {/* Standard Quick Directives including prompt-mandated $arcade */}
@@ -1770,9 +1777,15 @@ export const TerminalLab: React.FC = () => {
                     aria-label={`Execute terminal command: ${cmd}`}
                     className={`font-pixel text-[9px] px-2.5 py-1 border-2 transition-all duration-200 active:scale-95 flex items-center gap-1 ${
                       activeChipAnimation === cmd
-                        ? 'bg-[#00F0FF] text-[#070814] font-bold border-[#00F0FF] shadow-[0_0_10px_rgba(0,240,255,0.5)]'
+                        ? isLight
+                          ? 'bg-[#0052FF] text-white font-bold border-[#0052FF] shadow-[0_0_10px_rgba(0,82,255,0.5)]'
+                          : 'bg-[#00F0FF] text-[#070814] font-bold border-[#00F0FF] shadow-[0_0_10px_rgba(0,240,255,0.5)]'
                         : special
-                        ? 'bg-[#0C2430] hover:bg-[#00F0FF] text-[#00F0FF] hover:text-[#070814] border-[#00F0FF] shadow-[0_0_8px_rgba(0,240,255,0.3)]'
+                        ? isLight
+                          ? 'bg-[#0052FF]/10 hover:bg-[#0052FF] text-[#0052FF] hover:text-white border-[#0052FF] shadow-[0_0_8px_rgba(0,82,255,0.2)]'
+                          : 'bg-[#0C2430] hover:bg-[#00F0FF] text-[#00F0FF] hover:text-[#070814] border-[#00F0FF] shadow-[0_0_8px_rgba(0,240,255,0.3)]'
+                        : isLight
+                        ? 'bg-[#FFFFFF] hover:bg-[#0052FF]/10 text-[#11131A] hover:text-[#0052FF] border-[#1A1D24]/30 hover:border-[#0052FF]'
                         : 'bg-[#0D1512] hover:bg-[#00F0FF]/15 text-[#D6CFC2] hover:text-[#00F0FF] border-[#2D3645] hover:border-[#00F0FF]'
                     }`}
                   >
@@ -1789,6 +1802,8 @@ export const TerminalLab: React.FC = () => {
                   className={`font-pixel text-[9px] px-3 py-1 border-2 transition-all duration-300 flex items-center gap-1.5 active:scale-95 ${
                     activeChipAnimation === 'sudo hire moayed'
                       ? 'bg-[#FF2A85] text-white border-[#FF2A85] shadow-[0_0_15px_rgba(255,42,133,0.6)]'
+                      : isLight
+                      ? 'bg-[#FFFFFF] text-[#11131A] border-[#D90452] hover:bg-[#D90452] hover:text-white'
                       : 'bg-[#131629] text-[#F0EFE6] border-[#FF2A85] hover:bg-[#FF2A85] hover:text-white hover:shadow-[0_0_10px_rgba(255,42,133,0.4)]'
                   }`}
                 >

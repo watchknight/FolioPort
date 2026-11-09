@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useLenis } from '../../hooks/useLenis';
+import { useTheme } from '../../context/ThemeContext';
 import { watchknightAudio } from '../../audio/WatchknightAudioEngine';
 import { chiptuneAudio } from '../../utils/chiptuneAudio';
 import { Menu, X } from 'lucide-react';
@@ -26,6 +27,7 @@ const COMMAND_NAV_ITEMS: RetroNavItem[] = [
 
 export const RetroCommandBar: React.FC = () => {
   const { lenis, scrollTo } = useLenis();
+  const { theme, toggleTheme } = useTheme();
   const [activeSection, setActiveSection] = useState<string>('#work');
   const [renderMode, setRenderModeState] = useState<RenderMode>('3D VECTOR');
   const [dhakaTime, setDhakaTime] = useState<string>('');
@@ -198,10 +200,10 @@ export const RetroCommandBar: React.FC = () => {
       }`}
       style={{
         height: '52px',
-        background: 'rgba(7, 8, 20, 0.94)',
+        background: theme === 'light' ? 'var(--crt-glass-surface, rgba(242, 239, 233, 0.88))' : 'rgba(7, 8, 20, 0.94)',
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
-        borderBottom: '1px solid rgba(0, 240, 255, 0.25)',
+        borderBottom: theme === 'light' ? '1px solid var(--border-hairline, rgba(17, 19, 26, 0.18))' : '1px solid rgba(0, 240, 255, 0.25)',
       }}
     >
       <div className="retro-command-inner w-full h-full px-2 sm:px-3 lg:px-4 2xl:px-6 flex items-center justify-between gap-1 sm:gap-2">
@@ -214,23 +216,41 @@ export const RetroCommandBar: React.FC = () => {
               setActiveSection('');
               watchknightAudio.play8BitBlip(980);
             }}
-            className="group flex items-center gap-1 px-1.5 py-0.5 bg-[#131629] border border-[#2D3645] hover:border-[#00F0FF] transition-all shadow-[1px_1px_0_0_#070814] shrink-0"
+            className={`group flex items-center gap-1 px-1.5 py-0.5 transition-all shrink-0 border ${
+              theme === 'light'
+                ? 'bg-[#FFFFFF] border-[#1A1D24] shadow-[1px_1px_0_0_#C8C1B4]'
+                : 'bg-[#131629] border-[#2D3645] hover:border-[#00F0FF] shadow-[1px_1px_0_0_#070814]'
+            }`}
             aria-label="Apex Home Sentinel"
           >
-            <span className="font-pixel text-[10px] sm:text-[11px] text-[#00F0FF] group-hover:text-[#FF2A85] transition-colors">
+            <span className={`font-pixel text-[10px] sm:text-[11px] transition-colors ${
+              theme === 'light'
+                ? 'text-[#0052FF] group-hover:text-[#D90452]'
+                : 'text-[#00F0FF] group-hover:text-[#FF2A85]'
+            }`}>
               &gt;_
             </span>
-            <span className="font-pixel text-[8.5px] sm:text-[9px] tracking-wider text-[#F0EFE6]">
+            <span className={`font-pixel text-[8.5px] sm:text-[9px] tracking-wider ${
+              theme === 'light' ? 'text-[#11131A]' : 'text-[#F0EFE6]'
+            }`}>
               @watchknight
             </span>
           </button>
 
           <div className="flex items-center gap-1.5 min-w-0">
-            <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#4AF626] animate-pulse shadow-[0_0_6px_#4AF626] shrink-0" />
-            <span className="font-pixel text-[7px] sm:text-[7.5px] xl:text-[8px] text-[#D6CFC2] tracking-wider hidden sm:inline whitespace-nowrap">
+            <span className={`inline-block w-1.5 h-1.5 rounded-full animate-pulse shrink-0 ${
+              theme === 'light'
+                ? 'bg-[#007A33] shadow-[0_0_6px_#007A33]'
+                : 'bg-[#4AF626] shadow-[0_0_6px_#4AF626]'
+            }`} />
+            <span className={`font-pixel text-[7px] sm:text-[7.5px] xl:text-[8px] tracking-wider hidden sm:inline whitespace-nowrap ${
+              theme === 'light' ? 'text-[#3F4654]' : 'text-[#D6CFC2]'
+            }`}>
               EWU CSE // DHAKA {dhakaTime ? `${dhakaTime} ` : ''}(UTC+6)
             </span>
-            <span className="font-pixel text-[6.5px] text-[#D6CFC2] tracking-wider sm:hidden whitespace-nowrap">
+            <span className={`font-pixel text-[6.5px] tracking-wider sm:hidden whitespace-nowrap ${
+              theme === 'light' ? 'text-[#3F4654]' : 'text-[#D6CFC2]'
+            }`}>
               EWU CSE // DHAKA (UTC+6)
             </span>
           </div>
@@ -245,22 +265,26 @@ export const RetroCommandBar: React.FC = () => {
             const isActive = activeSection === item.id;
             return (
               <React.Fragment key={item.id}>
-                {idx > 0 && <span className="text-[#2D3645] select-none mx-0.5 text-[7px]">|</span>}
+                {idx > 0 && <span className={`${theme === 'light' ? 'text-[#1A1D24]/20' : 'text-[#2D3645]'} select-none mx-0.5 text-[7px]`}>|</span>}
                 <button
                   type="button"
                   onClick={(e) => handleNavClick(item.id, e)}
                   onMouseEnter={() => chiptuneAudio.playPixelTick()}
                   className={`flex items-center gap-1 px-1 sm:px-1.5 py-0.5 transition-all rounded-none border whitespace-nowrap ${
                     isActive
-                      ? 'bg-[#0C2430] text-[#00F0FF] border-[#00F0FF] shadow-[0_0_8px_rgba(0,240,255,0.35)]'
-                      : 'bg-transparent text-[#D6CFC2] border-transparent hover:text-[#00F0FF] hover:bg-white/5'
+                      ? (theme === 'light'
+                          ? 'bg-[#E5DFD3] text-[#0052FF] border-[#1A1D24] shadow-[1px_1px_0_0_#C8C1B4]'
+                          : 'bg-[#0C2430] text-[#00F0FF] border-[#00F0FF] shadow-[0_0_8px_rgba(0,240,255,0.35)]')
+                      : (theme === 'light'
+                          ? 'bg-transparent text-[#3F4654] border-transparent hover:text-[#0052FF] hover:bg-black/5'
+                          : 'bg-transparent text-[#D6CFC2] border-transparent hover:text-[#00F0FF] hover:bg-white/5')
                   }`}
                   title={item.subtitle}
                   aria-label={`Jump to ${item.label}`}
                   aria-current={isActive ? 'page' : undefined}
                 >
-                  <span className={isActive ? 'text-[#00F0FF]' : 'text-[#4AF626]'}>&gt;</span>
-                  <span className="text-[#8E98AA]">[{item.num}]</span>
+                  <span className={isActive ? (theme === 'light' ? 'text-[#0052FF]' : 'text-[#00F0FF]') : (theme === 'light' ? 'text-[#007A33]' : 'text-[#4AF626]')}>&gt;</span>
+                  <span className={theme === 'light' ? 'text-[#3F4654]/70' : 'text-[#8E98AA]'}>[{item.num}]</span>
                   <span>{item.label}</span>
                 </button>
               </React.Fragment>
@@ -272,11 +296,13 @@ export const RetroCommandBar: React.FC = () => {
         <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
           {/* [RENDER: 3D / PIXEL / CRT] Mode Toggle */}
           <div
-            className="flex items-center bg-[#131629] border border-[#2D3645] px-1 py-0.5 text-[7px] sm:text-[7.5px] font-pixel select-none shrink-0"
+            className={`flex items-center px-1 py-0.5 text-[7px] sm:text-[7.5px] font-pixel select-none shrink-0 border ${
+              theme === 'light' ? 'bg-[#FFFFFF] border-[#1A1D24] shadow-[1px_1px_0_0_#C8C1B4]' : 'bg-[#131629] border-[#2D3645]'
+            }`}
             role="radiogroup"
             aria-label="3D Render Mode"
           >
-            <span className="text-[#8E98AA] mr-0.5 hidden sm:inline">RENDER:</span>
+            <span className={`mr-0.5 hidden sm:inline ${theme === 'light' ? 'text-[#3F4654]' : 'text-[#8E98AA]'}`}>RENDER:</span>
             <button
               type="button"
               role="radio"
@@ -284,14 +310,14 @@ export const RetroCommandBar: React.FC = () => {
               onClick={(e) => handleRenderModeSelect('3D VECTOR', e)}
               className={`px-1 py-0.5 transition-colors ${
                 renderMode === '3D VECTOR'
-                  ? 'bg-[#00F0FF] text-[#070814] font-bold shadow-[0_0_6px_rgba(0,240,255,0.4)]'
-                  : 'text-[#8E98AA] hover:text-[#F0EFE6]'
+                  ? (theme === 'light' ? 'bg-[#0052FF] text-[#FFFFFF] font-bold shadow-[0_0_6px_rgba(0,82,255,0.4)]' : 'bg-[#00F0FF] text-[#070814] font-bold shadow-[0_0_6px_rgba(0,240,255,0.4)]')
+                  : (theme === 'light' ? 'text-[#3F4654] hover:text-[#11131A]' : 'text-[#8E98AA] hover:text-[#F0EFE6]')
               }`}
               title="3D Vector Mode"
             >
               3D
             </button>
-            <span className="text-[#2D3645] mx-0.5">/</span>
+            <span className={`${theme === 'light' ? 'text-[#1A1D24]/30' : 'text-[#2D3645]'} mx-0.5`}>/</span>
             <button
               type="button"
               role="radio"
@@ -299,14 +325,14 @@ export const RetroCommandBar: React.FC = () => {
               onClick={(e) => handleRenderModeSelect('3D PIXEL_ART', e)}
               className={`px-1 py-0.5 transition-colors ${
                 renderMode === '3D PIXEL_ART'
-                  ? 'bg-[#00F0FF] text-[#070814] font-bold shadow-[0_0_6px_rgba(0,240,255,0.4)]'
-                  : 'text-[#8E98AA] hover:text-[#F0EFE6]'
+                  ? (theme === 'light' ? 'bg-[#0052FF] text-[#FFFFFF] font-bold shadow-[0_0_6px_rgba(0,82,255,0.4)]' : 'bg-[#00F0FF] text-[#070814] font-bold shadow-[0_0_6px_rgba(0,240,255,0.4)]')
+                  : (theme === 'light' ? 'text-[#3F4654] hover:text-[#11131A]' : 'text-[#8E98AA] hover:text-[#F0EFE6]')
               }`}
               title="Pixel Art Mode"
             >
               PIXEL
             </button>
-            <span className="text-[#2D3645] mx-0.5">/</span>
+            <span className={`${theme === 'light' ? 'text-[#1A1D24]/30' : 'text-[#2D3645]'} mx-0.5`}>/</span>
             <button
               type="button"
               role="radio"
@@ -314,12 +340,61 @@ export const RetroCommandBar: React.FC = () => {
               onClick={(e) => handleRenderModeSelect('CRT ANALOG', e)}
               className={`px-1 py-0.5 transition-colors ${
                 renderMode === 'CRT ANALOG'
-                  ? 'bg-[#FF2A85] text-[#070814] font-bold shadow-[0_0_6px_rgba(255,42,133,0.4)]'
-                  : 'text-[#8E98AA] hover:text-[#F0EFE6]'
+                  ? (theme === 'light' ? 'bg-[#D90452] text-[#FFFFFF] font-bold shadow-[0_0_6px_rgba(217,4,82,0.4)]' : 'bg-[#FF2A85] text-[#070814] font-bold shadow-[0_0_6px_rgba(255,42,133,0.4)]')
+                  : (theme === 'light' ? 'text-[#3F4654] hover:text-[#11131A]' : 'text-[#8E98AA] hover:text-[#F0EFE6]')
               }`}
               title="CRT Analog Mode"
             >
               CRT
+            </button>
+          </div>
+
+          {/* [ ☀ DAYLIGHT_CAD | ☾ NIGHT_CRT ] Tactile Hardware Rocker Switch */}
+          <div
+            className={`flex items-center px-1 py-0.5 text-[7px] sm:text-[7.5px] font-pixel select-none shrink-0 border ${
+              theme === 'light' ? 'bg-[#FFFFFF] border-[#1A1D24] shadow-[1px_1px_0_0_#C8C1B4]' : 'bg-[#131629] border-[#2D3645]'
+            }`}
+            role="radiogroup"
+            aria-label="Theme Hardware Rocker Switch"
+          >
+            <button
+              type="button"
+              role="radio"
+              aria-checked={theme === 'light'}
+              onClick={() => {
+                if (theme !== 'light') toggleTheme();
+              }}
+              onMouseEnter={() => chiptuneAudio.playPixelTick()}
+              className={`px-1 py-0.5 transition-colors flex items-center gap-1 ${
+                theme === 'light'
+                  ? 'bg-[#0052FF] text-[#FFFFFF] font-bold shadow-[0_0_6px_rgba(0,82,255,0.4)]'
+                  : 'text-[#8E98AA] hover:text-[#F0EFE6]'
+              }`}
+              title="Switch to Daylight CAD Workstation Theme"
+            >
+              <span>☀</span>
+              <span className="hidden sm:inline">DAYLIGHT_CAD</span>
+              <span className="sm:hidden">CAD</span>
+            </button>
+            <span className={`${theme === 'light' ? 'text-[#1A1D24]/30' : 'text-[#2D3645]'} mx-0.5`}>|</span>
+            <button
+              type="button"
+              role="radio"
+              aria-checked={theme === 'dark'}
+              onClick={() => {
+                if (theme !== 'dark') toggleTheme();
+              }}
+              onMouseEnter={() => chiptuneAudio.playPixelTick()}
+              className={`px-1 py-0.5 transition-colors flex items-center gap-1 ${
+                theme === 'dark'
+                  ? 'bg-[#00F0FF] text-[#070814] font-bold shadow-[0_0_6px_rgba(0,240,255,0.4)]'
+                  : (theme === 'light' ? 'text-[#3F4654] hover:text-[#11131A]' : 'text-[#8E98AA] hover:text-[#F0EFE6]')
+              }`}
+              title="Switch to Night CRT Void Theme"
+            >
+              <span>☾</span>
+              <span className="hidden sm:inline">NIGHT_CRT</span>
+              <span className="sm:hidden">CRT</span>
             </button>
           </div>
 
@@ -331,8 +406,12 @@ export const RetroCommandBar: React.FC = () => {
             title={isChiptuneOn ? '8-Bit Audio Playing • Click to Mute' : 'Click to Play 8-Bit Audio'}
             className={`flex items-center gap-1 px-1.5 py-0.5 text-[7px] sm:text-[7.5px] font-pixel border transition-all select-none shrink-0 ${
               isChiptuneOn
-                ? 'bg-[#300E1F] text-[#FF2A85] border-[#FF2A85] shadow-[0_0_8px_rgba(255,42,133,0.5)]'
-                : 'bg-[#131629] text-[#D6CFC2] border-[#2D3645] hover:border-[#FFCC00] hover:text-[#FFCC00]'
+                ? (theme === 'light'
+                    ? 'bg-[#D90452]/15 text-[#D90452] border-[#D90452] shadow-[0_0_8px_rgba(217,4,82,0.4)]'
+                    : 'bg-[#300E1F] text-[#FF2A85] border-[#FF2A85] shadow-[0_0_8px_rgba(255,42,133,0.5)]')
+                : (theme === 'light'
+                    ? 'bg-[#FFFFFF] text-[#11131A] border-[#1A1D24] hover:border-[#0052FF] hover:text-[#0052FF] shadow-[1px_1px_0_0_#C8C1B4]'
+                    : 'bg-[#131629] text-[#D6CFC2] border-[#2D3645] hover:border-[#FFCC00] hover:text-[#FFCC00]')
             }`}
             aria-pressed={isChiptuneOn}
           >
@@ -341,7 +420,9 @@ export const RetroCommandBar: React.FC = () => {
             <span className="sm:hidden">{isChiptuneOn ? 'ON' : 'OFF'}</span>
             <span
               className={`w-1.5 h-1.5 rounded-full shrink-0 ${
-                isChiptuneOn ? 'bg-[#FF2A85] animate-ping' : 'bg-[#8E98AA]'
+                isChiptuneOn
+                  ? (theme === 'light' ? 'bg-[#D90452] animate-ping' : 'bg-[#FF2A85] animate-ping')
+                  : (theme === 'light' ? 'bg-[#3F4654]' : 'bg-[#8E98AA]')
               }`}
             />
           </button>
@@ -421,6 +502,39 @@ export const RetroCommandBar: React.FC = () => {
                       {mode}
                     </button>
                   ))}
+                </div>
+              </div>
+
+              {/* Mobile Theme Toggle */}
+              <div className="pt-2 border-t-2 border-[#2D3645] space-y-1.5">
+                <div className="font-pixel text-[9px] text-[#8E98AA]">&gt; THEME SYSTEM:</div>
+                <div className="grid grid-cols-2 gap-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (theme !== 'light') toggleTheme();
+                    }}
+                    className={`px-2 py-1 text-[8px] font-pixel border text-center transition-colors ${
+                      theme === 'light'
+                        ? 'bg-[#0052FF] text-[#FFFFFF] font-bold border-[#0052FF]'
+                        : 'bg-[#0D1512] text-[#8E98AA] border-[#2D3645]'
+                    }`}
+                  >
+                    ☀ DAYLIGHT_CAD
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (theme !== 'dark') toggleTheme();
+                    }}
+                    className={`px-2 py-1 text-[8px] font-pixel border text-center transition-colors ${
+                      theme === 'dark'
+                        ? 'bg-[#00F0FF] text-[#070814] font-bold border-[#00F0FF]'
+                        : 'bg-[#0D1512] text-[#8E98AA] border-[#2D3645]'
+                    }`}
+                  >
+                    ☾ NIGHT_CRT
+                  </button>
                 </div>
               </div>
 

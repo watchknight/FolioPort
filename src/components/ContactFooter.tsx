@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useTheme } from '../context/ThemeContext';
 import { PORTFOLIO_DATA } from '../data/portfolioData';
 import { useLenis } from '../hooks/useLenis';
 import { Magnetic } from './ui/Magnetic';
@@ -98,6 +99,8 @@ const getVisitorTime = (): VisitorTelemetry => {
 };
 
 export const ContactFooter: React.FC = () => {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const { scrollTo } = useLenis();
 
   // Local Dhaka Time Clock (UTC+6) in JetBrains Mono, initialized immediately to prevent layout shift
@@ -400,6 +403,10 @@ export const ContactFooter: React.FC = () => {
         ref={sectionRef}
         id="contact"
         className="relative z-[1] min-h-[85vh] lg:min-h-[90vh] pt-28 sm:pt-36 md:pt-40 pb-16 md:pb-20 bg-obsidian-darker/95 overflow-hidden border-t border-white/10"
+        style={{
+          backgroundColor: 'var(--crt-void-bg, #070814)',
+          color: 'var(--pixel-ivory-text, #F0EFE6)',
+        }}
         aria-label="Contact and conversion footer"
       >
         <div ref={footerInnerRef} className="w-full h-full">
@@ -517,7 +524,7 @@ export const ContactFooter: React.FC = () => {
               THEATRICAL FINALE // AWWWARDS CAPSTONE
             </div>
             <h2
-              className="font-display uppercase text-transparent bg-clip-text bg-gradient-to-b from-white via-alabaster to-white/40 flex flex-wrap justify-center gap-x-2 sm:gap-x-4 md:gap-x-6 py-2"
+              className={`font-display uppercase ${isLight ? 'text-[#11131A]' : 'text-transparent bg-clip-text bg-gradient-to-b from-white via-alabaster to-white/40'} flex flex-wrap justify-center gap-x-2 sm:gap-x-4 md:gap-x-6 py-2`}
               style={{
                 fontFamily: "'Space Grotesk', 'Syne', sans-serif",
                 fontWeight: 800,
@@ -545,16 +552,16 @@ export const ContactFooter: React.FC = () => {
 
           {/* Availability Status Ribbon */}
           <div className="footer-anim mb-10 flex justify-center">
-            <div className="inline-flex items-center gap-2.5 px-4 py-2 bg-[#131629] border-2 border-[#2D3645] shadow-[2px_2px_0_0_#070814] backdrop-blur-xl">
+            <div className={`inline-flex items-center gap-2.5 px-4 py-2 ${isLight ? 'bg-white border-2 border-[#1A1D24] shadow-[2px_2px_0_0_#C8C1B4]' : 'bg-[#131629] border-2 border-[#2D3645] shadow-[2px_2px_0_0_#070814]'} backdrop-blur-xl`}>
               <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#4AF626] opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#4AF626]" />
+                <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${isLight ? 'bg-[#007A33]' : 'bg-[#4AF626]'} opacity-75`} />
+                <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${isLight ? 'bg-[#007A33]' : 'bg-[#4AF626]'}`} />
               </span>
-              <span className="font-mono text-fluid-xs text-[#F0EFE6] font-medium">
+              <span className={`font-mono text-fluid-xs ${isLight ? 'text-[#11131A]' : 'text-[#F0EFE6]'} font-medium`}>
                 Available for Systems &amp; Full-Stack Engineering Roles
               </span>
-              <span className="text-white/20 hidden sm:inline">•</span>
-              <span className="font-mono text-fluid-xs text-[#00F0FF] hidden sm:inline font-semibold">
+              <span className={`${isLight ? 'text-[#1A1D24]/30' : 'text-white/20'} hidden sm:inline`}>•</span>
+              <span className={`font-mono text-fluid-xs ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'} hidden sm:inline font-semibold`}>
                 Dhaka, BD (UTC+6)
               </span>
             </div>
@@ -564,11 +571,11 @@ export const ContactFooter: React.FC = () => {
               ZERO-FRICTION CONVERSION HERO CALLOUT
              ========================================================================= */}
           <div className="footer-anim text-center max-w-4xl mx-auto mb-16 space-y-6">
-            <div className="font-pixel text-[10px] text-[#00F0FF] tracking-widest uppercase mb-1">
+            <div className={`font-pixel text-[10px] ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'} tracking-widest uppercase mb-1`}>
               &gt; SYS.96 // SATELLITE_UPLINK_INITIALIZED // TRANSCEIVER_ONLINE
             </div>
             <h2 
-              className="tracking-tight text-white uppercase leading-snug break-normal hyphens-none"
+              className={`tracking-tight ${isLight ? 'text-[#11131A]' : 'text-white'} uppercase leading-snug break-normal hyphens-none`}
               style={{
                 fontFamily: "'Space Grotesk', 'Syne', sans-serif",
                 fontWeight: 800,
@@ -751,47 +758,47 @@ export const ContactFooter: React.FC = () => {
             
             {/* Left Column: Direct Coordinates Card */}
             <div className="footer-anim lg:col-span-5 space-y-6">
-              <div className="border-2 border-[#D6CFC2] border-b-[#2D3645] border-r-[#2D3645] bg-[#131629] shadow-[2px_2px_0_0_#070814] overflow-hidden">
+              <div className={`border-2 ${isLight ? 'border-[#1A1D24] bg-white shadow-[2px_2px_0_0_#C8C1B4]' : 'border-[#D6CFC2] border-b-[#2D3645] border-r-[#2D3645] bg-[#131629] shadow-[2px_2px_0_0_#070814]'} overflow-hidden`}>
                 {/* Titlebar */}
-                <div className="flex items-center justify-between px-3 py-1.5 bg-[#D6CFC2] text-[#070814] font-bold text-xs select-none">
+                <div className={`flex items-center justify-between px-3 py-1.5 ${isLight ? 'bg-[#D8D2C5] text-[#11131A] border-b border-[#1A1D24]/20' : 'bg-[#D6CFC2] text-[#070814]'} font-bold text-xs select-none`}>
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 bg-[#00F0FF] inline-block" />
+                    <span className={`w-2 h-2 ${isLight ? 'bg-[#0052FF]' : 'bg-[#00F0FF]'} inline-block`} />
                     <span className="font-pixel text-[9px] uppercase tracking-wider">
                       DHAKA_HQ // SATELLITE_COORDINATES
                     </span>
                   </div>
                   <div className="flex items-center gap-1 font-pixel text-[8px]">
-                    <span className="w-3.5 h-3.5 bg-[#070814] text-[#D6CFC2] flex items-center justify-center border border-[#2D3645] cursor-pointer hover:bg-white/10">-</span>
-                    <span className="w-3.5 h-3.5 bg-[#070814] text-[#D6CFC2] flex items-center justify-center border border-[#2D3645] cursor-pointer hover:bg-white/10">+</span>
-                    <span className="w-3.5 h-3.5 bg-[#070814] text-[#FF2A85] flex items-center justify-center border border-[#2D3645] cursor-pointer hover:bg-white/10">x</span>
+                    <span className={`w-3.5 h-3.5 ${isLight ? 'bg-white text-[#11131A] border border-[#1A1D24]/30' : 'bg-[#070814] text-[#D6CFC2] border border-[#2D3645]'} flex items-center justify-center cursor-pointer hover:bg-white/10`}>-</span>
+                    <span className={`w-3.5 h-3.5 ${isLight ? 'bg-white text-[#11131A] border border-[#1A1D24]/30' : 'bg-[#070814] text-[#D6CFC2] border border-[#2D3645]'} flex items-center justify-center cursor-pointer hover:bg-white/10`}>+</span>
+                    <span className={`w-3.5 h-3.5 ${isLight ? 'bg-[#D90452] text-white border border-[#D90452]' : 'bg-[#070814] text-[#FF2A85] border border-[#2D3645]'} flex items-center justify-center cursor-pointer hover:bg-white/10`}>x</span>
                   </div>
                 </div>
 
                 <div className="p-6 md:p-8">
-                  <div className="flex items-center gap-2 mb-2 font-pixel text-[9px] text-[#00F0FF] uppercase tracking-wider">
-                    <Globe className="w-3.5 h-3.5 text-[#00F0FF]" />
+                  <div className={`flex items-center gap-2 mb-2 font-pixel text-[9px] ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'} uppercase tracking-wider`}>
+                    <Globe className={`w-3.5 h-3.5 ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'}`} />
                     <span>Direct Coordinates</span>
                   </div>
 
-                  <h3 className="font-display font-bold text-base sm:text-lg text-white mb-2">
+                  <h3 className={`font-display font-bold text-base sm:text-lg ${isLight ? 'text-[#11131A]' : 'text-white'} mb-2`}>
                     Dhaka Headquarters
                   </h3>
 
-                  <p className="font-mono text-fluid-sm text-[#8E98AA] mb-6 leading-relaxed">
+                  <p className={`font-mono text-fluid-sm ${isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'} mb-6 leading-relaxed`}>
                     Undergraduate in Computer Science &amp; Engineering at East West University, Dhaka. 
                     Synchronized with global distributed engineering teams across APAC, EMEA, and North America.
                   </p>
 
                   <div className="space-y-3.5">
                     {/* Email row with quick copy */}
-                    <div className="p-3.5 bg-[#0D1512] border-2 border-[#2D3645] flex items-center justify-between">
+                    <div className={`p-3.5 ${isLight ? 'bg-[#F2EFE9] border-[#1A1D24]/20' : 'bg-[#0D1512] border-[#2D3645]'} border-2 flex items-center justify-between`}>
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-[#131629] border border-[#00F0FF]/40 flex items-center justify-center">
-                          <Mail className="w-4 h-4 text-[#00F0FF]" />
+                        <div className={`w-8 h-8 ${isLight ? 'bg-white border-[#0052FF]/40' : 'bg-[#131629] border-[#00F0FF]/40'} flex items-center justify-center`}>
+                          <Mail className={`w-4 h-4 ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'}`} />
                         </div>
                         <div>
-                          <div className="font-pixel text-[8px] text-[#8E98AA] uppercase">Primary Channel</div>
-                          <div className="font-mono text-fluid-sm text-white font-medium select-all">
+                          <div className={`font-pixel text-[8px] ${isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'} uppercase`}>Primary Channel</div>
+                          <div className={`font-mono text-fluid-sm ${isLight ? 'text-[#11131A]' : 'text-white'} font-medium select-all`}>
                             {PORTFOLIO_DATA.meta.email}
                           </div>
                         </div>
@@ -801,39 +808,39 @@ export const ContactFooter: React.FC = () => {
                         type="button"
                         onClick={handleCopyEmail}
                         onMouseEnter={() => chiptuneAudio.playPixelTick()}
-                        className="p-2 bg-[#131629] hover:bg-[#00F0FF]/20 text-[#D6CFC2] hover:text-[#00F0FF] border border-[#2D3645] transition-colors"
+                        className={`p-2 ${isLight ? 'bg-white hover:bg-[#0052FF]/10 text-[#11131A] hover:text-[#0052FF] border-[#1A1D24]/30' : 'bg-[#131629] hover:bg-[#00F0FF]/20 text-[#D6CFC2] hover:text-[#00F0FF] border-[#2D3645]'} border transition-colors`}
                         title="Copy Email"
                         aria-label="Copy primary email"
                       >
-                        {copied ? <Check className="w-4 h-4 text-[#4AF626]" /> : <Copy className="w-4 h-4" />}
+                        {copied ? <Check className={`w-4 h-4 ${isLight ? 'text-[#007A33]' : 'text-[#4AF626]'}`} /> : <Copy className="w-4 h-4" />}
                       </button>
                     </div>
 
                     {/* Academic Anchor & Coordinates */}
-                    <div className="p-3.5 bg-[#0D1512] border-2 border-[#2D3645] flex items-center gap-3">
-                      <div className="w-8 h-8 bg-[#131629] border border-[#FFCC00]/40 flex items-center justify-center">
-                        <GraduationCap className="w-4 h-4 text-[#FFCC00]" />
+                    <div className={`p-3.5 ${isLight ? 'bg-[#F2EFE9] border-[#1A1D24]/20' : 'bg-[#0D1512] border-[#2D3645]'} border-2 flex items-center gap-3`}>
+                      <div className={`w-8 h-8 ${isLight ? 'bg-white border-[#C85A00]/40' : 'bg-[#131629] border-[#FFCC00]/40'} flex items-center justify-center`}>
+                        <GraduationCap className={`w-4 h-4 ${isLight ? 'text-[#C85A00]' : 'text-[#FFCC00]'}`} />
                       </div>
                       <div>
-                        <div className="font-pixel text-[8px] text-[#8E98AA] uppercase">Academic Anchor</div>
-                        <div className="font-mono text-fluid-sm text-white font-medium">
+                        <div className={`font-pixel text-[8px] ${isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'} uppercase`}>Academic Anchor</div>
+                        <div className={`font-mono text-fluid-sm ${isLight ? 'text-[#11131A]' : 'text-white'} font-medium`}>
                           East West University — Dhaka, BD
                         </div>
-                        <div className="font-mono text-fluid-micro text-[#8E98AA] flex items-center gap-1">
-                          <MapPin className="w-3 h-3 text-[#FFCC00]/80" />
+                        <div className={`font-mono text-fluid-micro ${isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'} flex items-center gap-1`}>
+                          <MapPin className={`w-3 h-3 ${isLight ? 'text-[#C85A00]' : 'text-[#FFCC00]/80'}`} />
                           <span>23.7644° N, 90.4252° E • CSE Department</span>
                         </div>
                       </div>
                     </div>
 
                     {/* Systems Specialism */}
-                    <div className="p-3.5 bg-[#0D1512] border-2 border-[#2D3645] flex items-center gap-3">
-                      <div className="w-8 h-8 bg-[#131629] border border-[#4AF626]/40 flex items-center justify-center">
-                        <Code2 className="w-4 h-4 text-[#4AF626]" />
+                    <div className={`p-3.5 ${isLight ? 'bg-[#F2EFE9] border-[#1A1D24]/20' : 'bg-[#0D1512] border-[#2D3645]'} border-2 flex items-center gap-3`}>
+                      <div className={`w-8 h-8 ${isLight ? 'bg-white border-[#007A33]/40' : 'bg-[#131629] border-[#4AF626]/40'} flex items-center justify-center`}>
+                        <Code2 className={`w-4 h-4 ${isLight ? 'text-[#007A33]' : 'text-[#4AF626]'}`} />
                       </div>
                       <div>
-                        <div className="font-pixel text-[8px] text-[#8E98AA] uppercase">Core Engineering Specialisms</div>
-                        <div className="font-mono text-fluid-sm text-slate-200">
+                        <div className={`font-pixel text-[8px] ${isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'} uppercase`}>Core Engineering Specialisms</div>
+                        <div className={`font-mono text-fluid-sm ${isLight ? 'text-[#11131A]' : 'text-slate-200'}`}>
                           C/C++, POSIX IPC, Linux Syscalls, React 18 &amp; GSAP
                         </div>
                       </div>
@@ -841,8 +848,8 @@ export const ContactFooter: React.FC = () => {
                   </div>
 
                   {/* Direct Profiles & Verified Links */}
-                  <div className="mt-8 pt-6 border-t border-[#2D3645]">
-                    <div className="font-pixel text-[8px] text-[#8E98AA] uppercase tracking-widest mb-3">
+                  <div className={`mt-8 pt-6 border-t ${isLight ? 'border-[#1A1D24]/20' : 'border-[#2D3645]'}`}>
+                    <div className={`font-pixel text-[8px] ${isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'} uppercase tracking-widest mb-3`}>
                       Verified Profiles &amp; Commits
                     </div>
                     <div className="flex flex-wrap items-center gap-2.5">
@@ -854,12 +861,12 @@ export const ContactFooter: React.FC = () => {
                           rel="noreferrer"
                           onMouseEnter={() => chiptuneAudio.playPixelTick()}
                           onClick={() => chiptuneAudio.playCoinSFX()}
-                          className="flex items-center gap-2 px-3.5 py-2 bg-[#131629] hover:bg-[#1A1F38] border-2 border-[#2D3645] hover:border-[#00F0FF] text-[#F0EFE6] transition-all font-pixel text-[10px] group shadow-[2px_2px_0_0_#070814]"
+                          className={`flex items-center gap-2 px-3.5 py-2 ${isLight ? 'bg-[#F2EFE9] hover:bg-[#EAE5DB] border-2 border-[#1A1D24]/30 text-[#11131A] shadow-[2px_2px_0_0_#C8C1B4]' : 'bg-[#131629] hover:bg-[#1A1F38] border-2 border-[#2D3645] text-[#F0EFE6] shadow-[2px_2px_0_0_#070814]'} hover:border-[#0052FF] transition-all font-pixel text-[10px] group`}
                           aria-label="View Abdur Rahman Moayed's GitHub profile (@watchknight)"
                         >
-                          <GithubIcon className="w-3.5 h-3.5 text-slate-300 group-hover:text-[#00F0FF] transition-colors" />
+                          <GithubIcon className={`w-3.5 h-3.5 ${isLight ? 'text-[#11131A] group-hover:text-[#0052FF]' : 'text-slate-300 group-hover:text-[#00F0FF]'} transition-colors`} />
                           <span>GitHub</span>
-                          <ArrowUpRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#00F0FF] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                          <ArrowUpRight className={`w-3.5 h-3.5 ${isLight ? 'text-[#3F4654] group-hover:text-[#0052FF]' : 'text-slate-400 group-hover:text-[#00F0FF]'} transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5`} />
                         </a>
                       </Magnetic>
 
@@ -871,12 +878,12 @@ export const ContactFooter: React.FC = () => {
                           rel="noreferrer"
                           onMouseEnter={() => chiptuneAudio.playPixelTick()}
                           onClick={() => chiptuneAudio.playCoinSFX()}
-                          className="flex items-center gap-2 px-3.5 py-2 bg-[#131629] hover:bg-[#1A1F38] border-2 border-[#2D3645] hover:border-[#FFCC00] text-[#F0EFE6] transition-all font-pixel text-[10px] group shadow-[2px_2px_0_0_#070814]"
+                          className={`flex items-center gap-2 px-3.5 py-2 ${isLight ? 'bg-[#F2EFE9] hover:bg-[#EAE5DB] border-2 border-[#1A1D24]/30 text-[#11131A] shadow-[2px_2px_0_0_#C8C1B4]' : 'bg-[#131629] hover:bg-[#1A1F38] border-2 border-[#2D3645] text-[#F0EFE6] shadow-[2px_2px_0_0_#070814]'} hover:border-[#C85A00] transition-all font-pixel text-[10px] group`}
                           aria-label="View Abdur Rahman Moayed's LinkedIn profile"
                         >
-                          <LinkedinIcon className="w-3.5 h-3.5 text-slate-300 group-hover:text-[#FFCC00] transition-colors" />
+                          <LinkedinIcon className={`w-3.5 h-3.5 ${isLight ? 'text-[#11131A] group-hover:text-[#C85A00]' : 'text-slate-300 group-hover:text-[#FFCC00]'} transition-colors`} />
                           <span>LinkedIn</span>
-                          <ArrowUpRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#FFCC00] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                          <ArrowUpRight className={`w-3.5 h-3.5 ${isLight ? 'text-[#3F4654] group-hover:text-[#C85A00]' : 'text-slate-400 group-hover:text-[#FFCC00]'} transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5`} />
                         </a>
                       </Magnetic>
 
@@ -888,12 +895,12 @@ export const ContactFooter: React.FC = () => {
                           rel="noreferrer"
                           onMouseEnter={() => chiptuneAudio.playPixelTick()}
                           onClick={() => chiptuneAudio.playCoinSFX()}
-                          className="flex items-center gap-2 px-3.5 py-2 bg-[#131629] hover:bg-[#1A1F38] border-2 border-[#2D3645] hover:border-[#FF2A85] text-[#F0EFE6] transition-all font-pixel text-[10px] group shadow-[2px_2px_0_0_#070814]"
+                          className={`flex items-center gap-2 px-3.5 py-2 ${isLight ? 'bg-[#F2EFE9] hover:bg-[#EAE5DB] border-2 border-[#1A1D24]/30 text-[#11131A] shadow-[2px_2px_0_0_#C8C1B4]' : 'bg-[#131629] hover:bg-[#1A1F38] border-2 border-[#2D3645] text-[#F0EFE6] shadow-[2px_2px_0_0_#070814]'} hover:border-[#D90452] transition-all font-pixel text-[10px] group`}
                           aria-label="View Abdur Rahman Moayed's Twitter / X profile"
                         >
-                          <TwitterIcon className="w-3.5 h-3.5 text-slate-300 group-hover:text-[#FF2A85] transition-colors" />
+                          <TwitterIcon className={`w-3.5 h-3.5 ${isLight ? 'text-[#11131A] group-hover:text-[#D90452]' : 'text-slate-300 group-hover:text-[#FF2A85]'} transition-colors`} />
                           <span>Twitter / X</span>
-                          <ArrowUpRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#FF2A85] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                          <ArrowUpRight className={`w-3.5 h-3.5 ${isLight ? 'text-[#3F4654] group-hover:text-[#D90452]' : 'text-slate-400 group-hover:text-[#FF2A85]'} transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5`} />
                         </a>
                       </Magnetic>
                     </div>
@@ -904,33 +911,33 @@ export const ContactFooter: React.FC = () => {
 
             {/* Right Column: Send Direct Dispatch Form */}
             <div ref={dispatchCardRef} id="dispatch-form-card" className="footer-anim lg:col-span-7">
-              <div className="border-2 border-[#D6CFC2] border-b-[#2D3645] border-r-[#2D3645] bg-[#131629] shadow-[2px_2px_0_0_#070814] overflow-hidden">
+              <div className={`border-2 ${isLight ? 'border-[#1A1D24] bg-white shadow-[2px_2px_0_0_#C8C1B4]' : 'border-[#D6CFC2] border-b-[#2D3645] border-r-[#2D3645] bg-[#131629] shadow-[2px_2px_0_0_#070814]'} overflow-hidden`}>
                 {/* Titlebar */}
-                <div className="flex items-center justify-between px-3 py-1.5 bg-[#D6CFC2] text-[#070814] font-bold text-xs select-none">
+                <div className={`flex items-center justify-between px-3 py-1.5 ${isLight ? 'bg-[#D8D2C5] text-[#11131A] border-b border-[#1A1D24]/20' : 'bg-[#D6CFC2] text-[#070814]'} font-bold text-xs select-none`}>
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 bg-[#FF2A85] inline-block animate-pulse" />
+                    <span className={`w-2 h-2 ${isLight ? 'bg-[#D90452]' : 'bg-[#FF2A85]'} inline-block animate-pulse`} />
                     <span className="font-pixel text-[9px] uppercase tracking-wider">
                       DISPATCH_UPLINK // PACKET_BUFFER
                     </span>
                   </div>
                   <div className="flex items-center gap-1 font-pixel text-[8px]">
-                    <span className="w-3.5 h-3.5 bg-[#070814] text-[#D6CFC2] flex items-center justify-center border border-[#2D3645] cursor-pointer hover:bg-white/10">-</span>
-                    <span className="w-3.5 h-3.5 bg-[#070814] text-[#D6CFC2] flex items-center justify-center border border-[#2D3645] cursor-pointer hover:bg-white/10">+</span>
-                    <span className="w-3.5 h-3.5 bg-[#070814] text-[#FF2A85] flex items-center justify-center border border-[#2D3645] cursor-pointer hover:bg-white/10">x</span>
+                    <span className={`w-3.5 h-3.5 ${isLight ? 'bg-white text-[#11131A] border border-[#1A1D24]/30' : 'bg-[#070814] text-[#D6CFC2] border border-[#2D3645]'} flex items-center justify-center cursor-pointer hover:bg-white/10`}>-</span>
+                    <span className={`w-3.5 h-3.5 ${isLight ? 'bg-white text-[#11131A] border border-[#1A1D24]/30' : 'bg-[#070814] text-[#D6CFC2] border border-[#2D3645]'} flex items-center justify-center cursor-pointer hover:bg-white/10`}>+</span>
+                    <span className={`w-3.5 h-3.5 ${isLight ? 'bg-[#D90452] text-white border border-[#D90452]' : 'bg-[#070814] text-[#FF2A85] border border-[#2D3645]'} flex items-center justify-center cursor-pointer hover:bg-white/10`}>x</span>
                   </div>
                 </div>
 
                 <div className="p-6 md:p-8">
-                  <div className="flex items-center gap-2 mb-2 font-pixel text-[9px] text-[#FFCC00] uppercase tracking-wider">
-                    <Sparkles className="w-3.5 h-3.5 text-[#FFCC00]" />
+                  <div className={`flex items-center gap-2 mb-2 font-pixel text-[9px] ${isLight ? 'text-[#C85A00]' : 'text-[#FFCC00]'} uppercase tracking-wider`}>
+                    <Sparkles className={`w-3.5 h-3.5 ${isLight ? 'text-[#C85A00]' : 'text-[#FFCC00]'}`} />
                     <span>Encrypted Satellite Channel</span>
                   </div>
 
-                  <h3 className="font-display font-bold text-base sm:text-lg text-white mb-2">
+                  <h3 className={`font-display font-bold text-base sm:text-lg ${isLight ? 'text-[#11131A]' : 'text-white'} mb-2`}>
                     Send Direct Dispatch
                   </h3>
 
-                  <p className="font-mono text-fluid-sm text-[#8E98AA] mb-6 leading-relaxed">
+                  <p className={`font-mono text-fluid-sm ${isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'} mb-6 leading-relaxed`}>
                     Transmit an engineering proposal, role inquiry, or architectural collaboration payload directly to my inbox.
                   </p>
 
@@ -938,15 +945,15 @@ export const ContactFooter: React.FC = () => {
                     <div
                       role="status"
                       aria-live="polite"
-                      className="p-8 bg-[#0D1512] border-2 border-[#4AF626] text-center space-y-3 animate-in fade-in shadow-[0_0_15px_rgba(74,246,38,0.2)]"
+                      className={`p-8 ${isLight ? 'bg-[#F2EFE9] border-[#007A33]' : 'bg-[#0D1512] border-[#4AF626]'} border-2 text-center space-y-3 animate-in fade-in shadow-[0_0_15px_rgba(74,246,38,0.2)]`}
                     >
-                      <div className="w-12 h-12 bg-[#131629] border border-[#4AF626]/40 flex items-center justify-center mx-auto text-[#4AF626]">
+                      <div className={`w-12 h-12 ${isLight ? 'bg-white border-[#007A33]/40 text-[#007A33]' : 'bg-[#131629] border-[#4AF626]/40 text-[#4AF626]'} border flex items-center justify-center mx-auto`}>
                         <Check className="w-6 h-6" />
                       </div>
-                      <div className="font-pixel font-bold text-sm sm:text-base text-white">
+                      <div className={`font-pixel font-bold text-sm sm:text-base ${isLight ? 'text-[#11131A]' : 'text-white'}`}>
                         [ TRANSMISSION PACKET QUEUED // ACK RECEIVED ]
                       </div>
-                      <p className="font-mono text-fluid-sm text-[#D6CFC2] max-w-md mx-auto">
+                      <p className={`font-mono text-fluid-sm ${isLight ? 'text-[#3F4654]' : 'text-[#D6CFC2]'} max-w-md mx-auto`}>
                         Thank you. Your message packet has been routed to Abdur Rahman Moayed.
                         Guaranteed response within 24 hours.
                       </p>
@@ -956,7 +963,7 @@ export const ContactFooter: React.FC = () => {
                       <div>
                         <label
                           htmlFor="dispatch-name"
-                          className="block font-pixel text-[9px] text-slate-300 uppercase tracking-wider mb-1.5"
+                          className={`block font-pixel text-[9px] ${isLight ? 'text-[#3F4654]' : 'text-slate-300'} uppercase tracking-wider mb-1.5`}
                         >
                           Your Name / Organization
                         </label>
@@ -969,16 +976,16 @@ export const ContactFooter: React.FC = () => {
                           }}
                           onKeyDown={() => chiptuneAudio.playNoiseTap()}
                           placeholder="e.g. Satoshi Nakamoto / DeepMind Systems"
-                          className="w-full px-4 py-3 bg-[#0D1512] border-2 border-[#2D3645] text-[#F0EFE6] placeholder:text-[#8E98AA] focus:outline-none focus:border-[#00F0FF] transition-colors font-mono text-xs"
+                          className={`w-full px-4 py-3 ${isLight ? 'bg-white border-2 border-[#1A1D24]/30 text-[#11131A] placeholder:text-[#3F4654]/60 focus:border-[#0052FF]' : 'bg-[#0D1512] border-2 border-[#2D3645] text-[#F0EFE6] placeholder:text-[#8E98AA] focus:border-[#00F0FF]'} focus:outline-none transition-colors font-mono text-xs`}
                         />
                       </div>
 
                       <div>
                         <label
                           htmlFor="dispatch-email"
-                          className="block font-pixel text-[9px] text-slate-300 uppercase tracking-wider mb-1.5"
+                          className={`block font-pixel text-[9px] ${isLight ? 'text-[#3F4654]' : 'text-slate-300'} uppercase tracking-wider mb-1.5`}
                         >
-                          Electronic Mail Coordinates <span className="text-[#FFCC00]">*</span>
+                          Electronic Mail Coordinates <span className={`${isLight ? 'text-[#C85A00]' : 'text-[#FFCC00]'}`}>*</span>
                         </label>
                         <input
                           id="dispatch-email"
@@ -994,10 +1001,10 @@ export const ContactFooter: React.FC = () => {
                           }}
                           onKeyDown={() => chiptuneAudio.playNoiseTap()}
                           placeholder="recruiter@engineering.com"
-                          className={`w-full px-4 py-3 bg-[#0D1512] border-2 text-[#F0EFE6] placeholder:text-[#8E98AA] focus:outline-none transition-colors font-mono text-xs ${
+                          className={`w-full px-4 py-3 ${isLight ? 'bg-white text-[#11131A] placeholder:text-[#3F4654]/60' : 'bg-[#0D1512] text-[#F0EFE6] placeholder:text-[#8E98AA]'} border-2 focus:outline-none transition-colors font-mono text-xs ${
                             formErrors.email
                               ? 'border-rose-500/80 focus:border-rose-400'
-                              : 'border-[#2D3645] focus:border-[#00F0FF]'
+                              : isLight ? 'border-[#1A1D24]/30 focus:border-[#0052FF]' : 'border-[#2D3645] focus:border-[#00F0FF]'
                           }`}
                         />
                         {formErrors.email && (
@@ -1012,12 +1019,12 @@ export const ContactFooter: React.FC = () => {
                         <div className="flex items-center justify-between mb-1.5">
                           <label
                             htmlFor="dispatch-message"
-                            className="font-pixel text-[9px] text-slate-300 uppercase tracking-wider"
+                            className={`font-pixel text-[9px] ${isLight ? 'text-[#3F4654]' : 'text-slate-300'} uppercase tracking-wider`}
                           >
-                            Dispatch Payload / Message <span className="text-[#FFCC00]">*</span>
+                            Dispatch Payload / Message <span className={`${isLight ? 'text-[#C85A00]' : 'text-[#FFCC00]'}`}>*</span>
                           </label>
                           {isPrefillGlow && (
-                            <span className="font-pixel text-[8px] text-[#00F0FF] animate-pulse font-semibold">
+                            <span className={`font-pixel text-[8px] ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'} animate-pulse font-semibold`}>
                               ⚡ Auto-populated by terminal
                             </span>
                           )}
@@ -1037,12 +1044,12 @@ export const ContactFooter: React.FC = () => {
                           }}
                           onKeyDown={() => chiptuneAudio.playNoiseTap()}
                           placeholder="Outline project parameters, systems requirements, or role details..."
-                          className={`w-full px-4 py-3 bg-[#0D1512] border-2 text-[#F0EFE6] placeholder:text-[#8E98AA] focus:outline-none transition-all duration-300 font-mono text-xs resize-none ${
+                          className={`w-full px-4 py-3 ${isLight ? 'bg-white text-[#11131A] placeholder:text-[#3F4654]/60' : 'bg-[#0D1512] text-[#F0EFE6] placeholder:text-[#8E98AA]'} border-2 focus:outline-none transition-all duration-300 font-mono text-xs resize-none ${
                             formErrors.message
                               ? 'border-rose-500/80 focus:border-rose-400'
                               : isPrefillGlow
-                              ? 'border-[#00F0FF] ring-1 ring-[#00F0FF]/50 shadow-[0_0_10px_rgba(0,240,255,0.3)]'
-                              : 'border-[#2D3645] focus:border-[#00F0FF]'
+                              ? (isLight ? 'border-[#0052FF] ring-1 ring-[#0052FF]/50 shadow-[0_0_10px_rgba(0,82,255,0.3)]' : 'border-[#00F0FF] ring-1 ring-[#00F0FF]/50 shadow-[0_0_10px_rgba(0,240,255,0.3)]')
+                              : (isLight ? 'border-[#1A1D24]/30 focus:border-[#0052FF]' : 'border-[#2D3645] focus:border-[#00F0FF]')
                           }`}
                         />
                         {formErrors.message && (
@@ -1162,14 +1169,22 @@ export const ContactFooter: React.FC = () => {
         >
           <div
             ref={modalContentRef}
-            className="w-full max-w-3xl max-h-[90vh] overflow-y-auto overscroll-contain bg-[#131629] border-2 border-[#D6CFC2] border-b-[#2D3645] border-r-[#2D3645] shadow-[0_0_30px_rgba(0,240,255,0.35),4px_4px_0_0_#070814] text-[#F0EFE6]"
+            className={`w-full max-w-3xl max-h-[90vh] overflow-y-auto overscroll-contain border-2 ${
+              isLight
+                ? 'bg-[#F2EFE9] border-[#1A1D24] shadow-[4px_4px_0_0_#C8C1B4] text-[#11131A]'
+                : 'bg-[#131629] border-[#D6CFC2] border-b-[#2D3645] border-r-[#2D3645] shadow-[0_0_30px_rgba(0,240,255,0.35),4px_4px_0_0_#070814] text-[#F0EFE6]'
+            }`}
             onClick={(e) => e.stopPropagation()}
             data-lenis-prevent
           >
             {/* 90s Retro-OS Window Chrome Hardware Titlebar */}
-            <div className="flex items-center justify-between px-3 py-2 bg-[#D6CFC2] text-[#070814] font-bold text-xs select-none">
+            <div className={`flex items-center justify-between px-3 py-2 font-bold text-xs select-none ${
+              isLight ? 'bg-[#D6CFC2] text-[#11131A] border-b border-[#1A1D24]/20' : 'bg-[#D6CFC2] text-[#070814]'
+            }`}>
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 bg-[#4AF626] border border-[#070814] inline-block animate-pulse" />
+                <span className={`w-2.5 h-2.5 border inline-block animate-pulse ${
+                  isLight ? 'bg-[#007A33] border-[#1A1D24]' : 'bg-[#4AF626] border-[#070814]'
+                }`} />
                 <span className="font-pixel text-[10px] uppercase tracking-wider">
                   SYS.96 // CREDENTIALS &amp; SYSTEMS DOSSIER
                 </span>
@@ -1179,7 +1194,11 @@ export const ContactFooter: React.FC = () => {
                   ref={modalCloseBtnRef}
                   type="button"
                   onClick={closeResumeModal}
-                  className="w-4 h-4 bg-[#070814] text-[#FF2A85] flex items-center justify-center border border-[#2D3645] hover:bg-white/10"
+                  className={`w-4 h-4 flex items-center justify-center border font-pixel text-[9px] ${
+                    isLight
+                      ? 'bg-[#E5DFD3] text-[#11131A] border-[#1A1D24] hover:bg-[#D8D2C5]'
+                      : 'bg-[#070814] text-[#FF2A85] border-[#2D3645] hover:bg-white/10'
+                  }`}
                   aria-label="Close credentials modal"
                 >
                   x
@@ -1189,17 +1208,19 @@ export const ContactFooter: React.FC = () => {
 
             <div className="p-6 sm:p-8 space-y-6">
               {/* Modal Header */}
-              <div className="border-b border-[#2D3645] pb-4">
-                <span className="font-pixel text-[9px] text-[#00F0FF] uppercase tracking-widest block mb-1">
+              <div className={`border-b pb-4 ${isLight ? 'border-[#1A1D24]/20' : 'border-[#2D3645]'}`}>
+                <span className={`font-pixel text-[9px] uppercase tracking-widest block mb-1 ${
+                  isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'
+                }`}>
                   &gt; VERIFIED ENGINEER CREDENTIALS // SATELLITE TRANSCEIVER
                 </span>
                 <h3
                   id="resume-modal-title"
-                  className="font-pixel font-bold text-lg sm:text-xl text-white"
+                  className={`font-pixel font-bold text-lg sm:text-xl ${isLight ? 'text-[#11131A]' : 'text-white'}`}
                 >
                   {PORTFOLIO_DATA.meta.name}
                 </h3>
-                <p className="font-mono text-fluid-micro text-[#8E98AA] mt-1">
+                <p className={`font-mono text-fluid-micro mt-1 ${isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'}`}>
                   CSE Undergraduate @ East West University, Dhaka • Full-Stack Architect &amp; Systems Engineer
                 </p>
               </div>
@@ -1209,14 +1230,18 @@ export const ContactFooter: React.FC = () => {
                 
                 {/* Education */}
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2 font-pixel text-[10px] text-[#00F0FF] uppercase tracking-wider">
-                    <GraduationCap className="w-4 h-4 text-[#00F0FF]" />
+                  <div className={`flex items-center gap-2 font-pixel text-[10px] uppercase tracking-wider ${
+                    isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'
+                  }`}>
+                    <GraduationCap className={`w-4 h-4 ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'}`} />
                     <span>Academic Anchor</span>
                   </div>
-                  <div className="p-4 bg-[#0D1512] border-2 border-[#2D3645]">
-                    <div className="font-pixel text-xs text-white">East West University, Dhaka, Bangladesh</div>
-                    <div className="font-mono text-fluid-micro text-[#D6CFC2] mt-1">Bachelor of Science in Computer Science and Engineering (CSE)</div>
-                    <p className="text-[#8E98AA] text-fluid-micro mt-1 font-mono">
+                  <div className={`p-4 border-2 ${
+                    isLight ? 'bg-[#FFFFFF] border-[#1A1D24] shadow-[2px_2px_0_0_#C8C1B4]' : 'bg-[#0D1512] border-2 border-[#2D3645]'
+                  }`}>
+                    <div className={`font-pixel text-xs ${isLight ? 'text-[#11131A]' : 'text-white'}`}>East West University, Dhaka, Bangladesh</div>
+                    <div className={`font-mono text-fluid-micro mt-1 ${isLight ? 'text-[#3F4654]' : 'text-[#D6CFC2]'}`}>Bachelor of Science in Computer Science and Engineering (CSE)</div>
+                    <p className={`text-fluid-micro mt-1 font-mono ${isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'}`}>
                       Specialized coursework: Operating Systems (POSIX IPC, process scheduling), Algorithms, Computer Networks, Distributed Computing, Database Management Systems.
                     </p>
                   </div>
@@ -1224,40 +1249,66 @@ export const ContactFooter: React.FC = () => {
 
                 {/* Technical Capabilities Matrix */}
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2 font-pixel text-[10px] text-[#FFCC00] uppercase tracking-wider">
-                    <Code2 className="w-4 h-4 text-[#FFCC00]" />
+                  <div className={`flex items-center gap-2 font-pixel text-[10px] uppercase tracking-wider ${
+                    isLight ? 'text-[#C85A00]' : 'text-[#FFCC00]'
+                  }`}>
+                    <Code2 className={`w-4 h-4 ${isLight ? 'text-[#C85A00]' : 'text-[#FFCC00]'}`} />
                     <span>Verified Competencies &amp; Systems Stack</span>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div className="p-3.5 bg-[#0D1512] border-2 border-[#2D3645]">
-                      <div className="font-pixel text-[9px] text-[#00F0FF] font-bold uppercase mb-1">
+                    <div className={`p-3.5 border-2 ${
+                      isLight ? 'bg-[#FFFFFF] border-[#1A1D24] shadow-[2px_2px_0_0_#C8C1B4]' : 'bg-[#0D1512] border-[#2D3645]'
+                    }`}>
+                      <div className={`font-pixel text-[9px] font-bold uppercase mb-1 ${
+                        isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'
+                      }`}>
                         Systems &amp; Low-Level
                       </div>
-                      <p className="text-[#D6CFC2] text-fluid-micro leading-relaxed font-mono">
+                      <p className={`text-fluid-micro leading-relaxed font-mono ${
+                        isLight ? 'text-[#3F4654]' : 'text-[#D6CFC2]'
+                      }`}>
                         C, C++, POSIX Shared Memory (shmget/shmat), Linux IPC Pipes, fork() hierarchies, Valgrind memory leak audits, Linux Ubuntu tooling.
                       </p>
                     </div>
-                    <div className="p-3.5 bg-[#0D1512] border-2 border-[#2D3645]">
-                      <div className="font-pixel text-[9px] text-[#FFCC00] font-bold uppercase mb-1">
+                    <div className={`p-3.5 border-2 ${
+                      isLight ? 'bg-[#FFFFFF] border-[#1A1D24] shadow-[2px_2px_0_0_#C8C1B4]' : 'bg-[#0D1512] border-[#2D3645]'
+                    }`}>
+                      <div className={`font-pixel text-[9px] font-bold uppercase mb-1 ${
+                        isLight ? 'text-[#C85A00]' : 'text-[#FFCC00]'
+                      }`}>
                         Frontend &amp; Creative
                       </div>
-                      <p className="text-[#D6CFC2] text-fluid-micro leading-relaxed font-mono">
+                      <p className={`text-fluid-micro leading-relaxed font-mono ${
+                        isLight ? 'text-[#3F4654]' : 'text-[#D6CFC2]'
+                      }`}>
                         React 18, TypeScript strict generics, GSAP 3 (ScrollTrigger pinning), Lenis smooth inertial scrolling, Tailwind CSS, HTML5 2D Canvas.
                       </p>
                     </div>
-                    <div className="p-3.5 bg-[#0D1512] border-2 border-[#2D3645]">
-                      <div className="font-pixel text-[9px] text-[#4AF626] font-bold uppercase mb-1">
+                    <div className={`p-3.5 border-2 ${
+                      isLight ? 'bg-[#FFFFFF] border-[#1A1D24] shadow-[2px_2px_0_0_#C8C1B4]' : 'bg-[#0D1512] border-[#2D3645]'
+                    }`}>
+                      <div className={`font-pixel text-[9px] font-bold uppercase mb-1 ${
+                        isLight ? 'text-[#007A33]' : 'text-[#4AF626]'
+                      }`}>
                         Data Fabric &amp; Cloud
                       </div>
-                      <p className="text-[#D6CFC2] text-fluid-micro leading-relaxed font-mono">
+                      <p className={`text-fluid-micro leading-relaxed font-mono ${
+                        isLight ? 'text-[#3F4654]' : 'text-[#D6CFC2]'
+                      }`}>
                         Cloud Firestore real-time snapshot listeners, PostgreSQL, MongoDB, IndexedDB offline persistence, Firebase Auth.
                       </p>
                     </div>
-                    <div className="p-3.5 bg-[#0D1512] border-2 border-[#2D3645]">
-                      <div className="font-pixel text-[9px] text-[#00F0FF] font-bold uppercase mb-1">
+                    <div className={`p-3.5 border-2 ${
+                      isLight ? 'bg-[#FFFFFF] border-[#1A1D24] shadow-[2px_2px_0_0_#C8C1B4]' : 'bg-[#0D1512] border-[#2D3645]'
+                    }`}>
+                      <div className={`font-pixel text-[9px] font-bold uppercase mb-1 ${
+                        isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'
+                      }`}>
                         DevOps &amp; Infrastructure
                       </div>
-                      <p className="text-[#D6CFC2] text-fluid-micro leading-relaxed font-mono">
+                      <p className={`text-fluid-micro leading-relaxed font-mono ${
+                        isLight ? 'text-[#3F4654]' : 'text-[#D6CFC2]'
+                      }`}>
                         GitHub Actions automated CI/CD test workflows, Docker containerization, Vite micro-bundling, Git version control.
                       </p>
                     </div>
@@ -1266,8 +1317,10 @@ export const ContactFooter: React.FC = () => {
 
                 {/* Flagship Architectures Summary */}
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2 font-pixel text-[10px] text-[#4AF626] uppercase tracking-wider">
-                    <Briefcase className="w-4 h-4 text-[#4AF626]" />
+                  <div className={`flex items-center gap-2 font-pixel text-[10px] uppercase tracking-wider ${
+                    isLight ? 'text-[#007A33]' : 'text-[#4AF626]'
+                  }`}>
+                    <Briefcase className={`w-4 h-4 ${isLight ? 'text-[#007A33]' : 'text-[#4AF626]'}`} />
                     <span>Flagship Production Repositories</span>
                   </div>
                   <div className="space-y-2 font-mono text-fluid-micro">
@@ -1278,11 +1331,13 @@ export const ContactFooter: React.FC = () => {
                       { name: 'Trash Trail', repo: 'https://github.com/watchknight/TrashTrail', tech: 'GSAP Pinned ScrollTrigger Narrative' },
                       { name: 'Neon Vanguard & OS Labs', repo: 'https://github.com/watchknight/BitForge', tech: 'HTML5 2D Canvas & Linux C POSIX Shared Memory' },
                     ].map((item) => (
-                      <div key={item.name} className="p-2.5 bg-[#0D1512] border border-[#2D3645] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                      <div key={item.name} className={`p-2.5 border flex flex-col sm:flex-row sm:items-center justify-between gap-2 ${
+                        isLight ? 'bg-[#FFFFFF] border-[#1A1D24]/20 shadow-[1px_1px_0_0_#C8C1B4]' : 'bg-[#0D1512] border-[#2D3645]'
+                      }`}>
                         <div className="min-w-0 flex-1">
-                          <span className="font-bold text-white">{item.name}</span>
-                          <span className="text-slate-500 mx-2 hidden sm:inline">—</span>
-                          <span className="text-slate-400 block sm:inline">{item.tech}</span>
+                          <span className={`font-bold ${isLight ? 'text-[#11131A]' : 'text-white'}`}>{item.name}</span>
+                          <span className={`${isLight ? 'text-[#1A1D24]/40' : 'text-slate-500'} mx-2 hidden sm:inline`}>—</span>
+                          <span className={`${isLight ? 'text-[#3F4654]' : 'text-slate-400'} block sm:inline`}>{item.tech}</span>
                         </div>
                         <a
                           href={item.repo}
@@ -1290,7 +1345,9 @@ export const ContactFooter: React.FC = () => {
                           rel="noreferrer"
                           onMouseEnter={() => chiptuneAudio.playPixelTick()}
                           onClick={() => chiptuneAudio.playCoinSFX()}
-                          className="text-[#00F0FF] hover:underline font-bold flex items-center gap-1 shrink-0 self-start sm:self-center font-pixel text-[9px]"
+                          className={`hover:underline font-bold flex items-center gap-1 shrink-0 self-start sm:self-center font-pixel text-[9px] ${
+                            isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'
+                          }`}
                           aria-label={`View repository for ${item.name}`}
                         >
                           <span>[ REPO ]</span>
@@ -1304,9 +1361,11 @@ export const ContactFooter: React.FC = () => {
               </div>
 
               {/* Modal Actions */}
-              <div className="pt-4 border-t border-[#2D3645] flex flex-wrap items-center justify-between gap-3">
-                <div className="font-mono text-fluid-micro text-[#8E98AA]">
-                  Direct Channel: <strong className="text-white">{PORTFOLIO_DATA.meta.email}</strong>
+              <div className={`pt-4 border-t flex flex-wrap items-center justify-between gap-3 ${
+                isLight ? 'border-[#1A1D24]/20' : 'border-[#2D3645]'
+              }`}>
+                <div className={`font-mono text-fluid-micro ${isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'}`}>
+                  Direct Channel: <strong className={isLight ? 'text-[#11131A]' : 'text-white'}>{PORTFOLIO_DATA.meta.email}</strong>
                 </div>
 
                 <div className="flex items-center gap-3">
@@ -1317,7 +1376,11 @@ export const ContactFooter: React.FC = () => {
                       closeResumeModal();
                     }}
                     onMouseEnter={() => chiptuneAudio.playPixelTick()}
-                    className="px-4 py-2 bg-[#0D1512] hover:bg-white/10 text-[#D6CFC2] font-pixel text-[9px] border border-[#2D3645]"
+                    className={`px-4 py-2 font-pixel text-[9px] border transition-colors ${
+                      isLight
+                        ? 'bg-[#E5DFD3] hover:bg-[#D8D2C5] text-[#11131A] border-[#1A1D24]'
+                        : 'bg-[#0D1512] hover:bg-white/10 text-[#D6CFC2] border-[#2D3645]'
+                    }`}
                   >
                     [ CLOSE DOSSIER ]
                   </button>
@@ -1326,7 +1389,11 @@ export const ContactFooter: React.FC = () => {
                     download="Abdur_Rahman_Moayed_Resume.pdf"
                     onMouseEnter={() => chiptuneAudio.playPixelTick()}
                     onClick={() => chiptuneAudio.playCoinSFX()}
-                    className="px-5 py-2.5 bg-[#00F0FF] text-[#070814] font-pixel text-[10px] uppercase font-bold flex items-center gap-2 border-2 border-white shadow-[2px_2px_0_0_#070814] hover:bg-[#FF2A85] hover:text-white"
+                    className={`px-5 py-2.5 font-pixel text-[10px] uppercase font-bold flex items-center gap-2 border-2 transition-colors ${
+                      isLight
+                        ? 'bg-[#0052FF] text-white border-[#1A1D24] shadow-[2px_2px_0_0_#C8C1B4] hover:bg-[#D90452]'
+                        : 'bg-[#00F0FF] text-[#070814] border-white shadow-[2px_2px_0_0_#070814] hover:bg-[#FF2A85] hover:text-white'
+                    }`}
                     aria-label="Download Abdur Rahman Moayed's Resume PDF document"
                   >
                     <Download className="w-3.5 h-3.5" />

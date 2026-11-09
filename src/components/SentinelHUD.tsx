@@ -570,7 +570,7 @@ export const SentinelHUD: React.FC = () => {
             type="button"
             data-magnetic-hud="true"
             role="radio"
-            aria-checked={theme === 'obsidian'}
+            aria-checked={theme === 'obsidian' || theme === 'dark'}
             onPointerEnter={handlePointerHover}
             onClick={(e) => {
               setTheme('obsidian');
@@ -580,7 +580,7 @@ export const SentinelHUD: React.FC = () => {
             title="Obsidian Void (#090A0D)"
             aria-label="Switch to Obsidian theme"
             className={`w-4 h-4 rounded-full flex items-center justify-center transition-all ${
-              theme === 'obsidian'
+              theme === 'obsidian' || theme === 'dark'
                 ? 'ring-2 ring-wk-terracotta-pulse scale-110'
                 : 'opacity-60 hover:opacity-100 hover:scale-105'
             }`}
@@ -592,7 +592,7 @@ export const SentinelHUD: React.FC = () => {
             type="button"
             data-magnetic-hud="true"
             role="radio"
-            aria-checked={theme === 'alabaster'}
+            aria-checked={theme === 'alabaster' || theme === 'light'}
             onPointerEnter={handlePointerHover}
             onClick={(e) => {
               setTheme('alabaster');
@@ -602,7 +602,7 @@ export const SentinelHUD: React.FC = () => {
             title="Editorial Alabaster (#F2EFE9)"
             aria-label="Switch to Alabaster theme"
             className={`w-4 h-4 rounded-full flex items-center justify-center transition-all ${
-              theme === 'alabaster'
+              theme === 'alabaster' || theme === 'light'
                 ? 'ring-2 ring-wk-terracotta-pulse scale-110'
                 : 'opacity-60 hover:opacity-100 hover:scale-105'
             }`}

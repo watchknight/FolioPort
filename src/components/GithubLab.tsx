@@ -13,6 +13,7 @@ import {
   AlertTriangle,
   ExternalLink
 } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 export interface GithubRepo {
   id: number;
@@ -308,6 +309,8 @@ const REPO_DESCRIPTIONS: Record<string, { desc: string; category: GithubRepo['ca
 export type RetroFilterCategory = 'ALL' | 'TS/JS' | 'C/C++' | 'HTML/CANVAS';
 
 export const GithubLab: React.FC = () => {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const sectionRef = useRef<HTMLElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const [repos, setRepos] = useState<GithubRepo[]>(FALLBACK_REPOS);
@@ -559,7 +562,16 @@ export const GithubLab: React.FC = () => {
   const filterTabs: RetroFilterCategory[] = ['ALL', 'TS/JS', 'C/C++', 'HTML/CANVAS'];
 
   return (
-    <section ref={sectionRef} id="lab" className="py-24 md:py-32 relative bg-[#070814] text-[#F0EFE6] border-t-2 border-[#2D3645] overflow-hidden">
+    <section 
+      ref={sectionRef} 
+      id="lab" 
+      className="py-24 md:py-32 relative bg-[#070814] text-[#F0EFE6] border-t-2 border-[#2D3645] overflow-hidden"
+      style={{
+        backgroundColor: 'var(--crt-void-bg, #070814)',
+        color: 'var(--pixel-ivory-text, #F0EFE6)',
+        borderColor: 'var(--crt-bezel-shadow, #2D3645)',
+      }}
+    >
       {/* 90s Cyberdeck PCB Background Grid */}
       <div 
         className="pointer-events-none absolute inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#00F0FF_1px,transparent_1px),linear-gradient(to_bottom,#00F0FF_1px,transparent_1px)] bg-[size:32px_32px] -z-10" 
@@ -569,7 +581,10 @@ export const GithubLab: React.FC = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         
         {/* Section Header */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-10 border-b-2 border-[#2D3645] pb-8 gap-6">
+        <div 
+          className="flex flex-col lg:flex-row lg:items-end justify-between mb-10 border-b-2 border-[#2D3645] pb-8 gap-6"
+          style={{ borderColor: 'var(--crt-bezel-shadow, #2D3645)' }}
+        >
           <div>
             <div className="flex items-center gap-2 font-pixel text-[10px] text-[#FFCC00] uppercase tracking-widest mb-3">
               <FlaskConical className="w-4 h-4 text-[#FFCC00]" />
@@ -584,12 +599,13 @@ export const GithubLab: React.FC = () => {
                   letterSpacing: '-0.035em',
                   fontSize: 'clamp(1.85rem, 4vw, 3.25rem)',
                   lineHeight: 1.05,
+                  color: 'var(--pixel-ivory-text, #F0EFE6)',
                 }}
               >
                 GITHUB <span className="text-[#FFCC00]">DATA CARTRIDGES</span>
               </h2>
             </div>
-            <p className="font-body text-fluid-body text-[#D6CFC2] max-w-2xl mt-2 leading-relaxed">
+            <p className="font-body text-fluid-body text-[#D6CFC2] max-w-2xl mt-2 leading-relaxed" style={{ color: 'var(--text-secondary, #D6CFC2)' }}>
               Live cryptographic telemetry and repository stream directly queried from GitHub. 
               Restyled as 90s Cyberdeck Floppy Modules and Data Cartridges spanning Linux C/C++ OS primitives, spatial physics engines, and localized web architectures.
             </p>
@@ -597,7 +613,15 @@ export const GithubLab: React.FC = () => {
 
           {/* Telemetry Status Strip & Manual Refresh */}
           <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-[#131629] border-2 border-[#2D3645] shadow-[2px_2px_0_0_#070814] text-[9px] font-pixel">
+            <div 
+              className="flex items-center gap-2 px-3 py-1.5 bg-[#131629] border-2 border-[#2D3645] shadow-[2px_2px_0_0_#070814] text-[9px] font-pixel"
+              style={{
+                backgroundColor: 'var(--crt-panel-slate, #131629)',
+                borderColor: 'var(--crt-bezel-shadow, #2D3645)',
+                color: 'var(--pixel-ivory-text, #F0EFE6)',
+                boxShadow: isLight ? '2px 2px 0 0 #C8C1B4' : '2px 2px 0 0 #070814',
+              }}
+            >
               {dataSource === 'live' && (
                 <>
                   <span className="w-2 h-2 rounded-none bg-[#4AF626] animate-pulse" />
@@ -729,21 +753,45 @@ export const GithubLab: React.FC = () => {
                 key={repo.id}
                 onMouseEnter={() => audio.playTick()}
                 className="relative bg-[#131629] border-2 border-[#2D3645] hover:border-[#FFCC00] shadow-[2px_2px_0_0_#070814] transition-all duration-200 group flex flex-col justify-between"
+                style={{
+                  backgroundColor: 'var(--crt-panel-slate, #131629)',
+                  borderColor: 'var(--crt-bezel-shadow, #2D3645)',
+                  boxShadow: isLight ? '4px 4px 0 0 #C8C1B4' : '2px 2px 0 0 #070814',
+                }}
               >
                 {/* 1. Floppy Shutter & Write-Protect Notch Header */}
-                <div className="bg-[#1A1F38] border-b-2 border-[#2D3645] px-3.5 py-2 flex items-center justify-between select-none">
+                <div 
+                  className="bg-[#1A1F38] border-b-2 border-[#2D3645] px-3.5 py-2 flex items-center justify-between select-none"
+                  style={{
+                    backgroundColor: isLight ? '#E5DFD3' : '#1A1F38',
+                    borderColor: 'var(--crt-bezel-shadow, #2D3645)',
+                  }}
+                >
                   {/* Metal sliding shutter graphic */}
                   <div className="flex items-center gap-2">
-                    <span className="font-pixel text-[8px] text-[#8E98AA] px-1.5 py-0.5 bg-[#070814] border border-[#2D3645]">
+                    <span 
+                      className="font-pixel text-[8px] text-[#8E98AA] px-1.5 py-0.5 bg-[#070814] border border-[#2D3645]"
+                      style={{
+                        backgroundColor: isLight ? '#FAF8F5' : '#070814',
+                        borderColor: 'var(--crt-bezel-shadow, #2D3645)',
+                      }}
+                    >
                       {romId}
                     </span>
-                    <span className="font-pixel text-[8px] sm:text-[9px] text-[#FFCC00] tracking-wider break-all">
+                    <span 
+                      className="font-pixel text-[8px] sm:text-[9px] text-[#FFCC00] tracking-wider break-all"
+                      style={{ color: 'var(--pixel-amber-gold, #FFCC00)' }}
+                    >
                       {repo.name.toUpperCase()}.DAT
                     </span>
                     {repo.name === 'FocusGuard' && (
                       <a
                         href="#extensions"
-                        className="font-pixel text-[7px] px-1.5 py-0.5 bg-[#00F0FF]/15 border border-[#00F0FF] text-[#00F0FF] hover:bg-[#00F0FF] hover:text-[#070814] transition-colors shadow-[0_0_8px_rgba(0,240,255,0.25)]"
+                        className={`font-pixel text-[7px] px-1.5 py-0.5 transition-colors ${
+                          isLight
+                            ? 'bg-[#0052FF]/15 border border-[#0052FF] text-[#0052FF] hover:bg-[#0052FF] hover:text-white shadow-[1px_1px_0_0_#C8C1B4]'
+                            : 'bg-[#00F0FF]/15 border border-[#00F0FF] text-[#00F0FF] hover:bg-[#00F0FF] hover:text-[#070814] shadow-[0_0_8px_rgba(0,240,255,0.25)]'
+                        }`}
                         title="Jump to interactive Browser Extension Studio"
                       >
                         [ STUDIO ↗ ]
@@ -756,20 +804,42 @@ export const GithubLab: React.FC = () => {
                     <div className="hidden sm:flex items-center gap-0.5 text-[#2D3645] font-mono text-[8px]">
                       <span>||||</span>
                     </div>
-                    <span className="font-pixel text-[7px] px-1.5 py-0.5 bg-[#0D1512] border border-[#4AF626]/40 text-[#4AF626] flex items-center gap-1">
-                      <span className="w-1 h-1 rounded-none bg-[#4AF626] animate-pulse" />
+                    <span className={`font-pixel text-[7px] px-1.5 py-0.5 flex items-center gap-1 border ${
+                      isLight
+                        ? 'bg-[#FAF8F5] border-[#007A33]/40 text-[#007A33]'
+                        : 'bg-[#0D1512] border-[#4AF626]/40 text-[#4AF626]'
+                    }`}>
+                      <span className={`w-1 h-1 rounded-none animate-pulse ${
+                        isLight ? 'bg-[#007A33]' : 'bg-[#4AF626]'
+                      }`} />
                       WP: OFF
                     </span>
                   </div>
                 </div>
 
                 {/* 2. Cartridge Label Sticker Body */}
-                <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between bg-[#0D1512]/95 m-1.5 border border-[#2D3645]">
+                <div 
+                  className="p-4 sm:p-5 flex-1 flex flex-col justify-between bg-[#0D1512]/95 m-1.5 border border-[#2D3645]"
+                  style={{
+                    backgroundColor: isLight ? '#FAF8F5' : 'rgba(13, 21, 18, 0.95)',
+                    borderColor: 'var(--crt-bezel-shadow, #2D3645)',
+                  }}
+                >
                   <div>
                     {/* Language LED & Timestamp */}
-                    <div className="flex items-center justify-between mb-3 border-b border-[#2D3645]/80 pb-2">
+                    <div 
+                      className="flex items-center justify-between mb-3 border-b border-[#2D3645]/80 pb-2"
+                      style={{ borderColor: 'var(--crt-bezel-shadow, #2D3645)' }}
+                    >
                       {/* Pixelated language color LED */}
-                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 border border-[#2D3645] text-fluid-micro font-pixel text-[8px] bg-[#070814] text-[#F0EFE6]">
+                      <span 
+                        className="inline-flex items-center gap-1.5 px-2 py-0.5 border border-[#2D3645] text-fluid-micro font-pixel text-[8px] bg-[#070814] text-[#F0EFE6]"
+                        style={{
+                          backgroundColor: isLight ? '#EDE8DE' : '#070814',
+                          color: 'var(--pixel-ivory-text, #F0EFE6)',
+                          borderColor: 'var(--crt-bezel-shadow, #2D3645)',
+                        }}
+                      >
                         <span
                           className="w-2 h-2 shrink-0 rounded-none shadow-[0_0_6px_currentColor]"
                           style={{ backgroundColor: langColor, color: langColor }}
@@ -790,7 +860,10 @@ export const GithubLab: React.FC = () => {
                         rel="noreferrer"
                         className="group/link inline-flex items-center gap-1.5 max-w-full"
                       >
-                        <h3 className="font-pixel text-xs text-[#F0EFE6] group-hover/link:text-[#FFCC00] transition-colors break-words">
+                        <h3 
+                          className="font-pixel text-xs text-[#F0EFE6] group-hover/link:text-[#FFCC00] transition-colors break-words"
+                          style={{ color: 'var(--pixel-ivory-text, #F0EFE6)' }}
+                        >
                           {repo.name}
                         </h3>
                         <ExternalLink className="w-3 h-3 text-[#8E98AA] group-hover/link:text-[#FFCC00] transition-colors shrink-0" />
@@ -798,7 +871,10 @@ export const GithubLab: React.FC = () => {
                     </div>
 
                     {/* Description */}
-                    <p className="font-body text-xs text-[#D6CFC2] mb-4 leading-relaxed break-words">
+                    <p 
+                      className="font-body text-xs text-[#D6CFC2] mb-4 leading-relaxed break-words"
+                      style={{ color: 'var(--text-secondary, #D6CFC2)' }}
+                    >
                       {repo.description}
                     </p>
 
@@ -808,6 +884,11 @@ export const GithubLab: React.FC = () => {
                         <span
                           key={topic}
                           className="px-1.5 py-0.5 bg-[#070814] font-mono text-[9px] text-[#00F0FF] border border-[#2D3645]"
+                          style={{
+                            backgroundColor: isLight ? '#EDE8DE' : '#070814',
+                            color: 'var(--tech-cyan-wave, #00F0FF)',
+                            borderColor: 'var(--crt-bezel-shadow, #2D3645)',
+                          }}
                         >
                           #{topic}
                         </span>
@@ -818,7 +899,10 @@ export const GithubLab: React.FC = () => {
                   {/* 3. Gold Cartridge Pin Contacts & [ >_ INSPECT_ROM ] Action Button */}
                   <div>
                     {/* PCB Gold Contact Pin Fingers */}
-                    <div className="py-1 border-t border-[#2D3645] mb-3 flex items-center justify-between font-mono text-[8px] text-[#C59B27] select-none tracking-widest opacity-80 overflow-hidden">
+                    <div 
+                      className="py-1 border-t border-[#2D3645] mb-3 flex items-center justify-between font-mono text-[8px] text-[#C59B27] select-none tracking-widest opacity-80 overflow-hidden"
+                      style={{ borderColor: 'var(--crt-bezel-shadow, #2D3645)' }}
+                    >
                       <span>||||||||||||||||||||||||||||||||</span>
                       <span className="font-pixel text-[7px] text-[#8E98AA]">16-BIT BUS</span>
                     </div>
@@ -827,8 +911,11 @@ export const GithubLab: React.FC = () => {
                     <div className="flex items-center justify-between pt-1">
                       {/* Star and Fork Glowing Pixel Readouts */}
                       <div className="flex items-center gap-3 font-pixel text-[9px]">
-                        <span className="flex items-center gap-1 text-[#FFCC00]">
-                          <Star className="w-3 h-3 text-[#FFCC00] fill-[#FFCC00]/30" />
+                        <span 
+                          className="flex items-center gap-1 text-[#FFCC00]"
+                          style={{ color: 'var(--pixel-amber-gold, #FFCC00)' }}
+                        >
+                          <Star className="w-3 h-3 text-[#FFCC00] fill-[#FFCC00]/30" style={{ color: 'var(--pixel-amber-gold, #FFCC00)' }} />
                           <span>{String(repo.stargazers_count).padStart(2, '0')}</span>
                         </span>
                         <span className="flex items-center gap-1 text-[#8E98AA]">
@@ -848,6 +935,12 @@ export const GithubLab: React.FC = () => {
                         onMouseEnter={() => audio.playTick()}
                         onClick={() => audio.playChord()}
                         className="px-2.5 py-1 border-2 border-[#2D3645] bg-[#131629] hover:bg-[#FFCC00] hover:text-[#070814] text-[#FFCC00] font-pixel text-[8px] transition-all group/btn inline-flex items-center gap-1 shadow-[2px_2px_0_0_#070814] active:scale-95 cursor-pointer"
+                        style={{
+                          backgroundColor: isLight ? '#E5DFD3' : '#131629',
+                          borderColor: 'var(--crt-bezel-shadow, #2D3645)',
+                          color: 'var(--pixel-amber-gold, #FFCC00)',
+                          boxShadow: isLight ? '2px 2px 0 0 #C8C1B4' : '2px 2px 0 0 #070814',
+                        }}
                         aria-label={`Inspect ROM for ${repo.name} on GitHub`}
                       >
                         <span>[ &gt;_ INSPECT_ROM ]</span>

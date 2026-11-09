@@ -52,10 +52,14 @@ export const CRTViewportShell: React.FC<CRTViewportShellProps> = ({ children }) 
   }, [isDegaussing]);
 
   return (
-    <div className="relative min-h-screen w-full bg-[#070814] flex flex-col">
-      {/* Sleek 4px Dark Anodized Bezel framing the entire viewport */}
+    <div
+      className="relative min-h-screen w-full flex flex-col transition-colors duration-300"
+      style={{ backgroundColor: 'var(--crt-void-bg, #070814)' }}
+    >
+      {/* Sleek 4px Hardware Bezel framing the entire viewport */}
       <div
-        className="fixed inset-0 pointer-events-none z-[9998] border-4 border-[#131629] select-none"
+        className="fixed inset-0 pointer-events-none z-[9998] border-4 border-[#131629] select-none transition-colors duration-300"
+        style={{ borderColor: 'var(--crt-panel-slate, #131629)' }}
         aria-hidden="true"
       />
 
@@ -110,15 +114,29 @@ export const CRTViewportShell: React.FC<CRTViewportShellProps> = ({ children }) 
 
       {/* Ultra-slim 90s Monitor Bottom Hardware Chin (height: 28px) */}
       <aside
-        className="fixed bottom-0 left-0 right-0 h-[28px] z-[9996] pointer-events-auto bg-[#131629] border-t border-[#2D3645] px-3 sm:px-6 flex items-center justify-between gap-3 text-xs font-mono select-none"
+        className="fixed bottom-0 left-0 right-0 h-[28px] z-[9996] pointer-events-auto border-t px-3 sm:px-6 flex items-center justify-between gap-3 text-xs font-mono select-none transition-colors duration-300"
+        style={{
+          backgroundColor: 'var(--crt-panel-slate, #131629)',
+          borderColor: 'var(--crt-bezel-shadow, #2D3645)',
+        }}
         aria-label="90s CRT Monitor Hardware Control Panel"
       >
         {/* Left: WATCHKNIGHT MULTISYNC 17" */}
         <div className="flex items-center gap-2">
-          <span className="font-pixel text-[9px] sm:text-[10px] font-bold text-[#F0EFE6] tracking-wider">
+          <span
+            className="font-pixel text-[9px] sm:text-[10px] font-bold tracking-wider"
+            style={{ color: 'var(--pixel-ivory-text, #F0EFE6)' }}
+          >
             WATCHKNIGHT
           </span>
-          <span className="px-1.5 py-0.5 bg-[#2D3645] text-[#00F0FF] text-[8px] font-pixel tracking-tight">
+          <span
+            className="px-1.5 py-0.5 text-[8px] font-pixel tracking-tight"
+            style={{
+              backgroundColor: 'var(--crt-phosphor-dark, #0D1512)',
+              color: 'var(--tech-cyan-wave, #00F0FF)',
+              border: '1px solid var(--border-hairline)',
+            }}
+          >
             MULTISYNC 17"
           </span>
         </div>
@@ -128,7 +146,12 @@ export const CRTViewportShell: React.FC<CRTViewportShellProps> = ({ children }) 
           type="button"
           onClick={triggerDegauss}
           disabled={isDegaussing}
-          className="px-2 py-0.5 text-[8px] font-pixel uppercase bg-[#0D1512] text-[#00F0FF] border border-[#2D3645] hover:border-[#00F0FF] active:scale-95 transition-all"
+          className="px-2 py-0.5 text-[8px] font-pixel uppercase border active:scale-95 transition-all"
+          style={{
+            backgroundColor: 'var(--crt-phosphor-dark, #0D1512)',
+            color: 'var(--tech-cyan-wave, #00F0FF)',
+            borderColor: 'var(--crt-bezel-shadow, #2D3645)',
+          }}
           title="Degauss CRT Electron Guns"
         >
           [ DEGAUSS ]
@@ -139,13 +162,23 @@ export const CRTViewportShell: React.FC<CRTViewportShellProps> = ({ children }) 
           <button
             type="button"
             onClick={cycleFxMode}
-            className={`flex items-center gap-1 px-2 py-0.5 font-pixel text-[8px] uppercase transition-all ${
-              fxMode === 'FULL'
-                ? 'bg-[#0D1512] text-[#00F0FF] border border-[#00F0FF] shadow-[0_0_6px_rgba(0,240,255,0.4)]'
-                : fxMode === 'LITE'
-                ? 'bg-[#0D1512] text-[#FFCC00] border border-[#FFCC00]'
-                : 'bg-[#0D1512] text-[#8E98AA] border border-[#2D3645]'
-            }`}
+            className="flex items-center gap-1 px-2 py-0.5 font-pixel text-[8px] uppercase transition-all border"
+            style={{
+              backgroundColor: 'var(--crt-phosphor-dark, #0D1512)',
+              color:
+                fxMode === 'FULL'
+                  ? 'var(--tech-cyan-wave, #00F0FF)'
+                  : fxMode === 'LITE'
+                  ? 'var(--pixel-amber-gold, #FFCC00)'
+                  : 'var(--text-secondary, #8E98AA)',
+              borderColor:
+                fxMode === 'FULL'
+                  ? 'var(--tech-cyan-wave, #00F0FF)'
+                  : fxMode === 'LITE'
+                  ? 'var(--pixel-amber-gold, #FFCC00)'
+                  : 'var(--crt-bezel-shadow, #2D3645)',
+              boxShadow: fxMode === 'FULL' ? '0 0 6px rgba(var(--tech-cyan-wave-rgb), 0.4)' : 'none',
+            }}
             title="Toggle CRT Scanlines & Curvature"
             aria-label={`Current CRT mode is ${fxMode}. Click to toggle.`}
           >
@@ -153,8 +186,16 @@ export const CRTViewportShell: React.FC<CRTViewportShellProps> = ({ children }) 
           </button>
 
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-[#4AF626] shadow-[0_0_8px_#4AF626] animate-pulse" />
-            <span className="font-pixel text-[8px] text-[#4AF626] font-bold">PWR</span>
+            <span
+              className="w-2 h-2 rounded-full shadow-[0_0_8px_var(--pixel-phosphor-green)] animate-pulse"
+              style={{ backgroundColor: 'var(--pixel-phosphor-green, #4AF626)' }}
+            />
+            <span
+              className="font-pixel text-[8px] font-bold"
+              style={{ color: 'var(--pixel-phosphor-green, #4AF626)' }}
+            >
+              PWR
+            </span>
           </div>
         </div>
       </aside>

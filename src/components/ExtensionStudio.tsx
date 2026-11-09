@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useReveal } from '../hooks/useReveal';
+import { useTheme } from '../context/ThemeContext';
 import { chiptuneAudio } from '../utils/chiptuneAudio';
 import { watchknightAudio } from '../audio/WatchknightAudioEngine';
 import { MagneticButton } from './ui/MagneticButton';
@@ -41,6 +42,8 @@ export interface TelemetryLogEntry {
 
 export const ExtensionStudio: React.FC = () => {
   const containerRef = useReveal<HTMLElement>();
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
 
   // Active studio architecture tab
   const [activeTab, setActiveTab] = useState<StudioTab>('popup');
@@ -352,8 +355,8 @@ export const ExtensionStudio: React.FC = () => {
             >
               {/* Chrome Window Titlebar & Tab Strip */}
               <div
-                className="flex items-center justify-between px-3 py-1.5 border-b-2 border-[var(--crt-bezel-shadow,#2D3645)] select-none"
-                style={{ backgroundColor: 'var(--crt-phosphor-dark, #0D1512)' }}
+                className="flex items-center justify-between px-3 py-1.5 border-b-2 border-[var(--crt-bezel-shadow,#2D3645)] select-none transition-colors"
+                style={{ backgroundColor: isLight ? '#E8EAED' : 'var(--crt-phosphor-dark, #0D1512)' }}
               >
                 {/* Left: Interactive Chrome Tabs */}
                 <div className="flex items-center gap-1.5 overflow-x-auto py-0.5">
@@ -363,11 +366,15 @@ export const ExtensionStudio: React.FC = () => {
                     onClick={() => selectTab('popup')}
                     className={`flex items-center gap-2 px-3 py-1 text-xs font-mono rounded-none border-t-2 border-x-2 transition-all ${
                       activeTab === 'popup'
-                        ? 'bg-[var(--crt-panel-slate,#131629)] border-[var(--tech-cyan-wave,#00F0FF)] text-[var(--tech-cyan-wave,#00F0FF)] shadow-[0_0_10px_rgba(0,240,255,0.2)]'
+                        ? isLight
+                          ? 'bg-[#FFFFFF] border-[#0052FF] text-[#0052FF] shadow-[0_0_10px_rgba(0,82,255,0.2)]'
+                          : 'bg-[var(--crt-panel-slate,#131629)] border-[var(--tech-cyan-wave,#00F0FF)] text-[var(--tech-cyan-wave,#00F0FF)] shadow-[0_0_10px_rgba(0,240,255,0.2)]'
+                        : isLight
+                        ? 'bg-[#DFE1E5] border-transparent text-[#5F6368] hover:text-[#202124]'
                         : 'bg-black/40 border-white/10 text-[#8E98AA] hover:text-[var(--pixel-ivory-text,#F0EFE6)] opacity-70'
                     }`}
                   >
-                    <Shield className="w-3.5 h-3.5 text-[var(--tech-cyan-wave,#00F0FF)]" />
+                    <Shield className={`w-3.5 h-3.5 ${isLight ? 'text-[#0052FF]' : 'text-[var(--tech-cyan-wave,#00F0FF)]'}`} />
                     <span className="font-pixel text-[9px] tracking-tight">FocusGuard // popup.html</span>
                     <span className="text-[10px] text-[#8E98AA] ml-1">×</span>
                   </button>
@@ -378,11 +385,15 @@ export const ExtensionStudio: React.FC = () => {
                     onClick={() => selectTab('shadow-dom')}
                     className={`hidden sm:flex items-center gap-2 px-3 py-1 text-xs font-mono rounded-none border-t-2 border-x-2 transition-all ${
                       activeTab === 'shadow-dom'
-                        ? 'bg-[var(--crt-panel-slate,#131629)] border-[var(--pixel-phosphor-green,#4AF626)] text-[var(--pixel-phosphor-green,#4AF626)] shadow-[0_0_10px_rgba(74,246,38,0.2)]'
+                        ? isLight
+                          ? 'bg-[#FFFFFF] border-[#007A33] text-[#007A33] shadow-[0_0_10px_rgba(0,122,51,0.2)]'
+                          : 'bg-[var(--crt-panel-slate,#131629)] border-[var(--pixel-phosphor-green,#4AF626)] text-[var(--pixel-phosphor-green,#4AF626)] shadow-[0_0_10px_rgba(74,246,38,0.2)]'
+                        : isLight
+                        ? 'bg-[#DFE1E5] border-transparent text-[#5F6368] hover:text-[#202124]'
                         : 'bg-black/40 border-white/10 text-[#8E98AA] hover:text-[var(--pixel-ivory-text,#F0EFE6)] opacity-70'
                     }`}
                   >
-                    <Globe className="w-3 h-3 text-[var(--pixel-phosphor-green,#4AF626)]" />
+                    <Globe className={`w-3 h-3 ${isLight ? 'text-[#007A33]' : 'text-[var(--pixel-phosphor-green,#4AF626)]'}`} />
                     <span className="font-pixel text-[9px] tracking-tight">target-host.org</span>
                     <span className="text-[10px] text-[#8E98AA] ml-1">×</span>
                   </button>
@@ -393,11 +404,15 @@ export const ExtensionStudio: React.FC = () => {
                     onClick={() => selectTab('service-worker')}
                     className={`hidden md:flex items-center gap-2 px-3 py-1 text-xs font-mono rounded-none border-t-2 border-x-2 transition-all ${
                       activeTab === 'service-worker'
-                        ? 'bg-[var(--crt-panel-slate,#131629)] border-[var(--tech-magenta-crest,#FF2A85)] text-[var(--tech-magenta-crest,#FF2A85)] shadow-[0_0_10px_rgba(255,42,133,0.2)]'
+                        ? isLight
+                          ? 'bg-[#FFFFFF] border-[#D90452] text-[#D90452] shadow-[0_0_10px_rgba(217,4,82,0.2)]'
+                          : 'bg-[var(--crt-panel-slate,#131629)] border-[var(--tech-magenta-crest,#FF2A85)] text-[var(--tech-magenta-crest,#FF2A85)] shadow-[0_0_10px_rgba(255,42,133,0.2)]'
+                        : isLight
+                        ? 'bg-[#DFE1E5] border-transparent text-[#5F6368] hover:text-[#202124]'
                         : 'bg-black/40 border-white/10 text-[#8E98AA] hover:text-[var(--pixel-ivory-text,#F0EFE6)] opacity-70'
                     }`}
                   >
-                    <Cpu className="w-3 h-3 text-[var(--tech-magenta-crest,#FF2A85)]" />
+                    <Cpu className={`w-3 h-3 ${isLight ? 'text-[#D90452]' : 'text-[var(--tech-magenta-crest,#FF2A85)]'}`} />
                     <span className="font-pixel text-[9px] tracking-tight">telemetry.json</span>
                     <span className="text-[10px] text-[#8E98AA] ml-1">×</span>
                   </button>
@@ -445,8 +460,8 @@ export const ExtensionStudio: React.FC = () => {
 
               {/* Chrome Navigation / Omnibox Bar */}
               <div
-                className="px-3 py-2 border-b border-[var(--crt-bezel-shadow,#2D3645)] flex items-center gap-2 select-none"
-                style={{ backgroundColor: '#090C18' }}
+                className="px-3 py-2 border-b border-[var(--crt-bezel-shadow,#2D3645)] flex items-center gap-2 select-none transition-colors"
+                style={{ backgroundColor: isLight ? '#F1F3F4' : '#090C18' }}
               >
                 {/* Back, Forward, Refresh */}
                 <div className="flex items-center gap-1 text-[#8E98AA]">
@@ -488,15 +503,15 @@ export const ExtensionStudio: React.FC = () => {
 
                 {/* Omnibox (Address Bar) */}
                 <div
-                  className="flex-1 flex items-center justify-between px-3 py-1 border border-[var(--crt-bezel-shadow,#2D3645)] text-xs font-mono min-w-0"
-                  style={{ backgroundColor: 'var(--crt-phosphor-dark, #0D1512)' }}
+                  className="flex-1 flex items-center justify-between px-3 py-1 border border-[var(--crt-bezel-shadow,#2D3645)] text-xs font-mono min-w-0 transition-colors"
+                  style={{ backgroundColor: isLight ? '#FFFFFF' : 'var(--crt-phosphor-dark, #0D1512)' }}
                 >
                   <div className="flex items-center gap-2 min-w-0">
                     <span className="flex items-center gap-1 text-[var(--pixel-phosphor-green,#4AF626)] font-pixel text-[8px] shrink-0">
                       <Lock className="w-2.5 h-2.5" />
                       SECURE
                     </span>
-                    <span className="text-[var(--tech-cyan-wave,#00F0FF)] select-all break-all text-[11px] sm:text-xs">
+                    <span className={`${isLight ? 'text-[#0052FF]' : 'text-[var(--tech-cyan-wave,#00F0FF)]'} select-all break-all text-[11px] sm:text-xs`}>
                       {omniboxUrl}
                     </span>
                   </div>
@@ -576,16 +591,16 @@ export const ExtensionStudio: React.FC = () => {
 
               {/* TAB 1: LIVE POPUP UI & RAM THROTTLER */}
               {activeTab === 'popup' && (
-                <div className="p-4 sm:p-6 bg-[#090C18]/95 space-y-6">
+                <div className={`p-4 sm:p-6 space-y-6 transition-colors ${isLight ? 'bg-[#F2EFE9]' : 'bg-[#090C18]/95'}`}>
                   {/* Extension Popup Simulated Shell */}
                   <div
-                    className="max-w-xl mx-auto border-2 border-[var(--crt-bezel-shadow,#2D3645)] shadow-[0_0_25px_rgba(0,0,0,0.8),2px_2px_0_0_var(--crt-void-bg,#070814)]"
-                    style={{ backgroundColor: 'var(--crt-phosphor-dark, #0D1512)' }}
+                    className="max-w-xl mx-auto border-2 border-[var(--crt-bezel-shadow,#2D3645)] shadow-[0_0_25px_rgba(0,0,0,0.8),2px_2px_0_0_var(--crt-void-bg,#070814)] transition-colors"
+                    style={{ backgroundColor: isLight ? '#FFFFFF' : 'var(--crt-phosphor-dark, #0D1512)' }}
                   >
                     {/* Popup Window Bar */}
                     <div
-                      className="flex items-center justify-between px-3 py-1.5 border-b-2 border-[var(--crt-bezel-shadow,#2D3645)]"
-                      style={{ backgroundColor: 'var(--crt-panel-slate, #131629)' }}
+                      className="flex items-center justify-between px-3 py-1.5 border-b-2 border-[var(--crt-bezel-shadow,#2D3645)] transition-colors"
+                      style={{ backgroundColor: isLight ? '#E6E1D6' : 'var(--crt-panel-slate, #131629)' }}
                     >
                       <div className="flex items-center gap-2">
                         <Shield className="w-3.5 h-3.5 text-[var(--tech-cyan-wave,#00F0FF)]" />
@@ -833,7 +848,7 @@ export const ExtensionStudio: React.FC = () => {
 
               {/* TAB 2: SHADOW DOM INJECTION HUD */}
               {activeTab === 'shadow-dom' && (
-                <div className="p-4 sm:p-6 bg-[#090C18]/95 space-y-6">
+                <div className={`p-4 sm:p-6 ${isLight ? 'bg-[#F2EFE9]' : 'bg-[#090C18]/95'} space-y-6`}>
                   {/* Top Bar for Tab 2: Control HUD injection state */}
                   <div
                     className="flex flex-wrap items-center justify-between gap-3 p-3 border border-[var(--crt-bezel-shadow,#2D3645)]"
@@ -887,8 +902,8 @@ export const ExtensionStudio: React.FC = () => {
                         <span>ISOLATED SHADOW ROOT ARCHITECTURE // ZERO CSS BLEED</span>
                       </div>
                       <p className="text-[#8E98AA]">&lt;!-- Active Host Document DOM Tree --&gt;</p>
-                      <p className="text-white">&lt;html class=&quot;host-document-with-custom-styles&quot;&gt;</p>
-                      <p className="pl-4 text-white">&lt;body&gt;</p>
+                      <p className={isLight ? 'text-[#11131A]' : 'text-white'}>&lt;html class=&quot;host-document-with-custom-styles&quot;&gt;</p>
+                      <p className={`pl-4 ${isLight ? 'text-[#11131A]' : 'text-white'}`}>&lt;body&gt;</p>
                       <p className="pl-8 text-[#8E98AA]">&lt;div class=&quot;host-article-container&quot;&gt;...&lt;/div&gt;</p>
                       <p className="pl-8 text-[var(--pixel-phosphor-green,#4AF626)]">&lt;div id=&quot;focusguard-shadow-host&quot;&gt;</p>
                       <p className="pl-12 text-[var(--tech-magenta-crest,#FF2A85)] font-bold">#shadow-root (closed)</p>
@@ -897,13 +912,13 @@ export const ExtensionStudio: React.FC = () => {
                       </p>
                       <p className="pl-16 text-[var(--pixel-phosphor-green,#4AF626)]">&lt;div class=&quot;focusguard-radial-hud&quot;&gt;...&lt;/div&gt;</p>
                       <p className="pl-8 text-[var(--pixel-phosphor-green,#4AF626)]">&lt;/div&gt;</p>
-                      <p className="pl-4 text-white">&lt;/body&gt;</p>
-                      <p className="text-white">&lt;/html&gt;</p>
+                      <p className={`pl-4 ${isLight ? 'text-[#11131A]' : 'text-white'}`}>&lt;/body&gt;</p>
+                      <p className={isLight ? 'text-[#11131A]' : 'text-white'}>&lt;/html&gt;</p>
                     </div>
                   )}
 
                   {/* Simulated Host Web Page Viewport with Injected Focus HUD */}
-                  <div className="relative min-h-[360px] bg-[#0c101d] border-2 border-[var(--crt-bezel-shadow,#2D3645)] p-5 sm:p-6 overflow-hidden">
+                  <div className={`relative min-h-[360px] ${isLight ? 'bg-[#FFFFFF] border-2 border-[#1A1D24]/20' : 'bg-[#0c101d] border-2 border-[var(--crt-bezel-shadow,#2D3645)]'} p-5 sm:p-6 overflow-hidden`}>
                     {/* Simulated Host Page Header */}
                     <div className="space-y-3 opacity-70">
                       <div className="flex items-center gap-2 text-xs font-mono text-[#8E98AA]">
@@ -911,10 +926,10 @@ export const ExtensionStudio: React.FC = () => {
                         <span>https://techdocs.systems.org/distributed-consensus</span>
                         <span className="text-[10px] px-1 bg-white/10 text-white">EXTERNAL HOST SITE</span>
                       </div>
-                      <h3 className="font-serif text-xl sm:text-2xl text-amber-100 font-bold tracking-tight">
+                      <h3 className={`font-serif text-xl sm:text-2xl ${isLight ? 'text-[#11131A]' : 'text-amber-100'} font-bold tracking-tight`}>
                         Byzantine Fault Tolerance &amp; Distributed Systems Engineering
                       </h3>
-                      <p className="font-serif text-sm text-[var(--crt-bezel-putty,#D6CFC2)]/80 leading-relaxed max-w-lg">
+                      <p className={`font-serif text-sm ${isLight ? 'text-[#3F4654]' : 'text-[var(--crt-bezel-putty,#D6CFC2)]/80'} leading-relaxed max-w-lg`}>
                         In fault-tolerant distributed networks, consensus must be achieved even when up to one-third of the participating nodes arbitrarily mutate packets, fail, or exhibit Byzantine behavior...
                       </p>
                       <div className="p-3 bg-red-950/20 border border-red-500/20 text-xs font-serif text-red-200/60 max-w-md">
@@ -1111,7 +1126,7 @@ export const ExtensionStudio: React.FC = () => {
 
               {/* TAB 3: MANIFEST V3 SERVICE WORKER TELEMETRY */}
               {activeTab === 'service-worker' && (
-                <div className="p-4 sm:p-6 bg-[#090C18]/95 space-y-6">
+                <div className={`p-4 sm:p-6 ${isLight ? 'bg-[#F2EFE9]' : 'bg-[#090C18]/95'} space-y-6`}>
                   {/* Event Simulation Controller Bar */}
                   <div
                     className="p-4 border border-[var(--crt-bezel-shadow,#2D3645)] space-y-3"

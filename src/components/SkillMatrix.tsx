@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useReveal } from '../hooks/useReveal';
+import { useTheme } from '../context/ThemeContext';
 import { audio } from '../utils/audio';
 import { chiptuneAudio } from '../utils/chiptuneAudio';
 import { Magnetic } from './ui/Magnetic';
@@ -442,6 +443,8 @@ const AUTHORITY_METRICS = [
 ];
 
 export const SkillMatrix: React.FC = () => {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const sectionRef = useRef<HTMLElement>(null);
   useReveal(sectionRef);
 
@@ -521,7 +524,11 @@ export const SkillMatrix: React.FC = () => {
       ref={sectionRef} 
       id="systems" 
       onMouseLeave={handleSectionMouseLeave}
-      className="py-24 md:py-32 relative bg-[#070814] text-[#F0EFE6] overflow-hidden border-t-2 border-[#2D3645] scroll-mt-[68px]"
+      className={`py-24 md:py-32 relative ${isLight ? 'bg-[#F2EFE9] text-[#11131A] border-[#1A1D24]' : 'bg-[#070814] text-[#F0EFE6] border-[#2D3645]'} overflow-hidden border-t-2 scroll-mt-[68px] transition-colors duration-300`}
+      style={{
+        backgroundColor: 'var(--crt-void-bg, #070814)',
+        color: 'var(--pixel-ivory-text, #F0EFE6)',
+      }}
     >
       {/* 90s Cyberdeck Motherboard PCB Ground Grid Overlay */}
       <div 
@@ -540,15 +547,15 @@ export const SkillMatrix: React.FC = () => {
         {/* ========================================================================= */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-10 gap-6">
           <div className="max-w-3xl">
-            <div data-anim className="flex items-center gap-2 font-pixel text-[10px] text-[#00F0FF] uppercase tracking-widest mb-3">
-              <Layers className="w-4 h-4 text-[#00F0FF] animate-pulse" />
+            <div data-anim className={`flex items-center gap-2 font-pixel text-[10px] ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'} uppercase tracking-widest mb-3`}>
+              <Layers className={`w-4 h-4 ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'} animate-pulse`} />
               <span>&gt; [03] ARCHITECTURAL PHILOSOPHY // CYBERDECK MOTHERBOARD &amp; SYSTEMS MAP</span>
             </div>
             
             <div className="overflow-visible">
               <h2 
                 data-anim 
-                className="font-display uppercase text-white"
+                className={`font-display uppercase ${isLight ? 'text-[#11131A]' : 'text-white'}`}
                 style={{
                   fontFamily: "'Space Grotesk', 'Syne', sans-serif",
                   fontWeight: 800,
@@ -558,11 +565,11 @@ export const SkillMatrix: React.FC = () => {
                   overflow: 'visible',
                 }}
               >
-                <span className="inline-block" style={{ overflowWrap: 'normal', wordBreak: 'keep-all', maxWidth: '100%', overflow: 'visible' }}>MOTHERBOARD</span> &amp; <span className="text-[#00F0FF]">SYSTEMS MATRIX</span>
+                <span className="inline-block" style={{ overflowWrap: 'normal', wordBreak: 'keep-all', maxWidth: '100%', overflow: 'visible' }}>MOTHERBOARD</span> &amp; <span className={isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'}>SYSTEMS MATRIX</span>
               </h2>
             </div>
             
-            <p data-anim data-delay="0.1" className="font-body text-fluid-body text-[#D6CFC2] mt-3 leading-relaxed">
+            <p data-anim data-delay="0.1" className={`font-body text-fluid-body ${isLight ? 'text-[#3F4654]' : 'text-[#D6CFC2]'} mt-3 leading-relaxed`}>
               Merging core architectural philosophy with an interactive 3-tier competency motherboard. 
               Eliminating abstract skill percentages in favor of verified engineering proofs: from deterministic Linux POSIX shared-memory pipelines 
               to sub-frame 120 FPS WebGL rendering and resilient cloud state fabrics.
@@ -571,10 +578,10 @@ export const SkillMatrix: React.FC = () => {
 
           {/* Interactive Tracer Ribbon & Mode Controls */}
           <div data-anim data-delay="0.15" className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-            <div className="px-3.5 py-2 bg-[#131629] border-2 border-[#2D3645] shadow-[2px_2px_0_0_#070814] flex items-center gap-2 font-pixel text-[9px]">
-              <span className="w-2 h-2 rounded-full bg-[#4AF626] animate-ping" />
-              <span className="text-[#D6CFC2]">PCB TRACER:</span>
-              <span className="text-[#00F0FF] font-bold">
+            <div className={`px-3.5 py-2 ${isLight ? 'bg-white border-[#1A1D24] shadow-[2px_2px_0_0_#C8C1B4]' : 'bg-[#131629] border-[#2D3645] shadow-[2px_2px_0_0_#070814]'} border-2 flex items-center gap-2 font-pixel text-[9px]`}>
+              <span className={`w-2 h-2 rounded-full ${isLight ? 'bg-[#007A33]' : 'bg-[#4AF626]'} animate-ping`} />
+              <span className={isLight ? 'text-[#3F4654]' : 'text-[#D6CFC2]'}>PCB TRACER:</span>
+              <span className={`${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'} font-bold`}>
                 {lockedMode ? 'PINNED' : activeTech ? 'ACTIVE' : 'IDLE'}
               </span>
             </div>
@@ -595,18 +602,18 @@ export const SkillMatrix: React.FC = () => {
         </div>
 
         {/* Drawn Top PCB Bus Line */}
-        <div data-draw className="w-full h-px bg-[#2D3645] mb-10" />
+        <div data-draw className={`w-full h-px ${isLight ? 'bg-[#1A1D24]/20' : 'bg-[#2D3645]'} mb-10`} />
 
         {/* ========================================================================= */}
         {/* 1. 8-BIT LED TELEMETRY COUNTERS (Glowing 90s Digital Pixel Readouts)       */}
         {/* ========================================================================= */}
         <div className="mb-14">
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2 font-pixel text-[10px] text-[#FFCC00] uppercase tracking-wider">
-              <Activity className="w-3.5 h-3.5 text-[#FFCC00] animate-pulse" />
+            <div className={`flex items-center gap-2 font-pixel text-[10px] ${isLight ? 'text-[#C85A00]' : 'text-[#FFCC00]'} uppercase tracking-wider`}>
+              <Activity className={`w-3.5 h-3.5 ${isLight ? 'text-[#C85A00]' : 'text-[#FFCC00]'} animate-pulse`} />
               <span>&gt; 8-BIT LED TELEMETRY READOUTS // HARDWARE AUTHORITY SPEC</span>
             </div>
-            <span className="font-mono text-[10px] text-[#8E98AA] hidden sm:inline">
+            <span className={`font-mono text-[10px] ${isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'} hidden sm:inline`}>
               SYS.96 BUS CLOCK // REAL-TIME CALIBRATED
             </span>
           </div>
@@ -623,16 +630,16 @@ export const SkillMatrix: React.FC = () => {
                 : 'border-[var(--pixel-amber-gold,#FFCC00)] shadow-[0_0_15px_rgba(255,204,0,0.35),2px_2px_0_0_#070814]';
 
               const textGlow = isCyan
-                ? 'text-[#00F0FF] drop-shadow-[0_0_8px_rgba(0,240,255,0.6)]'
+                ? isLight ? 'text-[#0052FF]' : 'text-[#00F0FF] drop-shadow-[0_0_8px_rgba(0,240,255,0.6)]'
                 : idx === 3
-                ? 'text-[#4AF626] drop-shadow-[0_0_8px_rgba(74,246,38,0.6)]'
-                : 'text-[#FFCC00] drop-shadow-[0_0_8px_rgba(255,204,0,0.6)]';
+                ? isLight ? 'text-[#007A33]' : 'text-[#4AF626] drop-shadow-[0_0_8px_rgba(74,246,38,0.6)]'
+                : isLight ? 'text-[#C85A00]' : 'text-[#FFCC00] drop-shadow-[0_0_8px_rgba(255,204,0,0.6)]';
 
               return (
                 <div
                   key={idx}
                   onMouseEnter={() => audio.playTick()}
-                  className={`relative p-4 sm:p-5 bg-[#0D1512] border-2 ${borderGlow} transition-all duration-200 group flex flex-col justify-between`}
+                  className={`relative p-4 sm:p-5 ${isLight ? 'bg-white' : 'bg-[#0D1512]'} border-2 ${borderGlow} transition-all duration-200 group flex flex-col justify-between`}
                 >
                   {/* Subtle LED segment grid background */}
                   <div 
@@ -641,12 +648,12 @@ export const SkillMatrix: React.FC = () => {
                   />
 
                   {/* Header: Chip Code & Hardware Status */}
-                  <div className="flex items-center justify-between mb-3 border-b border-[#2D3645] pb-2">
-                    <span className="font-pixel text-[8px] text-[#8E98AA]">
+                  <div className={`flex items-center justify-between mb-3 border-b ${isLight ? 'border-[#1A1D24]/20' : 'border-[#2D3645]'} pb-2`}>
+                    <span className={`font-pixel text-[8px] ${isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'}`}>
                       {metric.chipCode}
                     </span>
-                    <span className="font-pixel text-[8px] px-1.5 py-0.5 bg-[#131629] border border-[#2D3645] text-[#4AF626] flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#4AF626] animate-ping" />
+                    <span className={`font-pixel text-[8px] px-1.5 py-0.5 ${isLight ? 'bg-[#F2EFE9] border-[#1A1D24]/30 text-[#007A33]' : 'bg-[#131629] border-[#2D3645] text-[#4AF626]'} border flex items-center gap-1`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${isLight ? 'bg-[#007A33]' : 'bg-[#4AF626]'} animate-ping`} />
                       LIVE
                     </span>
                   </div>
@@ -661,17 +668,17 @@ export const SkillMatrix: React.FC = () => {
                         {metric.target}
                       </span>
                     </div>
-                    <div className="font-pixel text-[10px] text-[#F0EFE6] mt-2 tracking-wider leading-tight">
+                    <div className={`font-pixel text-[10px] ${isLight ? 'text-[#11131A]' : 'text-[#F0EFE6]'} mt-2 tracking-wider leading-tight`}>
                       {metric.label}
                     </div>
                   </div>
 
                   {/* Footer detail description */}
-                  <div className="pt-2 border-t border-[#2D3645]/80 mt-2 font-mono text-[10px] text-[#D6CFC2] leading-snug">
-                    <div className="text-[#8E98AA] text-[9px] uppercase font-pixel tracking-tighter">
+                  <div className={`pt-2 border-t ${isLight ? 'border-[#1A1D24]/20 text-[#3F4654]' : 'border-[#2D3645]/80 text-[#D6CFC2]'} mt-2 font-mono text-[10px] leading-snug`}>
+                    <div className={`${isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'} text-[9px] uppercase font-pixel tracking-tighter`}>
                       {metric.sub}
                     </div>
-                    <div className="text-[#00F0FF] text-[10px] mt-0.5 font-medium break-words leading-tight">
+                    <div className={`${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'} text-[10px] mt-0.5 font-medium break-words leading-tight`}>
                       {metric.detail}
                     </div>
                   </div>
@@ -838,7 +845,7 @@ export const SkillMatrix: React.FC = () => {
                   tag={layer.key.toUpperCase()}
                   variant={isCyan ? 'cyan' : isAmber ? 'amber' : 'phosphor'}
                   className="h-full flex flex-col justify-between"
-                  bodyClassName="p-0 flex flex-col justify-between h-full bg-[#0D1512]/95"
+                  bodyClassName={`p-0 flex flex-col justify-between h-full ${isLight ? 'bg-white' : 'bg-[#0D1512]/95'}`}
                   statusBar={
                     <div className="flex items-center justify-between w-full font-pixel text-[8px] gap-2">
                       <span className="break-words">{layer.busChannel}</span>
@@ -848,17 +855,17 @@ export const SkillMatrix: React.FC = () => {
                 >
                   
                   {/* Layer Header */}
-                  <div className="p-3.5 sm:p-4 border-b-2 border-[#2D3645] bg-[#131629]/95 shrink-0">
+                  <div className={`p-3.5 sm:p-4 border-b-2 ${isLight ? 'border-[#1A1D24]/20 bg-[#F2EFE9]' : 'border-[#2D3645] bg-[#131629]/95'} shrink-0`}>
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <div className="flex items-center gap-2 min-w-0">
                         <div className={`p-1.5 border-2 shrink-0 ${badgeBg}`}>
                           <Icon className={`w-4 h-4 ${accentClass}`} />
                         </div>
                         <div className="min-w-0">
-                          <h3 className="font-pixel text-[11px] sm:text-xs text-white leading-tight break-words">
+                          <h3 className={`font-pixel text-[11px] sm:text-xs ${isLight ? 'text-[#11131A]' : 'text-white'} leading-tight break-words`}>
                             {layer.title}
                           </h3>
-                          <div className="font-mono text-[9px] text-[#00F0FF] mt-0.5 break-words">
+                          <div className={`font-mono text-[9px] ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'} mt-0.5 break-words`}>
                             {layer.subtitle}
                           </div>
                         </div>
@@ -868,7 +875,7 @@ export const SkillMatrix: React.FC = () => {
                       </span>
                     </div>
 
-                    <p className="font-body text-[11px] text-[#D6CFC2] leading-snug break-words">
+                    <p className={`font-body text-[11px] ${isLight ? 'text-[#3F4654]' : 'text-[#D6CFC2]'} leading-snug break-words`}>
                       {layer.description}
                     </p>
                   </div>
@@ -892,32 +899,32 @@ export const SkillMatrix: React.FC = () => {
                           onClick={() => handleTechClick(tech.id)}
                           className={`group relative p-2.5 sm:p-3 border-2 transition-all duration-150 cursor-pointer select-none ${
                             isSelected
-                              ? 'bg-[#0C2430] border-[#00F0FF] shadow-[0_0_12px_rgba(0,240,255,0.4)] scale-[1.01]'
+                              ? isLight ? 'bg-[#0052FF]/10 border-[#0052FF] shadow-[0_0_12px_rgba(0,82,255,0.4)] scale-[1.01]' : 'bg-[#0C2430] border-[#00F0FF] shadow-[0_0_12px_rgba(0,240,255,0.4)] scale-[1.01]'
                               : highlighted
-                              ? 'bg-[#171B33] border-[#4AF626] shadow-[0_0_10px_rgba(74,246,38,0.3)]'
+                              ? isLight ? 'bg-[#007A33]/10 border-[#007A33] shadow-[0_0_10px_rgba(0,122,51,0.3)]' : 'bg-[#171B33] border-[#4AF626] shadow-[0_0_10px_rgba(74,246,38,0.3)]'
                               : isDimmed
-                              ? 'opacity-30 bg-[#0D1512] border-[#2D3645]/40 grayscale'
-                              : 'bg-[#131629] border-[#2D3645] hover:border-[#00F0FF] hover:bg-[#171B33]'
+                              ? isLight ? 'opacity-30 bg-[#F2EFE9] border-[#1A1D24]/20 grayscale' : 'opacity-30 bg-[#0D1512] border-[#2D3645]/40 grayscale'
+                              : isLight ? 'bg-white border-[#1A1D24]/30 hover:border-[#0052FF] hover:bg-[#F2EFE9]' : 'bg-[#131629] border-[#2D3645] hover:border-[#00F0FF] hover:bg-[#171B33]'
                           }`}
                         >
                           {/* Card Micro-Header: Pin ID, Tag & ROMs badge */}
                           <div className="flex items-center justify-between gap-2 mb-1">
                             <div className="flex items-center gap-1.5 min-w-0">
-                              <span className="font-pixel text-[7px] text-[#8E98AA] px-1 py-0.5 bg-[#070814] border border-[#2D3645] shrink-0">
+                              <span className={`font-pixel text-[7px] ${isLight ? 'text-[#3F4654] bg-[#F2EFE9] border-[#1A1D24]/30' : 'text-[#8E98AA] bg-[#070814] border-[#2D3645]'} px-1 py-0.5 border shrink-0`}>
                                 {tech.pinId}
                               </span>
-                              <span className="font-mono text-[8.5px] text-[#8E98AA] uppercase tracking-wider break-words">
+                              <span className={`font-mono text-[8.5px] ${isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'} uppercase tracking-wider break-words`}>
                                 {tech.tag}
                               </span>
                             </div>
-                            <span className="font-pixel text-[7px] px-1.5 py-0.5 bg-[#070814] border border-[#2D3645] text-[#D6CFC2] shrink-0">
+                            <span className={`font-pixel text-[7px] px-1.5 py-0.5 ${isLight ? 'bg-[#F2EFE9] border-[#1A1D24]/30 text-[#3F4654]' : 'bg-[#070814] border-[#2D3645] text-[#D6CFC2]'} border shrink-0`}>
                               {tech.projectIds.length} {tech.projectIds.length === 1 ? 'ROM' : 'ROMs'}
                             </span>
                           </div>
 
                           {/* Tech Title - Clean, prominent, full visibility without truncation */}
                           <div className="flex items-center gap-2 mb-1.5">
-                            <h4 className="font-pixel text-[10px] sm:text-[11px] text-white group-hover:text-[#00F0FF] transition-colors leading-tight break-words">
+                            <h4 className={`font-pixel text-[10px] sm:text-[11px] ${isLight ? 'text-[#11131A] group-hover:text-[#0052FF]' : 'text-white group-hover:text-[#00F0FF]'} transition-colors leading-tight break-words`}>
                               {tech.name}
                             </h4>
                             {highlighted && (
@@ -925,7 +932,7 @@ export const SkillMatrix: React.FC = () => {
                             )}
                           </div>
 
-                          <p className="font-body text-[10.5px] text-[#D6CFC2] mb-2 leading-relaxed break-words">
+                          <p className={`font-body text-[10.5px] ${isLight ? 'text-[#3F4654]' : 'text-[#D6CFC2]'} mb-2 leading-relaxed break-words`}>
                             {tech.description}
                           </p>
 
@@ -934,7 +941,7 @@ export const SkillMatrix: React.FC = () => {
                             {tech.capabilities.map((cap, i) => (
                               <span
                                 key={i}
-                                className="font-mono text-[8px] px-1.5 py-0.5 bg-[#070814] border border-[#2D3645] text-[#8E98AA]"
+                                className={`font-mono text-[8px] px-1.5 py-0.5 ${isLight ? 'bg-[#F2EFE9] border-[#1A1D24]/20 text-[#3F4654]' : 'bg-[#070814] border-[#2D3645] text-[#8E98AA]'} border`}
                               >
                                 &gt; {cap}
                               </span>
@@ -1010,12 +1017,12 @@ export const SkillMatrix: React.FC = () => {
               return (
                 <div
                   key={project.id}
-                  className="bg-[#0D1512] border-2 border-[#2D3645] hover:border-[#00F0FF] transition-all duration-200 p-4 flex flex-col justify-between shadow-[2px_2px_0_0_#070814] group"
+                  className={`${isLight ? 'bg-white border-2 border-[#1A1D24] hover:border-[#0052FF] shadow-[2px_2px_0_0_#C8C1B4]' : 'bg-[#0D1512] border-2 border-[#2D3645] hover:border-[#00F0FF] shadow-[2px_2px_0_0_#070814]'} transition-all duration-200 p-4 flex flex-col justify-between group`}
                 >
                   <div>
                     {/* Cartridge Header */}
-                    <div className="flex items-center justify-between border-b border-[#2D3645] pb-2 mb-3">
-                      <span className="font-pixel text-[8px] px-1.5 py-0.5 bg-[#131629] border border-[#2D3645] text-[#8E98AA]">
+                    <div className={`flex items-center justify-between border-b ${isLight ? 'border-[#1A1D24]/20' : 'border-[#2D3645]'} pb-2 mb-3`}>
+                      <span className={`font-pixel text-[8px] px-1.5 py-0.5 ${isLight ? 'bg-[#F2EFE9] border-[#1A1D24]/30 text-[#3F4654]' : 'bg-[#131629] border-[#2D3645] text-[#8E98AA]'} border`}>
                         {project.number}
                       </span>
                       <span className={`font-pixel text-[8px] uppercase tracking-wider ${accentColor}`}>
@@ -1024,18 +1031,18 @@ export const SkillMatrix: React.FC = () => {
                     </div>
 
                     {/* Title */}
-                    <h4 className="font-pixel text-xs text-white mb-1.5 leading-snug break-words group-hover:text-[#00F0FF] transition-colors">
+                    <h4 className={`font-pixel text-xs ${isLight ? 'text-[#11131A] group-hover:text-[#0052FF]' : 'text-white group-hover:text-[#00F0FF]'} mb-1.5 leading-snug break-words transition-colors`}>
                       {project.title}
                     </h4>
 
                     {/* Tagline */}
-                    <p className="font-body text-[11px] text-[#D6CFC2] mb-3 leading-relaxed break-words">
+                    <p className={`font-body text-[11px] ${isLight ? 'text-[#3F4654]' : 'text-[#D6CFC2]'} mb-3 leading-relaxed break-words`}>
                       {project.tagline}
                     </p>
 
                     {/* Layer Badge with zero truncation */}
                     <div className="mb-3">
-                      <span className={`inline-block font-mono text-[9px] px-2 py-0.5 border border-[#2D3645] ${badgeBg} whitespace-normal break-words`}>
+                      <span className={`inline-block font-mono text-[9px] px-2 py-0.5 border ${isLight ? 'border-[#1A1D24]/30' : 'border-[#2D3645]'} ${badgeBg} whitespace-normal break-words`}>
                         &gt; {project.layerBadge}
                       </span>
                     </div>
@@ -1045,7 +1052,7 @@ export const SkillMatrix: React.FC = () => {
                       {project.techTags.map((tag, tIdx) => (
                         <span
                           key={tIdx}
-                          className="font-mono text-[8px] px-1.5 py-0.5 bg-[#070814] border border-[#2D3645] text-[#8E98AA] whitespace-normal"
+                          className={`font-mono text-[8px] px-1.5 py-0.5 ${isLight ? 'bg-[#F2EFE9] border-[#1A1D24]/30 text-[#3F4654]' : 'bg-[#070814] border-[#2D3645] text-[#8E98AA]'} border whitespace-normal`}
                         >
                           #{tag}
                         </span>
@@ -1054,13 +1061,13 @@ export const SkillMatrix: React.FC = () => {
                   </div>
 
                   {/* Cartridge Footer Link */}
-                  <div className="pt-2.5 border-t border-[#2D3645] flex items-center justify-between font-pixel text-[8px]">
-                    <span className="text-[#8E98AA]">STATUS: VERIFIED</span>
+                  <div className={`pt-2.5 border-t ${isLight ? 'border-[#1A1D24]/20' : 'border-[#2D3645]'} flex items-center justify-between font-pixel text-[8px]`}>
+                    <span className={isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'}>STATUS: VERIFIED</span>
                     <a
                       href={project.githubUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[#00F0FF] hover:underline flex items-center gap-1"
+                      className={`${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'} hover:underline flex items-center gap-1`}
                     >
                       <span>[ REPO ]</span>
                       <span>&gt;</span>
@@ -1088,8 +1095,8 @@ export const SkillMatrix: React.FC = () => {
             }
           >
             {/* Interactive Console Tabs Bar */}
-            <div className="flex flex-wrap items-center gap-1.5 mb-4 border-b-2 border-[#2D3645] pb-2.5 select-none">
-              <span className="font-pixel text-[8px] text-[#8E98AA] mr-1 shrink-0">SELECT MODULE:</span>
+            <div className={`flex flex-wrap items-center gap-1.5 mb-4 border-b-2 ${isLight ? 'border-[#1A1D24]/20' : 'border-[#2D3645]'} pb-2.5 select-none`}>
+              <span className={`font-pixel text-[8px] ${isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'} mr-1 shrink-0`}>SELECT MODULE:</span>
               {[
                 { id: 0, label: 'TAB 1: EWU CSE & OFFICIAL BIOS RECORD' },
                 { id: 1, label: 'TAB 2: FULL-STACK & BROWSER EXTENSIONS' },
@@ -1104,7 +1111,11 @@ export const SkillMatrix: React.FC = () => {
                     onMouseEnter={() => chiptuneAudio.playPixelTick()}
                     className={`font-pixel text-[8px] sm:text-[9px] px-3 py-1.5 border-2 transition-all cursor-pointer ${
                       isActive
-                        ? 'bg-[#131629] text-[#4AF626] border-[#4AF626] shadow-[0_0_10px_rgba(74,246,38,0.35)] font-bold'
+                        ? isLight
+                          ? 'bg-[#007A33] text-white border-[#007A33] shadow-[0_0_10px_rgba(0,122,51,0.35)] font-bold'
+                          : 'bg-[#131629] text-[#4AF626] border-[#4AF626] shadow-[0_0_10px_rgba(74,246,38,0.35)] font-bold'
+                        : isLight
+                        ? 'bg-white text-[#3F4654] border-[#1A1D24]/30 hover:border-[#0052FF] hover:text-[#0052FF]'
                         : 'bg-[#070814] text-[#8E98AA] border-[#2D3645] hover:border-[#00F0FF] hover:text-[#00F0FF]'
                     }`}
                   >

@@ -269,7 +269,7 @@ export const Navbar: React.FC = () => {
             <button
               type="button"
               role="radio"
-              aria-checked={theme === 'obsidian'}
+              aria-checked={theme === 'obsidian' || theme === 'dark'}
               onClick={() => {
                 setTheme('obsidian');
                 audio.playTick();
@@ -278,7 +278,7 @@ export const Navbar: React.FC = () => {
               title="Obsidian & Rust (#0A0A0A / #A74024)"
               aria-label="Obsidian & Rust theme swatch"
               className={`relative w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center transition-all ${
-                theme === 'obsidian'
+                theme === 'obsidian' || theme === 'dark'
                   ? 'ring-2 ring-accent ring-offset-1 ring-offset-obsidian scale-110'
                   : 'opacity-65 hover:opacity-100 hover:scale-105'
               }`}
@@ -291,7 +291,7 @@ export const Navbar: React.FC = () => {
             <button
               type="button"
               role="radio"
-              aria-checked={theme === 'alabaster'}
+              aria-checked={theme === 'alabaster' || theme === 'light'}
               onClick={() => {
                 setTheme('alabaster');
                 audio.playTick();
@@ -300,7 +300,7 @@ export const Navbar: React.FC = () => {
               title="Editorial Alabaster (#F4F3EF / #111111)"
               aria-label="Editorial Alabaster theme swatch"
               className={`relative w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center transition-all ${
-                theme === 'alabaster'
+                theme === 'alabaster' || theme === 'light'
                   ? 'ring-2 ring-accent ring-offset-1 ring-offset-obsidian scale-110'
                   : 'opacity-65 hover:opacity-100 hover:scale-105'
               }`}
@@ -393,7 +393,7 @@ export const Navbar: React.FC = () => {
                   onClick={() => setTheme('obsidian')}
                   aria-label="Switch to Obsidian & Rust"
                   className={`w-6 h-6 rounded-full flex items-center justify-center transition-all ${
-                    theme === 'obsidian' ? 'ring-2 ring-accent scale-110' : 'opacity-60'
+                    theme === 'obsidian' || theme === 'dark' ? 'ring-2 ring-accent scale-110' : 'opacity-60'
                   }`}
                   style={{ backgroundColor: '#0A0A0A', border: '1px solid rgba(255,255,255,0.3)' }}
                 >
@@ -404,7 +404,7 @@ export const Navbar: React.FC = () => {
                   onClick={() => setTheme('alabaster')}
                   aria-label="Switch to Editorial Alabaster"
                   className={`w-6 h-6 rounded-full flex items-center justify-center transition-all ${
-                    theme === 'alabaster' ? 'ring-2 ring-accent scale-110' : 'opacity-60'
+                    theme === 'alabaster' || theme === 'light' ? 'ring-2 ring-accent scale-110' : 'opacity-60'
                   }`}
                   style={{ backgroundColor: '#F4F3EF', border: '1px solid rgba(0,0,0,0.3)' }}
                 >

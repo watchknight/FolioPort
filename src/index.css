@@ -2,16 +2,37 @@
 
 /**
  * WATCHKNIGHT_OS // SYS.96 — Dual-Register Cyber-CRT Color Palette
+ * NIGHT_CRT // VOID (Dark) & DAYLIGHT_CAD // PUTTY (Light)
  */
-:root {
+:root,
+[data-theme="dark"] {
   --crt-void-bg: #070814;
   --crt-phosphor-dark: #0D1512;
   --crt-panel-slate: #131629;
   --crt-bezel-putty: #D6CFC2;
   --crt-bezel-shadow: #2D3645;
+  --crt-glass-surface: rgba(7, 8, 20, 0.90);
+  --pixel-ivory-text: #F0EFE6;
+  --text-secondary: #94A3B8;
   --tech-cyan-wave: #00F0FF;
   --tech-magenta-crest: #FF2A85;
   --pixel-phosphor-green: #4AF626;
   --pixel-amber-gold: #FFCC00;
-  --pixel-ivory-text: #F0EFE6;
+  --border-hairline: rgba(0, 240, 255, 0.25);
+}
+
+[data-theme="light"] {
+  --crt-void-bg: #F2EFE9;
+  --crt-phosphor-dark: #E6E1D6;
+  --crt-panel-slate: #FFFFFF;
+  --crt-bezel-putty: #D8D2C5;
+  --crt-bezel-shadow: #1A1D24;
+  --crt-glass-surface: rgba(242, 239, 233, 0.88);
+  --pixel-ivory-text: #11131A;
+  --text-secondary: #3F4654;
+  --tech-cyan-wave: #0052FF;
+  --tech-magenta-crest: #D90452;
+  --pixel-phosphor-green: #007A33;
+  --pixel-amber-gold: #C85A00;
+  --border-hairline: rgba(17, 19, 26, 0.18);
 }

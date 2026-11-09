@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import gsap from 'gsap';
 import { watchknightAudio } from '../../audio/WatchknightAudioEngine';
+import { useTheme } from '../../context/ThemeContext';
 import { Activity, Compass, MapPin, Monitor, RefreshCw } from 'lucide-react';
 
 export type DisplayMode = 'avatar' | 'photo';
@@ -52,6 +53,8 @@ export const PixelWorkstationCRT: React.FC<PixelWorkstationCRTProps> = ({
   avatarAction: controlledAvatarAction,
   onModeChange,
 }) => {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const offscreenAvatarRef = useRef<HTMLCanvasElement | null>(null);
@@ -914,13 +917,19 @@ export const PixelWorkstationCRT: React.FC<PixelWorkstationCRTProps> = ({
       className={`relative w-full max-w-[320px] sm:max-w-[360px] lg:max-w-[380px] xl:max-w-[430px] mx-auto select-none font-mono ${className}`}
       aria-label="Interactive 90s CRT Workstation & Character Scene"
     >
-      {/* SLEEK DARK CYBERDECK FRAME (#0D1512 with 2px solid #00F0FF & magenta corner brackets) */}
+      {/* SCULPTURAL 90s RETRO MONITOR CHASSIS (#E5DFD3 putty in light, #0D1512 cyberdeck in dark) */}
       <div
-        className={`relative w-full bg-[#0D1512] p-2.5 sm:p-3.5 border-2 border-[#00F0FF] shadow-[0_0_20px_rgba(0,240,255,0.25),4px_4px_0_0_#070814] transition-transform duration-200 ${
+        className={`relative w-full ${
+          isLight
+            ? 'bg-[#E5DFD3] border-2 border-[#1A1D24] shadow-[4px_4px_0_0_#C8C1B4]'
+            : 'bg-[#0D1512] border-2 border-[#00F0FF] shadow-[0_0_20px_rgba(0,240,255,0.25),4px_4px_0_0_#070814]'
+        } p-2.5 sm:p-3.5 transition-transform duration-200 ${
           isDegaussing ? 'translate-x-1 translate-y-0.5 animate-pulse' : ''
         }`}
         style={{
-          boxShadow: `
+          boxShadow: isLight
+            ? 'inset 1px 1px 0 0 #FFFFFF, inset -1px -1px 0 0 #A8A196, 4px 4px 0 0 #C8C1B4'
+            : `
             inset 1px 1px 0 0 rgba(0, 240, 255, 0.3),
             inset -1px -1px 0 0 rgba(255, 42, 133, 0.3),
             4px 4px 0 0 #070814,
@@ -928,41 +937,41 @@ export const PixelWorkstationCRT: React.FC<PixelWorkstationCRTProps> = ({
           `,
         }}
       >
-        {/* Magenta corner brackets */}
-        <span className="absolute -top-1 -left-1 w-3 h-3 border-t-2 border-l-2 border-[#FF2A85] pointer-events-none" />
-        <span className="absolute -top-1 -right-1 w-3 h-3 border-t-2 border-r-2 border-[#FF2A85] pointer-events-none" />
-        <span className="absolute -bottom-1 -left-1 w-3 h-3 border-b-2 border-l-2 border-[#FF2A85] pointer-events-none" />
-        <span className="absolute -bottom-1 -right-1 w-3 h-3 border-b-2 border-r-2 border-[#FF2A85] pointer-events-none" />
+        {/* Corner brackets */}
+        <span className={`absolute -top-1 -left-1 w-3 h-3 border-t-2 border-l-2 ${isLight ? 'border-[#D90452]' : 'border-[#FF2A85]'} pointer-events-none`} />
+        <span className={`absolute -top-1 -right-1 w-3 h-3 border-t-2 border-r-2 ${isLight ? 'border-[#D90452]' : 'border-[#FF2A85]'} pointer-events-none`} />
+        <span className={`absolute -bottom-1 -left-1 w-3 h-3 border-b-2 border-l-2 ${isLight ? 'border-[#D90452]' : 'border-[#FF2A85]'} pointer-events-none`} />
+        <span className={`absolute -bottom-1 -right-1 w-3 h-3 border-b-2 border-r-2 ${isLight ? 'border-[#D90452]' : 'border-[#FF2A85]'} pointer-events-none`} />
 
         {/* MONITOR TOP COOLING VENTS & BRAND EMBOSS */}
-        <div className="flex items-center justify-between pb-2 px-1 border-b-2 border-[#2D3645] mb-2">
+        <div className={`flex items-center justify-between pb-2 px-1 border-b-2 ${isLight ? 'border-[#1A1D24]/20' : 'border-[#2D3645]'} mb-2`}>
           {/* Top Cooling Slots */}
           <div className="flex items-center gap-1 opacity-70">
-            <span className="w-5 h-1 bg-[#2D3645] shadow-[inset_0_1px_0_#00F0FF]" />
-            <span className="w-5 h-1 bg-[#2D3645] shadow-[inset_0_1px_0_#00F0FF]" />
-            <span className="w-5 h-1 bg-[#2D3645] shadow-[inset_0_1px_0_#00F0FF]" />
-            <span className="w-5 h-1 bg-[#2D3645] shadow-[inset_0_1px_0_#00F0FF]" />
+            <span className={`w-5 h-1 ${isLight ? 'bg-[#C8C1B4] shadow-[inset_0_1px_0_#FFFFFF]' : 'bg-[#2D3645] shadow-[inset_0_1px_0_#00F0FF]'}`} />
+            <span className={`w-5 h-1 ${isLight ? 'bg-[#C8C1B4] shadow-[inset_0_1px_0_#FFFFFF]' : 'bg-[#2D3645] shadow-[inset_0_1px_0_#00F0FF]'}`} />
+            <span className={`w-5 h-1 ${isLight ? 'bg-[#C8C1B4] shadow-[inset_0_1px_0_#FFFFFF]' : 'bg-[#2D3645] shadow-[inset_0_1px_0_#00F0FF]'}`} />
+            <span className={`w-5 h-1 ${isLight ? 'bg-[#C8C1B4] shadow-[inset_0_1px_0_#FFFFFF]' : 'bg-[#2D3645] shadow-[inset_0_1px_0_#00F0FF]'}`} />
           </div>
 
           {/* Retro Monitor Brand Badge */}
-          <div className="font-pixel text-[8px] sm:text-[9px] font-bold text-[#00F0FF] tracking-wider uppercase">
+          <div className={`font-pixel text-[8px] sm:text-[9px] font-bold ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'} tracking-wider uppercase`}>
             WATCHKNIGHT // SYS.96 CRT
           </div>
 
           <div className="flex items-center gap-1 opacity-70">
-            <span className="w-5 h-1 bg-[#2D3645] shadow-[inset_0_1px_0_#00F0FF]" />
-            <span className="w-5 h-1 bg-[#2D3645] shadow-[inset_0_1px_0_#00F0FF]" />
-            <span className="w-5 h-1 bg-[#2D3645] shadow-[inset_0_1px_0_#00F0FF]" />
-            <span className="w-5 h-1 bg-[#2D3645] shadow-[inset_0_1px_0_#00F0FF]" />
+            <span className={`w-5 h-1 ${isLight ? 'bg-[#C8C1B4] shadow-[inset_0_1px_0_#FFFFFF]' : 'bg-[#2D3645] shadow-[inset_0_1px_0_#00F0FF]'}`} />
+            <span className={`w-5 h-1 ${isLight ? 'bg-[#C8C1B4] shadow-[inset_0_1px_0_#FFFFFF]' : 'bg-[#2D3645] shadow-[inset_0_1px_0_#00F0FF]'}`} />
+            <span className={`w-5 h-1 ${isLight ? 'bg-[#C8C1B4] shadow-[inset_0_1px_0_#FFFFFF]' : 'bg-[#2D3645] shadow-[inset_0_1px_0_#00F0FF]'}`} />
+            <span className={`w-5 h-1 ${isLight ? 'bg-[#C8C1B4] shadow-[inset_0_1px_0_#FFFFFF]' : 'bg-[#2D3645] shadow-[inset_0_1px_0_#00F0FF]'}`} />
           </div>
         </div>
 
         {/* INNER WINDOW CHROME SUB-PANEL */}
-        <div className="bg-[#131629] border-2 border-[#2D3645] shadow-[inset_2px_2px_0_0_#070814] p-1.5 sm:p-2 mb-2.5">
+        <div className={`border-2 p-1.5 sm:p-2 mb-2.5 ${isLight ? 'bg-[#D8D2C5] border-[#1A1D24] shadow-[inset_1px_1px_0_0_#FFFFFF]' : 'bg-[#131629] border-[#2D3645] shadow-[inset_2px_2px_0_0_#070814]'}`}>
           {/* Window Titlebar with Controls */}
-          <div className="flex items-center justify-between px-2 py-1 bg-[#2D3645] text-[#F0EFE6] text-[10px] mb-1.5 shadow-[inset_1px_1px_0_#D6CFC2]">
+          <div className={`flex items-center justify-between px-2 py-1 text-[10px] mb-1.5 ${isLight ? 'bg-[#C8C1B4] text-[#11131A] shadow-[inset_1px_1px_0_#FFFFFF]' : 'bg-[#2D3645] text-[#F0EFE6] shadow-[inset_1px_1px_0_#D6CFC2]'}`}>
             <div className="flex items-center gap-1.5 font-pixel text-[8px] sm:text-[9px]">
-              <Monitor className="w-3 h-3 text-[#00F0FF]" />
+              <Monitor className={`w-3 h-3 ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'}`} />
               <span className="break-words">DEV_WORKSTATION.EXE</span>
             </div>
 
@@ -1091,25 +1100,25 @@ export const PixelWorkstationCRT: React.FC<PixelWorkstationCRTProps> = ({
 
       {/* METADATA COORDINATES DIRECTLY BENEATH CRT MONITOR */}
       <div
-        className="mt-2 flex items-center justify-between gap-2 px-1 text-[11px] text-[#8E98AA] tracking-wider uppercase font-mono"
+        className={`mt-2 flex items-center justify-between gap-2 px-1 text-[11px] ${isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'} tracking-wider uppercase font-mono`}
         aria-label="Geographic Coordinates & Station Telemetry"
       >
-        <div className="flex items-center gap-1.5 text-[#F0EFE6]">
-          <Compass className="w-3.5 h-3.5 text-[#00F0FF] shrink-0" />
+        <div className={`flex items-center gap-1.5 ${isLight ? 'text-[#11131A]' : 'text-[#F0EFE6]'}`}>
+          <Compass className={`w-3.5 h-3.5 ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'} shrink-0`} />
           <span className="font-semibold text-xs">23.7644° N, 90.4252° E</span>
         </div>
 
-        <span className="text-white/20 select-none">•</span>
+        <span className={`${isLight ? 'text-[#1A1D24]/30' : 'text-white/20'} select-none`}>•</span>
 
-        <div className="flex items-center gap-1.5 text-[#F0EFE6]">
-          <MapPin className="w-3.5 h-3.5 text-[#FF2A85] shrink-0" />
+        <div className={`flex items-center gap-1.5 ${isLight ? 'text-[#11131A]' : 'text-[#F0EFE6]'}`}>
+          <MapPin className={`w-3.5 h-3.5 ${isLight ? 'text-[#D90452]' : 'text-[#FF2A85]'} shrink-0`} />
           <span className="font-semibold text-xs">Dhaka, BD (UTC+6)</span>
         </div>
 
-        <span className="text-white/20 select-none hidden sm:inline">•</span>
+        <span className={`${isLight ? 'text-[#1A1D24]/30' : 'text-white/20'} select-none hidden sm:inline`}>•</span>
 
-        <div className="hidden sm:flex items-center gap-1.5 text-[#4AF626] text-[10px]">
-          <Activity className="w-3 h-3 text-[#4AF626] shrink-0" />
+        <div className={`hidden sm:flex items-center gap-1.5 ${isLight ? 'text-[#007A33]' : 'text-[#4AF626]'} text-[10px]`}>
+          <Activity className={`w-3 h-3 ${isLight ? 'text-[#007A33]' : 'text-[#4AF626]'} shrink-0`} />
           <span className="font-bold">SYS.96_ONLINE</span>
         </div>
       </div>

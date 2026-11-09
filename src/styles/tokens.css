@@ -3,32 +3,24 @@
  * 
  * Aesthetic Paradigm: "The 1996 Cyberdeck Workstation Rendering a Real-Time 3D Volumetric Particle Engine"
  * Developer: Abdur Rahman Moayed (@watchknight), CSE at East West University, Dhaka [23.7644° N, 90.4252° E, UTC+6]
- *
- * Core Token Invariants:
- * --crt-void-bg:            #070814 (Primary 3D scene & CRT background void for additive bloom)
- * --crt-phosphor-dark:      #0D1512 (Inner 90s CRT terminal & workstation screen fill)
- * --crt-panel-slate:        #131629 (Elevated cyberdeck module surface)
- * --crt-bezel-putty:        #D6CFC2 (Outer 90s monitor hardware bezel & retro titlebars)
- * --crt-bezel-shadow:       #2D3645 (Beveled 90s hardware shadow border)
- * --tech-cyan-wave:         #00F0FF (3D particle wave troughs, wireframe grids, and > COMMAND nav prompts)
- * --tech-magenta-crest:     #FF2A85 (3D particle wave crests, velocity peaks, and shader badges)
- * --pixel-phosphor-green:   #4AF626 (90s CRT [1]–[4] bracket menus, terminal stdout, and power LEDs)
- * --pixel-amber-gold:       #FFCC00 (Arcade telemetry readouts, star counters, and cursor focal sparks)
- * --pixel-ivory-text:       #F0EFE6 (Warm NTSC-calibrated off-white for high-contrast body text)
  */
 
-:root {
-  /* Exact Dual-Register Cyber-CRT Color Tokens */
+:root,
+[data-theme="dark"] {
+  /* Exact Dual-Register Cyber-CRT Color Tokens (Dark: NIGHT_CRT // VOID) */
   --crt-void-bg: #070814;
   --crt-phosphor-dark: #0D1512;
   --crt-panel-slate: #131629;
   --crt-bezel-putty: #D6CFC2;
   --crt-bezel-shadow: #2D3645;
+  --crt-glass-surface: rgba(7, 8, 20, 0.90);
+  --pixel-ivory-text: #F0EFE6;
+  --text-secondary: #94A3B8;
   --tech-cyan-wave: #00F0FF;
   --tech-magenta-crest: #FF2A85;
   --pixel-phosphor-green: #4AF626;
   --pixel-amber-gold: #FFCC00;
-  --pixel-ivory-text: #F0EFE6;
+  --border-hairline: rgba(0, 240, 255, 0.25);
 
   /* RGB channels for alpha compositing */
   --crt-void-bg-rgb: 7 8 20;
@@ -36,38 +28,39 @@
   --crt-panel-slate-rgb: 19 22 41;
   --crt-bezel-putty-rgb: 214 207 194;
   --crt-bezel-shadow-rgb: 45 54 69;
+  --pixel-ivory-text-rgb: 240 239 230;
   --tech-cyan-wave-rgb: 0 240 255;
   --tech-magenta-crest-rgb: 255 42 133;
   --pixel-phosphor-green-rgb: 74 246 38;
   --pixel-amber-gold-rgb: 255 204 0;
-  --pixel-ivory-text-rgb: 240 239 230;
+  --border-hairline-rgb: 0 240 255;
 
-  /* Forward-compatible component aliases mapped to Cyber-CRT palette */
+  /* Component Aliases */
   --wk-obsidian-void: var(--crt-void-bg);
   --wk-slate-surface: var(--crt-panel-slate);
   --wk-alabaster-ink: var(--pixel-ivory-text);
-  --wk-ash-muted: #8E98AA;
+  --wk-ash-muted: var(--text-secondary);
   --wk-terracotta-pulse: var(--tech-magenta-crest);
   --wk-verdigris-signal: var(--pixel-phosphor-green);
 
   --wk-obsidian-void-rgb: var(--crt-void-bg-rgb);
   --wk-slate-surface-rgb: var(--crt-panel-slate-rgb);
   --wk-alabaster-ink-rgb: var(--pixel-ivory-text-rgb);
-  --wk-ash-muted-rgb: 142 152 170;
+  --wk-ash-muted-rgb: 148 163 184;
   --wk-terracotta-pulse-rgb: var(--tech-magenta-crest-rgb);
   --wk-verdigris-signal-rgb: var(--pixel-phosphor-green-rgb);
 
-  /* Editorial Ledger Baseline Aliases mapped to SYS.96 */
+  /* Editorial Ledger Baseline Aliases */
   --bg-obsidian: var(--crt-void-bg);
   --bg-surface: var(--crt-phosphor-dark);
   --bg-card: var(--crt-panel-slate);
   --bg-elevated: #1A1F38;
   --surface-alabaster: var(--pixel-ivory-text);
-  --text-muted: #8E98AA;
+  --text-muted: var(--text-secondary);
   --accent-rust: var(--tech-magenta-crest);
   --accent-coral: var(--tech-magenta-crest);
   --accent-verdigris: var(--pixel-phosphor-green);
-  --border-editorial: rgba(0, 240, 255, 0.18);
+  --border-editorial: var(--border-hairline);
 
   --wk-neutral-buffer-dark: var(--crt-void-bg);
   --wk-neutral-buffer-light: var(--pixel-ivory-text);
@@ -77,6 +70,76 @@
   --bevel-dark: #121620;
   --bevel-mid: var(--crt-bezel-shadow);
   --pixel-border-width: 2px;
+  --card-border: 1px solid var(--crt-bezel-shadow);
+  --card-shadow: 2px 2px 0 0 #070814;
+}
+
+[data-theme="light"] {
+  /* Calibrated Dual-Register Tokens (Light: DAYLIGHT_CAD // PUTTY) */
+  --crt-void-bg: #F2EFE9;
+  --crt-phosphor-dark: #E6E1D6;
+  --crt-panel-slate: #FFFFFF;
+  --crt-bezel-putty: #D8D2C5;
+  --crt-bezel-shadow: #1A1D24;
+  --crt-glass-surface: rgba(242, 239, 233, 0.88);
+  --pixel-ivory-text: #11131A;
+  --text-secondary: #3F4654;
+  --tech-cyan-wave: #0052FF;
+  --tech-magenta-crest: #D90452;
+  --pixel-phosphor-green: #007A33;
+  --pixel-amber-gold: #C85A00;
+  --border-hairline: rgba(17, 19, 26, 0.18);
+
+  /* RGB channels for alpha compositing */
+  --crt-void-bg-rgb: 242 239 233;
+  --crt-phosphor-dark-rgb: 230 225 214;
+  --crt-panel-slate-rgb: 255 255 255;
+  --crt-bezel-putty-rgb: 216 210 197;
+  --crt-bezel-shadow-rgb: 26 29 36;
+  --pixel-ivory-text-rgb: 17 19 26;
+  --tech-cyan-wave-rgb: 0 82 255;
+  --tech-magenta-crest-rgb: 217 4 82;
+  --pixel-phosphor-green-rgb: 0 122 51;
+  --pixel-amber-gold-rgb: 200 90 0;
+  --border-hairline-rgb: 17 19 26;
+
+  /* Component Aliases */
+  --wk-obsidian-void: var(--crt-void-bg);
+  --wk-slate-surface: var(--crt-panel-slate);
+  --wk-alabaster-ink: var(--pixel-ivory-text);
+  --wk-ash-muted: var(--text-secondary);
+  --wk-terracotta-pulse: var(--tech-magenta-crest);
+  --wk-verdigris-signal: var(--pixel-phosphor-green);
+
+  --wk-obsidian-void-rgb: var(--crt-void-bg-rgb);
+  --wk-slate-surface-rgb: var(--crt-panel-slate-rgb);
+  --wk-alabaster-ink-rgb: var(--pixel-ivory-text-rgb);
+  --wk-ash-muted-rgb: 63 70 84;
+  --wk-terracotta-pulse-rgb: var(--tech-magenta-crest-rgb);
+  --wk-verdigris-signal-rgb: var(--pixel-phosphor-green-rgb);
+
+  /* Editorial Ledger Baseline Aliases */
+  --bg-obsidian: var(--crt-void-bg);
+  --bg-surface: var(--crt-phosphor-dark);
+  --bg-card: var(--crt-panel-slate);
+  --bg-elevated: #F9F8F6;
+  --surface-alabaster: var(--pixel-ivory-text);
+  --text-muted: var(--text-secondary);
+  --accent-rust: var(--tech-magenta-crest);
+  --accent-coral: var(--tech-magenta-crest);
+  --accent-verdigris: var(--pixel-phosphor-green);
+  --border-editorial: var(--border-hairline);
+
+  --wk-neutral-buffer-dark: var(--crt-void-bg);
+  --wk-neutral-buffer-light: var(--pixel-ivory-text);
+
+  /* 90s CAD Manual Hardware Bevel & Brutalist Pixel Shadows */
+  --bevel-light: #FFFFFF;
+  --bevel-dark: #1A1D24;
+  --bevel-mid: #8E8A80;
+  --pixel-border-width: 2px;
+  --card-border: 2px solid #1A1D24;
+  --card-shadow: 4px 4px 0px #C8C1B4;
 }
 
 /* 90s Retro OS 2px Inset and Outset Bevel Borders */
@@ -94,30 +157,81 @@
 
 .retro-cyber-border {
   border: 2px solid var(--tech-cyan-wave);
-  box-shadow: 0 0 10px rgba(0, 240, 255, 0.25), inset 0 0 8px rgba(0, 240, 255, 0.1);
+  box-shadow: 0 0 10px rgba(var(--tech-cyan-wave-rgb), 0.25), inset 0 0 8px rgba(var(--tech-cyan-wave-rgb), 0.1);
 }
 
 .retro-magenta-border {
   border: 2px solid var(--tech-magenta-crest);
-  box-shadow: 0 0 10px rgba(255, 42, 133, 0.25), inset 0 0 8px rgba(255, 42, 133, 0.1);
+  box-shadow: 0 0 10px rgba(var(--tech-magenta-crest-rgb), 0.25), inset 0 0 8px rgba(var(--tech-magenta-crest-rgb), 0.1);
 }
 
 .retro-bezel-border {
   border: 2px solid var(--crt-bezel-shadow);
-  box-shadow: inset 1px 1px 0 rgba(214, 207, 194, 0.35), inset -1px -1px 0 rgba(0, 0, 0, 0.6);
+  box-shadow: inset 1px 1px 0 rgba(214, 207, 194, 0.35), inset -1px -1px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* Crisp Brutalist Architectural Card Surface with Hard Drop-Shadow */
+.retro-cad-card {
+  background-color: var(--crt-panel-slate);
+  border: 2px solid var(--crt-bezel-shadow);
+  box-shadow: 4px 4px 0px #C8C1B4;
+}
+
+[data-theme="dark"] .retro-cad-card {
+  box-shadow: 2px 2px 0px #070814;
 }
 
 /* 1px SVG Data-Draw Rules */
 .wk-rule-h {
   width: 100%;
   height: 1px;
-  background-color: rgba(0, 240, 255, 0.18);
+  background-color: var(--border-hairline);
 }
 
 .wk-rule-v {
   width: 1px;
   height: 100%;
-  background-color: rgba(0, 240, 255, 0.18);
+  background-color: var(--border-hairline);
+}
+
+/* Fast 250ms CRT Horizontal-Sync Flash / Degauss Wipe */
+@keyframes crt-hsync-flash {
+  0% {
+    opacity: 0;
+    transform: scaleY(0.005);
+    filter: brightness(3) contrast(2);
+  }
+  25% {
+    opacity: 1;
+    transform: scaleY(1);
+    filter: brightness(2.2) contrast(1.5);
+  }
+  65% {
+    opacity: 0.75;
+    transform: scaleY(0.08);
+    filter: brightness(2);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleY(0);
+    filter: brightness(1);
+  }
+}
+
+.crt-hsync-wipe {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 99999;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(var(--tech-cyan-wave-rgb), 0.35) 45%,
+    rgba(255, 255, 255, 0.95) 50%,
+    rgba(var(--tech-cyan-wave-rgb), 0.35) 55%,
+    transparent 100%
+  );
+  animation: crt-hsync-flash 250ms cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
 }
 
 /* Zero-Jank Velocity Skew Isolation */

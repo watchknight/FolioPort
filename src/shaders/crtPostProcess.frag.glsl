@@ -2,8 +2,9 @@ uniform sampler2D tDiffuse;
 uniform float u_time;
 uniform vec2 u_resolution;
 uniform float u_distortion;   // Default: 0.04 (4% barrel curvature)
-uniform float u_scanlineInt;  // Default: 0.06 (accessibility-safe scanline depth)
+uniform float u_scanlineInt;  // Default: 0.06 in dark, 0.03 in light mode
 uniform bool u_crtEnabled;
+uniform float u_isLightMode;
 
 varying vec2 vUv;
 
@@ -24,27 +25,41 @@ void main() {
   // Rounded CRT corner clipping
   vec2 edge = abs(crtUV - 0.5);
   if (edge.x > 0.5 || edge.y > 0.5) {
-    gl_FragColor = vec4(0.027, 0.031, 0.078, 1.0); // #070814 bezel void
+    vec4 voidColor = mix(
+      vec4(0.027, 0.031, 0.078, 1.0), // #070814 bezel void (Dark)
+      vec4(0.949, 0.937, 0.914, 1.0), // #F2EFE9 CAD paper void (Light)
+      u_isLightMode
+    );
+    gl_FragColor = voidColor;
     return;
   }
 
   // Chromatic aberration proportional to distance from tube center
   float centerDist = length(crtUV - 0.5);
   float caOffset = centerDist * 0.0035;
+  if (u_isLightMode > 0.5) {
+    caOffset = centerDist * 0.0015;
+  }
   float r = texture2D(tDiffuse, crtUV + vec2(caOffset, 0.0)).r;
   float g = texture2D(tDiffuse, crtUV).g;
   float b = texture2D(tDiffuse, crtUV - vec2(caOffset, 0.0)).b;
   vec3 color = vec3(r, g, b);
 
-  // Gaussian scanlines (tuned for 224-240 virtual lines) & Trinitron aperture mask
-  float scanline = sin(crtUV.y * 672.0) * u_scanlineInt;
-  float grille = mix(0.96, 1.04, sin(crtUV.x * u_resolution.x * 1.5));
-  color = (color * grille) - scanline;
+  if (u_isLightMode > 0.5) {
+    // Subtle architectural paper grain / drafting grid texture
+    float paperGrid = sin(crtUV.x * u_resolution.x * 0.5) * sin(crtUV.y * u_resolution.y * 0.5);
+    color = color - (paperGrid * u_scanlineInt * 0.4);
+  } else {
+    // Gaussian scanlines (tuned for 224-240 virtual lines) & Trinitron aperture mask
+    float scanline = sin(crtUV.y * 672.0) * u_scanlineInt;
+    float grille = mix(0.96, 1.04, sin(crtUV.x * u_resolution.x * 1.5));
+    color = (color * grille) - scanline;
 
-  // Warm NTSC color temperature (1.04R, 1.01G, 0.95B) & 12% edge vignette
-  color *= vec3(1.04, 1.01, 0.95);
-  float vignette = 1.0 - dot(crtUV - 0.5, crtUV - 0.5) * 0.48;
-  color *= clamp(vignette, 0.0, 1.0);
+    // Warm NTSC color temperature (1.04R, 1.01G, 0.95B) & 12% edge vignette
+    color *= vec3(1.04, 1.01, 0.95);
+    float vignette = 1.0 - dot(crtUV - 0.5, crtUV - 0.5) * 0.48;
+    color *= clamp(vignette, 0.0, 1.0);
+  }
 
   gl_FragColor = vec4(color, 1.0);
 }

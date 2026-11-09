@@ -15,6 +15,7 @@ import {
   interpolateSpatialWaypoints,
   hexToRgb,
 } from '../utils/sectionTransitions';
+import { useTheme, ThemeMode } from '../context/ThemeContext';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import cyberWaveVert from '../shaders/cyberWave.vert.glsl?raw';
 import cyberWaveFrag from '../shaders/cyberWave.frag.glsl?raw';
@@ -28,6 +29,7 @@ export interface CyberWaveEngineOptions {
   canvas: HTMLCanvasElement;
   container?: HTMLElement;
   initialMode?: RenderMode;
+  theme?: 'dark' | 'light' | ThemeMode;
   interactive?: boolean;
   enableScrollWaypoints?: boolean;
 }
@@ -43,6 +45,7 @@ export interface WaveUniformsType {
   u_crestColor: { value: THREE.Vector3 };
   u_accentColor: { value: THREE.Vector3 };
   u_paletteMorph: { value: number };
+  u_isLightMode: { value: number };
 }
 
 export interface CRTUniformsType {
@@ -52,6 +55,7 @@ export interface CRTUniformsType {
   u_distortion: { value: number };
   u_scanlineInt: { value: number };
   u_crtEnabled: { value: boolean };
+  u_isLightMode: { value: number };
 }
 
 /**
@@ -111,6 +115,8 @@ export class CyberWaveEngine {
   private renderPassChangeHandler: (e: Event) => void;
   private mediaQueryListener: ((e: MediaQueryListEvent) => void) | null = null;
   private crtFxHandler: ((e: Event) => void) | null = null;
+  private themeChangeHandler: ((e: Event) => void) | null = null;
+  private currentTheme: 'dark' | 'light' = 'dark';
 
   // Spatial Waypoints & ScrollTrigger Animation
   public enableScrollWaypoints: boolean = true;
@@ -142,6 +148,7 @@ export class CyberWaveEngine {
     this.container = options.container || options.canvas.parentElement;
     this.interactive = options.interactive ?? true;
     this.enableScrollWaypoints = options.enableScrollWaypoints ?? true;
+    this.currentTheme = (options.theme === 'light' || options.theme === 'alabaster' || (typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'light')) ? 'light' : 'dark';
     this.startTime = performance.now();
 
     const hasWindow = typeof window !== 'undefined';
@@ -161,9 +168,12 @@ export class CyberWaveEngine {
       }
     }
 
-    // 1. Scene & Void Background (#070814)
+    // 1. Scene, Void Background & Fog (#070814 Dark / #F2EFE9 Light)
+    const isInitLight = this.currentTheme === 'light';
+    const initBgHex = isInitLight ? '#F2EFE9' : '#070814';
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color('#070814');
+    this.scene.background = new THREE.Color(initBgHex);
+    this.scene.fog = new THREE.FogExp2(initBgHex, 0.025);
 
     // 2. PerspectiveCamera positioned at angled horizon view (Sector 01 Hero Waypoint)
     this.camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 100);
@@ -204,10 +214,13 @@ export class CyberWaveEngine {
       u_crestColor: { value: new THREE.Vector3(1.0, 0.165, 0.522) }, // #FF2A85 (Magenta)
       u_accentColor: { value: new THREE.Vector3(1.0, 0.8, 0.0) }, // #FFCC00 (Amber)
       u_paletteMorph: { value: 0.0 },
+      u_isLightMode: { value: isInitLight ? 1.0 : 0.0 },
     };
 
     // 5. Construct 120x120 topological wave grid
     this.waveGeometry = new THREE.PlaneGeometry(18, 12, 120, 120);
+
+    const initialBlending = isInitLight ? THREE.NormalBlending : THREE.AdditiveBlending;
 
     // Object A: Wireframe Energy Mesh
     this.wireframeMaterial = new THREE.ShaderMaterial({
@@ -215,7 +228,7 @@ export class CyberWaveEngine {
       fragmentShader: cyberWaveFrag,
       wireframe: true,
       transparent: true,
-      blending: THREE.AdditiveBlending,
+      blending: initialBlending,
       uniforms: this.waveUniforms as any,
     });
     // Line primitive safety: provide dedicated cache key and substitute point-sprite discard with luminous line alpha
@@ -238,7 +251,7 @@ export class CyberWaveEngine {
       vertexShader: cyberWaveVert,
       fragmentShader: cyberWaveFrag,
       transparent: true,
-      blending: THREE.AdditiveBlending,
+      blending: initialBlending,
       depthWrite: false,
       uniforms: this.waveUniforms as any,
     });
@@ -271,7 +284,7 @@ export class CyberWaveEngine {
       vertexShader: cyberWaveVert,
       fragmentShader: cyberWaveFrag,
       transparent: true,
-      blending: THREE.AdditiveBlending,
+      blending: initialBlending,
       depthWrite: false,
       uniforms: this.waveUniforms as any,
     });
@@ -294,12 +307,12 @@ export class CyberWaveEngine {
     });
     this.composer.addPass(this.renderPixelatedPass);
 
-    // Pass 3: UnrealBloomPass (strength: 1.35, radius: 0.4, threshold: 0.8)
+    // Pass 3: UnrealBloomPass (strength: 1.35 in Dark / 0.15 in Light, threshold: 0.8 in Dark / 0.95 in Light)
     this.bloomPass = new UnrealBloomPass(
       new THREE.Vector2(width, height),
-      1.35,
+      isInitLight ? 0.15 : 1.35,
       0.4,
-      0.8
+      isInitLight ? 0.95 : 0.8
     );
     this.composer.addPass(this.bloomPass);
 
@@ -309,8 +322,9 @@ export class CyberWaveEngine {
       u_time: { value: 0 },
       u_resolution: { value: new THREE.Vector2(width, height) },
       u_distortion: { value: 0.04 },
-      u_scanlineInt: { value: 0.06 },
+      u_scanlineInt: { value: isInitLight ? 0.03 : 0.06 },
       u_crtEnabled: { value: false },
+      u_isLightMode: { value: isInitLight ? 1.0 : 0.0 },
     };
 
     const CRTPostShader = {
@@ -391,6 +405,13 @@ export class CyberWaveEngine {
         }
       };
       window.addEventListener('wk-crt-fx-change', this.crtFxHandler);
+      this.themeChangeHandler = (e: Event) => {
+        const detail = (e as CustomEvent<{ theme?: 'dark' | 'light' }>).detail;
+        if (detail?.theme) {
+          this.setTheme(detail.theme);
+        }
+      };
+      window.addEventListener('watchknight-theme-change', this.themeChangeHandler);
 
       try {
         const savedFx = localStorage.getItem('wk_crt_fx_mode') || document.documentElement.getAttribute('data-crt-fx');
@@ -445,6 +466,87 @@ export class CyberWaveEngine {
   }
 
   /**
+   * Real-time Theme Synchronizer:
+   * Tweens scene.background and scene.fog smoothly via gsap.to over 0.45s between
+   * #070814 (Dark) and #F2EFE9 (Light).
+   * Switches wireframe and particle materials to NormalBlending in Light Mode,
+   * updates u_isLightMode uniform, and recalibrates bloom strength/threshold and CRT passes.
+   */
+  public setTheme(theme: 'dark' | 'light' | ThemeMode): void {
+    const isLight = theme === 'light' || theme === 'alabaster';
+    this.currentTheme = isLight ? 'light' : 'dark';
+    const targetBgHex = isLight ? '#F2EFE9' : '#070814';
+    const targetColor = new THREE.Color(targetBgHex);
+
+    // 1. Scene Clear Color & Fog
+    if (this.scene.background instanceof THREE.Color) {
+      gsap.to(this.scene.background, {
+        r: targetColor.r,
+        g: targetColor.g,
+        b: targetColor.b,
+        duration: 0.45,
+        ease: 'power2.out',
+      });
+    }
+    if (this.scene.fog && 'color' in this.scene.fog) {
+      gsap.to(this.scene.fog.color, {
+        r: targetColor.r,
+        g: targetColor.g,
+        b: targetColor.b,
+        duration: 0.45,
+        ease: 'power2.out',
+      });
+    }
+
+    // 2. Shader Blending & Color Uniforms
+    const blending = isLight ? THREE.NormalBlending : THREE.AdditiveBlending;
+    if (this.wireframeMaterial) {
+      this.wireframeMaterial.blending = blending;
+      this.wireframeMaterial.needsUpdate = true;
+    }
+    if (this.particleMaterial) {
+      this.particleMaterial.blending = blending;
+      this.particleMaterial.needsUpdate = true;
+    }
+    if (this.sparkMaterial) {
+      this.sparkMaterial.blending = blending;
+      this.sparkMaterial.needsUpdate = true;
+    }
+
+    if (this.waveUniforms?.u_isLightMode) {
+      gsap.to(this.waveUniforms.u_isLightMode, {
+        value: isLight ? 1.0 : 0.0,
+        duration: 0.45,
+        ease: 'power2.out',
+      });
+    }
+
+    // 3. Bloom & CRT Shader Calibration
+    if (this.bloomPass) {
+      const targetBloom = isLight
+        ? 0.15
+        : this.currentMode === '3D PIXEL_ART'
+        ? 0.95
+        : this.currentMode === 'CRT ANALOG'
+        ? 1.45
+        : 1.35;
+      const targetThreshold = isLight ? 0.95 : 0.8;
+
+      gsap.to(this.bloomPass, {
+        strength: targetBloom,
+        threshold: targetThreshold,
+        duration: 0.45,
+        ease: 'power2.out',
+      });
+    }
+
+    if (this.crtUniforms) {
+      this.crtUniforms.u_isLightMode.value = isLight ? 1.0 : 0.0;
+      this.crtUniforms.u_scanlineInt.value = isLight ? 0.03 : 0.06;
+    }
+  }
+
+  /**
    * Real-time Render Mode Switcher:
    * Toggles renderPixelatedPass.enabled vs renderPass.enabled and updates
    * bloomPass.strength and CRT uniforms without rebuilding the composer chain.
@@ -468,25 +570,29 @@ export class CyberWaveEngine {
     }
 
     this.currentMode = resolved;
+    const isLight = this.currentTheme === 'light';
 
     if (resolved === '3D PIXEL_ART') {
       // Pixelated pass replaces standard render pass
       this.renderPixelatedPass.enabled = true;
       this.renderPass.enabled = false;
       this.crtUniforms.u_crtEnabled.value = false;
-      this.bloomPass.strength = 0.95;
+      this.bloomPass.strength = isLight ? 0.15 : 0.95;
+      this.bloomPass.threshold = isLight ? 0.95 : 0.8;
     } else if (resolved === 'CRT ANALOG') {
       // Pixelated raster with full analog barrel distortion & scanlines
       this.renderPixelatedPass.enabled = true;
       this.renderPass.enabled = false;
       this.crtUniforms.u_crtEnabled.value = this.crtFxMode !== 'OFF';
-      this.bloomPass.strength = 1.45;
+      this.bloomPass.strength = isLight ? 0.15 : 1.45;
+      this.bloomPass.threshold = isLight ? 0.95 : 0.8;
     } else {
       // Standard 3D Vector mode: pristine high-resolution rendering
       this.renderPixelatedPass.enabled = false;
       this.renderPass.enabled = true;
       this.crtUniforms.u_crtEnabled.value = false;
-      this.bloomPass.strength = 1.35;
+      this.bloomPass.strength = isLight ? 0.15 : 1.35;
+      this.bloomPass.threshold = isLight ? 0.95 : 0.8;
     }
   }
 
@@ -834,6 +940,10 @@ export class CyberWaveEngine {
         window.removeEventListener('wk-crt-fx-change', this.crtFxHandler);
         this.crtFxHandler = null;
       }
+      if (this.themeChangeHandler) {
+        window.removeEventListener('watchknight-theme-change', this.themeChangeHandler);
+        this.themeChangeHandler = null;
+      }
       if (this.mediaQueryListener) {
         const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)');
         if (typeof mq?.removeEventListener === 'function') {
@@ -870,6 +980,7 @@ export interface CyberWaveCanvasProps {
   className?: string;
   style?: React.CSSProperties;
   initialMode?: RenderMode;
+  theme?: 'dark' | 'light' | ThemeMode;
   interactive?: boolean;
   enableScrollWaypoints?: boolean;
 }
@@ -878,12 +989,16 @@ export const CyberWaveCanvas: React.FC<CyberWaveCanvasProps> = ({
   className = '',
   style,
   initialMode = '3D VECTOR',
+  theme: controlledTheme,
   interactive = true,
   enableScrollWaypoints = true,
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const engineRef = useRef<CyberWaveEngine | null>(null);
+  const { theme: contextTheme } = useTheme();
+  const rawTheme = controlledTheme || contextTheme || 'dark';
+  const activeTheme: 'dark' | 'light' = rawTheme === 'light' || rawTheme === 'alabaster' ? 'light' : 'dark';
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -894,6 +1009,7 @@ export const CyberWaveCanvas: React.FC<CyberWaveCanvasProps> = ({
       canvas,
       container,
       initialMode,
+      theme: activeTheme,
       interactive,
       enableScrollWaypoints,
     });
@@ -913,6 +1029,13 @@ export const CyberWaveCanvas: React.FC<CyberWaveCanvasProps> = ({
       engineRef.current.setRenderMode(initialMode);
     }
   }, [initialMode]);
+
+  // Update theme dynamically
+  useEffect(() => {
+    if (engineRef.current && activeTheme) {
+      engineRef.current.setTheme(activeTheme);
+    }
+  }, [activeTheme]);
 
   return (
     <div

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useLenis } from '../hooks/useLenis';
+import { useTheme } from '../context/ThemeContext';
 import { PORTFOLIO_DATA } from '../data/portfolioData';
 import { PixelWorkstationCRT, AvatarAction } from './hero/PixelWorkstationCRT';
 import { CyberWaveCanvas } from './CyberWaveCanvas';
@@ -71,6 +72,8 @@ const BRACKET_MENU_ITEMS: BracketMenuItem[] = [
 
 export const Hero: React.FC<HeroProps> = ({ showCanvas = true }) => {
   const { scrollTo } = useLenis();
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const containerRef = useRef<HTMLElement | null>(null);
   const headlineRef = useRef<HTMLHeadingElement | null>(null);
   const marqueeContainerRef = useRef<HTMLDivElement | null>(null);
@@ -443,19 +446,21 @@ export const Hero: React.FC<HeroProps> = ({ showCanvas = true }) => {
         
         {/* LEFT COLUMN (Col 1-7): Visual Typographic Stack, Status HUD, 90s Bracket Menu & Bottom Telemetry */}
         <div 
-          className="lg:col-span-7 flex flex-col justify-between w-full h-full self-stretch lg:self-stretch z-10 pointer-events-none py-0.5 rounded-xl p-2 sm:p-4 lg:p-6"
+          className="lg:col-span-7 flex flex-col justify-between w-full h-full self-stretch lg:self-stretch z-10 pointer-events-none py-0.5 rounded-xl p-2 sm:p-4 lg:p-6 transition-all duration-300"
           style={{
-            background: 'radial-gradient(ellipse at 25% 50%, rgba(7, 8, 20, 0.94) 0%, rgba(7, 8, 20, 0.65) 70%, transparent 100%)',
+            background: isLight
+              ? 'radial-gradient(ellipse at 25% 50%, rgba(242, 239, 233, 0.95) 0%, rgba(242, 239, 233, 0.7) 70%, transparent 100%)'
+              : 'radial-gradient(ellipse at 25% 50%, rgba(7, 8, 20, 0.94) 0%, rgba(7, 8, 20, 0.65) 70%, transparent 100%)',
           }}
         >
           
           {/* TOP EDITORIAL METADATA STRIP: Status & Coordinates HUD */}
           <div className="hero-anchor-badge flex items-center justify-between gap-2 mb-1.5 pointer-events-auto">
             {/* Availability Status Badge */}
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-[#131629] border-2 border-[#2D3645] shadow-[2px_2px_0_0_#070814] font-mono text-[10px] sm:text-xs backdrop-blur-xl whitespace-nowrap">
+            <div className={`inline-flex items-center gap-2 px-2.5 py-1 ${isLight ? 'bg-[#FFFFFF] border-2 border-[#1A1D24] shadow-[2px_2px_0_0_#C8C1B4] text-[#11131A]' : 'bg-[#131629] border-2 border-[#2D3645] shadow-[2px_2px_0_0_#070814] text-alabaster'} font-mono text-[10px] sm:text-xs backdrop-blur-xl whitespace-nowrap`}>
               <div className="relative flex h-2 w-2 items-center justify-center shrink-0">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00F0FF] opacity-80" />
-                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00F0FF]" />
+                <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${isLight ? 'bg-[#0052FF]' : 'bg-[#00F0FF]'} opacity-80`} />
+                <span className={`relative inline-flex rounded-full h-1.5 w-1.5 ${isLight ? 'bg-[#0052FF]' : 'bg-[#00F0FF]'}`} />
               </div>
 
               <span className="font-bold text-alabaster tracking-wide">
@@ -482,12 +487,12 @@ export const Hero: React.FC<HeroProps> = ({ showCanvas = true }) => {
             {/* Dhaka Coordinates & Live Telemetry Clock */}
             <div className="hidden sm:flex items-center gap-2 text-muted font-mono text-[11px] whitespace-nowrap">
               <span className="flex items-center gap-1.5 text-alabaster-dim">
-                <Compass className="w-3.5 h-3.5 text-[#00F0FF]" />
+                <Compass className={`w-3.5 h-3.5 ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'}`} />
                 <span>23°48'N 90°25'E</span>
               </span>
               <span className="text-white/20">•</span>
               <span className="flex items-center gap-1.5 text-alabaster-dim">
-                <Clock className="w-3.5 h-3.5 text-[#FF2A85]" />
+                <Clock className={`w-3.5 h-3.5 ${isLight ? 'text-[#D90452]' : 'text-[#FF2A85]'}`} />
                 <span>DHAKA, BD {dhakaTime ? `(${dhakaTime})` : '(UTC+6)'}</span>
               </span>
             </div>
@@ -496,24 +501,24 @@ export const Hero: React.FC<HeroProps> = ({ showCanvas = true }) => {
           {/* CYBERDECK PROMPT & PRIMARY VISUAL TYPOGRAPHIC STACK */}
           <div className="pointer-events-auto my-auto py-0.5">
             {/* Top Prompt styled in 'Press Start 2P' */}
-            <div className="hero-prompt-bar font-pixel text-[9px] sm:text-[10px] text-[#00F0FF] tracking-wider mb-1.5 flex items-center gap-1.5">
-              <span className="text-[#FF2A85] font-bold">{'>'}</span>
+            <div className={`hero-prompt-bar font-pixel text-[9px] sm:text-[10px] ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'} tracking-wider mb-1.5 flex items-center gap-1.5`}>
+              <span className={`${isLight ? 'text-[#D90452]' : 'text-[#FF2A85]'} font-bold`}>{'>'}</span>
               <span>WELCOME TO WATCHKNIGHT_OS // PORTFOLIO v1.96</span>
-              <span className="w-2 h-3 bg-[#00F0FF] animate-pulse inline-block" />
+              <span className={`w-2 h-3 ${isLight ? 'bg-[#0052FF]' : 'bg-[#00F0FF]'} animate-pulse inline-block`} />
             </div>
 
             {/* HEADLINE: ENGINEERING WHERE LOW-LEVEL SYSTEMS MEET SPATIAL 3D & PIXEL WORLDS */}
             <h1 
               ref={headlineRef}
               className="font-display font-black text-2xl sm:text-3xl lg:text-3xl xl:text-4xl 2xl:text-5xl tracking-[0.04em] lg:tracking-[0.06em] text-alabaster uppercase leading-[1.05] mb-1.5 sm:mb-2"
-              style={{ filter: 'drop-shadow(0 2px 14px rgba(7, 8, 20, 0.98))' }}
+              style={{ filter: isLight ? 'none' : 'drop-shadow(0 2px 14px rgba(7, 8, 20, 0.98))' }}
             >
               <div className="block leading-[1.05] overflow-visible">
                 {['ENGINEERING', 'WHERE'].map((word, wordIdx) => (
                   <span
                     key={wordIdx}
                     className="inline-block overflow-visible mr-[0.28em] align-top py-0.5"
-                    style={{ filter: 'drop-shadow(0 2px 14px rgba(7, 8, 20, 0.98))' }}
+                    style={{ filter: isLight ? 'none' : 'drop-shadow(0 2px 14px rgba(7, 8, 20, 0.98))' }}
                   >
                     <span className="hero-split-word inline-block transform-gpu text-alabaster font-black tracking-[0.04em] lg:tracking-[0.06em]">
                       {word}
@@ -526,7 +531,7 @@ export const Hero: React.FC<HeroProps> = ({ showCanvas = true }) => {
                   <span
                     key={wordIdx}
                     className="inline-block overflow-visible mr-[0.28em] align-top py-0.5"
-                    style={{ filter: 'drop-shadow(0 2px 14px rgba(7, 8, 20, 0.98))' }}
+                    style={{ filter: isLight ? 'none' : 'drop-shadow(0 2px 14px rgba(7, 8, 20, 0.98))' }}
                   >
                     <span className="hero-split-word inline-block transform-gpu text-[#FF2A85] text-wk-terracotta-pulse font-black tracking-[0.04em] lg:tracking-[0.06em]">
                       {word}
@@ -539,7 +544,7 @@ export const Hero: React.FC<HeroProps> = ({ showCanvas = true }) => {
                   <span
                     key={wordIdx}
                     className="inline-block overflow-visible mr-[0.28em] align-top py-0.5"
-                    style={{ filter: 'drop-shadow(0 2px 14px rgba(7, 8, 20, 0.98))' }}
+                    style={{ filter: isLight ? 'none' : 'drop-shadow(0 2px 14px rgba(7, 8, 20, 0.98))' }}
                   >
                     <span className="hero-split-word inline-block transform-gpu text-alabaster font-black tracking-[0.04em] lg:tracking-[0.06em]">
                       {word}
@@ -556,13 +561,13 @@ export const Hero: React.FC<HeroProps> = ({ showCanvas = true }) => {
             </p>
 
             {/* INTERACTIVE 90s CRT BRACKET MENU [1] [2] [3] [4] */}
-            <div className="hero-bracket-menu mt-2 sm:mt-2.5 p-2 bg-[#0D1512]/95 border-2 border-[#2D3645] shadow-[2px_2px_0_0_#070814] backdrop-blur-xl">
-              <div className="flex items-center justify-between pb-1 mb-1 border-b border-white/10 font-pixel text-[8px] text-[#FFCC00] uppercase tracking-wider">
+            <div className={`hero-bracket-menu mt-2 sm:mt-2.5 p-2 ${isLight ? 'bg-[#FFFFFF]/95 border-2 border-[#1A1D24] shadow-[2px_2px_0_0_#C8C1B4]' : 'bg-[#0D1512]/95 border-2 border-[#2D3645] shadow-[2px_2px_0_0_#070814]'} backdrop-blur-xl`}>
+              <div className={`flex items-center justify-between pb-1 mb-1 border-b ${isLight ? 'border-[#1A1D24]/10 text-[#C85A00]' : 'border-white/10 text-[#FFCC00]'} font-pixel text-[8px] uppercase tracking-wider`}>
                 <span className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 bg-[#4AF626] rounded-full animate-pulse" />
+                  <span className={`w-1.5 h-1.5 ${isLight ? 'bg-[#007A33]' : 'bg-[#4AF626]'} rounded-full animate-pulse`} />
                   <span>COMMAND SELECTION // SYS.96 [PRESS 1 - 4]</span>
                 </span>
-                <span className="text-[#8E98AA] hidden sm:inline">KEYBOARD / CLICK</span>
+                <span className={`${isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'} hidden sm:inline`}>KEYBOARD / CLICK</span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-1.5">
@@ -584,7 +589,9 @@ export const Hero: React.FC<HeroProps> = ({ showCanvas = true }) => {
                       }}
                       className={`group relative flex items-center justify-between px-2 py-1 text-left border transition-all duration-150 cursor-pointer ${
                         isFlashing
-                          ? 'bg-[#4AF626] text-[#070814] border-white shadow-[2px_2px_0_0_#00F0FF]'
+                          ? isLight ? 'bg-[#007A33] text-white border-[#1A1D24] shadow-[2px_2px_0_0_#0052FF]' : 'bg-[#4AF626] text-[#070814] border-white shadow-[2px_2px_0_0_#00F0FF]'
+                          : isLight
+                          ? 'bg-[#F2EFE9] hover:bg-[#EAE5DB] text-[#11131A] border-[#1A1D24]/30 hover:border-[#0052FF] shadow-[2px_2px_0_0_#C8C1B4]'
                           : 'bg-[#131629] hover:bg-[#1A1F38] text-[#F0EFE6] border-[#2D3645] hover:border-[#00F0FF] shadow-[2px_2px_0_0_#070814]'
                       }`}
                       aria-label={`Menu item [${item.num}]: ${item.title}`}
@@ -592,13 +599,17 @@ export const Hero: React.FC<HeroProps> = ({ showCanvas = true }) => {
                       <div className="flex items-center gap-1.5 min-w-0">
                         {/* Phosphor green bracket [1] */}
                         <span className={`font-pixel text-[9px] font-bold shrink-0 transition-colors ${
-                          isFlashing ? 'text-[#070814]' : 'text-[#4AF626] group-hover:text-[#00F0FF]'
+                          isFlashing
+                            ? isLight ? 'text-white' : 'text-[#070814]'
+                            : isLight ? 'text-[#007A33] group-hover:text-[#0052FF]' : 'text-[#4AF626] group-hover:text-[#00F0FF]'
                         }`}>
                           [{item.num}]
                         </span>
 
                         <span className={`font-pixel text-[8px] font-bold tracking-tight break-words uppercase transition-colors ${
-                          isFlashing ? 'text-[#070814]' : 'text-[#F0EFE6] group-hover:text-white'
+                          isFlashing
+                            ? isLight ? 'text-white' : 'text-[#070814]'
+                            : isLight ? 'text-[#11131A] group-hover:text-[#0052FF]' : 'text-[#F0EFE6] group-hover:text-white'
                         }`}>
                           {item.title}
                         </span>
@@ -606,7 +617,7 @@ export const Hero: React.FC<HeroProps> = ({ showCanvas = true }) => {
 
                       {/* Direction prompt glyph */}
                       <span className={`font-pixel text-[8px] ml-1 shrink-0 transition-opacity ${
-                        isFlashing ? 'opacity-100 text-[#070814]' : 'opacity-40 group-hover:opacity-100 text-[#00F0FF]'
+                        isFlashing ? 'opacity-100 ' + (isLight ? 'text-white' : 'text-[#070814]') : 'opacity-40 group-hover:opacity-100 ' + (isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]')
                       }`}>
                         ►
                       </span>
@@ -632,13 +643,13 @@ export const Hero: React.FC<HeroProps> = ({ showCanvas = true }) => {
               {/* Secondary Action: [ >_ LAUNCH TERMINAL ] */}
               <MagneticButton
                 onClick={handleLaunchTerminal}
-                className="group relative px-2.5 py-1.5 bg-[#131629] hover:bg-[#1A1F38] border-2 border-[#2D3645] hover:border-[#00F0FF] text-[#F0EFE6] font-pixel text-[9px] tracking-tight backdrop-blur-xl transition-all duration-200 shadow-[2px_2px_0_0_#070814] active:translate-y-0.5 flex items-center gap-1.5"
+                className={`group relative px-2.5 py-1.5 ${isLight ? 'bg-[#FFFFFF] hover:bg-[#F2EFE9] border-2 border-[#1A1D24] hover:border-[#0052FF] text-[#11131A] shadow-[2px_2px_0_0_#C8C1B4]' : 'bg-[#131629] hover:bg-[#1A1F38] border-2 border-[#2D3645] hover:border-[#00F0FF] text-[#F0EFE6] shadow-[2px_2px_0_0_#070814]'} font-pixel text-[9px] tracking-tight backdrop-blur-xl transition-all duration-200 active:translate-y-0.5 flex items-center gap-1.5`}
                 aria-label="Launch Interactive Terminal (Ctrl + ~)"
               >
-                <Terminal className="w-3 h-3 text-[#FF2A85] group-hover:text-[#00F0FF] transition-colors" />
+                <Terminal className={`w-3 h-3 ${isLight ? 'text-[#D90452] group-hover:text-[#0052FF]' : 'text-[#FF2A85] group-hover:text-[#00F0FF]'} transition-colors`} />
                 <span className="sr-only">Launch Interactive Terminal</span>
-                <span className="font-bold text-[#00F0FF] group-hover:text-white">[ &gt;_ LAUNCH TERMINAL ]</span>
-                <kbd className="hidden sm:inline-flex items-center px-1 py-0.5 bg-[#0D1512] text-[#FF2A85] text-[8px] font-mono border border-white/10 shadow-inner group-hover:border-[#00F0FF]/40 transition-colors">
+                <span className={`font-bold ${isLight ? 'text-[#0052FF] group-hover:text-[#11131A]' : 'text-[#00F0FF] group-hover:text-white'}`}>[ &gt;_ LAUNCH TERMINAL ]</span>
+                <kbd className={`hidden sm:inline-flex items-center px-1 py-0.5 ${isLight ? 'bg-[#EAE5DB] text-[#D90452] border-[#1A1D24]/20' : 'bg-[#0D1512] text-[#FF2A85] border-white/10'} text-[8px] font-mono border shadow-inner transition-colors`}>
                   Ctrl + ~
                 </kbd>
               </MagneticButton>
@@ -648,10 +659,10 @@ export const Hero: React.FC<HeroProps> = ({ showCanvas = true }) => {
                 href="/resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 border-2 border-[#2D3645] hover:border-[#00F0FF] bg-[#131629] text-[9px] font-pixel text-[#F0EFE6] hover:text-[#00F0FF] shadow-[2px_2px_0_0_#070814] transition-all backdrop-blur-md"
+                className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 border-2 ${isLight ? 'border-[#1A1D24] hover:border-[#0052FF] bg-[#FFFFFF] text-[#11131A] hover:text-[#0052FF] shadow-[2px_2px_0_0_#C8C1B4]' : 'border-[#2D3645] hover:border-[#00F0FF] bg-[#131629] text-[#F0EFE6] hover:text-[#00F0FF] shadow-[2px_2px_0_0_#070814]'} text-[9px] font-pixel transition-all backdrop-blur-md`}
                 aria-label="View Resume PDF"
               >
-                <FileText className="w-3 h-3 text-[#FFCC00]" />
+                <FileText className={`w-3 h-3 ${isLight ? 'text-[#C85A00]' : 'text-[#FFCC00]'}`} />
                 <span className="sr-only">Resume (PDF)</span>
                 <span className="font-bold">[ RESUME.PDF ]</span>
               </a>
