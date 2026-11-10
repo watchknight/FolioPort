@@ -3,21 +3,19 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { LenisProvider, getOrInitLenis } from './hooks/useLenis';
 import { ThemeProvider } from './context/ThemeContext';
 import { TransitionProvider } from './context/TransitionContext';
+import { RetroOSProvider } from './context/RetroOSContext';
 import { CaseStudyView } from './components/case-study/CaseStudyView';
 import { Preloader } from './components/Preloader';
-import { CustomCursor } from './components/cursor/CustomCursor';
 import { RetroCommandBar } from './components/navigation/RetroCommandBar';
-import { CRTViewportShell } from './components/CRTViewportShell';
-import { Hero } from './components/Hero';
+import { CRTMonitorShell } from './components/CRTMonitorShell';
+import { CRTDioramaStage } from './components/CRTDioramaStage';
 import { ProjectsShowcase } from './components/ProjectsShowcase';
 import { ExtensionStudio } from './components/ExtensionStudio';
 import { GithubLab } from './components/GithubLab';
 import { SkillMatrix } from './components/SkillMatrix';
 import { TerminalLab } from './components/TerminalLab';
 import { ContactFooter } from './components/ContactFooter';
-import { SceneManager } from './webgl/SceneManager';
 import { NotFoundPage } from './pages/404';
-import { CyberWaveCanvas } from './components/CyberWaveCanvas';
 import { ShutterSectionStack, ShutterLayer } from './components/ShutterSectionStack';
 
 export const App: React.FC = () => {
@@ -47,9 +45,6 @@ export const App: React.FC = () => {
     // and expose as window.__lenis for programmatic anchor scrolling
     const lenis = getOrInitLenis();
     window.__lenis = lenis;
-
-    // Full-viewport Three.js WebGL rendering layer & DOM plane synchronizer
-    const sceneManager = SceneManager.getOrInit();
 
     // Global layout stabilization listener: refresh ScrollTrigger once document.fonts.ready resolves
     // and after lazy-loaded case-study images finish decoding
@@ -91,8 +86,11 @@ export const App: React.FC = () => {
           const targetEl = document.querySelector(href);
           if (targetEl) {
             e.preventDefault();
-            const offset = href === '#work' ? 0 : -90;
-            lenis.scrollTo(targetEl as HTMLElement, { offset, duration: 1.2 });
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            if (lenis) {
+              const offset = href === '#work' ? 0 : -90;
+              lenis.scrollTo(targetEl as HTMLElement, { offset, duration: 1.2 });
+            }
           }
         }
       }
@@ -101,14 +99,12 @@ export const App: React.FC = () => {
     document.addEventListener('click', handleAnchorClick);
     return () => {
       document.removeEventListener('click', handleAnchorClick);
-      sceneManager.dispose();
     };
   }, []);
 
   if (is404) {
     return (
       <ThemeProvider>
-        <CustomCursor />
         <NotFoundPage
           onReturnHome={() => {
             setIs404(false);
@@ -129,43 +125,21 @@ export const App: React.FC = () => {
     <ThemeProvider>
       <LenisProvider>
         <TransitionProvider>
-          {/* Multilingual and Counter Curtain Preloader (z-index 9999) */}
-          <Preloader />
+          <RetroOSProvider>
+            {/* Multilingual and Counter Curtain Preloader (z-index 9999) */}
+            <Preloader />
 
-          {/* Dual-layer Magnetic Custom Cursor */}
-          <CustomCursor />
-
-          {/* Subtle Fixed SVG Film-Grain Noise Overlay (opacity: 0.035; pointer-events: none; z-index: 9990) */}
-          <div
-            className="fixed inset-0 pointer-events-none z-[9990] select-none"
-            style={{ opacity: 0.035 }}
-            aria-hidden="true"
-          >
-            <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-              <filter id="editorial-film-grain">
-                <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch" />
-                <feColorMatrix type="saturate" values="0" />
-              </filter>
-              <rect width="100%" height="100%" filter="url(#editorial-film-grain)" />
-            </svg>
-          </div>
-
-          {/* 90s CRT Monitor Viewport Shell with Hardware Bezel, Scanlines & Live FX Switch */}
-          <CRTViewportShell>
+            {/* 90s CRT Monitor Shell with Vintage Beige Bezel, Optics, and Hardware Controls */}
+            <CRTMonitorShell>
             {/* Top Terminal Command Bar (> [01] PROJECTS, > [02] SKILLS, etc.) */}
             <RetroCommandBar />
 
-            {/* Persistent Hardware-Accelerated 3D Cyberdeck Wave WebGL Canvas (Waypoints across Sectors 01 - 05) */}
-            <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
-              <CyberWaveCanvas className="w-full h-full" enableScrollWaypoints={true} />
-            </div>
-
-            {/* Core Layout Content: z-index: 2 and transparent background */}
+            {/* Core Layout Content */}
             <main
               className="relative z-[2] transition-colors flex flex-col bg-transparent"
             >
               <ShutterSectionStack total={6}>
-                {/* Sector 01: Hero Horizon */}
+                {/* Sector 01: Hero Horizon - 90s Pixel Art Workstation Diorama */}
                 <ShutterLayer
                   index={0}
                   total={6}
@@ -174,7 +148,7 @@ export const App: React.FC = () => {
                   nextSectionId="work"
                   showDivider={false}
                 >
-                  <Hero showCanvas={false} />
+                  <CRTDioramaStage id="hero" />
                 </ShutterLayer>
 
                 {/* Sector 02: Flagship Systems & 3D Deck */}
@@ -241,7 +215,8 @@ export const App: React.FC = () => {
 
             {/* GSAP Flip Seamless Morph Case Study Overlay */}
             <CaseStudyView />
-          </CRTViewportShell>
+          </CRTMonitorShell>
+          </RetroOSProvider>
         </TransitionProvider>
       </LenisProvider>
     </ThemeProvider>

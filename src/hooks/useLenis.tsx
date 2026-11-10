@@ -53,6 +53,15 @@ export const LenisProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     // Exact numbers default to offset 0; element selectors default to -90 for navbar clearance
     const defaultOffset = typeof target === 'number' ? 0 : -90;
     const offset = options?.offset !== undefined ? options.offset : defaultOffset;
+    if (typeof target === 'string') {
+      const el = document.querySelector(target);
+      if (el) {
+        el.scrollIntoView({ behavior: options?.immediate ? 'auto' : 'smooth', block: 'start' });
+      }
+    } else if (target && typeof target === 'object' && 'scrollIntoView' in target) {
+      target.scrollIntoView({ behavior: options?.immediate ? 'auto' : 'smooth', block: 'start' });
+    }
+
     const activeLenis = window.__lenis || lenisRef.current;
 
     if (activeLenis) {

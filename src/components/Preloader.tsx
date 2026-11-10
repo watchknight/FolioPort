@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
 import gsap from 'gsap';
 import { getOrInitLenis } from '../hooks/useLenis';
-import { SceneManager } from '../webgl/SceneManager';
 import { watchknightAudio as audioEngine } from '../audio/WatchknightAudioEngine';
 
 export interface PreloaderProps {
@@ -69,61 +67,6 @@ export const Preloader: React.FC<PreloaderProps> = ({ onCurtainLifting, onComple
     const clipPath = clipPathRef.current;
     if (!container || !svgPath) return;
 
-    // 3. Coordinate WebGL compilation & THREE.DefaultLoadingManager synchronization
-    const sceneManager = SceneManager.getOrInit();
-    let compileCompleted = false;
-    let loadingManagerCompleted = true; // default ready unless assets start loading
-    let isWaitingForReady = false;
-
-    // Track THREE.DefaultLoadingManager hooks
-    const prevOnStart = THREE.DefaultLoadingManager.onStart;
-    const prevOnLoad = THREE.DefaultLoadingManager.onLoad;
-    const prevOnProgress = THREE.DefaultLoadingManager.onProgress;
-
-    const resumeIfReady = () => {
-      if (compileCompleted && loadingManagerCompleted && isWaitingForReady) {
-        isWaitingForReady = false;
-        tl.play();
-      }
-    };
-
-    THREE.DefaultLoadingManager.onStart = (url, itemsLoaded, itemsTotal) => {
-      loadingManagerCompleted = false;
-      if (typeof prevOnStart === 'function') {
-        prevOnStart(url, itemsLoaded, itemsTotal);
-      }
-    };
-
-    THREE.DefaultLoadingManager.onLoad = () => {
-      loadingManagerCompleted = true;
-      if (typeof prevOnLoad === 'function') {
-        prevOnLoad();
-      }
-      resumeIfReady();
-    };
-
-    THREE.DefaultLoadingManager.onProgress = (url, itemsLoaded, itemsTotal) => {
-      if (typeof prevOnProgress === 'function') {
-        prevOnProgress(url, itemsLoaded, itemsTotal);
-      }
-    };
-
-    // Precompile WebGL pipeline shaders asynchronously
-    sceneManager.precompileAsync().then(() => {
-      compileCompleted = true;
-      resumeIfReady();
-    }).catch(() => {
-      compileCompleted = true;
-      resumeIfReady();
-    });
-
-    // Safety timeout: never block preloader calibration indefinitely (max 2800ms)
-    const safetyTimer = window.setTimeout(() => {
-      compileCompleted = true;
-      loadingManagerCompleted = true;
-      resumeIfReady();
-    }, 2800);
-
     // 4. GSAP Master Orchestration Timeline
     let lastIdx = 0;
     const progressObj = { count: 0 };
@@ -167,14 +110,6 @@ export const Preloader: React.FC<PreloaderProps> = ({ onCurtainLifting, onComple
           }
         }
       },
-    });
-
-    // Step A2: Synchronization gate: wait if compileAsync or LoadingManager are still busy
-    tl.add(() => {
-      if (!compileCompleted || !loadingManagerCompleted) {
-        isWaitingForReady = true;
-        tl.pause();
-      }
     });
 
     // Step A3: Complete horological calibration to 100%
@@ -233,12 +168,6 @@ export const Preloader: React.FC<PreloaderProps> = ({ onCurtainLifting, onComple
           if (clipPath) {
             clipPath.setAttribute('d', d);
           }
-
-          // Dynamically drive WebGL grain & edge vignette
-          const sm = SceneManager.getInstance();
-          if (sm?.transitionGrainEffect) {
-            sm.transitionGrainEffect.setTransitionProgress(1 - p);
-          }
         },
       },
       '-=0.06'
@@ -263,11 +192,6 @@ export const Preloader: React.FC<PreloaderProps> = ({ onCurtainLifting, onComple
 
     return () => {
       tl.kill();
-      window.clearTimeout(safetyTimer);
-      // Restore previous loading manager handlers
-      THREE.DefaultLoadingManager.onStart = prevOnStart;
-      THREE.DefaultLoadingManager.onLoad = prevOnLoad;
-      THREE.DefaultLoadingManager.onProgress = prevOnProgress;
 
       if (window.__lenis) {
         window.__lenis.start();

@@ -6,140 +6,137 @@
  */
 
 :root,
-[data-theme="dark"] {
-  /* Exact Dual-Register Cyber-CRT Color Tokens (Dark: NIGHT_CRT // VOID) */
-  --crt-void-bg: #070814;
-  --crt-phosphor-dark: #0D1512;
-  --crt-panel-slate: #131629;
-  --crt-bezel-putty: #D6CFC2;
-  --crt-bezel-shadow: #2D3645;
-  --crt-glass-surface: rgba(7, 8, 20, 0.90);
-  --pixel-ivory-text: #F0EFE6;
-  --text-secondary: #94A3B8;
-  --tech-cyan-wave: #00F0FF;
-  --tech-magenta-crest: #FF2A85;
-  --pixel-phosphor-green: #4AF626;
-  --pixel-amber-gold: #FFCC00;
-  --border-hairline: rgba(0, 240, 255, 0.25);
+[data-theme="dark"],
+[data-theme="light"] {
+  /* Strict 4-Color Monochrome Phosphor & Retro Hardware Tokens */
+  --retro-void: #0a0e0b;
+  --bezel-base: #c8c2ab;
+  --bezel-light: #ded8c1;
+  --bezel-shadow: #8f8973;
+  --bezel-lip: #3b3a32;
+  --crt-bg: #111712;
+  --pixel-dim: #2e3b2b;
+  --pixel-mid: #6e7d62;
+  --pixel-bright: #c2cdb4;
+
+  /* Strict Monochrome Phosphor Mappings (No neon cyan or magenta) */
+  --crt-void-bg: #111712;
+  --crt-phosphor-dark: #111712;
+  --crt-panel-slate: #2e3b2b;
+  --crt-bezel-putty: #c8c2ab;
+  --crt-bezel-shadow: #8f8973;
+  --crt-glass-surface: rgba(17, 23, 18, 0.95);
+  --pixel-ivory-text: #c2cdb4;
+  --text-secondary: #6e7d62;
+  --tech-cyan-wave: #c2cdb4;
+  --tech-magenta-crest: #6e7d62;
+  --pixel-phosphor-green: #c2cdb4;
+  --pixel-amber-gold: #c2cdb4;
+  --border-hairline: #2e3b2b;
 
   /* RGB channels for alpha compositing */
-  --crt-void-bg-rgb: 7 8 20;
-  --crt-phosphor-dark-rgb: 13 21 18;
-  --crt-panel-slate-rgb: 19 22 41;
-  --crt-bezel-putty-rgb: 214 207 194;
-  --crt-bezel-shadow-rgb: 45 54 69;
-  --pixel-ivory-text-rgb: 240 239 230;
-  --tech-cyan-wave-rgb: 0 240 255;
-  --tech-magenta-crest-rgb: 255 42 133;
-  --pixel-phosphor-green-rgb: 74 246 38;
-  --pixel-amber-gold-rgb: 255 204 0;
-  --border-hairline-rgb: 0 240 255;
+  --crt-void-bg-rgb: 17 23 18;
+  --crt-phosphor-dark-rgb: 17 23 18;
+  --crt-panel-slate-rgb: 46 59 43;
+  --crt-bezel-putty-rgb: 200 194 171;
+  --crt-bezel-shadow-rgb: 143 137 115;
+  --pixel-ivory-text-rgb: 194 205 180;
+  --tech-cyan-wave-rgb: 194 205 180;
+  --tech-magenta-crest-rgb: 110 125 98;
+  --pixel-phosphor-green-rgb: 194 205 180;
+  --pixel-amber-gold-rgb: 194 205 180;
+  --border-hairline-rgb: 46 59 43;
 
   /* Component Aliases */
-  --wk-obsidian-void: var(--crt-void-bg);
-  --wk-slate-surface: var(--crt-panel-slate);
-  --wk-alabaster-ink: var(--pixel-ivory-text);
-  --wk-ash-muted: var(--text-secondary);
-  --wk-terracotta-pulse: var(--tech-magenta-crest);
-  --wk-verdigris-signal: var(--pixel-phosphor-green);
+  --wk-obsidian-void: var(--crt-bg);
+  --wk-slate-surface: var(--pixel-dim);
+  --wk-alabaster-ink: var(--pixel-bright);
+  --wk-ash-muted: var(--pixel-mid);
+  --wk-terracotta-pulse: var(--pixel-mid);
+  --wk-verdigris-signal: var(--pixel-bright);
 
-  --wk-obsidian-void-rgb: var(--crt-void-bg-rgb);
-  --wk-slate-surface-rgb: var(--crt-panel-slate-rgb);
-  --wk-alabaster-ink-rgb: var(--pixel-ivory-text-rgb);
-  --wk-ash-muted-rgb: 148 163 184;
-  --wk-terracotta-pulse-rgb: var(--tech-magenta-crest-rgb);
-  --wk-verdigris-signal-rgb: var(--pixel-phosphor-green-rgb);
+  --wk-obsidian-void-rgb: 17 23 18;
+  --wk-slate-surface-rgb: 46 59 43;
+  --wk-alabaster-ink-rgb: 194 205 180;
+  --wk-ash-muted-rgb: 110 125 98;
+  --wk-terracotta-pulse-rgb: 110 125 98;
+  --wk-verdigris-signal-rgb: 194 205 180;
 
   /* Editorial Ledger Baseline Aliases */
-  --bg-obsidian: var(--crt-void-bg);
-  --bg-surface: var(--crt-phosphor-dark);
-  --bg-card: var(--crt-panel-slate);
-  --bg-elevated: #1A1F38;
-  --surface-alabaster: var(--pixel-ivory-text);
-  --text-muted: var(--text-secondary);
-  --accent-rust: var(--tech-magenta-crest);
-  --accent-coral: var(--tech-magenta-crest);
-  --accent-verdigris: var(--pixel-phosphor-green);
+  --bg-obsidian: var(--crt-bg);
+  --bg-surface: var(--crt-bg);
+  --bg-card: var(--pixel-dim);
+  --bg-elevated: #2e3b2b;
+  --surface-alabaster: var(--pixel-bright);
+  --text-muted: var(--pixel-mid);
+  --accent-rust: var(--pixel-mid);
+  --accent-coral: var(--pixel-mid);
+  --accent-verdigris: var(--pixel-bright);
   --border-editorial: var(--border-hairline);
 
-  --wk-neutral-buffer-dark: var(--crt-void-bg);
-  --wk-neutral-buffer-light: var(--pixel-ivory-text);
+  --wk-neutral-buffer-dark: var(--crt-bg);
+  --wk-neutral-buffer-light: var(--pixel-bright);
 
   /* 90s CRT Hardware Bevel & Shadow Geometry */
-  --bevel-light: #F5EFEB;
-  --bevel-dark: #121620;
-  --bevel-mid: var(--crt-bezel-shadow);
+  --bevel-light: #ded8c1;
+  --bevel-dark: #3b3a32;
+  --bevel-mid: #8f8973;
   --pixel-border-width: 2px;
-  --card-border: 1px solid var(--crt-bezel-shadow);
-  --card-shadow: 2px 2px 0 0 #070814;
+  --card-border: 1px solid #3b3a32;
+  --card-shadow: 2px 2px 0 0 #0a0e0b;
 }
 
 [data-theme="light"] {
-  /* Calibrated Dual-Register Tokens (Light: DAYLIGHT_CAD // PUTTY) */
-  --crt-void-bg: #F2EFE9;
-  --crt-phosphor-dark: #E6E1D6;
-  --crt-panel-slate: #FFFFFF;
-  --crt-bezel-putty: #D8D2C5;
-  --crt-bezel-shadow: #1A1D24;
-  --crt-glass-surface: rgba(242, 239, 233, 0.88);
-  --pixel-ivory-text: #11131A;
-  --text-secondary: #3F4654;
-  --tech-cyan-wave: #0052FF;
-  --tech-magenta-crest: #D90452;
-  --pixel-phosphor-green: #007A33;
-  --pixel-amber-gold: #C85A00;
-  --border-hairline: rgba(17, 19, 26, 0.18);
+  /* Strict Monochrome Phosphor Palette Enforcement across all themes */
+  --retro-void: #0a0e0b;
+  --bezel-base: #c8c2ab;
+  --bezel-light: #ded8c1;
+  --bezel-shadow: #8f8973;
+  --bezel-lip: #3b3a32;
+  --crt-bg: #111712;
+  --pixel-dim: #2e3b2b;
+  --pixel-mid: #6e7d62;
+  --pixel-bright: #c2cdb4;
 
-  /* RGB channels for alpha compositing */
-  --crt-void-bg-rgb: 242 239 233;
-  --crt-phosphor-dark-rgb: 230 225 214;
-  --crt-panel-slate-rgb: 255 255 255;
-  --crt-bezel-putty-rgb: 216 210 197;
-  --crt-bezel-shadow-rgb: 26 29 36;
-  --pixel-ivory-text-rgb: 17 19 26;
-  --tech-cyan-wave-rgb: 0 82 255;
-  --tech-magenta-crest-rgb: 217 4 82;
-  --pixel-phosphor-green-rgb: 0 122 51;
-  --pixel-amber-gold-rgb: 200 90 0;
-  --border-hairline-rgb: 17 19 26;
+  --crt-void-bg: #111712;
+  --crt-phosphor-dark: #111712;
+  --crt-panel-slate: #2e3b2b;
+  --crt-bezel-putty: #c8c2ab;
+  --crt-bezel-shadow: #8f8973;
+  --crt-glass-surface: rgba(17, 23, 18, 0.95);
+  --pixel-ivory-text: #c2cdb4;
+  --text-secondary: #6e7d62;
+  --tech-cyan-wave: #c2cdb4;
+  --tech-magenta-crest: #6e7d62;
+  --pixel-phosphor-green: #c2cdb4;
+  --pixel-amber-gold: #c2cdb4;
+  --border-hairline: #2e3b2b;
 
-  /* Component Aliases */
-  --wk-obsidian-void: var(--crt-void-bg);
-  --wk-slate-surface: var(--crt-panel-slate);
-  --wk-alabaster-ink: var(--pixel-ivory-text);
-  --wk-ash-muted: var(--text-secondary);
-  --wk-terracotta-pulse: var(--tech-magenta-crest);
-  --wk-verdigris-signal: var(--pixel-phosphor-green);
+  --crt-void-bg-rgb: 17 23 18;
+  --crt-phosphor-dark-rgb: 17 23 18;
+  --crt-panel-slate-rgb: 46 59 43;
+  --crt-bezel-putty-rgb: 200 194 171;
+  --crt-bezel-shadow-rgb: 143 137 115;
+  --pixel-ivory-text-rgb: 194 205 180;
+  --tech-cyan-wave-rgb: 194 205 180;
+  --tech-magenta-crest-rgb: 110 125 98;
+  --pixel-phosphor-green-rgb: 194 205 180;
+  --pixel-amber-gold-rgb: 194 205 180;
+  --border-hairline-rgb: 46 59 43;
 
-  --wk-obsidian-void-rgb: var(--crt-void-bg-rgb);
-  --wk-slate-surface-rgb: var(--crt-panel-slate-rgb);
-  --wk-alabaster-ink-rgb: var(--pixel-ivory-text-rgb);
-  --wk-ash-muted-rgb: 63 70 84;
-  --wk-terracotta-pulse-rgb: var(--tech-magenta-crest-rgb);
-  --wk-verdigris-signal-rgb: var(--pixel-phosphor-green-rgb);
+  --wk-obsidian-void: var(--crt-bg);
+  --wk-slate-surface: var(--pixel-dim);
+  --wk-alabaster-ink: var(--pixel-bright);
+  --wk-ash-muted: var(--pixel-mid);
+  --wk-terracotta-pulse: var(--pixel-mid);
+  --wk-verdigris-signal: var(--pixel-bright);
 
-  /* Editorial Ledger Baseline Aliases */
-  --bg-obsidian: var(--crt-void-bg);
-  --bg-surface: var(--crt-phosphor-dark);
-  --bg-card: var(--crt-panel-slate);
-  --bg-elevated: #F9F8F6;
-  --surface-alabaster: var(--pixel-ivory-text);
-  --text-muted: var(--text-secondary);
-  --accent-rust: var(--tech-magenta-crest);
-  --accent-coral: var(--tech-magenta-crest);
-  --accent-verdigris: var(--pixel-phosphor-green);
-  --border-editorial: var(--border-hairline);
-
-  --wk-neutral-buffer-dark: var(--crt-void-bg);
-  --wk-neutral-buffer-light: var(--pixel-ivory-text);
-
-  /* 90s CAD Manual Hardware Bevel & Brutalist Pixel Shadows */
-  --bevel-light: #FFFFFF;
-  --bevel-dark: #1A1D24;
-  --bevel-mid: #8E8A80;
+  --bevel-light: #ded8c1;
+  --bevel-dark: #3b3a32;
+  --bevel-mid: #8f8973;
   --pixel-border-width: 2px;
-  --card-border: 2px solid #1A1D24;
-  --card-shadow: 4px 4px 0px #C8C1B4;
+  --card-border: 1px solid #3b3a32;
+  --card-shadow: 2px 2px 0 0 #0a0e0b;
 }
 
 /* 90s Retro OS 2px Inset and Outset Bevel Borders */
@@ -174,11 +171,11 @@
 .retro-cad-card {
   background-color: var(--crt-panel-slate);
   border: 2px solid var(--crt-bezel-shadow);
-  box-shadow: 4px 4px 0px #C8C1B4;
+  box-shadow: 4px 4px 0px #c8c2ab;
 }
 
 [data-theme="dark"] .retro-cad-card {
-  box-shadow: 2px 2px 0px #070814;
+  box-shadow: 2px 2px 0px #111712;
 }
 
 /* 1px SVG Data-Draw Rules */

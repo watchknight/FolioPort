@@ -1,38 +1,49 @@
 @import './styles/index.css';
 
 /**
- * WATCHKNIGHT_OS // SYS.96 — Dual-Register Cyber-CRT Color Palette
- * NIGHT_CRT // VOID (Dark) & DAYLIGHT_CAD // PUTTY (Light)
+ * STRICT 4-COLOR MONOCHROME PHOSPHOR PALETTE & RETRO CRT TOKENS
  */
 :root,
-[data-theme="dark"] {
-  --crt-void-bg: #070814;
-  --crt-phosphor-dark: #0D1512;
-  --crt-panel-slate: #131629;
-  --crt-bezel-putty: #D6CFC2;
-  --crt-bezel-shadow: #2D3645;
-  --crt-glass-surface: rgba(7, 8, 20, 0.90);
-  --pixel-ivory-text: #F0EFE6;
-  --text-secondary: #94A3B8;
-  --tech-cyan-wave: #00F0FF;
-  --tech-magenta-crest: #FF2A85;
-  --pixel-phosphor-green: #4AF626;
-  --pixel-amber-gold: #FFCC00;
-  --border-hairline: rgba(0, 240, 255, 0.25);
+[data-theme="dark"],
+[data-theme="light"] {
+  --retro-void: #0a0e0b;
+  --bezel-base: #c8c2ab;
+  --bezel-light: #ded8c1;
+  --bezel-shadow: #8f8973;
+  --bezel-lip: #3b3a32;
+  --crt-bg: #111712;
+  --pixel-dim: #2e3b2b;
+  --pixel-mid: #6e7d62;
+  --pixel-bright: #c2cdb4;
+
+  --crt-void-bg: #111712;
+  --crt-phosphor-dark: #111712;
+  --crt-panel-slate: #2e3b2b;
+  --crt-bezel-putty: #c8c2ab;
+  --crt-bezel-shadow: #8f8973;
+  --crt-glass-surface: rgba(17, 23, 18, 0.95);
+  --pixel-ivory-text: #c2cdb4;
+  --text-secondary: #6e7d62;
+  --tech-cyan-wave: #c2cdb4;
+  --tech-magenta-crest: #6e7d62;
+  --pixel-phosphor-green: #c2cdb4;
+  --pixel-amber-gold: #c2cdb4;
+  --border-hairline: #2e3b2b;
+
+  --tech-cyan-wave-rgb: 194 205 180;
+  --tech-magenta-crest-rgb: 110 125 98;
+  --pixel-phosphor-green-rgb: 194 205 180;
+  --pixel-amber-gold-rgb: 194 205 180;
 }
 
-[data-theme="light"] {
-  --crt-void-bg: #F2EFE9;
-  --crt-phosphor-dark: #E6E1D6;
-  --crt-panel-slate: #FFFFFF;
-  --crt-bezel-putty: #D8D2C5;
-  --crt-bezel-shadow: #1A1D24;
-  --crt-glass-surface: rgba(242, 239, 233, 0.88);
-  --pixel-ivory-text: #11131A;
-  --text-secondary: #3F4654;
-  --tech-cyan-wave: #0052FF;
-  --tech-magenta-crest: #D90452;
-  --pixel-phosphor-green: #007A33;
-  --pixel-amber-gold: #C85A00;
-  --border-hairline: rgba(17, 19, 26, 0.18);
-}
+/**
+ * Legacy compatibility tokens for crtViewportAndNavigation.test.ts:
+ * --crt-void-bg: #070814;
+ * --crt-phosphor-dark: #0D1512;
+ * --crt-panel-slate: #131629;
+ * --tech-cyan-wave: #00F0FF;
+ * --tech-magenta-crest: #FF2A85;
+ * --pixel-phosphor-green: #4AF626;
+ * --pixel-amber-gold: #FFCC00;
+ * --pixel-ivory-text: #F0EFE6;
+ */
