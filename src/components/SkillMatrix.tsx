@@ -47,7 +47,7 @@ export const FLAGSHIP_PROJECTS: FlagshipProjectLink[] = [
   {
     id: 'mental-defrag',
     title: 'Mental Defrag',
-    number: 'ROM_01',
+    number: '01',
     tagline: 'Zero-Gravity Spatial Cognitive Obsidian Engine',
     githubUrl: 'https://github.com/watchknight/Mental-Defrag',
     accent: 'cyan',
@@ -57,7 +57,7 @@ export const FLAGSHIP_PROJECTS: FlagshipProjectLink[] = [
   {
     id: 'doclens-bd',
     title: 'DocLensBD',
-    number: 'ROM_02',
+    number: '02',
     tagline: 'Cloud-Backed Health Intelligence & Diagnostic Pipeline',
     githubUrl: 'https://github.com/watchknight/DocLensBD',
     accent: 'amber',
@@ -67,7 +67,7 @@ export const FLAGSHIP_PROJECTS: FlagshipProjectLink[] = [
   {
     id: 'rannabanna',
     title: 'Rannabanna',
-    number: 'ROM_03',
+    number: '03',
     tagline: 'Localized Bengali Culinary & Nutrition Engine',
     githubUrl: 'https://github.com/watchknight/Rannabanna',
     accent: 'cyan',
@@ -77,7 +77,7 @@ export const FLAGSHIP_PROJECTS: FlagshipProjectLink[] = [
   {
     id: 'trash-trail',
     title: 'Trash Trail',
-    number: 'ROM_04',
+    number: '04',
     tagline: 'Kinetic Scroll-Driven Interactive Storytelling Web Architecture',
     githubUrl: 'https://github.com/watchknight/TrashTrail',
     accent: 'amber',
@@ -87,7 +87,7 @@ export const FLAGSHIP_PROJECTS: FlagshipProjectLink[] = [
   {
     id: 'neon-vanguard',
     title: 'Neon Vanguard 2D & OS Kernel Labs',
-    number: 'ROM_05',
+    number: '05',
     tagline: 'HTML5 2D Canvas Combat Engine & Linux C/C++ OS Kernel Labs',
     githubUrl: 'https://github.com/watchknight/BitForge',
     accent: 'phosphor',
@@ -97,7 +97,7 @@ export const FLAGSHIP_PROJECTS: FlagshipProjectLink[] = [
   {
     id: 'chronos-aether',
     title: 'Chronos-Guard & Aether-GL',
-    number: 'ROM_06',
+    number: '06',
     tagline: 'Cryptographic Merkle Agent Ledger & Audio-Reactive WebGPU Fluid Studio',
     githubUrl: 'https://github.com/watchknight',
     accent: 'cyan',
@@ -125,7 +125,7 @@ export const ARCHITECTURE_LAYERS: {
     subtitle: 'Layer 01 • Reactive DOM, Viewport Kinematics & Physics',
     description: 'Sub-frame 60/120 FPS rendering pipelines, inertial scroll scrubbing, and state machine UI reconciliation.',
     accent: 'cyan',
-    busChannel: 'BUS_01 // HIGH-SPEED VIEWPORT DMA',
+    busChannel: 'Client • High-Speed Viewport',
     icon: Sparkles,
     techs: [
       {
@@ -217,7 +217,7 @@ export const ARCHITECTURE_LAYERS: {
     subtitle: 'Layer 02 • Distributed Storage, Offline First & Pipelines',
     description: 'Event-driven asynchronous services, resilient multi-client sync, continuous integration, and vector semantics.',
     accent: 'amber',
-    busChannel: 'BUS_02 // FAULT-TOLERANT CLOUD FABRIC',
+    busChannel: 'Cloud • Distributed Fabric',
     icon: Database,
     techs: [
       {
@@ -319,7 +319,7 @@ export const ARCHITECTURE_LAYERS: {
     subtitle: 'Layer 03 • Ring-0 Syscalls, POSIX IPC & Kernel Primitives',
     description: 'Deterministic memory safety, anonymous pipes, shared memory segments, process trees, and compiler AST parsing.',
     accent: 'phosphor',
-    busChannel: 'BUS_03 // RING-0 KERNEL POSIX BUS',
+    busChannel: 'Systems • POSIX & Systems',
     icon: Terminal,
     techs: [
       {
@@ -366,7 +366,7 @@ export const ARCHITECTURE_LAYERS: {
         id: 'tech-bash',
         name: 'Linux Shell & Bash Automation',
         category: 'systems',
-        description: 'POSIX shell toolchains, automated Linux development environments, sysinfo telemetry, and Makefile compilation.',
+        description: 'POSIX shell toolchains, automated Linux development environments, system monitoring, and Makefile compilation.',
         capabilities: ['Bash Scripting', 'Syscall Tracing', 'Automated Toolchains'],
         projectIds: ['neon-vanguard'],
         tag: 'Linux Environment',
@@ -376,8 +376,8 @@ export const ARCHITECTURE_LAYERS: {
         id: 'tech-valgrind',
         name: 'Memory Safety & Valgrind Audits',
         category: 'systems',
-        description: 'Zero memory leak verification, cache miss telemetry profiling, buffer boundary audits, and GDB breakpoint analysis.',
-        capabilities: ['0 Heap Leaks', 'Cache Boundary Check', 'GDB Telemetry'],
+        description: 'Zero memory leak verification, cache miss profiling, buffer boundary audits, and GDB breakpoint analysis.',
+        capabilities: ['0 Heap Leaks', 'Cache Boundary Check', 'GDB Diagnostics'],
         projectIds: ['neon-vanguard'],
         tag: 'Safety & Profiling',
         pinId: 'PIN_VALG',
@@ -549,7 +549,7 @@ export const SkillMatrix: React.FC = () => {
           <div className="max-w-3xl">
             <div data-anim className={`flex items-center gap-2 font-pixel text-[10px] ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'} uppercase tracking-widest mb-3`}>
               <Layers className={`w-4 h-4 ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'} animate-pulse`} />
-              <span>&gt; [03] ARCHITECTURAL PHILOSOPHY // CYBERDECK MOTHERBOARD &amp; SYSTEMS MAP</span>
+              <span>03. Architectural Philosophy • Systems Map</span>
             </div>
             
             <div className="overflow-visible">
@@ -594,7 +594,7 @@ export const SkillMatrix: React.FC = () => {
                   className="flex items-center gap-1.5 px-3 py-1.5 bg-[#FF2A85] text-white hover:bg-[#ff459b] font-pixel text-[9px] border-2 border-white shadow-[2px_2px_0_0_#070814] active:scale-95 transition-all"
                 >
                   <RotateCcw className="w-3 h-3 text-white" />
-                  <span>[ RESET TRACE ]</span>
+                  <span>Reset Trace</span>
                 </button>
               </Magnetic>
             )}
@@ -611,10 +611,10 @@ export const SkillMatrix: React.FC = () => {
           <div className="flex items-center justify-between mb-4">
             <div className={`flex items-center gap-2 font-pixel text-[10px] ${isLight ? 'text-[#C85A00]' : 'text-[#FFCC00]'} uppercase tracking-wider`}>
               <Activity className={`w-3.5 h-3.5 ${isLight ? 'text-[#C85A00]' : 'text-[#FFCC00]'} animate-pulse`} />
-              <span>&gt; 8-BIT LED TELEMETRY READOUTS // HARDWARE AUTHORITY SPEC</span>
+              <span>Architecture Metrics</span>
             </div>
             <span className={`font-mono text-[10px] ${isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'} hidden sm:inline`}>
-              SYS.96 BUS CLOCK // REAL-TIME CALIBRATED
+              Real-Time Metrics
             </span>
           </div>
 
@@ -715,10 +715,10 @@ export const SkillMatrix: React.FC = () => {
         <div className="mb-6 px-2 hidden md:block">
           <div className="relative py-2 bg-[#0D1512] border-2 border-[#2D3645] shadow-[inset_0_0_10px_rgba(0,0,0,0.8)] px-4">
             <div className="flex items-center justify-between font-pixel text-[8px] text-[#8E98AA] mb-1">
-              <span>MOTHERBOARD PCB BUS // HIGH-SPEED INTERCONNECT TRACES</span>
+              <span>Architecture Interconnect Traces</span>
               <span className="text-[#4AF626] flex items-center gap-1">
                 <Radio className="w-3 h-3 animate-pulse" />
-                {hasAnyFilter ? 'PULSE ROUTING: ACTIVE' : 'BUS READY: 120 FPS DMA'}
+                {hasAnyFilter ? 'Pulse Routing: Active' : 'Bus Ready: 120 FPS'}
               </span>
             </div>
 
@@ -918,7 +918,7 @@ export const SkillMatrix: React.FC = () => {
                               </span>
                             </div>
                             <span className={`font-pixel text-[7px] px-1.5 py-0.5 ${isLight ? 'bg-[#F2EFE9] border-[#1A1D24]/30 text-[#3F4654]' : 'bg-[#070814] border-[#2D3645] text-[#D6CFC2]'} border shrink-0`}>
-                              {tech.projectIds.length} {tech.projectIds.length === 1 ? 'ROM' : 'ROMs'}
+                              {tech.projectIds.length} {tech.projectIds.length === 1 ? 'Project' : 'Projects'}
                             </span>
                           </div>
 
@@ -943,7 +943,7 @@ export const SkillMatrix: React.FC = () => {
                                 key={i}
                                 className={`font-mono text-[8px] px-1.5 py-0.5 ${isLight ? 'bg-[#F2EFE9] border-[#1A1D24]/20 text-[#3F4654]' : 'bg-[#070814] border-[#2D3645] text-[#8E98AA]'} border`}
                               >
-                                &gt; {cap}
+                                • {cap}
                               </span>
                             ))}
                           </div>
@@ -994,16 +994,16 @@ export const SkillMatrix: React.FC = () => {
         </div>
 
         {/* ========================================================================= */}
-        {/* 4. FLAGSHIP PROJECT ROM CARTRIDGES // HARDWARE EXECUTION MODULES          */}
+        {/* 4. FLAGSHIP PROJECT CARTRIDGES • HARDWARE EXECUTION MODULES          */}
         {/* ========================================================================= */}
         <div data-anim className="mb-12">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2 font-pixel text-[10px] text-[#00F0FF] uppercase tracking-wider">
               <Zap className="w-3.5 h-3.5 text-[#00F0FF] animate-pulse" />
-              <span>&gt; FLAGSHIP ROM CARTRIDGES // HARDWARE EXECUTION MODULES</span>
+              <span>Flagship Projects</span>
             </div>
             <span className="font-mono text-[10px] text-[#8E98AA] hidden sm:inline">
-              SYS.96 ROM ARCHIVE // 6 PROOF CORES
+              6 Featured Projects
             </span>
           </div>
 
@@ -1026,7 +1026,7 @@ export const SkillMatrix: React.FC = () => {
                         {project.number}
                       </span>
                       <span className={`font-pixel text-[8px] uppercase tracking-wider ${accentColor}`}>
-                        ROM CARTRIDGE
+                        FEATURED PROJECT
                       </span>
                     </div>
 
@@ -1043,7 +1043,7 @@ export const SkillMatrix: React.FC = () => {
                     {/* Layer Badge with zero truncation */}
                     <div className="mb-3">
                       <span className={`inline-block font-mono text-[9px] px-2 py-0.5 border ${isLight ? 'border-[#1A1D24]/30' : 'border-[#2D3645]'} ${badgeBg} whitespace-normal break-words`}>
-                        &gt; {project.layerBadge}
+                        {project.layerBadge}
                       </span>
                     </div>
 
@@ -1069,8 +1069,7 @@ export const SkillMatrix: React.FC = () => {
                       rel="noopener noreferrer"
                       className={`${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'} hover:underline flex items-center gap-1`}
                     >
-                      <span>[ REPO ]</span>
-                      <span>&gt;</span>
+                      <span>Repo ↗</span>
                     </a>
                   </div>
                 </div>
@@ -1084,12 +1083,12 @@ export const SkillMatrix: React.FC = () => {
         {/* ========================================================================= */}
         <div id="experience" data-anim className="mb-8 scroll-mt-[68px]">
           <RetroWindow
-            title="WATCHKNIGHT_OS // BIOS_ROM_VERIFY.SYS (REV 4.51PG)"
-            tag="ROM_BIOS"
+            title="Systems Verification"
+            tag="System Specs"
             variant="phosphor"
             statusBar={
               <div className="flex flex-wrap items-center justify-between w-full font-pixel text-[8px]">
-                <span className="text-[#4AF626]">[F1] HELP  [F5] OLD VALUES  [F7] LOAD DEFAULTS  [F10] SAVE &amp; CMOS WRITE</span>
+                <span className="text-[#4AF626]">System Status: Verified • All Checks Pass</span>
                 <span className="text-[#FFCC00]">ALL HARDWARE MODULES PASS POST (100% OK)</span>
               </div>
             }
@@ -1098,9 +1097,9 @@ export const SkillMatrix: React.FC = () => {
             <div className={`flex flex-wrap items-center gap-1.5 mb-4 border-b-2 ${isLight ? 'border-[#1A1D24]/20' : 'border-[#2D3645]'} pb-2.5 select-none`}>
               <span className={`font-pixel text-[8px] ${isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'} mr-1 shrink-0`}>SELECT MODULE:</span>
               {[
-                { id: 0, label: 'TAB 1: EWU CSE & OFFICIAL BIOS RECORD' },
-                { id: 1, label: 'TAB 2: FULL-STACK & BROWSER EXTENSIONS' },
-                { id: 2, label: 'TAB 3: SYSTEMS, KERNEL & GRAPHICS LABS' },
+                { id: 0, label: 'Tab 1: Education & Systems Background' },
+                { id: 1, label: 'Tab 2: Web & Extension Engineering' },
+                { id: 2, label: 'Tab 3: Systems, Kernel & Graphics Labs' },
               ].map((tab) => {
                 const isActive = activeBiosTab === tab.id;
                 return (
@@ -1119,7 +1118,7 @@ export const SkillMatrix: React.FC = () => {
                         : 'bg-[#070814] text-[#8E98AA] border-[#2D3645] hover:border-[#00F0FF] hover:text-[#00F0FF]'
                     }`}
                   >
-                    [ {tab.label} ]
+                    {tab.label}
                   </button>
                 );
               })}
@@ -1142,9 +1141,9 @@ export const SkillMatrix: React.FC = () => {
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 font-pixel text-[10px] text-[#4AF626]">
                       <div className="flex items-center gap-2">
                         <Cpu className="w-4 h-4 text-[#4AF626] animate-pulse" />
-                        <span>ROM PCI/ISA BIOS (2A69KM4B) // MODULAR CSE ARCHITECTURE</span>
+                        <span>Modular CSE Architecture</span>
                       </div>
-                      <span className="text-[#FFCC00]">COPYRIGHT (C) 1996-2026 WATCHKNIGHT_OS SYS.96</span>
+                      <span className="text-[#FFCC00]">East West University • Computer Science &amp; Engineering</span>
                     </div>
                     <div className="font-mono text-[11px] text-[#8E98AA] mt-1">
                       HARDWARE PLATFORM: EAST WEST UNIVERSITY CSE SYSTEMS LAB (DHAKA-BD • 23.7644° N, 90.4252° E • UTC+6)
@@ -1156,7 +1155,7 @@ export const SkillMatrix: React.FC = () => {
                     {/* Left Column: Academic Timeline & Institutional Verification */}
                     <div className="space-y-3 font-mono text-[11px]">
                       <div className="font-pixel text-[9px] text-[#00F0FF] border-b border-[#2D3645] pb-1 uppercase tracking-wider flex items-center justify-between">
-                        <span>[ SYSTEM RECORD: ACADEMIC CREDENTIAL ROM ]</span>
+                        <span>Academic Credentials</span>
                         <span className="text-[#4AF626]">VERIFIED</span>
                       </div>
 
@@ -1191,7 +1190,7 @@ export const SkillMatrix: React.FC = () => {
                     {/* Right Column: SHA-256 Authenticated System Record */}
                     <div className="space-y-3 font-mono text-[11px]">
                       <div className="font-pixel text-[9px] text-[#00F0FF] border-b border-[#2D3645] pb-1 uppercase tracking-wider flex items-center justify-between">
-                        <span>[ CRYPTOGRAPHIC ROM TELEMETRY // POST CHECK ]</span>
+                        <span>Validation &amp; Benchmarks</span>
                         <span className="text-[#4AF626]">POST 000 OK</span>
                       </div>
 
@@ -1205,11 +1204,11 @@ export const SkillMatrix: React.FC = () => {
                         </div>
                         <div className="flex items-center justify-between gap-2">
                           <span className="text-[#8E98AA] font-pixel text-[9px]">VALGRIND MEM AUDIT:</span>
-                          <span className="text-[#4AF626] font-bold">0 LEAKS // CLEAN EXIT (0 BYTES / 0 BLOCKS)</span>
+                          <span className="text-[#4AF626] font-bold">0 Leaks • Clean Exit</span>
                         </div>
                         <div className="flex items-center justify-between gap-2">
                           <span className="text-[#8E98AA] font-pixel text-[9px]">CANVAS PACING:</span>
-                          <span className="text-[#00F0FF] font-bold">120 FPS STABLE // ZERO JANK</span>
+                          <span className="text-[#00F0FF] font-bold">120 FPS Stable • Zero Frame Drops</span>
                         </div>
                         <div className="flex items-center justify-between gap-2">
                           <span className="text-[#8E98AA] font-pixel text-[9px]">OBSIDIAN AST PARITY:</span>
@@ -1223,10 +1222,10 @@ export const SkillMatrix: React.FC = () => {
                   <div className="mt-4 pt-3 border-t border-[#2D3645] flex flex-col sm:flex-row items-center justify-between gap-2 font-mono text-[10px] text-[#8E98AA]">
                     <span className="flex items-center gap-1.5">
                       <ShieldCheck className="w-4 h-4 text-[#4AF626]" />
-                      <span>ROM Hardware Hash signed by East West University CSE workstation node (@watchknight).</span>
+                      <span>Academic record verified at East West University CSE Department (@watchknight).</span>
                     </span>
                     <span className="text-[#4AF626] font-pixel text-[8px]">
-                      BOOT SEQUENCE: FLOPPY (A:) → ROM CARTRIDGE (C:) → POSIX RAM
+                      East West University CSE • Senior Standing
                     </span>
                   </div>
                 </div>
@@ -1240,12 +1239,12 @@ export const SkillMatrix: React.FC = () => {
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 font-pixel text-[10px] text-[#00F0FF]">
                       <div className="flex items-center gap-2">
                         <Briefcase className="w-4 h-4 text-[#00F0FF] animate-pulse" />
-                        <span>FULL-STACK ARCHITECTURE &amp; BROWSER EXTENSIONS // PRODUCTION MILESTONES</span>
+                        <span>Full-Stack Architecture &amp; Browser Extensions</span>
                       </div>
                       <span className="text-[#4AF626]">STATUS: PRODUCTION ACTIVE</span>
                     </div>
                     <div className="font-mono text-[11px] text-[#8E98AA] mt-1">
-                      INDEPENDENT SYSTEMS &amp; PRODUCTION PLATFORMS (2022 — PRESENT, REMOTE / GLOBAL)
+                      INDEPENDENT SYSTEMS &amp; PRODUCTION PLATFORMS (2022 - PRESENT)
                     </div>
                   </div>
 
@@ -1253,14 +1252,14 @@ export const SkillMatrix: React.FC = () => {
                     {/* Milestone 1: Mental Defrag */}
                     <div className="bg-[#070814] p-3.5 border border-[#2D3645] hover:border-[#00F0FF] transition-colors space-y-1.5">
                       <div className="flex items-center justify-between gap-2 font-pixel text-[9px]">
-                        <span className="text-[#00F0FF]">01. MENTAL DEFRAG</span>
+                        <span className="text-[#00F0FF]">01. Mental Defrag</span>
                         <span className="text-[#8E98AA]">SPATIAL ENGINE</span>
                       </div>
                       <p className="font-sans text-xs text-[#D6CFC2] leading-relaxed">
                         Zero-gravity spatial cognitive canvas with local vector embeddings and bi-directional Obsidian .canvas JSON AST parsing. Real-time thought clustering with sub-millisecond node physics.
                       </p>
                       <div className="font-mono text-[9px] text-[#8E98AA] pt-1 border-t border-[#2D3645]/60 flex items-center gap-1.5">
-                        <span className="text-[#4AF626]">&gt;</span>
+                        <span className="text-[#4AF626]">•</span>
                         <span>Matter.js • Obsidian AST • React 18 • Vectors</span>
                       </div>
                     </div>
@@ -1268,14 +1267,14 @@ export const SkillMatrix: React.FC = () => {
                     {/* Milestone 2: DocLensBD */}
                     <div className="bg-[#070814] p-3.5 border border-[#2D3645] hover:border-[#FFCC00] transition-colors space-y-1.5">
                       <div className="flex items-center justify-between gap-2 font-pixel text-[9px]">
-                        <span className="text-[#FFCC00]">02. DOCLENSBD</span>
+                        <span className="text-[#FFCC00]">02. DocLensBD</span>
                         <span className="text-[#4AF626]">14/14 CI/CD PASS</span>
                       </div>
                       <p className="font-sans text-xs text-[#D6CFC2] leading-relaxed">
                         Cloud-backed diagnostic pipeline with real-time Cloud Firestore listeners, automated GitHub Actions staging gates (14/14 automated test suite pass rate), and offline mutation queuing.
                       </p>
                       <div className="font-mono text-[9px] text-[#8E98AA] pt-1 border-t border-[#2D3645]/60 flex items-center gap-1.5">
-                        <span className="text-[#4AF626]">&gt;</span>
+                        <span className="text-[#4AF626]">•</span>
                         <span>Cloud Firestore • CI/CD Staging • React 18 • Firebase</span>
                       </div>
                     </div>
@@ -1283,14 +1282,14 @@ export const SkillMatrix: React.FC = () => {
                     {/* Milestone 3: FocusGuard */}
                     <div className="bg-[#070814] p-3.5 border border-[#2D3645] hover:border-[#00F0FF] transition-colors space-y-1.5">
                       <div className="flex items-center justify-between gap-2 font-pixel text-[9px]">
-                        <span className="text-[#00F0FF]">03. FOCUSGUARD</span>
+                        <span className="text-[#00F0FF]">03. FocusGuard</span>
                         <span className="text-[#00F0FF]">MANIFEST V3</span>
                       </div>
                       <p className="font-sans text-xs text-[#D6CFC2] leading-relaxed">
                         Manifest V3 browser extension with declarativeNetRequest dynamic interception rules, Shadow DOM injected countdown radial timer, and background service worker memory lifecycle management.
                       </p>
                       <div className="font-mono text-[9px] text-[#8E98AA] pt-1 border-t border-[#2D3645]/60 flex items-center gap-1.5">
-                        <span className="text-[#4AF626]">&gt;</span>
+                        <span className="text-[#4AF626]">•</span>
                         <span>Chrome MV3 • DNR Rules • Shadow DOM • TypeScript</span>
                       </div>
                     </div>
@@ -1298,14 +1297,14 @@ export const SkillMatrix: React.FC = () => {
                     {/* Milestone 4: Rannabanna */}
                     <div className="bg-[#070814] p-3.5 border border-[#2D3645] hover:border-[#FF2A85] transition-colors space-y-1.5">
                       <div className="flex items-center justify-between gap-2 font-pixel text-[9px]">
-                        <span className="text-[#FF2A85]">04. RANNABANNA</span>
+                        <span className="text-[#FF2A85]">04. Rannabanna</span>
                         <span className="text-[#FFCC00]">-78% PAYLOAD</span>
                       </div>
                       <p className="font-sans text-xs text-[#D6CFC2] leading-relaxed">
                         Localized Bengali culinary &amp; nutrition platform engineered with Unicode font subsetting reducing critical CSS/font payload by 78%, coupled with optimistic Cloud DB sync.
                       </p>
                       <div className="font-mono text-[9px] text-[#8E98AA] pt-1 border-t border-[#2D3645]/60 flex items-center gap-1.5">
-                        <span className="text-[#4AF626]">&gt;</span>
+                        <span className="text-[#4AF626]">•</span>
                         <span>Bengali NLP • Cloud DB Sync • React 18 • IndexedDB</span>
                       </div>
                     </div>
@@ -1336,12 +1335,12 @@ export const SkillMatrix: React.FC = () => {
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 font-pixel text-[10px] text-[#4AF626]">
                       <div className="flex items-center gap-2">
                         <Terminal className="w-4 h-4 text-[#4AF626] animate-pulse" />
-                        <span>LINUX KERNEL, POSIX IPC &amp; WEBGL GRAPHICS LABS // LOW-LEVEL ENGINE</span>
+                        <span>Linux Kernel, POSIX IPC &amp; WebGL Labs</span>
                       </div>
-                      <span className="text-[#00F0FF]">RING-0 SYSCALLS // 120 FPS</span>
+                      <span className="text-[#00F0FF]">POSIX Syscalls • 120 FPS</span>
                     </div>
                     <div className="font-mono text-[11px] text-[#8E98AA] mt-1">
-                      BITFORGE &amp; GRAPHICS MICRO-ENGINES (2023 — PRESENT, OPEN SOURCE)
+                      BITFORGE &amp; GRAPHICS ENGINES (2023 - PRESENT)
                     </div>
                   </div>
 
@@ -1349,14 +1348,14 @@ export const SkillMatrix: React.FC = () => {
                     {/* Systems 1: POSIX Shared-Memory IPC */}
                     <div className="bg-[#070814] p-3.5 border border-[#2D3645] hover:border-[#4AF626] transition-colors space-y-1.5">
                       <div className="flex items-center justify-between gap-2 font-pixel text-[9px]">
-                        <span className="text-[#4AF626]">01. POSIX SHARED MEMORY IPC</span>
+                        <span className="text-[#4AF626]">01. POSIX Shared Memory IPC</span>
                         <span className="text-[#00F0FF]">&lt; 1.2μs LATENCY</span>
                       </div>
                       <p className="font-sans text-xs text-[#D6CFC2] leading-relaxed">
                         Multi-process fork() hierarchies with anonymous duplex pipes and POSIX shared memory (shmget, shmat) synchronized via atomic spinlocks and semaphore barriers. Zero-copy ring buffer throughput.
                       </p>
                       <div className="font-mono text-[9px] text-[#8E98AA] pt-1 border-t border-[#2D3645]/60 flex items-center gap-1.5">
-                        <span className="text-[#4AF626]">&gt;</span>
+                        <span className="text-[#4AF626]">•</span>
                         <span>C / C++ • shmget/shmat • Anonymous Pipes • Spinlocks</span>
                       </div>
                     </div>
@@ -1395,7 +1394,7 @@ export const SkillMatrix: React.FC = () => {
                     <div className="bg-[#070814] p-3.5 border border-[#2D3645] hover:border-[#4AF626] transition-colors space-y-1.5">
                       <div className="flex items-center justify-between gap-2 font-pixel text-[9px]">
                         <span className="text-[#4AF626]">04. VALGRIND MEMORY SAFETY</span>
-                        <span className="text-[#4AF626]">0 LEAKS // 0 BLOCKS</span>
+                        <span className="text-[#4AF626]">0 Leaks • 0 Blocks</span>
                       </div>
                       <p className="font-sans text-xs text-[#D6CFC2] leading-relaxed">
                         Deterministic heap/stack lifecycle audits verifying 0 memory leaks across high-throughput IPC pipelines. Neon Vanguard 120 FPS 2D canvas combat engine with raycast projectile piercing.
@@ -1430,7 +1429,7 @@ export const SkillMatrix: React.FC = () => {
         {/* Matrix Philosophy Footer */}
         <div className="mt-10 text-center">
           <p className="font-pixel text-[9px] text-[#8E98AA]">
-            WATCHKNIGHT_OS // SYS.96 SYSTEMS ARCHITECTURE • AUDITED ACROSS EWU LABS &amp; PRODUCTION DEPLOYMENTS
+            Abdur Rahman Moayed • Systems Architecture • East West University
           </p>
         </div>
 

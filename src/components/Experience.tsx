@@ -27,7 +27,7 @@ const EXPERIENCES: ExperienceItem[] = [
     id: 'exp-1',
     role: 'Computer Science & Engineering (CSE) Undergraduate',
     organization: 'East West University, Bangladesh',
-    period: '2021 — PRESENT (FINAL YEAR)',
+    period: '2021 - Present (Senior)',
     location: 'Dhaka, Bangladesh',
     type: 'Academic',
     description: 'Specializing in Operating Systems, POSIX Systems Programming, Advanced Data Structures, and Distributed Computing.',
@@ -42,13 +42,13 @@ const EXPERIENCES: ExperienceItem[] = [
     id: 'exp-2',
     role: 'Full-Stack Web Architect & Open-Source Engineer',
     organization: 'Independent Systems & Production Platforms',
-    period: '2022 — PRESENT',
+    period: '2022 - Present',
     location: 'Remote / Global',
     type: 'Full-Stack Architecture',
-    description: 'Architecting resilient full-stack web platforms, spatial engines, and reactive cloud architectures from zero to production.',
+    description: 'Building resilient full-stack web platforms, spatial engines, and reactive cloud architectures from zero to production.',
     achievements: [
       'Engineered Mental Defrag: Zero-gravity spatial cognitive canvas with local vector embeddings and bi-directional Obsidian .canvas JSON AST parsing.',
-      'Architected DocLensBD: Real-time Cloud Firestore diagnostic pipeline with automated GitHub Actions CI/CD (14/14 test pass rate).',
+      'Built DocLensBD: Real-time Cloud Firestore diagnostic pipeline with automated GitHub Actions CI/CD (14/14 test pass rate).',
       'Developed Rannabanna: High-performance Bengali culinary platform with Unicode font subsetting reducing critical CSS/font payload by 78%.',
     ],
     techStack: ['React 18', 'TypeScript', 'Matter.js', 'Cloud Firestore', 'Vite', 'Tailwind CSS', 'GitHub Actions'],
@@ -57,7 +57,7 @@ const EXPERIENCES: ExperienceItem[] = [
     id: 'exp-3',
     role: 'Creative Technologist & Low-Level Labs Architect',
     organization: 'BitForge & Graphics Micro-Engines',
-    period: '2023 — PRESENT',
+    period: '2023 - Present',
     location: 'Open Source',
     type: 'Systems & Labs',
     description: 'Building hardware-adjacent graphics loops, kinetic scroll choreographies, and procedural Web Audio synthesizers.',
@@ -85,7 +85,7 @@ export const Experience: React.FC = () => {
         className="pointer-events-none absolute left-4 top-16 font-mono text-[9vw] font-black text-white/[0.015] select-none uppercase tracking-tighter"
         aria-hidden="true"
       >
-        TIMELINE//SYS.96
+        TIMELINE
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -96,7 +96,7 @@ export const Experience: React.FC = () => {
             <div data-anim className="flex items-center gap-2 mb-3">
               <span className="w-2 h-2 bg-[#4AF626] animate-pulse shadow-[0_0_8px_#4AF626]" />
               <span className="font-pixel text-[10px] uppercase tracking-widest text-[#00F0FF]">
-                &gt; [TIMELINE] CHRONOLOGICAL TRAJECTORY // EWU ARCHIVE
+                Timeline • Experience
               </span>
             </div>
 
@@ -148,7 +148,7 @@ export const Experience: React.FC = () => {
                     {exp.type.toUpperCase()}
                   </span>
                   <span className="font-pixel text-[10px] text-[#00F0FF]">
-                    EXP_ARCHIVE // [{exp.id.toUpperCase()}].DAT
+                    {exp.role}
                   </span>
                 </div>
                 <div className="hidden sm:flex items-center gap-1 mx-2 flex-1 justify-center opacity-40">
@@ -210,7 +210,7 @@ export const Experience: React.FC = () => {
                     <ul className="space-y-2 text-xs sm:text-sm text-[#8E98AA]">
                       {exp.achievements.map((item, aIdx) => (
                         <li key={aIdx} className="flex items-start gap-2">
-                          <span className="text-[#4AF626] font-pixel text-[8px] mt-1">&gt;</span>
+                          <span className="text-[#4AF626] font-pixel text-[8px] mt-1">•</span>
                           <span className="leading-relaxed text-[#D6CFC2]">{item}</span>
                         </li>
                       ))}
@@ -232,9 +232,9 @@ export const Experience: React.FC = () => {
 
                 {/* Bottom Subtle Ledger Line */}
                 <div className="mt-6 pt-4 border-t border-[#2D3645] flex items-center justify-between font-mono text-[11px] text-[#8E98AA]">
-                  <span>VERIFIED RECORD // EWU ARCHIVES</span>
+                  <span>Verified Record • East West University</span>
                   <span className="text-[#4AF626] opacity-0 group-hover:opacity-100 transition-opacity font-pixel text-[9px]">
-                    TELEMETRY CONFIRMED ✓
+                    Confirmed ✓
                   </span>
                 </div>
               </div>
@@ -259,7 +259,7 @@ export const Experience: React.FC = () => {
                 aria-label="Proceed to Systems and Skills Stack section"
                 className="flex items-center gap-1.5 px-4 py-2 bg-[#131629] hover:bg-[#1A1F38] border-2 border-[#2D3645] hover:border-[#00F0FF] text-[#F0EFE6] font-pixel text-[10px] shadow-[2px_2px_0_0_#070814] transition-all"
               >
-                <span>&gt; EXAMINE SYSTEMS MATRIX</span>
+                <span>View Systems &amp; Skills</span>
                 <ChevronRight className="w-3.5 h-3.5 text-[#00F0FF]" />
               </a>
             </Magnetic>

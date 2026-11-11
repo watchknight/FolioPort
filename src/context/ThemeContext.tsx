@@ -23,7 +23,7 @@ export interface ThemeColors {
 export const THEMES: Record<string, ThemeColors> = {
   dark: {
     id: 'dark',
-    name: 'NIGHT_CRT // VOID',
+    name: 'Night CRT • Void',
     primaryColor: '#070814',
     accentColor: '#FF2A85',
     bgHex: '#070814',
@@ -38,7 +38,7 @@ export const THEMES: Record<string, ThemeColors> = {
   },
   light: {
     id: 'light',
-    name: 'DAYLIGHT_CAD // PUTTY',
+    name: 'Daylight CAD • Putty',
     primaryColor: '#F2EFE9',
     accentColor: '#D90452',
     bgHex: '#F2EFE9',
@@ -53,7 +53,7 @@ export const THEMES: Record<string, ThemeColors> = {
   },
   obsidian: {
     id: 'obsidian',
-    name: 'SYS.96 Cyber-CRT Void',
+    name: 'Cyber-CRT Void',
     primaryColor: '#070814',
     accentColor: '#FF2A85',
     bgHex: '#070814',

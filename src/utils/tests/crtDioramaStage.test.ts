@@ -38,10 +38,10 @@ describe('CRTDioramaStage Retro 90s Pixel Art Diorama & Header Verification', ()
       expect(html).toContain('data-testid="crt-blinking-cursor"');
     });
 
-    it('displays clean live Dhaka clock in top-right corner with #6e7d62: DHAKA UTC+6 // ONLINE', () => {
+    it('displays clean live Dhaka clock in top-right corner with #6e7d62: Dhaka • UTC+6', () => {
       const html = renderToString(React.createElement(CRTDioramaStage));
 
-      expect(html).toContain('DHAKA UTC+6 // ONLINE');
+      expect(html).toContain('Dhaka • UTC+6');
       expect(html).toContain('data-testid="crt-telemetry-readout"');
       expect(html).toContain('#6e7d62');
     });
@@ -132,12 +132,12 @@ describe('CRTDioramaStage Retro 90s Pixel Art Diorama & Header Verification', ()
   });
 
   describe('4. Interactive Diorama Micro-States & Secondary Monochrome Phosphor Filter', () => {
-    it('supports 90s RPG pixel speech bubble micro-state with exact text: Hi! Press [1], [2], or [3] below', () => {
+    it('supports 90s RPG pixel speech bubble micro-state with exact text: Hi! Press 1, 2, or 3 below', () => {
       const html = renderToString(React.createElement(CRTDioramaStage));
 
       // Speech bubble testid and interactive keyboard accessibility
       expect(html).toContain('data-testid="rpg-speech-bubble"');
-      expect(html).toContain('Hi! Press [1], [2], or [3] below');
+      expect(html).toContain('Hi! Press 1, 2, or 3 below');
       expect(html).toContain('data-testid="developer-avatar-sprite"');
       expect(html).toContain('role="button"');
       expect(html).toContain('tabindex="0"');
@@ -165,12 +165,12 @@ describe('CRTDioramaStage Retro 90s Pixel Art Diorama & Header Verification', ()
       expect(htmlAmber).toContain(`border-bottom:2px solid ${AMBER_PALETTE.mid}`);
     });
 
-    it('supports Large Desktop PC click micro-state showing tooltip: Click: Open Selected Work [1]', () => {
+    it('supports Large Desktop PC click micro-state showing tooltip: Click: Open Selected Work', () => {
       const html = renderToString(React.createElement(CRTDioramaStage));
 
       expect(html).toContain('data-testid="ibm-workstation-sprite"');
       expect(html).toContain('data-testid="github-status-hud"');
-      expect(html).toContain('Click: Open Selected Work [1]');
+      expect(html).toContain('Click: Open Selected Work');
       expect(html).toContain('role="button"');
       expect(html).toContain('tabindex="0"');
     });
@@ -258,10 +258,10 @@ describe('CRTDioramaStage Retro 90s Pixel Art Diorama & Header Verification', ()
       expect(html).toContain('padding:32px');
     });
 
-    it('renders clean two-line pixel header in Press Start 2P with > prefix and blinking cursor block', () => {
+    it('renders clean two-line pixel header in Press Start 2P with blinking cursor block', () => {
       const html = renderToString(React.createElement(CRTDioramaStage));
 
-      expect(html).toContain('&gt; WELCOME TO MOAYED');
+      expect(html).toContain('WELCOME TO MOAYED');
       expect(html).toContain('PORTFOLIO');
       expect(html).toContain('data-testid="crt-blinking-cursor"');
     });
@@ -276,11 +276,11 @@ describe('CRTDioramaStage Retro 90s Pixel Art Diorama & Header Verification', ()
       expect(html).toContain('#6e7d62');
     });
 
-    it('displays clean live Dhaka clock (DHAKA UTC+6 // ONLINE) in top-right corner', () => {
+    it('displays clean live Dhaka clock (Dhaka • UTC+6) in top-right corner', () => {
       const html = renderToString(React.createElement(CRTDioramaStage));
 
       expect(html).toContain('data-testid="crt-telemetry-readout"');
-      expect(html).toContain('DHAKA UTC+6 // ONLINE');
+      expect(html).toContain('Dhaka • UTC+6');
     });
 
     it('unboxes pixel sprites freely on 2px #6e7d62 desk line with 50% open #111712 negative space', () => {
@@ -299,7 +299,7 @@ describe('CRTDioramaStage Retro 90s Pixel Art Diorama & Header Verification', ()
       const html = renderToString(React.createElement(CRTDioramaStage));
 
       // Left Developer Avatar minimal tooltip
-      expect(html).toContain('Hi! Press [1], [2], or [3] below');
+      expect(html).toContain('Hi! Press 1, 2, or 3 below');
 
       // Compact Mac hover tooltip
       expect(html).toContain('data-testid="mac-hover-tooltip"');
@@ -307,32 +307,32 @@ describe('CRTDioramaStage Retro 90s Pixel Art Diorama & Header Verification', ()
 
       // IBM Desktop PC hover tooltip
       expect(html).toContain('data-testid="ibm-hover-tooltip"');
-      expect(html).toContain('Click: Open Selected Work [1]');
+      expect(html).toContain('Click: Open Selected Work');
     });
 
-    it('renders clean, spacious 3-item selector in Press Start 2P: [1] SELECTED WORK, [2] ABOUT & SKILLS, and [3] RESUME & CONTACT', () => {
+    it('renders clean, spacious 3-item selector in Press Start 2P: 1. Work, 2. About, and 3. Resume', () => {
       const html = renderToString(React.createElement(CRTDioramaStage));
 
       expect(html).toContain('data-testid="retro-command-menu"');
-      expect(html).toContain('[1] SELECTED WORK');
-      expect(html).toContain('[2] ABOUT &amp; SKILLS');
-      expect(html).toContain('[3] RESUME &amp; CONTACT');
+      expect(html).toContain('1. Work');
+      expect(html).toContain('2. About');
+      expect(html).toContain('3. Resume');
       // Noisy keyboard instruction clutter removed
       expect(html).not.toContain('↑↓ ROVE • ENTER EXPAND');
     });
 
-    it('renders compact 90s OS Preview Window (QUICK_VIEW.SYS) with #c2cdb4 title bar and controls', () => {
+    it('renders compact 90s OS Preview Window (Preview) with #c2cdb4 title bar and controls', () => {
       const html = renderToString(React.createElement(CRTDioramaStage));
 
       expect(html).toContain('data-testid="retro-window-titlebar"');
-      expect(html).toContain('QUICK_VIEW.SYS');
+      expect(html).toContain('Preview');
       expect(html).toContain('data-testid="retro-window-btn-minimize"');
       expect(html).toContain('data-testid="retro-window-btn-maximize"');
       expect(html).toContain('data-testid="retro-window-btn-close"');
       expect(html).toContain('data-testid="retro-pixel-scrollbar"');
     });
 
-    it('QUICK_VIEW.SYS for [1] SELECTED WORK lists the 4 Flagship Projects with prompt to press Enter to inspect', () => {
+    it('Preview for 1. Work lists the 4 Flagship Projects with prompt to press Enter to inspect', () => {
       const html = renderToString(
         React.createElement(
           RetroOSProvider,
@@ -345,10 +345,10 @@ describe('CRTDioramaStage Retro 90s Pixel Art Diorama & Header Verification', ()
       expect(html).toContain('02 FocusGuard');
       expect(html).toContain('03 Neon Vanguard &amp; POSIX');
       expect(html).toContain('04 DocLensBD');
-      expect(html).toContain('&gt; PRESS ENTER TO INSPECT');
+      expect(html).toContain('Press Enter to expand');
     });
 
-    it('QUICK_VIEW.SYS for [2] ABOUT & SKILLS displays 2-sentence bio summary and top 5 core technologies', () => {
+    it('Preview for 2. About displays 2-sentence bio summary and top 5 core technologies', () => {
       const html = renderToString(
         React.createElement(
           RetroOSProvider,
@@ -366,7 +366,7 @@ describe('CRTDioramaStage Retro 90s Pixel Art Diorama & Header Verification', ()
       expect(html).toContain('Linux/POSIX');
     });
 
-    it('QUICK_VIEW.SYS for [3] RESUME & CONTACT surfaces immediate 1-click [Copy Email], [Download CV], and [GitHub @watchknight] buttons', () => {
+    it('Preview for 3. Resume & Contact surfaces immediate 1-click Copy Email, Download CV, and GitHub: @watchknight buttons', () => {
       const html = renderToString(
         React.createElement(
           RetroOSProvider,
@@ -376,13 +376,13 @@ describe('CRTDioramaStage Retro 90s Pixel Art Diorama & Header Verification', ()
       );
 
       expect(html).toContain('data-testid="btn-copy-email"');
-      expect(html).toContain('[Copy Email]');
+      expect(html).toContain('Copy Email');
 
       expect(html).toContain('data-testid="btn-download-cv"');
-      expect(html).toContain('[Download CV]');
+      expect(html).toContain('Download CV');
 
       expect(html).toContain('data-testid="btn-github-link"');
-      expect(html).toContain('[GitHub @watchknight]');
+      expect(html).toContain('GitHub: @watchknight');
     });
 
     it('wires interactive callback hooks on Avatar, Compact Mac, and IBM PC sprites', () => {

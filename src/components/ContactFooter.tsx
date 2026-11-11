@@ -439,7 +439,7 @@ export const ContactFooter: React.FC = () => {
             </div>
             <div className="min-w-0 flex-1">
               <div className="font-pixel text-[10px] text-[#4AF626] tracking-wider uppercase">
-                [ COPIED TO CLIPBOARD // ACK ]
+                Copied to Clipboard
               </div>
               <div className="font-mono text-fluid-micro text-[#D6CFC2] break-all leading-tight mt-0.5">
                 {PORTFOLIO_DATA.meta.email} • Ready to paste
@@ -466,7 +466,7 @@ export const ContactFooter: React.FC = () => {
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 bg-[#4AF626] border border-[#070814] inline-block animate-pulse" />
                 <span className="font-pixel text-[10px] sm:text-[11px] uppercase tracking-wider">
-                  [ SYS.96 // SATELLITE UPLINK CONSOLE // STATION DHAKA ]
+                  Dhaka • UTC+6
                 </span>
               </div>
               <div className="flex items-center gap-1 font-pixel text-[9px]">
@@ -489,26 +489,26 @@ export const ContactFooter: React.FC = () => {
               <div className="flex flex-wrap items-center gap-2">
                 <span className="px-2 py-1 bg-[#131629] border border-[#4AF626] text-[#4AF626] flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-none bg-[#4AF626] animate-pulse" />
-                  <span>[ 🛰️ UPLINK: READY ]</span>
+                  <span>Uplink: Ready</span>
                 </span>
                 <span className="px-2 py-1 bg-[#131629] border border-[#00F0FF] text-[#00F0FF]">
-                  [ 📡 FREQ: 142.850 MHz ]
+                  142.850 MHz
                 </span>
                 <span className="px-2 py-1 bg-[#131629] border border-[#FFCC00] text-[#FFCC00]">
-                  [ 🔒 ENCRYPTION: 128-BIT POSIX ]
+                  128-Bit Encryption
                 </span>
                 <span className="hidden md:inline-flex px-2 py-1 bg-[#131629] border border-[#2D3645] text-[#D6CFC2]">
-                  [ 🌐 ORBIT: GEO-SYNC // DHAKA ]
+                  Dhaka • UTC+6
                 </span>
                 <span className="hidden lg:inline-flex px-2 py-1 bg-[#131629] border border-[#2D3645] text-[#4AF626]">
-                  [ ⚡ PACKET LOSS: 0.0% ]
+                  Packet Loss: 0.0%
                 </span>
                 <span className="hidden xl:inline-flex px-2 py-1 bg-[#131629] border border-[#2D3645] text-[#00F0FF]">
-                  [ 📶 SIGNAL: 99.8% ]
+                  Signal: 99.8%
                 </span>
               </div>
               <div className="flex items-center gap-2 text-slate-400 font-mono text-[11px]">
-                <span className="text-[#FFCC00] font-bold">UTC+6 TELEMETRY</span>
+                <span className="text-[#FFCC00] font-bold">Dhaka • UTC+6</span>
               </div>
             </div>
           </div>
@@ -521,7 +521,7 @@ export const ContactFooter: React.FC = () => {
             style={{ overflow: 'visible', paddingTop: '2rem' }}
           >
             <div className="font-mono text-fluid-micro text-[#FF2A85] uppercase tracking-widest mb-3">
-              THEATRICAL FINALE // AWWWARDS CAPSTONE
+              Get in Touch
             </div>
             <h2
               className={`font-display uppercase ${isLight ? 'text-[#11131A]' : 'text-transparent bg-clip-text bg-gradient-to-b from-white via-alabaster to-white/40'} flex flex-wrap justify-center gap-x-2 sm:gap-x-4 md:gap-x-6 py-2`}
@@ -572,7 +572,7 @@ export const ContactFooter: React.FC = () => {
              ========================================================================= */}
           <div className="footer-anim text-center max-w-4xl mx-auto mb-16 space-y-6">
             <div className={`font-pixel text-[10px] ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'} tracking-widest uppercase mb-1`}>
-              &gt; SYS.96 // SATELLITE_UPLINK_INITIALIZED // TRANSCEIVER_ONLINE
+              Get in Touch
             </div>
             <h2 
               className={`tracking-tight ${isLight ? 'text-[#11131A]' : 'text-white'} uppercase leading-snug break-normal hyphens-none`}
@@ -593,7 +593,7 @@ export const ContactFooter: React.FC = () => {
             </h2>
 
             <p className="font-body text-fluid-lead text-slate-300 max-w-2xl mx-auto leading-relaxed">
-              Whether architecting deterministic POSIX systems in C/Linux, orchestrating real-time cloud data pipelines, or designing 120 FPS web platforms — let’s engineer something exceptional together.
+              Whether building low-level systems in C and Linux, real-time cloud applications, or high-performance web experiences, let&apos;s create something exceptional together.
             </p>
 
             {/* HIGH-CONVERSION PRIMARY ACTION ROW */}
@@ -681,7 +681,7 @@ export const ContactFooter: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 bg-[#4AF626] animate-pulse inline-block" />
                   <span className="font-pixel text-[9px] uppercase tracking-wider">
-                    SYS.96 // SATELLITE_TELEMETRY_CHRONOMETER
+                    Local Time
                   </span>
                 </div>
                 <div className="flex items-center gap-1 font-pixel text-[8px]">
@@ -764,7 +764,7 @@ export const ContactFooter: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <span className={`w-2 h-2 ${isLight ? 'bg-[#0052FF]' : 'bg-[#00F0FF]'} inline-block`} />
                     <span className="font-pixel text-[9px] uppercase tracking-wider">
-                      DHAKA_HQ // SATELLITE_COORDINATES
+                      Dhaka, Bangladesh
                     </span>
                   </div>
                   <div className="flex items-center gap-1 font-pixel text-[8px]">
@@ -824,7 +824,7 @@ export const ContactFooter: React.FC = () => {
                       <div>
                         <div className={`font-pixel text-[8px] ${isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'} uppercase`}>Academic Anchor</div>
                         <div className={`font-mono text-fluid-sm ${isLight ? 'text-[#11131A]' : 'text-white'} font-medium`}>
-                          East West University — Dhaka, BD
+                          East West University • Dhaka, BD
                         </div>
                         <div className={`font-mono text-fluid-micro ${isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'} flex items-center gap-1`}>
                           <MapPin className={`w-3 h-3 ${isLight ? 'text-[#C85A00]' : 'text-[#FFCC00]/80'}`} />
@@ -917,7 +917,7 @@ export const ContactFooter: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <span className={`w-2 h-2 ${isLight ? 'bg-[#D90452]' : 'bg-[#FF2A85]'} inline-block animate-pulse`} />
                     <span className="font-pixel text-[9px] uppercase tracking-wider">
-                      DISPATCH_UPLINK // PACKET_BUFFER
+                      Send a Message
                     </span>
                   </div>
                   <div className="flex items-center gap-1 font-pixel text-[8px]">
@@ -951,7 +951,7 @@ export const ContactFooter: React.FC = () => {
                         <Check className="w-6 h-6" />
                       </div>
                       <div className={`font-pixel font-bold text-sm sm:text-base ${isLight ? 'text-[#11131A]' : 'text-white'}`}>
-                        [ TRANSMISSION PACKET QUEUED // ACK RECEIVED ]
+                        Message Sent
                       </div>
                       <p className={`font-mono text-fluid-sm ${isLight ? 'text-[#3F4654]' : 'text-[#D6CFC2]'} max-w-md mx-auto`}>
                         Thank you. Your message packet has been routed to Abdur Rahman Moayed.
@@ -1100,7 +1100,7 @@ export const ContactFooter: React.FC = () => {
                 </Magnetic>
                 <div>
                   <div className="font-pixel font-bold text-xs text-white">
-                    WATCHKNIGHT<span className="text-[#FF2A85]">_OS</span> // SYS.96
+                    Abdur Rahman Moayed
                   </div>
                   <div className="font-mono text-fluid-micro text-[#8E98AA]">
                     Full-Stack Web Architect &amp; Systems Engineer • East West University, Dhaka
@@ -1133,7 +1133,7 @@ export const ContactFooter: React.FC = () => {
                     className="group flex items-center gap-2 px-4 py-2.5 bg-[#131629] hover:bg-[#1A1F38] border-2 border-[#2D3645] hover:border-[#00F0FF] text-[#D6CFC2] hover:text-[#00F0FF] transition-all font-pixel text-[10px] shadow-[2px_2px_0_0_#070814]"
                     aria-label="Back to apex"
                   >
-                    <span>&gt; BACK TO APEX</span>
+                    <span>Back to Top</span>
                     <ArrowUp className="w-3.5 h-3.5 transition-transform group-hover:-translate-y-0.5 text-[#00F0FF]" />
                   </button>
                 </Magnetic>
@@ -1143,7 +1143,7 @@ export const ContactFooter: React.FC = () => {
 
             <div className="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-fluid-micro text-slate-500 text-center sm:text-left">
               <div>
-                © {new Date().getFullYear()} WATCHKNIGHT_OS // SYS.96. Architected by Abdur Rahman Moayed (@watchknight).
+                © {new Date().getFullYear()} Abdur Rahman Moayed (@watchknight). All rights reserved.
               </div>
               <div className="flex items-center gap-2 text-slate-400">
                 <span className="w-2 h-2 rounded-none bg-[#4AF626] animate-pulse" />
@@ -1186,7 +1186,7 @@ export const ContactFooter: React.FC = () => {
                   isLight ? 'bg-[#007A33] border-[#1A1D24]' : 'bg-[#4AF626] border-[#070814]'
                 }`} />
                 <span className="font-pixel text-[10px] uppercase tracking-wider">
-                  SYS.96 // CREDENTIALS &amp; SYSTEMS DOSSIER
+                  Credentials &amp; Resume
                 </span>
               </div>
               <div className="flex items-center gap-1 font-pixel text-[9px]">
@@ -1212,7 +1212,7 @@ export const ContactFooter: React.FC = () => {
                 <span className={`font-pixel text-[9px] uppercase tracking-widest block mb-1 ${
                   isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'
                 }`}>
-                  &gt; VERIFIED ENGINEER CREDENTIALS // SATELLITE TRANSCEIVER
+                  Verified Credentials
                 </span>
                 <h3
                   id="resume-modal-title"
@@ -1336,7 +1336,7 @@ export const ContactFooter: React.FC = () => {
                       }`}>
                         <div className="min-w-0 flex-1">
                           <span className={`font-bold ${isLight ? 'text-[#11131A]' : 'text-white'}`}>{item.name}</span>
-                          <span className={`${isLight ? 'text-[#1A1D24]/40' : 'text-slate-500'} mx-2 hidden sm:inline`}>—</span>
+                          <span className={`${isLight ? 'text-[#1A1D24]/40' : 'text-slate-500'} mx-2 hidden sm:inline`}>•</span>
                           <span className={`${isLight ? 'text-[#3F4654]' : 'text-slate-400'} block sm:inline`}>{item.tech}</span>
                         </div>
                         <a
@@ -1350,7 +1350,7 @@ export const ContactFooter: React.FC = () => {
                           }`}
                           aria-label={`View repository for ${item.name}`}
                         >
-                          <span>[ REPO ]</span>
+                          <span>Repo ↗</span>
                           <ExternalLink className="w-3 h-3" />
                         </a>
                       </div>
@@ -1382,7 +1382,7 @@ export const ContactFooter: React.FC = () => {
                         : 'bg-[#0D1512] hover:bg-white/10 text-[#D6CFC2] border-[#2D3645]'
                     }`}
                   >
-                    [ CLOSE DOSSIER ]
+                    Close
                   </button>
                   <a
                     href="/resume.pdf"

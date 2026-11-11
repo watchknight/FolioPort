@@ -17,12 +17,12 @@ interface RetroNavItem {
 }
 
 const COMMAND_NAV_ITEMS: RetroNavItem[] = [
-  { id: '#work', num: '01', label: 'SYSTEMS', subtitle: 'Flagship Productions' },
-  { id: '#extensions', num: '02', label: 'EXTENSIONS', subtitle: 'Browser Extension Studio' },
-  { id: '#systems', num: '03', label: 'ARCHITECTURE', subtitle: 'Motherboard PCB Matrix' },
-  { id: '#lab', num: '04', label: 'GITHUB_ROM', subtitle: 'Open Source Repos' },
-  { id: '#terminal', num: '05', label: 'TERMINAL', subtitle: 'Interactive POSIX Shell' },
-  { id: '#contact', num: '06', label: 'CONTACT', subtitle: 'Encrypted Dispatch' },
+  { id: '#work', num: '01', label: 'Work', subtitle: 'Selected Projects' },
+  { id: '#extensions', num: '02', label: 'Extensions', subtitle: 'Browser Extension Studio' },
+  { id: '#systems', num: '03', label: 'Skills', subtitle: 'Systems & Architecture' },
+  { id: '#lab', num: '04', label: 'GitHub', subtitle: 'Open Source Repositories' },
+  { id: '#terminal', num: '05', label: 'Terminal', subtitle: 'Interactive Shell' },
+  { id: '#contact', num: '06', label: 'Contact', subtitle: 'Get in Touch' },
 ];
 
 export const RetroCommandBar: React.FC = () => {
@@ -207,7 +207,7 @@ export const RetroCommandBar: React.FC = () => {
       }}
     >
       <div className="retro-command-inner w-full h-full px-2 sm:px-3 lg:px-4 2xl:px-6 flex items-center justify-between gap-1 sm:gap-2">
-        {/* Left: >_ @watchknight + blinking green indicator EWU CSE // DHAKA (UTC+6) */}
+        {/* Left: @watchknight + blinking green indicator EWU CSE • Dhaka (UTC+6) */}
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 min-w-0">
           <button
             type="button"
@@ -223,13 +223,6 @@ export const RetroCommandBar: React.FC = () => {
             }`}
             aria-label="Apex Home Sentinel"
           >
-            <span className={`font-pixel text-[10px] sm:text-[11px] transition-colors ${
-              theme === 'light'
-                ? 'text-[#0052FF] group-hover:text-[#D90452]'
-                : 'text-[#00F0FF] group-hover:text-[#FF2A85]'
-            }`}>
-              &gt;_
-            </span>
             <span className={`font-pixel text-[8.5px] sm:text-[9px] tracking-wider ${
               theme === 'light' ? 'text-[#11131A]' : 'text-[#F0EFE6]'
             }`}>
@@ -246,12 +239,12 @@ export const RetroCommandBar: React.FC = () => {
             <span className={`font-pixel text-[7px] sm:text-[7.5px] xl:text-[8px] tracking-wider hidden sm:inline whitespace-nowrap ${
               theme === 'light' ? 'text-[#3F4654]' : 'text-[#D6CFC2]'
             }`}>
-              EWU CSE // DHAKA {dhakaTime ? `${dhakaTime} ` : ''}(UTC+6)
+              EWU CSE • Dhaka {dhakaTime ? `${dhakaTime} ` : ''}(UTC+6)
             </span>
             <span className={`font-pixel text-[6.5px] tracking-wider sm:hidden whitespace-nowrap ${
               theme === 'light' ? 'text-[#3F4654]' : 'text-[#D6CFC2]'
             }`}>
-              EWU CSE // DHAKA (UTC+6)
+              EWU CSE • Dhaka (UTC+6)
             </span>
           </div>
         </div>
@@ -283,8 +276,7 @@ export const RetroCommandBar: React.FC = () => {
                   aria-label={`Jump to ${item.label}`}
                   aria-current={isActive ? 'page' : undefined}
                 >
-                  <span className={isActive ? (theme === 'light' ? 'text-[#0052FF]' : 'text-[#00F0FF]') : (theme === 'light' ? 'text-[#007A33]' : 'text-[#4AF626]')}>&gt;</span>
-                  <span className={theme === 'light' ? 'text-[#3F4654]/70' : 'text-[#8E98AA]'}>[{item.num}]</span>
+                  <span className={theme === 'light' ? 'text-[#3F4654]/70' : 'text-[#8E98AA]'}>{item.num}.</span>
                   <span>{item.label}</span>
                 </button>
               </React.Fragment>
@@ -370,11 +362,11 @@ export const RetroCommandBar: React.FC = () => {
                   ? 'bg-[#0052FF] text-[#FFFFFF] font-bold shadow-[0_0_6px_rgba(0,82,255,0.4)]'
                   : 'text-[#8E98AA] hover:text-[#F0EFE6]'
               }`}
-              title="Switch to Daylight CAD Workstation Theme"
+              title="Switch to Daylight Theme"
             >
               <span>☀</span>
-              <span className="hidden sm:inline">DAYLIGHT_CAD</span>
-              <span className="sm:hidden">CAD</span>
+              <span className="hidden sm:inline">Daylight</span>
+              <span className="sm:hidden">Day</span>
             </button>
             <span className={`${theme === 'light' ? 'text-[#1A1D24]/30' : 'text-[#2D3645]'} mx-0.5`}>|</span>
             <button
@@ -390,11 +382,11 @@ export const RetroCommandBar: React.FC = () => {
                   ? 'bg-[#00F0FF] text-[#070814] font-bold shadow-[0_0_6px_rgba(0,240,255,0.4)]'
                   : (theme === 'light' ? 'text-[#3F4654] hover:text-[#11131A]' : 'text-[#8E98AA] hover:text-[#F0EFE6]')
               }`}
-              title="Switch to Night CRT Void Theme"
+              title="Switch to Night Theme"
             >
               <span>☾</span>
-              <span className="hidden sm:inline">NIGHT_CRT</span>
-              <span className="sm:hidden">CRT</span>
+              <span className="hidden sm:inline">Night</span>
+              <span className="sm:hidden">Night</span>
             </button>
           </div>
 
@@ -449,7 +441,7 @@ export const RetroCommandBar: React.FC = () => {
           <div className="fixed inset-0 z-[9999] bg-[#070814]/98 backdrop-blur-2xl xl:hidden flex flex-col justify-center px-4 transition-all duration-200 pointer-events-auto border-b-2 border-[#00F0FF]">
             <div className="w-full max-w-md mx-auto bg-[#131629] border-2 border-[#00F0FF] p-5 shadow-[0_0_30px_rgba(0,240,255,0.25)] space-y-4">
               <div className="flex items-center justify-between border-b-2 border-[#2D3645] pb-3">
-                <span className="font-pixel text-xs text-[#00F0FF]">&gt; SYS.96 // COMMAND_MENU</span>
+                <span className="font-pixel text-xs text-[#00F0FF]">Menu</span>
                 <button
                   type="button"
                   onClick={() => setMobileMenuOpen(false)}
@@ -473,8 +465,7 @@ export const RetroCommandBar: React.FC = () => {
                     }`}
                   >
                     <div className="flex items-center gap-2">
-                      <span className="text-[#4AF626]">&gt;</span>
-                      <span className="text-[#8E98AA]">[{item.num}]</span>
+                      <span className="text-[#8E98AA]">{item.num}.</span>
                       <span>{item.label}</span>
                     </div>
                     <span className="text-[9px] font-mono text-[#8E98AA]">{item.subtitle}</span>
@@ -484,7 +475,7 @@ export const RetroCommandBar: React.FC = () => {
 
               {/* Mobile 3D Render Mode Controls */}
               <div className="pt-2 border-t-2 border-[#2D3645] space-y-1.5">
-                <div className="font-pixel text-[9px] text-[#8E98AA]">&gt; 3D RENDER ENGINE:</div>
+                <div className="font-pixel text-[9px] text-[#8E98AA]">3D Render Engine:</div>
                 <div className="grid grid-cols-3 gap-1">
                   {(['3D VECTOR', '3D PIXEL_ART', 'CRT ANALOG'] as RenderMode[]).map((mode) => (
                     <button

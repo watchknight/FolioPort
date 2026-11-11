@@ -15,7 +15,7 @@ import path from 'node:path';
 
 declare const process: any;
 
-describe('SYS.96 Systems UI Architecture Verification: SkillMatrix, GithubLab & TerminalLab', () => {
+describe('Systems UI Architecture Verification: SkillMatrix, GithubLab & TerminalLab', () => {
 
   describe('1. 8-Bit LED Telemetry Counters & Motherboard Skill Matrix (SkillMatrix.tsx)', () => {
     it('contains all 4 authority metrics with 90s digital pixel readouts', () => {
@@ -59,7 +59,7 @@ describe('SYS.96 Systems UI Architecture Verification: SkillMatrix, GithubLab & 
       expect(FLAGSHIP_PROJECTS).toHaveLength(6);
 
       const numbers = FLAGSHIP_PROJECTS.map(p => p.number);
-      expect(numbers).toEqual(['ROM_01', 'ROM_02', 'ROM_03', 'ROM_04', 'ROM_05', 'ROM_06']);
+      expect(numbers).toEqual(['01', '02', '03', '04', '05', '06']);
 
       const titles = FLAGSHIP_PROJECTS.map(p => p.title);
       expect(titles).toContain('Mental Defrag');
@@ -74,14 +74,14 @@ describe('SYS.96 Systems UI Architecture Verification: SkillMatrix, GithubLab & 
       const html = renderToString(React.createElement(SkillMatrix));
 
       // Official 90s BIOS Hardware Verification ROM readout
-      expect(html).toContain('BIOS_ROM_VERIFY.SYS');
+      expect(html).toContain('Systems Verification');
       expect(html).toContain('East West University (EWU)');
       expect(html).toContain('2021 – PRESENT (SENIOR STANDING)');
       expect(html).toContain('Computer Science &amp; Engineering (CSE)');
       expect(html).toContain('SHA-256 AUTHENTICATED');
       expect(html).toContain('8F4A2B9C7D1E0F3A6B5C4D3E2F1A0B9C8D7E6F5A4B3C2D1E0F9A8B7C6D5E4F3A');
       expect(html).toContain('VALGRIND MEM AUDIT');
-      expect(html).toContain('0 LEAKS // CLEAN EXIT');
+      expect(html).toContain('0 Leaks • Clean Exit');
     });
 
     it('applies --tech-cyan-wave and --pixel-amber-gold CSS variable border tokens and counter attributes', () => {
@@ -101,7 +101,7 @@ describe('SYS.96 Systems UI Architecture Verification: SkillMatrix, GithubLab & 
     it('renders traveling animated PCB pulse traces with animate-pcb-pulse classes', () => {
       const html = renderToString(React.createElement(SkillMatrix));
 
-      expect(html).toContain('MOTHERBOARD PCB BUS');
+      expect(html).toContain('Architecture Interconnect Traces');
       expect(html).toContain('viewBox="0 0 1000 32"');
     });
 
@@ -112,27 +112,27 @@ describe('SYS.96 Systems UI Architecture Verification: SkillMatrix, GithubLab & 
       expect(html).toContain('id="experience"');
 
       // 3 Tab buttons
-      expect(html).toContain('TAB 1: EWU CSE &amp; OFFICIAL BIOS RECORD');
-      expect(html).toContain('TAB 2: FULL-STACK &amp; BROWSER EXTENSIONS');
-      expect(html).toContain('TAB 3: SYSTEMS, KERNEL &amp; GRAPHICS LABS');
+      expect(html).toContain('Tab 1: Education &amp; Systems Background');
+      expect(html).toContain('Tab 2: Web &amp; Extension Engineering');
+      expect(html).toContain('Tab 3: Systems, Kernel &amp; Graphics Labs');
 
       // Default active tab (Tab 1) content
-      expect(html).toContain('ROM PCI/ISA BIOS (2A69KM4B) // MODULAR CSE ARCHITECTURE');
+      expect(html).toContain('Modular CSE Architecture');
       expect(html).toContain('East West University (EWU)');
       expect(html).toContain('Computer Science &amp; Engineering (CSE)');
       expect(html).toContain('VALGRIND MEM AUDIT');
-      expect(html).toContain('0 LEAKS // CLEAN EXIT');
+      expect(html).toContain('0 Leaks • Clean Exit');
     });
   });
 
   describe('2. Retro ROM Cartridge GitHub Explorer (GithubLab.tsx)', () => {
-    it('renders the prompt-mandated filter tabs [FILTER: ALL | TS/JS | C/C++ | HTML/CANVAS]', () => {
+    it('renders the category filter tabs', () => {
       const html = renderToString(React.createElement(GithubLab));
 
-      expect(html).toContain('&gt; ALL');
-      expect(html).toContain('&gt; TS/JS');
-      expect(html).toContain('&gt; C/C++');
-      expect(html).toContain('&gt; HTML/CANVAS');
+      expect(html).toContain('All');
+      expect(html).toContain('TS / JS');
+      expect(html).toContain('C / C++');
+      expect(html).toContain('HTML / Canvas');
     });
 
     it('contains FolioPort, watchknight, and MyPortfolio in the repository dataset', () => {
@@ -146,14 +146,14 @@ describe('SYS.96 Systems UI Architecture Verification: SkillMatrix, GithubLab & 
       expect(html).toContain('Linux-OS-Kernel-Labs');
     });
 
-    it('renders the mandated [ >_ INSPECT_ROM ] action button and floppy cartridge hardware details', () => {
+    it('renders the View Code action button and floppy cartridge hardware details', () => {
       const html = renderToString(React.createElement(GithubLab));
 
       // Button presence
-      expect(html).toContain('[ &gt;_ INSPECT_ROM ]');
+      expect(html).toContain('View Code');
 
       // Floppy & Cartridge hardware features
-      expect(html).toContain('WP: OFF');
+      expect(html).toContain('Public');
       expect(html).toContain('16-BIT BUS');
     });
   });
@@ -164,7 +164,7 @@ describe('SYS.96 Systems UI Architecture Verification: SkillMatrix, GithubLab & 
 
       expect(html).toContain('moayed@ewu-cse');
       expect(html).toContain('Ubuntu 24.04.1 LTS');
-      expect(html).toContain('UBUNTU_CRT.EXE');
+      expect(html).toContain('Terminal');
       expect(html).toContain('East West University Systems Lab');
     });
 
@@ -181,7 +181,7 @@ describe('SYS.96 Systems UI Architecture Verification: SkillMatrix, GithubLab & 
       expect(html).toContain('sudo hire moayed');
 
       // Quick exec chip $arcade
-      expect(html).toContain('&gt; $arcade');
+      expect(html).toContain('$arcade');
     });
 
     it('provides CRT phosphor mode toggle and authentic 90s window controls', () => {
@@ -245,12 +245,12 @@ describe('SYS.96 Systems UI Architecture Verification: SkillMatrix, GithubLab & 
       expect(gameOverTriggered).toBe(false);
     });
 
-    it('verifies arcade game incorporates [ X EXIT TO SHELL ] and 0xDEAD / SIGSEGV / NULL_PTR specifications', () => {
+    it('verifies arcade game incorporates Exit to Shell and 0xDEAD / SIGSEGV / NULL_PTR specifications', () => {
       const terminalLabPath = path.resolve(process.cwd(), 'src/components/TerminalLab.tsx');
       const terminalLabCode = fs.readFileSync(terminalLabPath, 'utf-8');
 
-      // ASCII X exit button returning cleanly to shell
-      expect(terminalLabCode).toContain('[ X EXIT TO SHELL ]');
+      // Exit button returning cleanly to shell
+      expect(terminalLabCode).toContain('Exit to Shell');
 
       // 0xDEAD / SIGSEGV / NULL_PTR arcade invaders
       expect(terminalLabCode).toContain("label: '0xDEAD'");

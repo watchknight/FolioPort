@@ -196,21 +196,21 @@ export const CRTBootSequence: React.FC<CRTBootSequenceProps> = ({
         <div className="flex items-start justify-between border-b border-[#6e7d62]/40 pb-2 text-[8px] sm:text-[9px] uppercase tracking-wider opacity-85">
           <div className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 bg-[#c2cdb4] animate-pulse" aria-hidden="true" />
-            <span>WATCHKNIGHT_OS SYS.96 // POWER-ON INIT</span>
+            <span>SYSTEM INITIALIZATION</span>
           </div>
-          <span>BASE PORT: 0x9600</span>
+          <span>PORT: 0x9600</span>
         </div>
 
         {/* 1.2-Second 90s BIOS Memory Check Content */}
         <div data-testid="crt-bios-text" className="my-auto flex flex-col gap-2.5 text-xs sm:text-sm font-pixel leading-relaxed">
           <p className="tracking-wide">
-            EWU-CSE ROM BIOS v1.96 // CPU: WATCHKNIGHT-DX4 // 640K OK // LOADING PORTFOLIO.SYS...
+            East West University • 640K Base Memory OK • Loading Portfolio...
           </p>
 
           <div className="flex flex-col gap-1 text-[8px] sm:text-[10px] text-[#6e7d62] pt-2">
-            <p>&gt; DETECTING RAM MODULES: 640KB BASE CONVENTIONAL MEMORY VERIFIED</p>
-            <p>&gt; BUS PROTOCOL: ISA-VLB // 32-BIT BUS MASTER ENABLED</p>
-            <p>&gt; SYNTHESIZER: PROCEDURAL 8-BIT WEB AUDIO SYNTH READY</p>
+            <p>Detecting RAM modules: 640KB base conventional memory verified</p>
+            <p>Bus protocol: 32-bit bus master enabled</p>
+            <p>Synthesizer: Procedural Web Audio synth ready</p>
           </div>
         </div>
 
@@ -230,10 +230,10 @@ export const CRTBootSequence: React.FC<CRTBootSequenceProps> = ({
             className="text-[#c2cdb4] hover:underline focus:outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2 min-h-[44px] flex items-center"
             aria-label="Instant skip boot sequence"
           >
-            [PRESS ANY KEY OR CLICK TO SKIP]
+            Press any key or click to skip
           </button>
           <span className="opacity-60 text-[7px] sm:text-[8px]">
-            EAST WEST UNIV // DHAKA BD (23°N 90°E)
+            East West University • Dhaka, Bangladesh
           </span>
         </div>
       </div>

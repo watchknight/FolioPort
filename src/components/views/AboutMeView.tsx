@@ -37,17 +37,17 @@ export interface CapabilityColumn {
 export const CAPABILITY_COLUMNS: CapabilityColumn[] = [
   {
     title: 'Frontend & Interactive',
-    badge: 'UI // RUNTIME',
+    badge: 'Frontend',
     skills: ['TypeScript', 'React 18', 'Next.js', 'Tailwind CSS', 'HTML5 Canvas', 'GSAP'],
   },
   {
     title: 'Backend & Cloud',
-    badge: 'SERVICES // DATA',
+    badge: 'Backend',
     skills: ['Node.js', 'Express', 'PostgreSQL', 'MongoDB', 'Cloud Firestore', 'Docker'],
   },
   {
     title: 'Systems & Core CSE',
-    badge: 'KERNEL // IPC',
+    badge: 'Systems',
     skills: ['C', 'C++', 'Ubuntu Linux', 'POSIX Shared Memory & IPC', 'Bash', 'Valgrind/GDB'],
   },
 ];
@@ -90,14 +90,14 @@ export const AboutMeView: React.FC<AboutMeViewProps> = ({ palette }) => {
       <div
         className="pb-1 border-b flex items-center justify-between text-[9px] sm:text-[10px] uppercase font-bold tracking-wider"
         style={{ borderColor: mid, color: bright }}
-        title="=== [2] ABOUT &amp; SKILLS // ABOUT_ME.TXT ==="
+        title="About"
       >
-        <span>=== [2] ABOUT &amp; SKILLS // ABOUT_ME.TXT ===</span>
+        <span>2. About</span>
         <span
           className="text-[7.5px] px-1 py-0.2 border"
           style={{ backgroundColor: dim, borderColor: mid, color: bright }}
         >
-          SYS.96 // PROFILE
+          Profile
         </span>
       </div>
 
@@ -145,7 +145,7 @@ export const AboutMeView: React.FC<AboutMeViewProps> = ({ palette }) => {
             className="text-[6.5px] uppercase tracking-tighter font-mono"
             style={{ color: mid }}
           >
-            [16x16 2BPP PHOSPHOR]
+            16x16 Pixel Art
           </span>
         </div>
 
@@ -217,7 +217,7 @@ export const AboutMeView: React.FC<AboutMeViewProps> = ({ palette }) => {
           className="font-pixel font-bold uppercase text-[8.5px] sm:text-[9.5px] tracking-wider pb-1 border-b"
           style={{ borderColor: `${mid}50`, color: bright }}
         >
-          &gt; SYSTEM MANIFEST // ENGINEERING BIOGRAPHY:
+          About Me
         </div>
         <div
           className="font-body flex flex-col gap-3"
@@ -253,8 +253,8 @@ export const AboutMeView: React.FC<AboutMeViewProps> = ({ palette }) => {
           className="flex items-center justify-between text-[8px] sm:text-[8.5px] font-bold uppercase pb-1 border-b"
           style={{ borderColor: `${mid}60`, color: bright }}
         >
-          <span>&gt; CAPABILITY MATRIX // 3-COLUMN DOMAIN BREAKDOWN</span>
-          <span className="font-mono text-[7px]" style={{ color: mid }}>CORE_STACK.SYS</span>
+          <span>Skills</span>
+          <span className="font-mono text-[7px]" style={{ color: mid }}>Core Stack</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 sm:gap-3">
@@ -310,7 +310,7 @@ export const AboutMeView: React.FC<AboutMeViewProps> = ({ palette }) => {
         style={{ borderColor: `${mid}60`, backgroundColor: `${dim}20` }}
       >
         <div className="font-bold uppercase tracking-wider" style={{ color: bright }}>
-          &gt; CORE COMPETENCIES:
+          Core Competencies:
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-1 font-mono text-[8px] sm:text-[9px]" style={{ color: `${bright}cc` }}>
           <div>• C++ / C Systems</div>

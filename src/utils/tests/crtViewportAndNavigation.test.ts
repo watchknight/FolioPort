@@ -12,7 +12,7 @@ import path from 'node:path';
 
 declare const process: any;
 
-describe('WATCHKNIGHT_OS SYS.96: CRT Viewport Shell, Command Bar & Section Decluttering', () => {
+describe('CRT Viewport Shell, Command Bar & Section Decluttering', () => {
   describe('1. Duplicate Sections Purged Verification', () => {
     it('verifies legacy About component renders null (zero DOM footprint)', () => {
       const html = renderToString(React.createElement(About));
@@ -22,18 +22,17 @@ describe('WATCHKNIGHT_OS SYS.96: CRT Viewport Shell, Command Bar & Section Declu
     it('verifies legacy duplicate blocks are deleted from SkillMatrix and App', () => {
       const skillMatrixHtml = renderToString(React.createElement(SkillMatrix));
 
-      // Redundant ROM_TRACER SYS.96 / ARCHITECTURAL_PCB_TRACER 6-card row is purged
+      // Redundant ROM_TRACER / ARCHITECTURAL_PCB_TRACER 6-card row is purged
       expect(skillMatrixHtml).not.toContain('ARCHITECTURAL_PCB_TRACER');
-      expect(skillMatrixHtml).not.toContain('ROM_TRACER SYS.96');
+      expect(skillMatrixHtml).not.toContain('ROM_TRACER');
       expect(skillMatrixHtml).not.toContain('PONG_SURF');
       expect(skillMatrixHtml).not.toContain('PILLAR_01');
       expect(skillMatrixHtml).not.toContain('OFFICIAL SYSTEM RECORD // AUDIT TELEMETRY');
       expect(skillMatrixHtml).not.toContain('REF. 01');
 
       // Superior 8-bit LED readouts and Motherboard PCB bus are retained
-      expect(skillMatrixHtml).toContain('8-BIT LED TELEMETRY READOUTS');
-      expect(skillMatrixHtml).toContain('MOTHERBOARD PCB BUS');
-      expect(skillMatrixHtml).toContain('BIOS_ROM_VERIFY.SYS');
+      expect(skillMatrixHtml).toContain('Real-Time Metrics');
+      expect(skillMatrixHtml).toContain('Systems Verification');
     });
   });
 
@@ -53,7 +52,7 @@ describe('WATCHKNIGHT_OS SYS.96: CRT Viewport Shell, Command Bar & Section Declu
       expect(html).toContain('pb-[28px]');
     });
 
-    it('renders the ultra-slim 28px bottom chin with MULTISYNC 17", DEGAUSS, CRT FX and PWR LED', () => {
+    it('renders the ultra-slim 28px bottom chin with MULTISYNC 17", Degauss, CRT FX and Power LED', () => {
       const html = renderToString(
         React.createElement(CRTViewportShell, null, React.createElement('div', null, 'Content'))
       );
@@ -62,10 +61,10 @@ describe('WATCHKNIGHT_OS SYS.96: CRT Viewport Shell, Command Bar & Section Declu
       expect(html).toContain('h-[28px]');
       expect(html).toContain('WATCHKNIGHT');
       expect(html).toContain('MULTISYNC 17');
-      expect(html).toContain('[ DEGAUSS ]');
-      expect(html).toContain('CRT FX: [');
+      expect(html).toContain('Degauss');
+      expect(html).toContain('CRT FX:');
       expect(html).toContain('FULL');
-      expect(html).toContain('PWR');
+      expect(html).toContain('Power');
     });
   });
 
@@ -79,12 +78,11 @@ describe('WATCHKNIGHT_OS SYS.96: CRT Viewport Shell, Command Bar & Section Declu
       expect(html).toContain('border-bottom:1px solid rgba(0, 240, 255, 0.25)');
     });
 
-    it('contains left developer credentials & blinking green indicator EWU CSE // DHAKA (UTC+6)', () => {
+    it('contains left developer credentials & blinking green indicator EWU CSE • Dhaka (UTC+6)', () => {
       const html = renderToString(React.createElement(RetroCommandBar));
 
       expect(html).toContain('@watchknight');
-      expect(html).toContain('&gt;_');
-      expect(html).toContain('EWU CSE // DHAKA');
+      expect(html).toContain('EWU CSE • Dhaka');
       expect(html).toContain('(UTC+6)');
     });
 
@@ -92,17 +90,17 @@ describe('WATCHKNIGHT_OS SYS.96: CRT Viewport Shell, Command Bar & Section Declu
       const html = renderToString(React.createElement(RetroCommandBar));
 
       expect(html).toContain('01');
-      expect(html).toContain('SYSTEMS');
+      expect(html).toContain('Work');
       expect(html).toContain('02');
-      expect(html).toContain('EXTENSIONS');
+      expect(html).toContain('Extensions');
       expect(html).toContain('03');
-      expect(html).toContain('ARCHITECTURE');
+      expect(html).toContain('Skills');
       expect(html).toContain('04');
-      expect(html).toContain('GITHUB_ROM');
+      expect(html).toContain('GitHub');
       expect(html).toContain('05');
-      expect(html).toContain('TERMINAL');
+      expect(html).toContain('Terminal');
       expect(html).toContain('06');
-      expect(html).toContain('CONTACT');
+      expect(html).toContain('Contact');
     });
 
     it('contains the [RENDER: 3D / PIXEL / CRT] mode toggle and [♫ 8-BIT AUDIO] toggle', () => {

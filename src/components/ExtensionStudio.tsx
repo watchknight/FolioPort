@@ -282,7 +282,7 @@ export const ExtensionStudio: React.FC = () => {
       ? 'chrome-extension://focusguard/popup.html'
       : activeTab === 'shadow-dom'
       ? 'chrome-extension://focusguard/content-script/shadow-hud.inject'
-      : 'chrome-extension://focusguard/service-worker/telemetry.json';
+      : 'chrome-extension://focusguard/service-worker/worker-logs.json';
 
   const selectTab = (tab: StudioTab) => {
     playInteractionTick();
@@ -307,7 +307,7 @@ export const ExtensionStudio: React.FC = () => {
         className="pointer-events-none absolute right-4 top-12 font-mono text-[8vw] font-black text-white/[0.018] select-none uppercase tracking-tighter"
         aria-hidden="true"
       >
-        CHROMIUM//MV3
+        CHROMIUM MV3
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
@@ -317,7 +317,7 @@ export const ExtensionStudio: React.FC = () => {
             <div data-anim className="flex items-center gap-2 mb-3">
               <span className="w-2 h-2 rounded-none bg-[var(--pixel-phosphor-green,#4AF626)] animate-pulse shadow-[0_0_8px_var(--pixel-phosphor-green,#4AF626)]" />
               <span className="font-pixel text-[10px] uppercase tracking-widest text-[var(--tech-cyan-wave,#00F0FF)]">
-                &gt; [02] BROWSER EXTENSION STUDIO // CHROMIUM MANIFEST V3
+                02. Browser Extension Studio
               </span>
             </div>
 
@@ -326,7 +326,7 @@ export const ExtensionStudio: React.FC = () => {
                 data-anim
                 className="font-display uppercase text-[var(--pixel-ivory-text,#F0EFE6)] text-fluid-h2 sm:text-fluid-h1 leading-tight tracking-tight font-extrabold"
               >
-                CHROME EXTENSION <span className="text-[var(--tech-cyan-wave,#00F0FF)]">STUDIO</span> //{' '}
+                CHROME EXTENSION <span className="text-[var(--tech-cyan-wave,#00F0FF)]">STUDIO</span> •{' '}
                 <span className="text-[var(--tech-magenta-crest,#FF2A85)]">FOCUSGUARD</span>
               </h2>
             </div>
@@ -375,7 +375,7 @@ export const ExtensionStudio: React.FC = () => {
                     }`}
                   >
                     <Shield className={`w-3.5 h-3.5 ${isLight ? 'text-[#0052FF]' : 'text-[var(--tech-cyan-wave,#00F0FF)]'}`} />
-                    <span className="font-pixel text-[9px] tracking-tight">FocusGuard // popup.html</span>
+                    <span className="font-pixel text-[9px] tracking-tight">FocusGuard • popup.html</span>
                     <span className="text-[10px] text-[#8E98AA] ml-1">×</span>
                   </button>
 
@@ -413,7 +413,7 @@ export const ExtensionStudio: React.FC = () => {
                     }`}
                   >
                     <Cpu className={`w-3 h-3 ${isLight ? 'text-[#D90452]' : 'text-[var(--tech-magenta-crest,#FF2A85)]'}`} />
-                    <span className="font-pixel text-[9px] tracking-tight">telemetry.json</span>
+                    <span className="font-pixel text-[9px] tracking-tight">worker-logs.json</span>
                     <span className="text-[10px] text-[#8E98AA] ml-1">×</span>
                   </button>
 
@@ -559,7 +559,7 @@ export const ExtensionStudio: React.FC = () => {
                   }`}
                 >
                   <Sliders className="w-3.5 h-3.5 text-[var(--tech-cyan-wave,#00F0FF)]" />
-                  <span>[TAB 1: LIVE POPUP UI &amp; RAM THROTTLER]</span>
+                  <span>Tab 1: Live Popup &amp; RAM Throttler</span>
                 </button>
 
                 <button
@@ -572,7 +572,7 @@ export const ExtensionStudio: React.FC = () => {
                   }`}
                 >
                   <Layers className="w-3.5 h-3.5 text-[var(--pixel-phosphor-green,#4AF626)]" />
-                  <span>[TAB 2: SHADOW DOM INJECTION HUD]</span>
+                  <span>Tab 2: Shadow DOM Injection HUD</span>
                 </button>
 
                 <button
@@ -585,7 +585,7 @@ export const ExtensionStudio: React.FC = () => {
                   }`}
                 >
                   <Cpu className="w-3.5 h-3.5 text-[var(--tech-magenta-crest,#FF2A85)]" />
-                  <span>[TAB 3: MANIFEST V3 SERVICE WORKER TELEMETRY]</span>
+                  <span>Tab 3: Manifest V3 Service Worker Stream</span>
                 </button>
               </div>
 
@@ -605,7 +605,7 @@ export const ExtensionStudio: React.FC = () => {
                       <div className="flex items-center gap-2">
                         <Shield className="w-3.5 h-3.5 text-[var(--tech-cyan-wave,#00F0FF)]" />
                         <span className="font-pixel text-[10px] text-[var(--tech-cyan-wave,#00F0FF)]">
-                          FOCUSGUARD // POPUP_INSPECTOR.SYS
+                          FocusGuard • Popup Inspector
                         </span>
                         <span className="font-pixel text-[8px] px-1.5 py-0.5 bg-black/50 border border-[var(--tech-cyan-wave,#00F0FF)]/30 text-[var(--pixel-phosphor-green,#4AF626)]">
                           MV3
@@ -653,8 +653,8 @@ export const ExtensionStudio: React.FC = () => {
                                   }`}
                                 >
                                   {shieldActive
-                                    ? 'DISTRACTION SHIELD: ENGAGED [ACTIVE]'
-                                    : 'DISTRACTION SHIELD: BYPASS [PAUSED]'}
+                                    ? 'Distraction Shield: Active'
+                                    : 'Distraction Shield: Paused'}
                                 </span>
                               </div>
                               <p className="font-mono text-xs text-[var(--crt-bezel-putty,#D6CFC2)] mt-1 leading-relaxed">
@@ -673,7 +673,7 @@ export const ExtensionStudio: React.FC = () => {
                                 : 'bg-[var(--pixel-amber-gold,#FFCC00)] text-[var(--crt-void-bg,#070814)] border-[var(--pixel-amber-gold,#FFCC00)] font-bold shadow-[0_0_12px_var(--pixel-amber-gold,#FFCC00)]'
                             }`}
                           >
-                            {shieldActive ? '[ ON ]' : '[ OFF ]'}
+                            {shieldActive ? 'On' : 'Off'}
                           </div>
                         </div>
                       </div>
@@ -857,7 +857,7 @@ export const ExtensionStudio: React.FC = () => {
                     <div className="flex items-center gap-2">
                       <Layers className="w-4 h-4 text-[var(--pixel-phosphor-green,#4AF626)]" />
                       <span className="font-pixel text-[10px] text-[var(--pixel-ivory-text,#F0EFE6)]">
-                        CONTENT SCRIPT // SHADOW DOM ISOLATION ENGINE
+                        Content Script • Shadow DOM Engine
                       </span>
                     </div>
 
@@ -874,7 +874,7 @@ export const ExtensionStudio: React.FC = () => {
                             : 'bg-black/50 border-[#8E98AA] text-[#8E98AA]'
                         }`}
                       >
-                        {isHudInjected ? '[ HUD INJECTED ]' : '[ INJECT HUD ]'}
+                        {isHudInjected ? 'HUD Injected' : 'Inject HUD'}
                       </button>
 
                       <button
@@ -899,7 +899,7 @@ export const ExtensionStudio: React.FC = () => {
                     >
                       <div className="text-[var(--tech-cyan-wave,#00F0FF)] font-pixel text-[9px] mb-2 flex items-center gap-1">
                         <Code2 className="w-3.5 h-3.5" />
-                        <span>ISOLATED SHADOW ROOT ARCHITECTURE // ZERO CSS BLEED</span>
+                        <span>Isolated Shadow Root Architecture • Zero CSS Bleed</span>
                       </div>
                       <p className="text-[#8E98AA]">&lt;!-- Active Host Document DOM Tree --&gt;</p>
                       <p className={isLight ? 'text-[#11131A]' : 'text-white'}>&lt;html class=&quot;host-document-with-custom-styles&quot;&gt;</p>
@@ -1066,13 +1066,13 @@ export const ExtensionStudio: React.FC = () => {
                                   backgroundColor: timerMode === 'short-break' ? undefined : 'var(--crt-panel-slate, #131629)',
                                 }}
                               >
-                                5M BREAK
+                                5m Break
                               </button>
                             </div>
 
                             <div className="font-mono text-[9px] text-[#8E98AA] space-y-0.5">
                               <div>Blocked: <strong className="text-[var(--tech-magenta-crest,#FF2A85)]">{distractionsBlockedCount} items</strong></div>
-                              <div>Session: <span className="text-[var(--tech-cyan-wave,#00F0FF)]">DEEP_WORK_04</span></div>
+                              <div>Session: <span className="text-[var(--tech-cyan-wave,#00F0FF)]">Deep Work 4</span></div>
                             </div>
                           </div>
                         </div>
@@ -1088,7 +1088,7 @@ export const ExtensionStudio: React.FC = () => {
                     >
                       <div className="flex items-center gap-1.5 mb-1 text-[var(--tech-cyan-wave,#00F0FF)] font-pixel text-[9px]">
                         <Shield className="w-3 h-3" />
-                        <span>CLOSED SHADOW BOUNDARY</span>
+                        <span>Closed Shadow Boundary</span>
                       </div>
                       <p className="font-mono text-[11px] text-[var(--crt-bezel-putty,#D6CFC2)] leading-relaxed">
                         Injected via <code className="text-[var(--pixel-phosphor-green,#4AF626)]">attachShadow(&#123; mode: &apos;closed&apos; &#125;)</code>. Host JavaScript and aggressive host CSS resets cannot query or penetrate the internal HUD DOM tree.
@@ -1101,7 +1101,7 @@ export const ExtensionStudio: React.FC = () => {
                     >
                       <div className="flex items-center gap-1.5 mb-1 text-[var(--pixel-phosphor-green,#4AF626)] font-pixel text-[9px]">
                         <Zap className="w-3 h-3" />
-                        <span>ZERO-REFLOW RENDERING</span>
+                        <span>Zero-Reflow Rendering</span>
                       </div>
                       <p className="font-mono text-[11px] text-[var(--crt-bezel-putty,#D6CFC2)] leading-relaxed">
                         Positioned in a fixed top-layer compositing plane. Timer ticks and radial SVG animations trigger 0 layout recalculations or style invalidations on the host page.
@@ -1114,7 +1114,7 @@ export const ExtensionStudio: React.FC = () => {
                     >
                       <div className="flex items-center gap-1.5 mb-1 text-[var(--pixel-amber-gold,#FFCC00)] font-pixel text-[9px]">
                         <Activity className="w-3 h-3" />
-                        <span>EVENT PROPAGATION BARRIER</span>
+                        <span>Event Propagation Barrier</span>
                       </div>
                       <p className="font-mono text-[11px] text-[var(--crt-bezel-putty,#D6CFC2)] leading-relaxed">
                         Internal HUD events call <code className="text-[var(--tech-cyan-wave,#00F0FF)]">e.stopPropagation()</code>, preventing hotkey collision with host website keyboard listeners.
@@ -1136,7 +1136,7 @@ export const ExtensionStudio: React.FC = () => {
                       <div className="flex items-center gap-2">
                         <Cpu className="w-4 h-4 text-[var(--tech-magenta-crest,#FF2A85)]" />
                         <span className="font-pixel text-[10px] text-[var(--tech-magenta-crest,#FF2A85)]">
-                          INTERACTIVE EVENT DISPATCHER // SIMULATE CHROMIUM SIGNALS
+                          Interactive Event Dispatcher • Chromium Signals
                         </span>
                       </div>
                       <span className="font-mono text-xs text-[#8E98AA]">
@@ -1158,7 +1158,7 @@ export const ExtensionStudio: React.FC = () => {
                         style={{ backgroundColor: 'var(--crt-phosphor-dark, #0D1512)' }}
                       >
                         <Zap className="w-3 h-3 shrink-0" />
-                        <span>[1] TEST DECLARATIVE BLOCK (0ms)</span>
+                        <span>1. Test Declarative Block (0ms)</span>
                       </button>
 
                       <button
@@ -1168,7 +1168,7 @@ export const ExtensionStudio: React.FC = () => {
                         style={{ backgroundColor: 'var(--crt-phosphor-dark, #0D1512)' }}
                       >
                         <Clock className="w-3 h-3 shrink-0" />
-                        <span>[2] TRIGGER 5-MIN ALARM TICK</span>
+                        <span>2. Trigger 5-Min Alarm</span>
                       </button>
 
                       <button
@@ -1178,7 +1178,7 @@ export const ExtensionStudio: React.FC = () => {
                         style={{ backgroundColor: 'var(--crt-phosphor-dark, #0D1512)' }}
                       >
                         <HardDrive className="w-3 h-3 shrink-0" />
-                        <span>[3] ATOMIC STORAGE UPDATE</span>
+                        <span>3. Atomic Storage Update</span>
                       </button>
                     </div>
                   </div>
@@ -1295,7 +1295,7 @@ export const ExtensionStudio: React.FC = () => {
                       <div className="flex items-center gap-2">
                         <Terminal className="w-3.5 h-3.5 text-[var(--pixel-phosphor-green,#4AF626)]" />
                         <span className="font-pixel text-[8px] text-[var(--pixel-phosphor-green,#4AF626)]">
-                          SERVICE_WORKER // STDOUT TELEMETRY STREAM
+                          Service Worker • Event Stream
                         </span>
                       </div>
                       <button
@@ -1306,7 +1306,7 @@ export const ExtensionStudio: React.FC = () => {
                         }}
                         className="font-mono text-[9px] text-[#8E98AA] hover:text-[var(--tech-magenta-crest,#FF2A85)] transition-colors"
                       >
-                        [CLEAR LOG]
+                        Clear Log
                       </button>
                     </div>
 
@@ -1362,7 +1362,7 @@ export const ExtensionStudio: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-none bg-[var(--tech-cyan-wave,#00F0FF)] shadow-[0_0_8px_var(--tech-cyan-wave,#00F0FF)]" />
                   <span className="font-pixel text-[10px] text-[var(--tech-cyan-wave,#00F0FF)]">
-                    SPEC_SHEET // FOCUSGUARD.SYS
+                    FocusGuard Specifications
                   </span>
                 </div>
                 <div className="flex items-center gap-1">
@@ -1488,8 +1488,7 @@ export const ExtensionStudio: React.FC = () => {
                     className="w-full group flex items-center justify-center gap-2 py-3 px-4 bg-[#0C2430] hover:bg-[var(--tech-cyan-wave,#00F0FF)] border-2 border-[var(--tech-cyan-wave,#00F0FF)] text-[var(--tech-cyan-wave,#00F0FF)] hover:text-[var(--crt-void-bg,#070814)] font-pixel text-[10px] sm:text-[11px] tracking-wider transition-all duration-200 shadow-[0_0_15px_rgba(0,240,255,0.3),2px_2px_0_0_var(--crt-void-bg,#070814)] rounded-none"
                     aria-label="Inspect FocusGuard Repository on GitHub"
                   >
-                    <span>&gt;_</span>
-                    <span>INSPECT FOCUSGUARD REPO ON GITHUB ↗</span>
+                    <span>Inspect FocusGuard on GitHub ↗</span>
                   </MagneticButton>
                   <p className="font-mono text-[10px] text-center text-[#8E98AA] mt-2">
                     Repository: github.com/watchknight/FocusGuard

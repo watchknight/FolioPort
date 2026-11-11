@@ -79,10 +79,10 @@ export const FLAGSHIP_PROJECTS: FlagshipProject[] = [
       'Sustained 60 FPS spatial physics loop across 200+ active nodes with zero layout jitter. Achieved 100% bi-directional Obsidian schema parity with zero-latency local vector queries.',
     hasSandbox: true,
     sandboxType: 'physics',
-    fileCode: '01_MENTAL_DEFRAG.EXE',
+    fileCode: 'Mental Defrag',
     tagline: 'Zero-gravity spatial cognitive workspace',
-    stack: 'VITE // TYPESCRIPT // MATTER.JS // VECTOR EMBEDDINGS // OBSIDIAN CANVAS',
-    status: 'PRODUCTION',
+    stack: 'Vite • TypeScript • Matter.js • Vector Embeddings • Obsidian Canvas',
+    status: 'Production',
     date: '1996-11-04',
     size: '142KB',
   },
@@ -106,15 +106,15 @@ export const FLAGSHIP_PROJECTS: FlagshipProject[] = [
     problem:
       'Modern browser workflows accumulate dozens of inactive tabs that consume gigabytes of memory and degrade workstation performance. Existing tab suspenders break page states and introduce intrusive service worker latency.',
     architecture:
-      'Architected a Chrome Manifest V3 daemon utilizing declarativeNetRequest rules and alarm-driven service workers. Implemented an adaptive background tab throttler that serialized DOM states before shedding memory.',
+      'Engineered a Chrome Manifest V3 daemon utilizing declarativeNetRequest rules and alarm-driven service workers. Implemented an adaptive background tab throttler that serialized DOM states before shedding memory.',
     impact:
       'Reclaimed 58% of dormant browser RAM while restricting background heap overhead to under 12 MB. Maintained instant zero-latency tab hydration without breaking session forms or audio streams.',
     hasSandbox: true,
     sandboxType: 'throttler',
-    fileCode: '02_FOCUSGUARD.EXE',
+    fileCode: 'FocusGuard',
     tagline: 'Contextual distraction blocker and background tab throttler',
-    stack: 'CHROME EXTENSION MV3 // TYPESCRIPT // WEBSOCKETS // REACT',
-    status: 'PRODUCTION',
+    stack: 'Chrome Extension MV3 • TypeScript • WebSockets • React',
+    status: 'Production',
     date: '1996-10-18',
     size: '188KB',
   },
@@ -143,10 +143,10 @@ export const FLAGSHIP_PROJECTS: FlagshipProject[] = [
       'Sustained 120 FPS render pacing with zero garbage-collector allocations during intense combat scenes. Verified sub-1.2 microsecond round-trip IPC latency with zero memory leaks under 24-hour Valgrind stress runs.',
     hasSandbox: true,
     sandboxType: 'laser',
-    fileCode: '03_NEON_VANGUARD_POSIX.EXE',
+    fileCode: 'Neon Vanguard',
     tagline: 'HTML5 2D canvas combat engine & Linux C/C++ POSIX IPC',
-    stack: 'C / C++ // LINUX POSIX IPC // FORK() // HTML5 CANVAS // SHM',
-    status: 'ACTIVE',
+    stack: 'C / C++ • Linux POSIX IPC • fork() • HTML5 Canvas • Shm',
+    status: 'Active',
     date: '1996-08-30',
     size: '312KB',
   },
@@ -170,14 +170,14 @@ export const FLAGSHIP_PROJECTS: FlagshipProject[] = [
     problem:
       'Regional health platforms in Bangladesh struggle with unreliable networks, packet loss, and unencrypted clinical records. Simultaneously, non-Latin localized web apps suffer from bloated fonts and sluggish search latency.',
     architecture:
-      'Architected on Cloud Firestore real-time snapshot listeners with offline IndexedDB caching and AES-256 field encryption. Paired with custom Bengali font glyph subsetting and automated GitHub Actions CI/CD deployment pipelines.',
+      'Engineered on Cloud Firestore real-time snapshot listeners with offline IndexedDB caching and AES-256 field encryption. Paired with custom Bengali font glyph subsetting and automated GitHub Actions CI/CD deployment pipelines.',
     impact:
       'Delivered sub-45ms regional data propagation with a 99.98% production uptime SLA. Maintained 14/14 passing automated CI/CD tests and scored 99/100 on Google Lighthouse performance audits.',
     hasSandbox: false,
-    fileCode: '04_DOCLENS_RANNABANNA.EXE',
+    fileCode: 'DocLensBD',
     tagline: 'Cloud-backed document & healthcare platform',
-    stack: 'REACT // TYPESCRIPT // CLOUD FIRESTORE // FIREBASE AUTH // CI/CD',
-    status: 'VERIFIED',
+    stack: 'React • TypeScript • Cloud Firestore • Firebase Auth • CI/CD',
+    status: 'Verified',
     date: '1996-10-28',
     size: '284KB',
   },
@@ -231,7 +231,7 @@ export const FALLBACK_REPOSITORIES: GitHubRepoItem[] = [
   {
     id: 205,
     name: 'POSHRA',
-    description: 'High-throughput distributed telemetry and component architecture for cyberdeck terminals.',
+    description: 'High-throughput distributed data stream and component architecture for cyberdeck terminals.',
     html_url: 'https://github.com/watchknight/POSHRA',
     stargazers_count: 26,
     language: 'TypeScript',
@@ -541,7 +541,7 @@ const MentalDefragSandbox: React.FC<{
     >
       <div className="flex items-center justify-between text-[8px] sm:text-[9px] font-mono pb-1 border-b" style={{ borderColor: `${mid}40` }}>
         <span className="font-bold" style={{ color: bright }}>
-          &gt; SIMULATION: DRAGGABLE PHYSICS NODES (MATTER.JS // ZERO-GRAVITY AST)
+          Simulation: Draggable Physics Nodes (Matter.js • Zero-Gravity AST)
         </span>
         <button
           type="button"
@@ -549,7 +549,7 @@ const MentalDefragSandbox: React.FC<{
           className="px-2 py-0.5 border text-[7.5px] font-mono cursor-pointer transition-none outline-none focus-visible:outline-dashed"
           style={{ backgroundColor: dim, borderColor: bright, color: bright }}
         >
-          [PULSE FORCE]
+          Pulse Force
         </button>
       </div>
 
@@ -620,7 +620,7 @@ const MentalDefragSandbox: React.FC<{
 
       <div className="flex items-center justify-between text-[7px] sm:text-[7.5px] font-mono" style={{ color: mid }}>
         <span>DRAG NODES TO TEST REVERSIBLE SPRING TENSION</span>
-        <span>STATUS: LOSSLESS OBSIDIAN SYNC // 60 FPS</span>
+        <span>STATUS: LOSSLESS OBSIDIAN SYNC • 60 FPS</span>
       </div>
     </div>
   );
@@ -705,9 +705,9 @@ const FocusGuardSandbox: React.FC<{
       {/* Quick Preset Buttons */}
       <div className="grid grid-cols-3 gap-1.5">
         {[
-          { label: '0% IDLE', pct: 0 },
-          { label: '58% OPTIMIZED', pct: 58 },
-          { label: '100% AGGRESSIVE', pct: 100 },
+          { label: '0% Idle', pct: 0 },
+          { label: '58% Optimized', pct: 58 },
+          { label: '100% Aggressive', pct: 100 },
         ].map((item) => (
           <button
             key={item.pct}
@@ -720,7 +720,7 @@ const FocusGuardSandbox: React.FC<{
                 : { backgroundColor: dim, color: bright, borderColor: `${mid}60` }
             }
           >
-            [{item.label}]
+            {item.label}
           </button>
         ))}
       </div>
@@ -739,9 +739,9 @@ const FocusGuardSandbox: React.FC<{
                 color: isSuspended ? `${bright}80` : bright,
               }}
             >
-              <span>{`TAB_0${i + 1}.DOM`}</span>
+              <span>{`Tab 0${i + 1}`}</span>
               <span className="font-bold">
-                {isSuspended ? '[DISCARDED: 2MB]' : '[ACTIVE: 120MB]'}
+                {isSuspended ? 'Discarded • 2MB' : 'Active • 120MB'}
               </span>
             </div>
           );
@@ -749,8 +749,8 @@ const FocusGuardSandbox: React.FC<{
       </div>
 
       <div className="flex items-center justify-between text-[7px] sm:text-[7.5px] font-mono" style={{ color: mid }}>
-        <span>HEAP: {currentHeapMB} MB / 1,840 MB TOTAL</span>
-        <span>DAEMON WAKELOCKS: 0 (ZERO IDLE CPU)</span>
+        <span>Heap: {currentHeapMB} MB / 1,840 MB Total</span>
+        <span>Daemon Wakelocks: 0 (Zero Idle CPU)</span>
       </div>
     </div>
   );
@@ -854,7 +854,7 @@ const NeonVanguardSandbox: React.FC<{
     const turretX = canvas.width / 2;
     const turretY = canvas.height - 5;
 
-    // Check hit against moving TARGET.EXE drone (centered at targetX, y=40, w=36, h=24)
+    // Check hit against moving target drone (centered at targetX, y=40, w=36, h=24)
     const targetX = targetXRef.current;
     const isHit = Math.abs(clickX - targetX) <= 22 && Math.abs(clickY - 40) <= 16;
 
@@ -991,7 +991,7 @@ const NeonVanguardSandbox: React.FC<{
         ctx.globalAlpha = 1;
       }
 
-      // Draw moving TARGET.EXE drone
+      // Draw moving target drone
       const isTargetFlashing = targetFlashRef.current > 0;
       if (isTargetFlashing) {
         targetFlashRef.current--;
@@ -1014,7 +1014,7 @@ const NeonVanguardSandbox: React.FC<{
 
       ctx.fillStyle = droneColor;
       ctx.font = '8px monospace';
-      ctx.fillText(isTargetFlashing ? '!HIT!' : 'TARGET.EXE', tx - 22, 24);
+      ctx.fillText(isTargetFlashing ? '!HIT!' : 'Target', tx - 20, 24);
 
       // Render kinetic sparks from zero-alloc pool
       const sparks = sparksRef.current;
@@ -1055,10 +1055,10 @@ const NeonVanguardSandbox: React.FC<{
     >
       <div className="flex items-center justify-between text-[8px] sm:text-[9px] font-mono pb-1 border-b" style={{ borderColor: `${mid}40` }}>
         <span className="font-bold" style={{ color: bright }}>
-          &gt; SIMULATION: ZERO-ALLOC LASER TARGET CANVAS (120 FPS // DETERMINISTIC POOL)
+          Simulation: Zero-Alloc Laser Target Canvas (120 FPS • Deterministic Pool)
         </span>
         <span className="font-mono text-[8px] font-bold" style={{ color: bright }}>
-          TARGETS HIT: {neutralizedCount}
+          Targets Hit: {neutralizedCount}
         </span>
       </div>
 
@@ -1073,8 +1073,8 @@ const NeonVanguardSandbox: React.FC<{
       />
 
       <div className="flex items-center justify-between text-[7px] sm:text-[7.5px] font-mono" style={{ color: mid }}>
-        <span>CLICK / TAP CANVAS TO DISPATCH INSTANT RAYCAST LASER</span>
-        <span>ZERO RUNTIME HEAP ALLOCATIONS // &lt;1.2µs POSIX</span>
+        <span>Click or tap canvas to fire instant raycast laser</span>
+        <span>Zero runtime heap allocations • &lt;1.2µs POSIX</span>
       </div>
     </div>
   );
@@ -1252,7 +1252,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
               className="font-mono text-xs hover:underline self-start sm:self-auto outline-none focus-visible:outline-dashed"
               style={{ color: bright }}
             >
-              [All 14 Repos on GitHub @watchknight]
+              All 14 Repos on GitHub @watchknight
             </a>
           </header>
 
@@ -1325,7 +1325,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
                     </div>
                   </div>
 
-                  {/* ELEMENT 4: Bottom action row with [Read Case Study], [Live Demo], and [GitHub] */}
+                  {/* ELEMENT 4: Bottom action row with Read Case Study, Live Demo, and GitHub */}
                   <div
                     className="flex items-center justify-between gap-2 pt-3 mt-4 border-t flex-wrap"
                     style={{ borderColor: `${mid}40` }}
@@ -1342,7 +1342,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
                         borderColor: bright,
                       }}
                     >
-                      [Read Case Study]
+                      Read Case Study
                     </button>
 
                     <div className="flex items-center gap-2 font-mono text-xs">
@@ -1354,7 +1354,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
                         className="px-2 py-1 border hover:underline outline-none focus-visible:outline-dashed"
                         style={{ borderColor: mid, color: bright }}
                       >
-                        [Live Demo]
+                        Live Demo
                       </a>
 
                       <a
@@ -1365,7 +1365,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
                         className="px-2 py-1 border hover:underline outline-none focus-visible:outline-dashed"
                         style={{ borderColor: mid, color: bright }}
                       >
-                        [GitHub]
+                        GitHub
                       </a>
                     </div>
                   </div>
@@ -1400,8 +1400,8 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
             >
               <span>
                 {isAccordionOpen
-                  ? '[- Hide Additional Open-Source Labs & C/C++ Repos]'
-                  : '[+ View Additional Open-Source Labs & C/C++ Repos (8)]'}
+                  ? '- Hide Additional Labs'
+                  : '+ View Additional Labs (8)'}
               </span>
               <span className="text-[10px]" style={{ color: mid }}>
                 {isAccordionOpen ? 'COLLAPSE' : 'EXPAND TABLE'}
@@ -1442,7 +1442,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
                         {repo.name}
                       </span>
                       <span className="col-span-3 sm:col-span-2 truncate" style={{ color: `${bright}bb` }}>
-                        [{repo.language || 'Code'}]
+                        {repo.language || 'Code'}
                       </span>
                       <span className="hidden sm:inline sm:col-span-4 truncate text-[7.5px]" style={{ color: `${bright}99` }}>
                         {repo.description || 'Public GitHub laboratory repository.'}
@@ -1459,7 +1459,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
                           className="hover:underline font-bold px-1 py-0.5 border inline-block"
                           style={{ borderColor: `${mid}60`, color: bright }}
                         >
-                          [GitHub ↗]
+                          GitHub ↗
                         </a>
                       </div>
                     </div>
@@ -1476,33 +1476,33 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
             style={{ backgroundColor: `${dim}20`, borderColor: `${mid}50` }}
           >
             <div className="flex items-center justify-between text-[7.5px] sm:text-[8px] font-bold uppercase pb-0.5 border-b" style={{ borderColor: `${mid}40` }}>
-              <span>&gt; SYSTEM SUBSYSTEMS &amp; ARCHITECTURAL LABS</span>
-              <span style={{ color: mid }}>ONLINE ROMS</span>
+              <span>Architecture Labs</span>
+              <span style={{ color: mid }}>Online Labs</span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[7px] sm:text-[7.5px] font-mono">
               <div className="p-1 border" style={{ borderColor: `${mid}40`, backgroundColor: `${voidCol}60` }}>
-                <div className="font-bold" style={{ color: bright }}>1. HYPERDECK 3D PARTICLE ENGINE</div>
+                <div className="font-bold" style={{ color: bright }}>1. Hyperdeck 3D Particle Engine</div>
                 <div style={{ color: `${bright}bb` }}>Volumetric wave synthesizer with 14,400+ points displaced on GPU via GLSL vertex shaders.</div>
-                <div className="text-[6.5px]" style={{ color: mid }}>STACK: THREE.JS // GLSL // WEBGL 2.0 // GSAP</div>
+                <div className="text-[6.5px]" style={{ color: mid }}>Three.js • GLSL • WebGL 2.0 • GSAP</div>
               </div>
 
               <div className="p-1 border" style={{ borderColor: `${mid}40`, backgroundColor: `${voidCol}60` }}>
-                <div className="font-bold" style={{ color: bright }}>2. RETRO 90S OS WINDOW MANAGER</div>
+                <div className="font-bold" style={{ color: bright }}>2. Retro 90s OS Window Manager</div>
                 <div style={{ color: `${bright}bb` }}>Authentic cyberdeck desktop window manager with stepped transitions and phosphor optics.</div>
-                <div className="text-[6.5px]" style={{ color: mid }}>STACK: REACT 18 // TYPESCRIPT // TAILWINDCSS</div>
+                <div className="text-[6.5px]" style={{ color: mid }}>React 18 • TypeScript • TailwindCSS</div>
               </div>
 
               <div className="p-1 border" style={{ borderColor: `${mid}40`, backgroundColor: `${voidCol}60` }}>
-                <div className="font-bold" style={{ color: bright }}>3. PROCEDURAL CHIPTUNE AUDIO ENGINE</div>
+                <div className="font-bold" style={{ color: bright }}>3. Procedural Chiptune Audio Engine</div>
                 <div style={{ color: `${bright}bb` }}>Native Web Audio API 4-channel retro chiptune synthesizer and 3D spatial panner. Zero external audio files.</div>
-                <div className="text-[6.5px]" style={{ color: mid }}>STACK: WEB AUDIO API // ANALYSERNODE // GSAP TICKER</div>
+                <div className="text-[6.5px]" style={{ color: mid }}>Web Audio API • AnalyserNode • GSAP Ticker</div>
               </div>
 
               <div className="p-1 border" style={{ borderColor: `${mid}40`, backgroundColor: `${voidCol}60` }}>
-                <div className="font-bold" style={{ color: bright }}>4. DEDICATED BROWSER EXTENSION STUDIO</div>
+                <div className="font-bold" style={{ color: bright }}>4. Dedicated Browser Extension Studio</div>
                 <div style={{ color: `${bright}bb` }}>Keyboard-first browser productivity suite with real-time DOM inspection and secure background service workers.</div>
-                <div className="text-[6.5px]" style={{ color: mid }}>STACK: MANIFEST V3 // WEBSOCKETS // TYPESCRIPT</div>
+                <div className="text-[6.5px]" style={{ color: mid }}>Manifest V3 • WebSockets • TypeScript</div>
               </div>
             </div>
           </section>
@@ -1515,7 +1515,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
           data-testid="case-study-detail-view"
           className="flex flex-col gap-4 font-pixel select-text"
         >
-          {/* TOP NAVIGATION: [Back to All 4 Projects] */}
+          {/* TOP NAVIGATION: Back to All Projects */}
           <div className="flex items-center justify-between pb-2 border-b" style={{ borderColor: mid }}>
             <button
               type="button"
@@ -1528,14 +1528,14 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
                 color: bright,
               }}
             >
-              [Back to All 4 Projects]
+              Back to All Projects
             </button>
             <span className="font-mono text-xs" style={{ color: mid }}>
-              CASE STUDY READER // {selectedProject.index} OF 04
+              Case Study • {selectedProject.index} of 04
             </span>
           </div>
 
-          {/* PROJECT HEADER: Title, Role, Year, [Live Demo], and [GitHub Source] */}
+          {/* PROJECT HEADER: Title, Role, Year, Live Demo, and GitHub Source */}
           <div
             className="p-3 sm:p-4 border flex flex-col gap-3"
             style={{ backgroundColor: `${dim}35`, borderColor: mid }}
@@ -1543,7 +1543,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b pb-2" style={{ borderColor: `${mid}40` }}>
               <div>
                 <span className="font-mono text-[9px] font-bold" style={{ color: mid }}>
-                  {selectedProject.index} // {selectedProject.category}
+                  {selectedProject.index} • {selectedProject.category}
                 </span>
                 <h1 className="font-bold text-base sm:text-xl tracking-wide mt-0.5" style={{ color: bright }}>
                   {selectedProject.title}
@@ -1559,7 +1559,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
                   className="px-3 py-1.5 border font-bold hover:underline outline-none focus-visible:outline-dashed"
                   style={{ backgroundColor: bright, color: voidCol, borderColor: bright }}
                 >
-                  [Live Demo]
+                  Live Demo
                 </a>
                 <a
                   href={selectedProject.sourceUrl}
@@ -1569,7 +1569,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
                   className="px-3 py-1.5 border font-bold hover:underline outline-none focus-visible:outline-dashed"
                   style={{ borderColor: bright, color: bright }}
                 >
-                  [GitHub Source]
+                  GitHub Source
                 </a>
               </div>
             </div>
@@ -1602,12 +1602,12 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
             ))}
           </div>
 
-          {/* CONCISE 3-PART BREAKDOWN (THE PROBLEM, THE ARCHITECTURE, THE ENGINEERING IMPACT) */}
+          {/* CONCISE 3-PART BREAKDOWN (Problem, How It Works, Key Results) */}
           <div className="flex flex-col gap-3">
-            {/* 1. THE PROBLEM */}
+            {/* 1. Problem */}
             <div className="p-3.5 border flex flex-col gap-1.5" style={{ backgroundColor: `${dim}20`, borderColor: `${mid}60` }}>
               <div className="font-pixel text-xs font-bold uppercase tracking-wide" style={{ color: bright }}>
-                [THE PROBLEM]
+                Problem
               </div>
               <p
                 className="font-body text-xs sm:text-[14px] leading-relaxed"
@@ -1620,10 +1620,10 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
               </p>
             </div>
 
-            {/* 2. THE ARCHITECTURE */}
+            {/* 2. How It Works */}
             <div className="p-3.5 border flex flex-col gap-1.5" style={{ backgroundColor: `${dim}20`, borderColor: `${mid}60` }}>
               <div className="font-pixel text-xs font-bold uppercase tracking-wide" style={{ color: bright }}>
-                [THE ARCHITECTURE]
+                How It Works
               </div>
               <p
                 className="font-body text-xs sm:text-[14px] leading-relaxed"
@@ -1636,10 +1636,10 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
               </p>
             </div>
 
-            {/* 3. THE ENGINEERING IMPACT */}
+            {/* 3. Key Results */}
             <div className="p-3.5 border flex flex-col gap-1.5" style={{ backgroundColor: `${dim}20`, borderColor: `${mid}60` }}>
               <div className="font-pixel text-xs font-bold uppercase tracking-wide" style={{ color: bright }}>
-                [THE ENGINEERING IMPACT]
+                Key Results
               </div>
               <p
                 className="font-body text-xs sm:text-[14px] leading-relaxed"
@@ -1671,8 +1671,8 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
                 }}
               >
                 {isSandboxOpen
-                  ? '[Close Interactive Sandbox]'
-                  : '[Launch Interactive Demo Sandbox]'}
+                  ? 'Close Interactive Demo'
+                  : 'Launch Interactive Demo'}
               </button>
 
               {isSandboxOpen && (

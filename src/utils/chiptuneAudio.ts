@@ -1,5 +1,5 @@
 /**
- * WATCHKNIGHT_OS // SYS.96
+ * WATCHKNIGHT_OS
  * Zero-Asset 4-Channel 8-Bit Chiptune & Retro SFX Synthesizer
  * 
  * Pure Web Audio API procedural sound engine with zero external audio files.

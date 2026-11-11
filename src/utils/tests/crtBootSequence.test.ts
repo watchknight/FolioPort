@@ -28,21 +28,20 @@ describe('FAST 90S CRT POWER-ON & BIOS BOOT SEQUENCE (src/components/CRTBootSequ
     expect(html).toContain('crt-center-flare');
   });
 
-  it('renders 90s BIOS memory check with EWU-CSE ROM BIOS v1.96, CPU: WATCHKNIGHT-DX4, 640K OK, and LOADING PORTFOLIO.SYS...', () => {
+  it('renders 90s BIOS memory check with East West University, 640K Base Memory OK, and Loading Portfolio...', () => {
     const html = renderToString(React.createElement(CRTBootSequence));
 
     expect(html).toContain('data-testid="crt-bios-text"');
-    expect(html).toContain('EWU-CSE ROM BIOS v1.96');
-    expect(html).toContain('CPU: WATCHKNIGHT-DX4');
-    expect(html).toContain('640K OK');
-    expect(html).toContain('LOADING PORTFOLIO.SYS...');
+    expect(html).toContain('East West University');
+    expect(html).toContain('640K Base Memory OK');
+    expect(html).toContain('Loading Portfolio...');
   });
 
-  it('provides instant [PRESS ANY KEY OR CLICK TO SKIP] bypass button and banner with touch target >= 44px', () => {
+  it('provides instant Press any key or click to skip bypass button and banner with touch target >= 44px', () => {
     const html = renderToString(React.createElement(CRTBootSequence));
 
     expect(html).toContain('data-testid="crt-boot-skip-btn"');
-    expect(html).toContain('[PRESS ANY KEY OR CLICK TO SKIP]');
+    expect(html).toContain('Press any key or click to skip');
     expect(html).toContain('min-h-[44px]');
   });
 

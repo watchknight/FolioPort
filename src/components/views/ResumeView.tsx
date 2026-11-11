@@ -47,24 +47,24 @@ export function processCliCommand(cmdRaw: string): CliCommandResponse | null {
         'Abdur Rahman Moayed (@watchknight)',
         'B.Sc. in Computer Science & Engineering @ East West University (EWU), Dhaka',
         'Systems & Full-Stack Engineer | Coordinates: 23.7644° N, 90.4252° E (UTC+6)',
-        'Email: moayed.cse@gmail.com | Portfolio: WATCHKNIGHT_OS SYS.96',
+        'Email: moayed.cse@gmail.com | Portfolio: Abdur Rahman Moayed',
       ];
       break;
 
     case 'skills':
       response = [
-        '[Systems & Core CSE]: C, C++, Ubuntu Linux, POSIX Shared Memory & IPC, Bash, Valgrind, GDB',
-        '[Frontend & Web]:     TypeScript, React 18, Next.js, Tailwind CSS, HTML5 Canvas, GSAP',
-        '[Backend & Cloud]:    Node.js, Express, PostgreSQL, MongoDB, Cloud Firestore, Docker',
+        'Systems & Core CSE: C, C++, Ubuntu Linux, POSIX Shared Memory & IPC, Bash, Valgrind, GDB',
+        'Frontend & Web:     TypeScript, React 18, Next.js, Tailwind CSS, HTML5 Canvas, GSAP',
+        'Backend & Cloud:    Node.js, Express, PostgreSQL, MongoDB, Cloud Firestore, Docker',
       ];
       break;
 
     case 'projects':
       response = [
-        '01. Mental Defrag        — Zero-gravity spatial cognitive workspace (Obsidian AST / WebGL)',
-        '02. FocusGuard           — High-efficiency distraction interceptor (Manifest V3 / React)',
-        '03. Neon Vanguard & POSIX— Real-time deterministic IPC arcade engine (C / POSIX SHM)',
-        '04. DocLensBD            — Bilingual clinical transcription system (Next.js / Cloud Firestore)',
+        '01. Mental Defrag • Zero-gravity spatial cognitive workspace (Obsidian AST / WebGL)',
+        '02. FocusGuard • High-efficiency distraction interceptor (Manifest V3 / React)',
+        '03. Neon Vanguard & POSIX • Real-time deterministic IPC arcade engine (C / POSIX SHM)',
+        '04. DocLensBD • Bilingual clinical transcription system (Next.js / Cloud Firestore)',
       ];
       break;
 
@@ -91,26 +91,26 @@ export function processCliCommand(cmdRaw: string): CliCommandResponse | null {
     case 'dir':
       response = [
         '-rw-r--r-- 1 moayed ewu  482K resume.pdf',
-        '-rw-r--r-- 1 moayed ewu  2.4K about_me.txt',
+        '-rw-r--r-- 1 moayed ewu  2.4K about-me.md',
         '-rwxr-xr-x 1 moayed ewu   512 hire_moayed.sh',
-        '-rw-r--r-- 1 moayed ewu  1.8K projects.log',
+        '-rw-r--r-- 1 moayed ewu  1.8K projects.md',
       ];
       break;
 
     case 'cat resume':
     case 'cat resume.pdf':
-    case 'cat resume.txt':
       response = [
-        'Abdur Rahman Moayed — B.Sc. in CSE @ East West University, Dhaka (2022–2026)',
-        'Click the [Download Resume (PDF)] action button above for the full PDF dossier.',
+        'Abdur Rahman Moayed • B.Sc. in CSE @ East West University, Dhaka (2022–2026)',
+        'Click the Download Resume (PDF) action button above for the full PDF.',
       ];
       break;
 
     case 'cat about':
-    case 'cat about_me.txt':
+    case 'cat about-me':
+    case 'cat about-me.md':
       response = [
-        'Abdur Rahman Moayed (@watchknight) — Systems & Full-Stack Engineer.',
-        'View the [2] ABOUT & SKILLS tab for the full biography and capability grid.',
+        'Abdur Rahman Moayed (@watchknight) • Systems & Full-Stack Engineer.',
+        'View the 2. About tab for the full biography and capability grid.',
       ];
       break;
 
@@ -326,12 +326,12 @@ export const ResumeView: React.FC<ResumeViewProps> = ({ palette }) => {
         className="pb-1 border-b flex items-center justify-between text-[9px] sm:text-[10px] uppercase font-bold tracking-wider"
         style={{ borderColor: mid, color: bright }}
       >
-        <span>=== [3] RESUME // RESUME_CV.DOC ===</span>
+        <span>3. Resume &amp; Contact</span>
         <span
           className="text-[7.5px] px-1 py-0.2 border"
           style={{ backgroundColor: dim, borderColor: mid, color: bright }}
         >
-          DOSSIER_v4.96
+          Resume
         </span>
       </div>
 
@@ -346,19 +346,19 @@ export const ResumeView: React.FC<ResumeViewProps> = ({ palette }) => {
           className="flex items-center justify-between text-[7.5px] sm:text-[8px] font-bold uppercase pb-1 border-b"
           style={{ borderColor: `${mid}50`, color: bright }}
         >
-          <span>&gt; DIRECT ACTIONS // ZERO-FRICTION CONTACT</span>
-          <span className="font-mono text-[7px]" style={{ color: mid }}>PRIMARY_DISPATCH</span>
+          <span>Get in Touch</span>
+          <span className="font-mono text-[7px]" style={{ color: mid }}>Contact</span>
         </div>
 
         {/* Tactile Action Buttons Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-          {/* Button 1: [Download Resume (PDF)] */}
+          {/* Button 1: Download Resume (PDF) */}
           <a
             href="/resume.pdf"
             download="Abdur_Rahman_Moayed_Resume.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            title="[↓ DOWNLOAD RESUME.PDF]"
+            title="Download Resume (PDF)"
             data-testid="retro-resume-download-btn"
             onClick={handleStartDownload}
             className="min-h-[44px] px-3 py-2 font-mono font-bold text-[11px] sm:text-[12px] border-2 uppercase cursor-pointer flex items-center justify-center gap-1.5 transition-none active:translate-x-[1px] active:translate-y-[1px] outline-none focus-visible:outline-dashed focus-visible:outline-2"
@@ -369,13 +369,13 @@ export const ResumeView: React.FC<ResumeViewProps> = ({ palette }) => {
               boxShadow: `2px 2px 0px 0px ${voidCol}`,
             }}
           >
-            <span>[Download Resume (PDF)]</span>
+            <span>Download Resume (PDF)</span>
           </a>
 
-          {/* Button 2: [Copy Email Address] */}
+          {/* Button 2: Copy Email Address */}
           <button
             type="button"
-            title="[COPY_EMAIL.EXE]"
+            title="Copy Email Address"
             data-testid="retro-resume-copy-email-btn"
             onClick={handleCopyEmail}
             className="min-h-[44px] px-3 py-2 font-mono font-bold text-[11px] sm:text-[12px] border-2 uppercase cursor-pointer flex items-center justify-center gap-1.5 transition-none active:translate-x-[1px] active:translate-y-[1px] outline-none focus-visible:outline-dashed focus-visible:outline-2"
@@ -386,10 +386,10 @@ export const ResumeView: React.FC<ResumeViewProps> = ({ palette }) => {
               boxShadow: `2px 2px 0px 0px ${voidCol}`,
             }}
           >
-            <span>{isEmailCopied ? '[✓ Copied to Clipboard!]' : '[Copy Email Address]'}</span>
+            <span>{isEmailCopied ? 'Copied to Clipboard!' : 'Copy Email Address'}</span>
           </button>
 
-          {/* Button 3: [GitHub: @watchknight] plus [LinkedIn] */}
+          {/* Button 3: GitHub: @watchknight plus LinkedIn */}
           <div className="grid grid-cols-2 gap-2">
             <a
               href="https://github.com/watchknight"
@@ -405,7 +405,7 @@ export const ResumeView: React.FC<ResumeViewProps> = ({ palette }) => {
                 boxShadow: `2px 2px 0px 0px ${voidCol}`,
               }}
             >
-              <span>[GitHub: @watchknight]</span>
+              <span>GitHub: @watchknight</span>
             </a>
 
             <a
@@ -422,7 +422,7 @@ export const ResumeView: React.FC<ResumeViewProps> = ({ palette }) => {
                 boxShadow: `2px 2px 0px 0px ${voidCol}`,
               }}
             >
-              <span>[LinkedIn]</span>
+              <span>LinkedIn</span>
             </a>
           </div>
         </div>
@@ -439,8 +439,8 @@ export const ResumeView: React.FC<ResumeViewProps> = ({ palette }) => {
               boxShadow: `2px 2px 0px 0px ${voidCol}`,
             }}
           >
-            <span>[Copied to Clipboard!] moayed.cse@gmail.com</span>
-            <span className="text-[7.5px] uppercase font-mono">[READY TO PASTE]</span>
+            <span>Copied to Clipboard: moayed.cse@gmail.com</span>
+            <span className="text-[7.5px] uppercase font-mono">Ready to paste</span>
           </div>
         )}
 
@@ -483,8 +483,8 @@ export const ResumeView: React.FC<ResumeViewProps> = ({ palette }) => {
           className="flex items-center justify-between border-b pb-1 font-pixel text-[8.5px] sm:text-[9.5px] font-bold uppercase"
           style={{ borderColor: `${mid}60`, color: bright }}
         >
-          <span>ACADEMIC PROFILE // ACADEMIC LEDGER</span>
-          <span className="font-mono text-[8px]" style={{ color: mid }}>RECORD_ID #EWU-CSE-2026</span>
+          <span>Education</span>
+          <span className="font-mono text-[8px]" style={{ color: mid }}>East West University</span>
         </div>
 
         <div
@@ -513,7 +513,7 @@ export const ResumeView: React.FC<ResumeViewProps> = ({ palette }) => {
         </div>
       </div>
 
-      {/* 4. TECHNICAL MATRIX (CATEGORIZED MONOCHROME PIXEL TABLE) */}
+      {/* 4. SKILLS (CATEGORIZED MONOCHROME PIXEL TABLE) */}
       <div
         className="p-3 sm:p-3.5 border flex flex-col gap-2"
         style={{ backgroundColor: `${dim}40`, borderColor: mid }}
@@ -522,8 +522,8 @@ export const ResumeView: React.FC<ResumeViewProps> = ({ palette }) => {
           className="flex items-center justify-between border-b pb-1 font-pixel text-[8.5px] sm:text-[9.5px] font-bold uppercase"
           style={{ borderColor: `${mid}60`, color: bright }}
         >
-          <span>TECHNICAL SKILLS BREAKDOWN // TECHNICAL MATRIX</span>
-          <span className="font-mono text-[8px]" style={{ color: mid }}>BYTECODE MATRIX</span>
+          <span>Skills</span>
+          <span className="font-mono text-[8px]" style={{ color: mid }}>Technical Stack</span>
         </div>
 
         {/* Retro Pixel Table */}
@@ -534,7 +534,7 @@ export const ResumeView: React.FC<ResumeViewProps> = ({ palette }) => {
               className="sm:w-44 p-2 font-bold uppercase shrink-0 border-b sm:border-b-0 sm:border-r font-mono"
               style={{ backgroundColor: `${dim}60`, borderColor: `${mid}40`, color: bright }}
             >
-              LANGUAGES
+              Languages
             </div>
             <div className="p-2 flex-1 font-mono" style={{ backgroundColor: `${voidCol}60`, color: `${bright}dd` }}>
               C, C++, TypeScript, JavaScript, Python, Go, Rust, SQL, Bash (Linux)
@@ -547,7 +547,7 @@ export const ResumeView: React.FC<ResumeViewProps> = ({ palette }) => {
               className="sm:w-44 p-2 font-bold uppercase shrink-0 border-b sm:border-b-0 sm:border-r font-mono"
               style={{ backgroundColor: `${dim}60`, borderColor: `${mid}40`, color: bright }}
             >
-              FRAMEWORKS &amp; LIBS
+              Frameworks &amp; Libs
             </div>
             <div className="p-2 flex-1 font-mono" style={{ backgroundColor: `${voidCol}60`, color: `${bright}dd` }}>
               React 18, Next.js, Vite, Tailwind CSS, Three.js, GSAP ScrollTrigger
@@ -560,7 +560,7 @@ export const ResumeView: React.FC<ResumeViewProps> = ({ palette }) => {
               className="sm:w-44 p-2 font-bold uppercase shrink-0 border-b sm:border-b-0 sm:border-r font-mono"
               style={{ backgroundColor: `${dim}60`, borderColor: `${mid}40`, color: bright }}
             >
-              DATABASES &amp; CLOUD
+              Databases &amp; Cloud
             </div>
             <div className="p-2 flex-1 font-mono" style={{ backgroundColor: `${voidCol}60`, color: `${bright}dd` }}>
               PostgreSQL, MongoDB, Cloud Firestore, Firebase Auth, IndexedDB, Redis
@@ -573,7 +573,7 @@ export const ResumeView: React.FC<ResumeViewProps> = ({ palette }) => {
               className="sm:w-44 p-2 font-bold uppercase shrink-0 border-b sm:border-b-0 sm:border-r font-mono"
               style={{ backgroundColor: `${dim}60`, borderColor: `${mid}40`, color: bright }}
             >
-              LINUX &amp; TOOLING
+              Linux &amp; Tooling
             </div>
             <div className="p-2 flex-1 font-mono" style={{ backgroundColor: `${voidCol}60`, color: `${bright}dd` }}>
               Ubuntu Linux, POSIX Shared Memory &amp; Pipes, Git, GitHub Actions CI/CD
@@ -582,7 +582,7 @@ export const ResumeView: React.FC<ResumeViewProps> = ({ palette }) => {
         </div>
       </div>
 
-      {/* 5. INTERACTIVE LINUX CLI TOGGLE & 6-LINE TERMINAL (Hidden by default) */}
+      {/* 5. INTERACTIVE LINUX CLI TOGGLE & TERMINAL (Hidden by default) */}
       <div className="pt-1 flex flex-col gap-2">
         {/* Toggle Button */}
         <button
@@ -602,13 +602,13 @@ export const ResumeView: React.FC<ResumeViewProps> = ({ palette }) => {
             color: bright,
           }}
         >
-          <span className="font-bold">[Launch Interactive Linux CLI (moayed@ewu-cse)]</span>
+          <span className="font-bold">Launch Interactive Linux CLI (moayed@ewu-cse)</span>
           <span className="text-[7.5px] font-mono" style={{ color: mid }}>
-            {isCliOpen ? '[− HIDE CLI]' : '[+ EXPAND CLI]'}
+            {isCliOpen ? '− Hide CLI' : '+ Expand CLI'}
           </span>
         </button>
 
-        {/* 6-Line Self-Contained Interactive Command Prompt (Visible only when expanded) */}
+        {/* Self-Contained Interactive Command Prompt (Visible only when expanded) */}
         {isCliOpen && (
           <div
             data-testid="interactive-linux-cli"
@@ -632,7 +632,7 @@ export const ResumeView: React.FC<ResumeViewProps> = ({ palette }) => {
               className="flex items-center justify-between pb-1 border-b text-[7.5px] sm:text-[8px]"
               style={{ borderColor: `${mid}50`, color: mid }}
             >
-              <span>moayed@ewu-cse:~ (bash 5.2.21) [6-LINE TTY]</span>
+              <span>moayed@ewu-cse:~ (bash 5.2.21)</span>
               <button
                 type="button"
                 onClick={() => {
@@ -642,7 +642,7 @@ export const ResumeView: React.FC<ResumeViewProps> = ({ palette }) => {
                 className="cursor-pointer hover:underline uppercase transition-none"
                 style={{ color: bright }}
               >
-                ESC / [X] CLOSE
+                Esc / Close
               </button>
             </div>
 
@@ -683,7 +683,7 @@ export const ResumeView: React.FC<ResumeViewProps> = ({ palette }) => {
                     color: bright,
                   }}
                 >
-                  [{cmd}]
+                  {cmd}
                 </button>
               ))}
             </div>
@@ -714,7 +714,7 @@ export const ResumeView: React.FC<ResumeViewProps> = ({ palette }) => {
                   borderColor: bright,
                 }}
               >
-                ENTER ↵
+                Enter ↵
               </button>
             </form>
           </div>

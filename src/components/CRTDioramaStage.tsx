@@ -386,7 +386,7 @@ const CRTDioramaStageInner: React.FC<CRTDioramaStageProps> = ({
                 animationPlayState: os.isBooting ? 'paused' : 'running',
               }}
             >
-              &gt; WELCOME TO MOAYED&apos;S{'\n'}PORTFOLIO <span
+              WELCOME TO MOAYED&apos;S{'\n'}PORTFOLIO <span
                 data-testid="crt-blinking-cursor"
                 className="crt-block-cursor"
                 style={{ color: palette.bright }}
@@ -416,9 +416,9 @@ const CRTDioramaStageInner: React.FC<CRTDioramaStageProps> = ({
           data-testid="crt-telemetry-readout"
           className="text-right font-mono text-[8px] sm:text-[9px] md:text-[10px] tracking-wider uppercase shrink-0 pt-1"
           style={{ color: palette.mid }}
-          aria-label="DHAKA UTC+6 // ONLINE"
+          aria-label="Dhaka • UTC+6"
         >
-          <span>{dhakaTime ? `DHAKA ${dhakaTime} UTC+6 // ONLINE` : 'DHAKA UTC+6 // ONLINE'}</span>
+          <span>{dhakaTime ? `Dhaka • ${dhakaTime} (UTC+6)` : 'Dhaka • UTC+6'}</span>
         </div>
       </header>
 
@@ -451,7 +451,7 @@ const CRTDioramaStageInner: React.FC<CRTDioramaStageProps> = ({
                     boxShadow: `2px 2px 0 0 ${palette.void}`,
                   }}
                 >
-                  Hi! Press [1], [2], or [3] below
+                  Hi! Press 1, 2, or 3 below
                 </div>
                 {/* Stepped Pixel Speech Bubble Pointer Notch */}
                 <div className="ml-6 sm:ml-8 flex flex-col" aria-hidden="true">
@@ -694,7 +694,7 @@ const CRTDioramaStageInner: React.FC<CRTDioramaStageProps> = ({
                     style={{ backgroundColor: palette.bright }}
                     aria-hidden="true"
                   />
-                  <span data-testid="ibm-hover-tooltip">Click: Open Selected Work [1]</span>
+                  <span data-testid="ibm-hover-tooltip">Click: Open Selected Work</span>
                 </div>
 
                 <div
@@ -848,7 +848,7 @@ const CRTDioramaStageInner: React.FC<CRTDioramaStageProps> = ({
             <RetroCommandMenu palette={palette} />
           </div>
 
-          {/* Bottom-Right 90s OS Preview Window (QUICK_VIEW.SYS Overview Mode) */}
+          {/* Bottom-Right 90s OS Preview Window */}
           <div className="w-full flex flex-col justify-start">
             {!os.isWindowExpanded ? (
               <RetroOSWindow palette={palette} isClosed={os.wasWindowClosed} />
@@ -857,7 +857,7 @@ const CRTDioramaStageInner: React.FC<CRTDioramaStageProps> = ({
                 className="w-full h-full border-2 border-dashed border-[#6e7d62]/40 min-h-[170px] flex items-center justify-center text-[8px] uppercase tracking-wider text-[#6e7d62]/60 select-none"
                 aria-hidden="true"
               >
-                [SYS.96 // WINDOW EXPANDED]
+                Window Expanded
               </div>
             )}
           </div>

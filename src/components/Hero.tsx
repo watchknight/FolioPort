@@ -46,26 +46,26 @@ export interface HeroProps {
 const BRACKET_MENU_ITEMS: BracketMenuItem[] = [
   {
     num: '1',
-    title: 'ABOUT ME & KERNEL ARCHITECTURE',
-    desc: 'Philosophy & RPG Skill Matrix',
+    title: 'About & Systems',
+    desc: 'Engineering background & skills',
     targetId: '#systems',
   },
   {
     num: '2',
-    title: 'MY PROJECTS & 3D SHADER DECK',
-    desc: 'Flagship Case Studies',
+    title: 'Selected Work',
+    desc: 'Flagship projects & 3D demos',
     targetId: '#work',
   },
   {
     num: '3',
-    title: 'GITHUB_ROM & UBUNTU TERMINAL',
-    desc: 'GitHub Lab & Terminal',
+    title: 'GitHub & Terminal',
+    desc: 'Open-source repositories & shell',
     targetId: '#terminal',
   },
   {
     num: '4',
-    title: 'RESUME.PDF & UPLINK DISPATCH',
-    desc: 'Resume (PDF) & Dispatch Uplink',
+    title: 'Resume & Contact',
+    desc: 'Resume PDF & contact details',
     targetId: '#contact',
   },
 ];
@@ -502,8 +502,7 @@ export const Hero: React.FC<HeroProps> = ({ showCanvas = true }) => {
           <div className="pointer-events-auto my-auto py-0.5">
             {/* Top Prompt styled in 'Press Start 2P' */}
             <div className={`hero-prompt-bar font-pixel text-[9px] sm:text-[10px] ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'} tracking-wider mb-1.5 flex items-center gap-1.5`}>
-              <span className={`${isLight ? 'text-[#D90452]' : 'text-[#FF2A85]'} font-bold`}>{'>'}</span>
-              <span>WELCOME TO WATCHKNIGHT_OS // PORTFOLIO v1.96</span>
+              <span>WELCOME TO MOAYED'S PORTFOLIO</span>
               <span className={`w-2 h-3 ${isLight ? 'bg-[#0052FF]' : 'bg-[#00F0FF]'} animate-pulse inline-block`} />
             </div>
 
@@ -557,7 +556,7 @@ export const Hero: React.FC<HeroProps> = ({ showCanvas = true }) => {
 
             {/* Subtitles: Curated systems & spatial web engineering bio */}
             <p className="hero-subheadline max-w-xl font-body text-[11px] sm:text-xs text-alabaster-dim pt-0.5 font-normal leading-relaxed break-words">
-              Architecting low-level systems, Linux POSIX kernels, and immersive spatial web experiences. {PORTFOLIO_DATA.meta.bio}
+              Building low-level systems, Linux POSIX kernels, and immersive spatial web experiences. {PORTFOLIO_DATA.meta.bio}
             </p>
 
             {/* INTERACTIVE 90s CRT BRACKET MENU [1] [2] [3] [4] */}
@@ -565,7 +564,7 @@ export const Hero: React.FC<HeroProps> = ({ showCanvas = true }) => {
               <div className={`flex items-center justify-between pb-1 mb-1 border-b ${isLight ? 'border-[#1A1D24]/10 text-[#C85A00]' : 'border-white/10 text-[#FFCC00]'} font-pixel text-[8px] uppercase tracking-wider`}>
                 <span className="flex items-center gap-1.5">
                   <span className={`w-1.5 h-1.5 ${isLight ? 'bg-[#007A33]' : 'bg-[#4AF626]'} rounded-full animate-pulse`} />
-                  <span>COMMAND SELECTION // SYS.96 [PRESS 1 - 4]</span>
+                  <span>Navigation • Press 1–4</span>
                 </span>
                 <span className={`${isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'} hidden sm:inline`}>KEYBOARD / CLICK</span>
               </div>
@@ -594,16 +593,16 @@ export const Hero: React.FC<HeroProps> = ({ showCanvas = true }) => {
                           ? 'bg-[#F2EFE9] hover:bg-[#EAE5DB] text-[#11131A] border-[#1A1D24]/30 hover:border-[#0052FF] shadow-[2px_2px_0_0_#C8C1B4]'
                           : 'bg-[#131629] hover:bg-[#1A1F38] text-[#F0EFE6] border-[#2D3645] hover:border-[#00F0FF] shadow-[2px_2px_0_0_#070814]'
                       }`}
-                      aria-label={`Menu item [${item.num}]: ${item.title}`}
+                      aria-label={`Menu item ${item.num}: ${item.title}`}
                     >
                       <div className="flex items-center gap-1.5 min-w-0">
-                        {/* Phosphor green bracket [1] */}
+                        {/* Clean numbered indicator 1. */}
                         <span className={`font-pixel text-[9px] font-bold shrink-0 transition-colors ${
                           isFlashing
                             ? isLight ? 'text-white' : 'text-[#070814]'
                             : isLight ? 'text-[#007A33] group-hover:text-[#0052FF]' : 'text-[#4AF626] group-hover:text-[#00F0FF]'
                         }`}>
-                          [{item.num}]
+                          {item.num}.
                         </span>
 
                         <span className={`font-pixel text-[8px] font-bold tracking-tight break-words uppercase transition-colors ${
@@ -636,11 +635,11 @@ export const Hero: React.FC<HeroProps> = ({ showCanvas = true }) => {
                 aria-label="Explore Flagship Case Studies"
               >
                 <span className="sr-only">Explore Flagship Case Studies</span>
-                <span className="font-bold">[ EXPLORE SYSTEMS &amp; EXTENSIONS ]</span>
+                <span className="font-bold">Explore Systems &amp; Extensions</span>
                 <ArrowDownRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5 text-current stroke-[2.5]" />
               </MagneticButton>
 
-              {/* Secondary Action: [ >_ LAUNCH TERMINAL ] */}
+              {/* Secondary Action: [ Launch Terminal ] */}
               <MagneticButton
                 onClick={handleLaunchTerminal}
                 className={`group relative px-2.5 py-1.5 ${isLight ? 'bg-[#FFFFFF] hover:bg-[#F2EFE9] border-2 border-[#1A1D24] hover:border-[#0052FF] text-[#11131A] shadow-[2px_2px_0_0_#C8C1B4]' : 'bg-[#131629] hover:bg-[#1A1F38] border-2 border-[#2D3645] hover:border-[#00F0FF] text-[#F0EFE6] shadow-[2px_2px_0_0_#070814]'} font-pixel text-[9px] tracking-tight backdrop-blur-xl transition-all duration-200 active:translate-y-0.5 flex items-center gap-1.5`}
@@ -648,13 +647,13 @@ export const Hero: React.FC<HeroProps> = ({ showCanvas = true }) => {
               >
                 <Terminal className={`w-3 h-3 ${isLight ? 'text-[#D90452] group-hover:text-[#0052FF]' : 'text-[#FF2A85] group-hover:text-[#00F0FF]'} transition-colors`} />
                 <span className="sr-only">Launch Interactive Terminal</span>
-                <span className={`font-bold ${isLight ? 'text-[#0052FF] group-hover:text-[#11131A]' : 'text-[#00F0FF] group-hover:text-white'}`}>[ &gt;_ LAUNCH TERMINAL ]</span>
+                <span className={`font-bold ${isLight ? 'text-[#0052FF] group-hover:text-[#11131A]' : 'text-[#00F0FF] group-hover:text-white'}`}>Launch Terminal</span>
                 <kbd className={`hidden sm:inline-flex items-center px-1 py-0.5 ${isLight ? 'bg-[#EAE5DB] text-[#D90452] border-[#1A1D24]/20' : 'bg-[#0D1512] text-[#FF2A85] border-white/10'} text-[8px] font-mono border shadow-inner transition-colors`}>
                   Ctrl + ~
                 </kbd>
               </MagneticButton>
 
-              {/* Tertiary Action: [ RESUME.PDF ] */}
+              {/* Tertiary Action: Resume (PDF) */}
               <a
                 href="/resume.pdf"
                 target="_blank"
@@ -664,7 +663,7 @@ export const Hero: React.FC<HeroProps> = ({ showCanvas = true }) => {
               >
                 <FileText className={`w-3 h-3 ${isLight ? 'text-[#C85A00]' : 'text-[#FFCC00]'}`} />
                 <span className="sr-only">Resume (PDF)</span>
-                <span className="font-bold">[ RESUME.PDF ]</span>
+                <span className="font-bold">Resume (PDF)</span>
               </a>
             </div>
           </div>

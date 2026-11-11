@@ -118,9 +118,9 @@ describe('Layered Cyber-Shutter (Shop-Shutter Roll-Up) Deck (@src/components/Shu
       // Hazard striping
       expect(html).toContain('repeating-linear-gradient(-45deg, #00F0FF, #00F0FF 6px, #070814 6px, #070814 12px)');
 
-      // Dual status LEDs initialized to LOCKED [●]
+      // Dual status LEDs initialized to LOCKED
       expect(html).toContain('data-status="LOCKED"');
-      expect(html).toContain('LOCKED [●]');
+      expect(html).toContain('LOCKED');
       expect(html).toContain('bg-[#4AF626]');
     });
   });
@@ -136,12 +136,12 @@ describe('Layered Cyber-Shutter (Shop-Shutter Roll-Up) Deck (@src/components/Shu
       );
 
       expect(html).toContain('quick-lift-btn');
-      expect(html).toContain('[ ▲ LIFT SHUTTER // UNLOCK BAY_02 ▲ ]');
+      expect(html).toContain('▲ Next: Bay 02');
       // Section 01 should not render secondary PREV BAY button
-      expect(html).not.toContain('[ ▼ PREV BAY ]');
+      expect(html).not.toContain('▼ Prev Bay');
     });
 
-    it('mounts secondary [ ▼ PREV BAY ] button on sections 02–06', () => {
+    it('mounts secondary [ Prev Bay ] button on sections 02–06', () => {
       const html = renderToString(
         React.createElement(
           ShutterLayer,
@@ -151,11 +151,11 @@ describe('Layered Cyber-Shutter (Shop-Shutter Roll-Up) Deck (@src/components/Shu
       );
 
       expect(html).toContain('prev-bay-btn');
-      expect(html).toContain('[ ▼ PREV BAY ]');
-      expect(html).toContain('[ ▲ LIFT SHUTTER // UNLOCK BAY_03 ▲ ]');
+      expect(html).toContain('▼ Prev Bay');
+      expect(html).toContain('▲ Next: Bay 03');
     });
 
-    it('displays return to SYS.96 top-of-deck prompt on final section (06)', () => {
+    it('displays return to top prompt on final section (06)', () => {
       const html = renderToString(
         React.createElement(
           ShutterLayer,
@@ -164,7 +164,7 @@ describe('Layered Cyber-Shutter (Shop-Shutter Roll-Up) Deck (@src/components/Shu
         )
       );
 
-      expect(html).toContain('[ ▲ RETURN TO SYS.96 // BAY_01 ▲ ]');
+      expect(html).toContain('▲ Return to Top');
     });
   });
 
@@ -213,23 +213,23 @@ describe('Layered Cyber-Shutter (Shop-Shutter Roll-Up) Deck (@src/components/Shu
 
       // Shutter Section Stack container
       expect(html).toContain('shutter-section-stack');
-      expect(html).toContain('data-shutter-deck="SYS.96"');
+      expect(html).toContain('data-shutter-deck="deck"');
 
       // 6 Sector tags & titles
-      expect(html).toContain('data-sector-title="HERO_HORIZON"');
-      expect(html).toContain('data-sector-title="FLAGSHIP_SYSTEMS_3D_DECK"');
-      expect(html).toContain('data-sector-title="BROWSER_EXTENSION_STUDIO"');
-      expect(html).toContain('data-sector-title="MOTHERBOARD_BIOS_ARCHITECTURE"');
-      expect(html).toContain('data-sector-title="GITHUB_ROMS_TERMINAL_ARCADE"');
-      expect(html).toContain('data-sector-title="CONTACT_SATELLITE_UPLINK"');
+      expect(html).toContain('data-sector-title="Hero Horizon"');
+      expect(html).toContain('data-sector-title="Selected Work"');
+      expect(html).toContain('data-sector-title="Browser Extension Studio"');
+      expect(html).toContain('data-sector-title="Architecture &amp; Skills"');
+      expect(html).toContain('data-sector-title="GitHub &amp; Terminal"');
+      expect(html).toContain('data-sector-title="Contact &amp; Resume"');
 
       // Check strict monotonic sequence in DOM
-      const heroIdx = html.indexOf('data-sector-title="HERO_HORIZON"');
-      const systemsIdx = html.indexOf('data-sector-title="FLAGSHIP_SYSTEMS_3D_DECK"');
-      const extensionIdx = html.indexOf('data-sector-title="BROWSER_EXTENSION_STUDIO"');
-      const bioIdx = html.indexOf('data-sector-title="MOTHERBOARD_BIOS_ARCHITECTURE"');
-      const labIdx = html.indexOf('data-sector-title="GITHUB_ROMS_TERMINAL_ARCADE"');
-      const contactIdx = html.indexOf('data-sector-title="CONTACT_SATELLITE_UPLINK"');
+      const heroIdx = html.indexOf('data-sector-title="Hero Horizon"');
+      const systemsIdx = html.indexOf('data-sector-title="Selected Work"');
+      const extensionIdx = html.indexOf('data-sector-title="Browser Extension Studio"');
+      const bioIdx = html.indexOf('data-sector-title="Architecture &amp; Skills"');
+      const labIdx = html.indexOf('data-sector-title="GitHub &amp; Terminal"');
+      const contactIdx = html.indexOf('data-sector-title="Contact &amp; Resume"');
 
       expect(heroIdx).toBeGreaterThan(-1);
       expect(systemsIdx).toBeGreaterThan(heroIdx);

@@ -54,7 +54,7 @@ describe('SOTY Components Verification: Preloader & 404 Micro-World', () => {
 
       // Title & Sector Header
       expect(html).toContain('Node 404: Unreachable Sector in the Watchtower');
-      expect(html).toContain('TEMPORAL SECTOR FAULT');
+      expect(html).toContain('Sector Fault • 404');
       expect(html).toContain('Knight Graph Jumps');
 
       // Ambient WebGL Broken Chronometer Canvas presence
@@ -103,9 +103,9 @@ describe('SOTY Components Verification: Preloader & 404 Micro-World', () => {
       expect(html).toContain('sr-only');
       expect(html).toContain('role="status"');
       expect(html).toContain('aria-live="polite"');
-      expect(html).toContain('EAST WEST UNIVERSITY');
+      expect(html).toContain('East West University • CSE Department');
       expect(html).toContain('23.7644° N, 90.4252° E');
-      expect(html).toContain('@WATCHKNIGHT PORTFOLIO CHRONOMETER RUNTIME');
+      expect(html).toContain('@watchknight • 2026');
 
       // Full semantic flagship directory presence
       expect(html).toContain('Mental Defrag');

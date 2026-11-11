@@ -13,15 +13,15 @@ export interface PreloaderProps {
  * Strictly includes: Bengali (স্বাগতম), English, Japanese, French, Arabic, Spanish, German, Mandarin, and Dutch.
  */
 export const GREETINGS = [
-  { text: 'স্বাগতম', lang: 'BN', sub: 'DHAKA, BD // 23.7644° N, 90.4252° E' },
-  { text: 'Hello', lang: 'EN', sub: 'CHRONOMETRIC SENTINEL // TIMEBASE 1000HZ' },
-  { text: 'こんにちは', lang: 'JA', sub: 'TOKYO SECTOR // SPATIAL CANVASES' },
-  { text: 'Bonjour', lang: 'FR', sub: 'ATELIER NUMÉRIQUE // ESTHÉTIQUE HORLOGÈRE' },
-  { text: 'مرحباً', lang: 'AR', sub: 'ALGORITHMIC LATTICE // ZERO-GRAVITY' },
-  { text: 'Hola', lang: 'ES', sub: 'ARQUITECTURA ESPACIAL // ESTADO VERIFICADO' },
-  { text: 'Guten Tag', lang: 'DE', sub: 'HOROLOGISCHE PRÄZISION // SYSTEME' },
-  { text: '你好', lang: 'ZH', sub: 'GRAPH TRAVERSAL // SENTINEL CORE' },
-  { text: 'Welkom', lang: 'NL', sub: 'AMSTERDAM REEF // VITAL SIGNS NOMINAL' },
+  { text: 'স্বাগতম', lang: 'BN', sub: 'DHAKA, BD • 23.7644° N, 90.4252° E' },
+  { text: 'Hello', lang: 'EN', sub: 'CHRONOMETRIC SENTINEL • TIMEBASE 1000HZ' },
+  { text: 'こんにちは', lang: 'JA', sub: 'TOKYO SECTOR • SPATIAL CANVASES' },
+  { text: 'Bonjour', lang: 'FR', sub: 'ATELIER NUMÉRIQUE • ESTHÉTIQUE HORLOGÈRE' },
+  { text: 'مرحباً', lang: 'AR', sub: 'ALGORITHMIC LATTICE • ZERO-GRAVITY' },
+  { text: 'Hola', lang: 'ES', sub: 'ARQUITECTURA ESPACIAL • ESTADO VERIFICADO' },
+  { text: 'Guten Tag', lang: 'DE', sub: 'HOROLOGISCHE PRÄZISION • SYSTEME' },
+  { text: '你好', lang: 'ZH', sub: 'GRAPH TRAVERSAL • SENTINEL CORE' },
+  { text: 'Welkom', lang: 'NL', sub: 'AMSTERDAM REEF • VITAL SIGNS NOMINAL' },
 ];
 
 export const Preloader: React.FC<PreloaderProps> = ({ onCurtainLifting, onComplete }) => {
@@ -260,7 +260,7 @@ export const Preloader: React.FC<PreloaderProps> = ({ onCurtainLifting, onComple
               style={{ backgroundColor: 'var(--pixel-phosphor-green, #4AF626)' }}
             />
             <span className="text-alabaster font-bold tracking-wider">
-              WATCHKNIGHT // ARCHITECTURE ATELIER
+              Abdur Rahman Moayed • Portfolio
             </span>
           </div>
           <div className="hidden sm:flex items-center gap-4 text-xs">
@@ -293,7 +293,7 @@ export const Preloader: React.FC<PreloaderProps> = ({ onCurtainLifting, onComple
         <div className="flex items-end justify-between border-t border-white/10 pt-4 sm:pt-6">
           <div className="font-mono text-fluid-micro text-[#8E98AA] flex flex-col gap-1">
             <span className="text-alabaster font-semibold tracking-wider">
-              EAST WEST UNIVERSITY // CSE DEPT
+              EAST WEST UNIVERSITY • CSE DEPT
             </span>
             <span>DHAKA, BANGLADESH • 23.7644° N, 90.4252° E • UTC+6</span>
           </div>

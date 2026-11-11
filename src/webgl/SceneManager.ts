@@ -163,7 +163,7 @@ const chronometerCoreFrag = `
   varying vec3 vNormal;
   varying vec3 vViewPosition;
 
-  // Cyber-CRT Token Palette Vectors (WATCHKNIGHT_OS // SYS.96)
+  // Cyber-CRT Token Palette Vectors
   const vec3 C_OBSIDIAN_VOID = vec3(0.027, 0.031, 0.078); // #070814 (--crt-void-bg)
   const vec3 C_TERRACOTTA     = vec3(1.0, 0.165, 0.522);   // #FF2A85 (--tech-magenta-crest)
   const vec3 C_ALABASTER_INK  = vec3(0.941, 0.937, 0.902); // #F0EFE6 (--pixel-ivory-text)

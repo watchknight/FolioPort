@@ -50,7 +50,7 @@ const FALLBACK_REPOS: GithubRepo[] = [
   {
     id: 100,
     name: 'FolioPort',
-    description: '1996 Cyberdeck Workstation Rendering a Real-Time 3D Volumetric Particle Engine (WATCHKNIGHT_OS // SYS.96). Built with Three.js WebGL shaders, React 18, GSAP, and procedural Web Audio chiptunes.',
+    description: 'Retro 1996 cyberdeck portfolio with a real-time 3D particle wave engine, WebGL shaders, React 18, and procedural Web Audio chiptunes.',
     html_url: 'https://github.com/watchknight/FolioPort',
     language: 'TypeScript',
     stargazers_count: 28,
@@ -146,13 +146,13 @@ const FALLBACK_REPOS: GithubRepo[] = [
   {
     id: 108,
     name: 'FocusLab',
-    description: 'Developer cognitive telemetry suite measuring deep work intervals with localized IndexedDB state persistence.',
+    description: 'Developer productivity suite measuring focused work intervals with localized IndexedDB state persistence.',
     html_url: 'https://github.com/watchknight/FocusLab',
     language: 'TypeScript',
     stargazers_count: 7,
     forks_count: 1,
     updated_at: '2026-08-30T17:15:00Z',
-    topics: ['react', 'indexeddb', 'telemetry', 'productivity'],
+    topics: ['react', 'indexeddb', 'analytics', 'productivity'],
     category: 'TypeScript/JS'
   },
   {
@@ -220,7 +220,7 @@ const FALLBACK_REPOS: GithubRepo[] = [
 // Enricher dictionary for repos that might have null descriptions from GitHub API
 const REPO_DESCRIPTIONS: Record<string, { desc: string; category: GithubRepo['category']; language?: string; topics?: string[] }> = {
   'FolioPort': {
-    desc: '1996 Cyberdeck Workstation Rendering a Real-Time 3D Volumetric Particle Engine (WATCHKNIGHT_OS // SYS.96). Built with Three.js WebGL shaders, React 18, GSAP, and procedural Web Audio chiptunes.',
+    desc: 'Retro 1996 cyberdeck portfolio with a real-time 3D particle wave engine, WebGL shaders, React 18, and procedural Web Audio chiptunes.',
     category: 'TypeScript/JS',
     language: 'TypeScript',
     topics: ['three-js', 'webgl-shaders', 'cyberdeck', 'react-18', 'audio-api']
@@ -256,10 +256,10 @@ const REPO_DESCRIPTIONS: Record<string, { desc: string; category: GithubRepo['ca
     topics: ['binary-protocol', 'buffers', 'systems']
   },
   'FocusLab': {
-    desc: 'Developer cognitive telemetry suite measuring deep work intervals with localized IndexedDB state persistence.',
+    desc: 'Developer productivity suite measuring focused work intervals with localized IndexedDB state persistence.',
     category: 'TypeScript/JS',
     language: 'TypeScript',
-    topics: ['react', 'indexeddb', 'telemetry']
+    topics: ['react', 'indexeddb', 'productivity']
   },
   'POSHRA': {
     desc: 'Cloud-enabled decentralized resource scheduling engine with reactive UI and atomic optimistic updates.',
@@ -588,7 +588,7 @@ export const GithubLab: React.FC = () => {
           <div>
             <div className="flex items-center gap-2 font-pixel text-[10px] text-[#FFCC00] uppercase tracking-widest mb-3">
               <FlaskConical className="w-4 h-4 text-[#FFCC00]" />
-              <span>&gt; [04] GITHUB_ROM // RETRO DATA CARTRIDGE EXPLORER</span>
+              <span>04. GitHub Repositories</span>
             </div>
             <div className="overflow-visible">
               <h2 
@@ -606,8 +606,7 @@ export const GithubLab: React.FC = () => {
               </h2>
             </div>
             <p className="font-body text-fluid-body text-[#D6CFC2] max-w-2xl mt-2 leading-relaxed" style={{ color: 'var(--text-secondary, #D6CFC2)' }}>
-              Live cryptographic telemetry and repository stream directly queried from GitHub. 
-              Restyled as 90s Cyberdeck Floppy Modules and Data Cartridges spanning Linux C/C++ OS primitives, spatial physics engines, and localized web architectures.
+              Live repository stream directly queried from GitHub, spanning Linux C/C++ OS primitives, spatial physics engines, and localized web architectures.
             </p>
           </div>
 
@@ -673,15 +672,16 @@ export const GithubLab: React.FC = () => {
         {/* Filter Controls [FILTER: ALL | TS/JS | C/C++ | HTML/CANVAS] & Live Search Bar */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
           
-          {/* Prompt-mandated Category Filter Buttons */}
+          {/* Category Filter Buttons */}
           <div className="flex flex-wrap items-center gap-2">
             <span className="font-pixel text-[9px] text-[#8E98AA] mr-1 hidden sm:inline">
-              [FILTER:
+              Filter:
             </span>
 
             {filterTabs.map((filter) => {
               const isActive = activeFilter === filter;
               const count = categoryCounts[filter];
+              const filterLabel = filter === 'ALL' ? 'All' : filter === 'TS/JS' ? 'TS / JS' : filter === 'C/C++' ? 'C / C++' : 'HTML / Canvas';
               return (
                 <button
                   key={filter}
@@ -697,21 +697,17 @@ export const GithubLab: React.FC = () => {
                   }`}
                   aria-label={`Filter by ${filter} category (${count} repositories)`}
                 >
-                  <span>{`> ${filter}`}</span>
+                  <span>{filterLabel}</span>
                   <span
                     className={`px-1 py-0.2 text-[8px] font-mono ${
                       isActive ? 'bg-[#FFCC00] text-[#070814] font-bold' : 'bg-white/10 text-slate-300'
                     }`}
                   >
-                    [{count}]
+                    {count}
                   </span>
                 </button>
               );
             })}
-
-            <span className="font-pixel text-[9px] text-[#8E98AA] ml-1 hidden sm:inline">
-              ]
-            </span>
           </div>
 
           {/* Quick Filter Search Input styled as 90s Command */}
@@ -721,7 +717,7 @@ export const GithubLab: React.FC = () => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="> SEARCH_ROM: [ query... ]"
+              placeholder="Search repositories..."
               aria-label="Search repositories, tags, or technology stack"
               className="w-full pl-9 pr-3 py-1.5 bg-[#0D1512] border-2 border-[#2D3645] font-mono text-fluid-micro text-[#00F0FF] placeholder:text-[#8E98AA] focus:outline-none focus:border-[#FFCC00] shadow-[inset_0_0_8px_rgba(0,0,0,0.8),2px_2px_0_0_#070814] transition-colors"
             />
@@ -746,7 +742,7 @@ export const GithubLab: React.FC = () => {
         >
           {filteredRepos.map((repo, idx) => {
             const langColor = LANGUAGE_COLORS[repo.language] || '#00F0FF';
-            const romId = `ROM_${String(idx + 1).padStart(2, '0')}`;
+            const repoNumber = String(idx + 1).padStart(2, '0');
 
             return (
               <div
@@ -776,13 +772,13 @@ export const GithubLab: React.FC = () => {
                         borderColor: 'var(--crt-bezel-shadow, #2D3645)',
                       }}
                     >
-                      {romId}
+                      {repoNumber}
                     </span>
                     <span 
                       className="font-pixel text-[8px] sm:text-[9px] text-[#FFCC00] tracking-wider break-all"
                       style={{ color: 'var(--pixel-amber-gold, #FFCC00)' }}
                     >
-                      {repo.name.toUpperCase()}.DAT
+                      {repo.name}
                     </span>
                     {repo.name === 'FocusGuard' && (
                       <a
@@ -794,7 +790,7 @@ export const GithubLab: React.FC = () => {
                         }`}
                         title="Jump to interactive Browser Extension Studio"
                       >
-                        [ STUDIO ↗ ]
+                        Studio ↗
                       </a>
                     )}
                   </div>
@@ -812,7 +808,7 @@ export const GithubLab: React.FC = () => {
                       <span className={`w-1 h-1 rounded-none animate-pulse ${
                         isLight ? 'bg-[#007A33]' : 'bg-[#4AF626]'
                       }`} />
-                      WP: OFF
+                      Public
                     </span>
                   </div>
                 </div>
@@ -896,7 +892,7 @@ export const GithubLab: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* 3. Gold Cartridge Pin Contacts & [ >_ INSPECT_ROM ] Action Button */}
+                  {/* 3. Gold Cartridge Pin Contacts & Action Button */}
                   <div>
                     {/* PCB Gold Contact Pin Fingers */}
                     <div 
@@ -907,7 +903,7 @@ export const GithubLab: React.FC = () => {
                       <span className="font-pixel text-[7px] text-[#8E98AA]">16-BIT BUS</span>
                     </div>
 
-                    {/* Footer: Star/Fork Counters + [ >_ INSPECT_ROM ] Button */}
+                    {/* Footer: Star/Fork Counters + Action Button */}
                     <div className="flex items-center justify-between pt-1">
                       {/* Star and Fork Glowing Pixel Readouts */}
                       <div className="flex items-center gap-3 font-pixel text-[9px]">
@@ -924,7 +920,7 @@ export const GithubLab: React.FC = () => {
                         </span>
                       </div>
 
-                      {/* Prompt-mandated [ >_ INSPECT_ROM ] Button */}
+                      {/* View Code Action Button */}
                       <MagneticButton
                         as="a"
                         href={repo.html_url}
@@ -941,9 +937,9 @@ export const GithubLab: React.FC = () => {
                           color: 'var(--pixel-amber-gold, #FFCC00)',
                           boxShadow: isLight ? '2px 2px 0 0 #C8C1B4' : '2px 2px 0 0 #070814',
                         }}
-                        aria-label={`Inspect ROM for ${repo.name} on GitHub`}
+                        aria-label={`View ${repo.name} on GitHub`}
                       >
-                        <span>[ &gt;_ INSPECT_ROM ]</span>
+                        <span>View Code</span>
                         <ArrowUpRight className="w-2.5 h-2.5 transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
                       </MagneticButton>
                     </div>
@@ -967,7 +963,7 @@ export const GithubLab: React.FC = () => {
               }}
               className="mt-4 px-4 py-1.5 border-2 border-[#2D3645] bg-[#FFCC00] text-[#070814] font-pixel text-[10px] hover:bg-white transition-colors"
             >
-              [ RESET FILTERS ]
+              Reset Filters
             </button>
           </div>
         )}

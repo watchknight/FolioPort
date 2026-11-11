@@ -523,17 +523,14 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
             borderColor: midColor,
           }}
         >
-          {/* Left Title: DIR badge + QUICK_VIEW.SYS / C:\MOAYED\SYSTEM.DIR */}
+          {/* Left Title: Preview / Active Section Title */}
           <div className="flex items-center gap-1.5 min-w-0 pr-2">
-            <span className="font-bold text-[8px] sm:text-[9px] bg-[#111712] text-[#c2cdb4] px-1 py-0.2 select-none" aria-hidden="true">
-              {isWindowExpanded ? 'DIR' : 'SYS'}
-            </span>
             <span
               data-testid="retro-window-title-text"
               className="font-pixel font-bold text-[9px] sm:text-[10px] tracking-wider truncate uppercase text-[#111712]"
             >
-              {isWindowExpanded ? `C:\\MOAYED\\${activeMeta.fileName.split('\\').pop() || 'SYSTEM.DIR'}` : 'QUICK_VIEW.SYS'}
-              <span className="sr-only">C:\MOAYED\SYSTEM.DIR</span>
+              {isWindowExpanded ? activeMeta.label : 'Preview'}
+              <span className="sr-only">Preview</span>
             </span>
           </div>
 
@@ -603,9 +600,9 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
               color: brightColor,
             }}
           >
-            {/* Direct 1-click tab switches: [1] WORK | [2] ABOUT | [3] RESUME & CONTACT */}
+            {/* Direct 1-click tab switches: 1. Work | 2. About | 3. Resume */}
             <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap" role="tablist" aria-label="Operating System Views">
-              {/* Tab 1: [1] WORK */}
+              {/* Tab 1: 1. Work */}
               <button
                 ref={(el) => (tabRefs.current['projects'] = el)}
                 type="button"
@@ -638,10 +635,10 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
                       }
                 }
               >
-                {currentActiveSection === 'projects' ? '> [1] WORK' : '[1] WORK'}
+                1. Work
               </button>
 
-              {/* Tab 2: [2] ABOUT */}
+              {/* Tab 2: 2. About */}
               <button
                 ref={(el) => (tabRefs.current['about'] = el)}
                 type="button"
@@ -674,10 +671,10 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
                       }
                 }
               >
-                {currentActiveSection === 'about' ? '> [2] ABOUT' : '[2] ABOUT'}
+                2. About
               </button>
 
-              {/* Tab 3: [3] RESUME & CONTACT */}
+              {/* Tab 3: 3. Resume */}
               <button
                 ref={(el) => (tabRefs.current['resume'] = el)}
                 type="button"
@@ -710,11 +707,11 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
                       }
                 }
               >
-                {currentActiveSection === 'resume' ? '> [3] RESUME & CONTACT' : '[3] RESUME & CONTACT'}
+                3. Resume
               </button>
             </div>
 
-            {/* Right prominent [ESC / X] BACK TO DESKTOP button */}
+            {/* Right prominent Back to Desktop button */}
             <button
               type="button"
               data-testid="retro-window-btn-back-desktop"
@@ -727,7 +724,7 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
                 borderColor: brightColor,
               }}
             >
-              [ESC / X] BACK TO DESKTOP
+              Back to Desktop
             </button>
           </div>
         )}
@@ -750,16 +747,16 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
               overscrollBehaviorY: 'contain',
             }}
           >
-            {/* 1. OVERVIEW MODE / QUICK_VIEW.SYS PREVIEW WINDOW */}
+            {/* 1. OVERVIEW MODE / PREVIEW WINDOW */}
             {!isWindowExpanded && (
               <div
                 data-testid="retro-window-overview-mode"
                 className="flex flex-col gap-1 sm:gap-1.5 h-full justify-between select-text"
               >
-                {/* Accessible sr-only directory menu items for WCAG AAA and legacy test compatibility */}
+                {/* Accessible sr-only directory menu items for WCAG AAA and test compatibility */}
                 <div className="sr-only" role="menu" aria-label="Selectable OS Directory">
-                  <span>VOLUME IN DRIVE C IS WATCHKNIGHT_OS</span>
-                  <span>DIRECTORY OF C:\MOAYED\*.*</span>
+                  <span>Workstation Overview</span>
+                  <span>Directory Overview</span>
                   {RETRO_SECTIONS.map((sec) => {
                     const isRowActive = currentActiveSection === sec;
                     return (
@@ -776,12 +773,12 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
                       </button>
                     );
                   })}
-                  <span>{`STATUS: ${activeMeta.status}`}</span>
+                  <span>{`Status: ${activeMeta.status}`}</span>
                   <span>{activeMeta.tagline}</span>
-                  <span>&gt; PRESS [ENTER] OR CLICK [□] TO EXPAND</span>
+                  <span>Press Enter to expand</span>
                 </div>
 
-                {/* DYNAMIC QUICK_VIEW.SYS LEVEL 1 PREVIEW CONTENT */}
+                {/* DYNAMIC LEVEL 1 PREVIEW CONTENT */}
                 {currentActiveSection === 'projects' && (
                   <div
                     data-testid="quick-view-projects"
@@ -791,16 +788,16 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
                       className="flex items-center justify-between text-[7px] sm:text-[7.5px] font-mono uppercase tracking-wider pb-0.5 border-b"
                       style={{ borderColor: `${midColor}4d`, color: midColor }}
                     >
-                      <span>// QUICK_VIEW: 4 FLAGSHIP SYSTEMS</span>
-                      <span>[SYS.96 ARCHIVE]</span>
+                      <span>Selected Work (4 Projects)</span>
+                      <span>Projects</span>
                     </div>
 
                     <div className="flex flex-col gap-0.5 sm:gap-1 text-[7.5px] sm:text-[8px]">
                       {[
-                        { id: 1, name: '01 Mental Defrag', tag: 'THREE.JS // AUDIO' },
-                        { id: 2, name: '02 FocusGuard', tag: 'AI ATTENTION // DAEMON' },
-                        { id: 3, name: '03 Neon Vanguard & POSIX', tag: 'C/C++ // GLSL SHADER' },
-                        { id: 4, name: '04 DocLensBD', tag: 'FULL-STACK // OCR' },
+                        { id: 1, name: '01 Mental Defrag', tag: 'Three.js • Audio' },
+                        { id: 2, name: '02 FocusGuard', tag: 'Extension • Productivity' },
+                        { id: 3, name: '03 Neon Vanguard & POSIX', tag: 'C/C++ • Shaders' },
+                        { id: 4, name: '04 DocLensBD', tag: 'Full-Stack • Cloud' },
                       ].map((proj) => (
                         <div
                           key={proj.id}
@@ -839,8 +836,8 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
                         color: brightColor,
                       }}
                     >
-                      <span>&gt; PRESS ENTER TO INSPECT</span>
-                      <span className="font-mono text-[6.5px] sm:text-[7px]">[CLICK TO EXPAND □]</span>
+                      <span>Press Enter to inspect</span>
+                      <span className="font-mono text-[6.5px] sm:text-[7px]">Click to expand</span>
                     </button>
                   </div>
                 )}
@@ -854,8 +851,8 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
                       className="flex items-center justify-between text-[7px] sm:text-[7.5px] font-mono uppercase tracking-wider pb-0.5 border-b"
                       style={{ borderColor: `${midColor}4d`, color: midColor }}
                     >
-                      <span>// QUICK_VIEW: PROFILE &amp; CORE SKILLS</span>
-                      <span>[EWU-CSE // DHAKA]</span>
+                      <span>About &amp; Core Skills</span>
+                      <span>Dhaka • UTC+6</span>
                     </div>
 
                     <p
@@ -870,7 +867,7 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
 
                     <div className="flex flex-col gap-0.5">
                       <span className="font-mono text-[6.5px] sm:text-[7px] uppercase tracking-wider" style={{ color: midColor }}>
-                        TOP 5 CORE TECHNOLOGIES:
+                        Top 5 Core Technologies:
                       </span>
                       <div className="flex flex-wrap gap-1">
                         {['TypeScript', 'React/Next.js', 'Node.js', 'C/C++', 'Linux/POSIX'].map((tech) => (
@@ -899,8 +896,8 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
                         color: brightColor,
                       }}
                     >
-                      <span>&gt; PRESS ENTER TO EXPAND DOSSIER</span>
-                      <span className="font-mono text-[6.5px] sm:text-[7px]">[CLICK TO EXPAND □]</span>
+                      <span>Press Enter to expand</span>
+                      <span className="font-mono text-[6.5px] sm:text-[7px]">Click to expand</span>
                     </button>
                   </div>
                 )}
@@ -914,12 +911,12 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
                       className="flex items-center justify-between text-[7px] sm:text-[7.5px] font-mono uppercase tracking-wider pb-0.5 border-b"
                       style={{ borderColor: `${midColor}4d`, color: midColor }}
                     >
-                      <span>// QUICK_VIEW: 1-CLICK CANDIDATE DISPATCH</span>
-                      <span>[OPEN TO ROLES]</span>
+                      <span>Get in Touch</span>
+                      <span>Available</span>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
-                      {/* 1. [Copy Email] */}
+                      {/* 1. Copy Email */}
                       <button
                         type="button"
                         data-testid="btn-copy-email"
@@ -931,10 +928,10 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
                           borderColor: brightColor,
                         }}
                       >
-                        {isEmailCopied ? '[COPIED!]' : '[Copy Email]'}
+                        {isEmailCopied ? 'Copied!' : 'Copy Email'}
                       </button>
 
-                      {/* 2. [Download CV] */}
+                      {/* 2. Download CV */}
                       <a
                         href="/resume.pdf"
                         download="Abdur_Rahman_Moayed_Resume.pdf"
@@ -952,10 +949,10 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
                           borderColor: brightColor,
                         }}
                       >
-                        [Download CV]
+                        Download CV
                       </a>
 
-                      {/* 3. [GitHub @watchknight] */}
+                      {/* 3. GitHub @watchknight */}
                       <a
                         href="https://github.com/watchknight"
                         target="_blank"
@@ -972,7 +969,7 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
                           borderColor: brightColor,
                         }}
                       >
-                        [GitHub @watchknight]
+                        GitHub: @watchknight
                       </a>
                     </div>
 
@@ -981,7 +978,7 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
                       style={{ borderColor: `${midColor}33`, color: midColor }}
                     >
                       <span>moayed.cse@gmail.com</span>
-                      <span>DHAKA, BANGLADESH (UTC+6)</span>
+                      <span>Dhaka, Bangladesh (UTC+6)</span>
                     </div>
                   </div>
                 )}
@@ -1118,7 +1115,7 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
               tabIndex={-1}
               className="min-h-[44px]"
             >
-              [X] ESC TO CLOSE
+              Esc to close
             </button>
           </div>
         )}

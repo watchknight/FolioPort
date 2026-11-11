@@ -581,7 +581,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
             className="w-2.5 h-2.5 bg-[#FF2A85] animate-ping motion-reduce:animate-none"
           />
           <span className="font-pixel text-[9px] uppercase tracking-wider text-[#00F0FF]">
-            NODE 404 // BROKEN CHRONOMETER SECTOR
+            Node 404 • Page Not Found
           </span>
         </div>
 
@@ -614,7 +614,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
         <div className="text-center mb-6">
           <div className="inline-flex items-center gap-2 text-xs font-pixel text-[9px] uppercase tracking-wider text-[#FF2A85] mb-2 px-2.5 py-1 border-2 border-[#FF2A85]/40 bg-[#FF2A85]/10">
             <AlertTriangle className="w-3.5 h-3.5" />
-            <span>TEMPORAL SECTOR FAULT // 404</span>
+            <span>Sector Fault • 404</span>
           </div>
 
           <h1 className="font-display font-extrabold text-3xl sm:text-5xl md:text-6xl tracking-tight text-[#F0EFE6]">
@@ -687,7 +687,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
           >
             <CheckCircle2 className="w-4 h-4 shrink-0 text-[#4AF626]" />
             <span className="font-semibold">
-              SECTOR REPAIRED // Solved in exactly 3 moves! Smoothly transitioning back to Sector Alpha...
+              Sector Repaired • Solved in exactly 3 moves! Transitioning back to home...
             </span>
           </div>
         )}
@@ -930,11 +930,11 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
       {/* Semantic Text Content for SEO & Assistive Crawlers underneath WebGL Canvas */}
       <section
         className="relative z-10 w-full max-w-4xl border-t border-white/10 pt-6 mt-4"
-        aria-label="Node 404 Sector Telemetry and Directory"
+        aria-label="Node 404 Sector Status and Directory"
       >
         <div className="text-[#8E98AA] font-mono text-xs space-y-3">
           <h2 className="text-sm font-semibold text-[#F0EFE6] uppercase tracking-wider">
-            Sector 404 Telemetry & Chronometric Directory
+            Sector 404 Status & Chronometric Directory
           </h2>
           <p className="leading-relaxed">
             You have accessed an unmapped temporal sector within the{' '}
@@ -1010,10 +1010,10 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
       <footer className="relative z-10 w-full max-w-4xl border-t border-white/10 pt-4 mt-6 flex flex-col sm:flex-row items-center justify-between text-[#8E98AA] font-mono text-fluid-micro gap-2">
         <div className="flex items-center gap-2">
           <Compass className="w-3.5 h-3.5 text-[#FF2A85]" />
-          <span>EST. EAST WEST UNIVERSITY // CSE DEPT // 23.7644° N, 90.4252° E</span>
+          <span>East West University • CSE Department • 23.7644° N, 90.4252° E</span>
         </div>
         <div>
-          <span>@WATCHKNIGHT PORTFOLIO CHRONOMETER RUNTIME // 2026</span>
+          <span>@watchknight • 2026</span>
         </div>
       </footer>
     </div>

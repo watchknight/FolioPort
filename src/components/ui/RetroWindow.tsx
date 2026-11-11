@@ -14,7 +14,7 @@ export interface RetroWindowProps extends Omit<React.HTMLAttributes<HTMLDivEleme
 }
 
 export const RetroWindow: React.FC<RetroWindowProps> = ({
-  title = 'SYS.96 // WINDOW',
+  title = 'Window',
   icon,
   tag,
   variant = 'default',

@@ -567,14 +567,14 @@ const CyberKnightArcade: React.FC<ArcadeProps> = ({ onExit, phosphorMode }) => {
         ctx.fillStyle = '#FF2A85';
         ctx.font = '16px "Press Start 2P", monospace';
         ctx.textAlign = 'center';
-        ctx.fillText('SYSTEM SEGFAULT // GAME OVER', 300, 150);
+        ctx.fillText('SYSTEM SEGFAULT • GAME OVER', 300, 150);
 
         ctx.fillStyle = '#F0EFE6';
         ctx.font = '9px "Press Start 2P", monospace';
         ctx.fillText(`FINAL SCORE: ${g.score}  •  BUGS PURGED: ${g.bugsPurged}`, 300, 185);
 
         ctx.fillStyle = primaryAccent;
-        ctx.fillText('[ PRESS RESTART (R) OR ESC TO EXIT ]', 300, 225);
+        ctx.fillText('Press Restart (R) or Esc to exit', 300, 225);
       }
 
       animId = requestAnimationFrame(loop);
@@ -690,7 +690,7 @@ const CyberKnightArcade: React.FC<ArcadeProps> = ({ onExit, phosphorMode }) => {
               onClick={handleRestart}
               className="min-h-[38px] px-3 py-1.5 bg-[#FFCC00] text-[#070814] font-bold border-2 border-white hover:bg-white active:scale-95 shadow-[0_0_8px_rgba(255,204,0,0.4)]"
             >
-              [ 🔄 RESTART (R) ]
+              Restart (R)
             </button>
           )}
 
@@ -699,7 +699,7 @@ const CyberKnightArcade: React.FC<ArcadeProps> = ({ onExit, phosphorMode }) => {
             onClick={() => onExit(gameRef.current.score, gameRef.current.bugsPurged, gameRef.current.wave)}
             className="min-h-[38px] px-3 py-1.5 bg-[#131629] hover:bg-[#FF2A85] text-[#D6CFC2] hover:text-white border-2 border-[#2D3645] hover:border-white active:scale-95"
           >
-            [ X EXIT TO SHELL ]
+            Exit to Shell
           </button>
         </div>
       </div>
@@ -748,7 +748,7 @@ export const TerminalLab: React.FC = () => {
       output: (
         <div className="space-y-1 font-mono text-fluid-mono">
           <div className="text-[#00F0FF] font-semibold">
-            Abdur Rahman Moayed — Computer Science &amp; Engineering Undergraduate
+            Abdur Rahman Moayed • Computer Science &amp; Engineering Undergraduate
           </div>
           <div className="text-[#D6CFC2]">
             East West University, Dhaka, Bangladesh (UTC+6) • Full-Stack Web Architect &amp; Low-Level Systems Engineer
@@ -765,17 +765,17 @@ export const TerminalLab: React.FC = () => {
       timestamp: '00:00:02',
       output: (
         <div className="text-[#D6CFC2] font-mono text-fluid-mono space-y-1">
-          <div className="text-[#FFCC00] font-semibold mb-1">AVAILABLE TELEMETRY DIRECTIVES:</div>
+          <div className="text-[#FFCC00] font-semibold mb-1">AVAILABLE COMMANDS:</div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 text-fluid-micro">
-            <div><span className="text-[#00F0FF] font-bold">help</span> — List available terminal commands</div>
-            <div><span className="text-[#00F0FF] font-bold">whoami</span> — Display bio, university &amp; credentials</div>
-            <div><span className="text-[#00F0FF] font-bold">skills</span> — Render ASCII competency motherboard chart</div>
-            <div><span className="text-[#00F0FF] font-bold">projects</span> — List flagship architectures with repo links</div>
-            <div><span className="text-[#00F0FF] font-bold">github</span> — Open GitHub (@watchknight) in new tab</div>
-            <div><span className="text-[#00F0FF] font-bold">arcade</span> (or <span className="text-[#FFCC00] font-bold">$arcade</span>) — Launch 8-bit Cyber-Knight Wave Runner mini-game</div>
-            <div><span className="text-[#00F0FF] font-bold">clear</span> — Flush terminal history buffer</div>
+            <div><span className="text-[#00F0FF] font-bold">help</span> • List available terminal commands</div>
+            <div><span className="text-[#00F0FF] font-bold">whoami</span> • Display bio, university &amp; credentials</div>
+            <div><span className="text-[#00F0FF] font-bold">skills</span> • Render ASCII competency motherboard chart</div>
+            <div><span className="text-[#00F0FF] font-bold">projects</span> • List flagship architectures with repo links</div>
+            <div><span className="text-[#00F0FF] font-bold">github</span> • Open GitHub (@watchknight) in new tab</div>
+            <div><span className="text-[#00F0FF] font-bold">arcade</span> (or <span className="text-[#FFCC00] font-bold">$arcade</span>) • Launch 8-bit Cyber-Knight Wave Runner mini-game</div>
+            <div><span className="text-[#00F0FF] font-bold">clear</span> • Flush terminal history buffer</div>
             <div className="sm:col-span-2 text-[#FFCC00] font-semibold pt-1">
-              <span className="text-[#4AF626] font-bold">sudo hire moayed</span> — Trigger talent acquisition &amp; transmission
+              <span className="text-[#4AF626] font-bold">sudo hire moayed</span> • Send interview invitation &amp; get in touch
             </div>
           </div>
         </div>
@@ -923,14 +923,14 @@ export const TerminalLab: React.FC = () => {
       <div className="font-mono text-fluid-micro leading-relaxed space-y-4 py-1 select-text">
         <div className="text-[#00F0FF] border-b border-[#2D3645] pb-2 font-pixel text-[8px]">
           ┌──────────────────────────────────────────────────────────────────┐<br />
-          │  EAST WEST UNIVERSITY CSE LABS • FULL-SPECTRUM SYSTEMS TELEMETRY  │<br />
+          │  EAST WEST UNIVERSITY CSE LABS • FULL-SPECTRUM SYSTEMS ARCHITECTURE │<br />
           └──────────────────────────────────────────────────────────────────┘
         </div>
 
         {/* Section 1: Frontend */}
         <div className="space-y-1">
           <div className="text-[#00F0FF] font-bold uppercase tracking-wider flex items-center gap-1.5 font-pixel text-[8px]">
-            <span>[ LAYER 01: FRONTEND, 3D WEBGL &amp; MOTION ]</span>
+            <span>1. Frontend, 3D WebGL &amp; Motion</span>
           </div>
           <div className="text-[#D6CFC2]">
             Three.js / GLSL       <span className="text-[#00F0FF]">[████████████████████]</span> <span className="text-[#4AF626] font-bold">98%</span>  • GPU Wave Vertex Physics &amp; Additive Bloom
@@ -949,7 +949,7 @@ export const TerminalLab: React.FC = () => {
         {/* Section 2: Backend */}
         <div className="space-y-1">
           <div className="text-[#FFCC00] font-bold uppercase tracking-wider flex items-center gap-1.5 font-pixel text-[8px]">
-            <span>[ LAYER 02: DISTRIBUTED SERVER &amp; DATA ]</span>
+            <span>2. Distributed Server &amp; Data</span>
           </div>
           <div className="text-[#D6CFC2]">
             Cloud Firestore       <span className="text-[#FFCC00]">[████████████████████]</span> <span className="text-[#4AF626] font-bold">96%</span>  • Real-time Snapshot Streams &amp; Offline Cache
@@ -968,7 +968,7 @@ export const TerminalLab: React.FC = () => {
         {/* Section 3: Systems */}
         <div className="space-y-1">
           <div className="text-[#4AF626] font-bold uppercase tracking-wider flex items-center gap-1.5 font-pixel text-[8px]">
-            <span>[ LAYER 03: LINUX KERNEL &amp; C/C++ POSIX IPC ]</span>
+            <span>3. Linux Kernel &amp; C/C++ POSIX IPC</span>
           </div>
           <div className="text-[#D6CFC2]">
             C / C++ Systems       <span className="text-[#4AF626]">[██████████████████░░]</span> <span className="text-[#4AF626] font-bold">92%</span>  • Pointer Arithmetic &amp; Struct Alignment
@@ -985,7 +985,7 @@ export const TerminalLab: React.FC = () => {
         </div>
 
         <div className="text-[#8E98AA] border-t border-[#2D3645] pt-2 text-[10px] font-pixel">
-          [OK] 100% Deterministic Verification • Memory Leaks: 0 • Frame Pacing: 60/120 FPS
+          100% Deterministic Verification • Memory Leaks: 0 • Frame Pacing: 60/120 FPS
         </div>
       </div>
     );
@@ -1078,7 +1078,6 @@ export const TerminalLab: React.FC = () => {
       lower === 'arcade' || 
       lower === '$arcade' || 
       lower === './arcade' ||
-      lower === 'arcade.exe' ||
       lower === 'run arcade' ||
       lower === 'game' || 
       lower === 'play' || 
@@ -1091,7 +1090,7 @@ export const TerminalLab: React.FC = () => {
         <div className="p-2.5 bg-[#0C2430] border border-[#00F0FF] text-[#00F0FF] font-pixel text-[9px] space-y-1">
           <div className="flex items-center gap-2 font-bold">
             <Gamepad2 className="w-4 h-4 text-[#00F0FF] animate-bounce" />
-            <span>[ARCADE PROTOCOL INITIALIZED] Mounting Cyber-Knight Wave Runner canvas...</span>
+            <span>Arcade Initialized: Defend POSIX Kernel...</span>
           </div>
           <div className="text-white">
             Defend East West University POSIX Kernel from memory leaks &amp; dangling pointers!
@@ -1130,10 +1129,10 @@ export const TerminalLab: React.FC = () => {
         <div className="p-3.5 bg-[#0C2430] border-2 border-[#00F0FF] space-y-2 text-fluid-mono">
           <div className="flex items-center gap-2 text-[#00F0FF] font-bold font-pixel text-[10px]">
             <ShieldCheck className="w-4 h-4 text-[#00F0FF]" />
-            <span>[AUTHENTICATION SUCCESSFUL] Elevating process to Ring-0 Root...</span>
+            <span>Authentication Successful: Elevating process...</span>
           </div>
           <div className="text-white font-pixel text-[11px]">
-            🎉 TALENT ACQUISITION PROTOCOL ACTIVATED!
+            🎉 Talent Acquisition Activated!
           </div>
           <div className="text-[#D6CFC2] text-fluid-micro leading-relaxed">
             Dispatching credentials to the Encrypted Transmission Dispatch channel below. 
@@ -1188,7 +1187,7 @@ export const TerminalLab: React.FC = () => {
       outputNode = (
         <div className="font-mono text-fluid-mono space-y-1">
           <div className="text-[#00F0FF]">Operational Hub: Dhaka, Bangladesh (East West University)</div>
-          <div className="text-[#D6CFC2]">Live Telemetry: {dhakaTime} (UTC+6)</div>
+          <div className="text-[#D6CFC2]">Local Time: {dhakaTime} (UTC+6)</div>
           <div className="text-[#8E98AA] text-fluid-micro">
             Global Overlap: UTC+0 London/Europe (afternoon overlap), UTC+5:30 APAC (full overlap), UTC-5 US East (morning overlap).
           </div>
@@ -1251,7 +1250,7 @@ export const TerminalLab: React.FC = () => {
       outputNode = (
         <div className="p-3 border-2 border-[#FF2A85] bg-[#131629] text-fluid-micro font-mono text-white space-y-1 shadow-[2px_2px_0_0_#070814]">
           <div className="text-[#FFCC00] font-pixel text-[9px] flex items-center gap-1.5">
-            <span>⚠️ [TEMPORAL SECTOR FAULT] Traversing to Node 404...</span>
+            <span>⚠️ Page Not Found: Traversing to Node 404...</span>
           </div>
           <div className="text-[#D6CFC2]">
             Dispatching to the 5x5 Knight&apos;s Tour Chessboard in Unreachable Sector 404.
@@ -1411,7 +1410,7 @@ export const TerminalLab: React.FC = () => {
         output: (
           <div className="p-2.5 bg-[#0D1512] border-2 border-[#4AF626] font-pixel text-[9px] text-[#4AF626] space-y-1">
             <div className="text-[#FFCC00] font-bold">
-              [ARCADE SESSION TERMINATED] POSIX Kernel Telemetry Logged
+              Arcade Session Ended • Kernel Session Logged
             </div>
             <div className="text-white">
               Final Score: <strong className="text-[#FFCC00]">{score} pts</strong> • Bugs Purged: <strong className="text-[#4AF626]">{bugsPurged}</strong> • Wave: <strong className="text-[#00F0FF]">{wave}</strong>
@@ -1460,7 +1459,7 @@ export const TerminalLab: React.FC = () => {
         <div className="text-center mb-10 max-w-3xl mx-auto">
           <div className={`inline-flex items-center gap-2 font-pixel text-[10px] ${isLight ? 'text-[#0052FF] bg-[#FFFFFF] border-[#1A1D24] shadow-[2px_2px_0_0_#C8C1B4]' : 'text-[#00F0FF] bg-[#131629] border-[#2D3645] shadow-[2px_2px_0_0_#070814]'} uppercase tracking-widest mb-3 px-3.5 py-1.5 border-2`}>
             <TerminalIcon className={`w-3.5 h-3.5 ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'} animate-pulse`} />
-            <span>&gt; [05] TERMINAL // 90s PHOSPHOR CRT UBUNTU 24.04.1 LTS</span>
+            <span>05. Terminal</span>
           </div>
 
           <div className="overflow-visible">
@@ -1480,7 +1479,7 @@ export const TerminalLab: React.FC = () => {
 
           <p className={`font-body text-fluid-body ${isLight ? 'text-[#3F4654]' : 'text-[#D6CFC2]'} mt-2 leading-relaxed`}>
             Authentic 90s deep green/amber phosphor CRT terminal connected to East West University CSE environment. 
-            Run live POSIX telemetry queries, inspect flagship project repos, elevate root access via &apos;sudo hire moayed&apos;, 
+            Run live commands, inspect projects, send an interview invitation via &apos;sudo hire moayed&apos;, 
             or launch the inline 8-bit Cyber-Knight Wave Runner mini-game via &apos;arcade&apos;.
           </p>
         </div>
@@ -1510,16 +1509,13 @@ export const TerminalLab: React.FC = () => {
           <div className={`${isLight ? 'bg-[#D8D2C5] border-b-2 border-[#1A1D24] text-[#11131A]' : 'bg-[#131629] border-b-2 border-[#2D3645] text-[#F0EFE6]'} px-3 py-2 flex items-center justify-between select-none relative z-30`}>
             {/* Left: Glyph & Prompt */}
             <div className="flex items-center gap-2">
-              <span className={`font-pixel text-[8px] px-1.5 py-0.5 ${isLight ? 'bg-white/80 border border-[#1A1D24]/30' : 'bg-black/60 border border-white/20'} ${phosphorTextColor}`}>
-                SYS.96
-              </span>
               <span className={`font-pixel text-[10px] ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'} hidden sm:inline-flex items-center gap-1.5`}>
-                <span>&gt; UBUNTU_CRT.EXE</span>
-                <span className={isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'}>|</span>
+                <span>Terminal</span>
+                <span className={isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'}>•</span>
                 <span className={phosphorTextColor}>moayed@ewu-cse:~ (24.04.1 LTS)</span>
               </span>
               <span className={`font-pixel text-[10px] ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'} sm:hidden`}>
-                &gt; UBUNTU_CRT
+                Terminal
               </span>
             </div>
 
@@ -1789,7 +1785,7 @@ export const TerminalLab: React.FC = () => {
                         : 'bg-[#0D1512] hover:bg-[#00F0FF]/15 text-[#D6CFC2] hover:text-[#00F0FF] border-[#2D3645] hover:border-[#00F0FF]'
                     }`}
                   >
-                    <span>{`> ${label}`}</span>
+                    <span>{label}</span>
                     {badge && <span className="text-[9px]">{badge}</span>}
                   </button>
                 ))}
@@ -1808,7 +1804,7 @@ export const TerminalLab: React.FC = () => {
                   }`}
                 >
                   <Sparkles className="w-3 h-3 text-[#FFCC00] animate-pulse" />
-                  <span>{`> sudo hire moayed`}</span>
+                  <span>sudo hire moayed</span>
                   <span className="text-[8px] text-[#FFCC00] px-1 bg-black/50 border border-[#FFCC00]/30">⚡</span>
                 </button>
               </div>

@@ -43,7 +43,7 @@ const HICKS_LAW_ANCHORS: NavAnchor[] = [
   },
   {
     id: '#render-pass-inspector',
-    label: 'Telemetry Inspector',
+    label: 'Render Inspector',
     subtitle: '3D Shader Passes',
     icon: <Activity className="w-3.5 h-3.5" />,
   },
@@ -443,7 +443,7 @@ export const SentinelHUD: React.FC = () => {
                 data-magnetic-hud="true"
                 onPointerEnter={handlePointerHover}
                 onClick={(e) => handleNavClick(anchor.id, e)}
-                aria-label={`Navigate to ${anchor.label} section — ${anchor.subtitle}`}
+                aria-label={`Navigate to ${anchor.label} section • ${anchor.subtitle}`}
                 aria-current={isActive ? 'page' : undefined}
                 className={`relative flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono transition-all duration-200 ${
                   isActive
@@ -495,7 +495,7 @@ export const SentinelHUD: React.FC = () => {
             onPointerEnter={handlePointerHover}
             onClick={(e) => handleRenderPassChange('uv', e)}
             aria-label="Switch to UV/Normals Render Pass (Texture Coordinates & Wave Vectors)"
-            title="Pass 1: UV / Normals Telemetry"
+            title="Pass 1: UV / Normals Diagnostics"
             className={`flex items-center gap-1 px-2.5 py-1 rounded-full transition-all ${
               activeRenderPass === 'uv'
                 ? 'bg-wk-terracotta-pulse text-wk-alabaster-ink font-bold shadow-md'

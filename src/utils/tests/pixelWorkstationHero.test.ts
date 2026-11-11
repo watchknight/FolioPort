@@ -16,12 +16,12 @@ describe('Retro 90s Cyberdeck Hero & PixelWorkstationCRT Verification', () => {
       expect(html).toContain('DHAKA, BD');
     });
 
-    it('renders crisp pixel display top prompt > WELCOME TO WATCHKNIGHT_OS // PORTFOLIO v1.96', () => {
+    it('renders crisp pixel display top prompt WELCOME TO MOAYED\'S PORTFOLIO', () => {
       const html = renderToString(React.createElement(Hero));
 
       expect(html).toContain('hero-prompt-bar');
       expect(html).toContain('font-pixel');
-      expect(html).toContain('WELCOME TO WATCHKNIGHT_OS // PORTFOLIO v1.96');
+      expect(html).toContain('WELCOME TO MOAYED');
       expect(html).toContain('text-[#00F0FF]');
     });
 
@@ -40,27 +40,27 @@ describe('Retro 90s Cyberdeck Hero & PixelWorkstationCRT Verification', () => {
       expect(html).toContain('WORLDS.');
     });
 
-    it('renders the interactive 90s CRT bracket menu with [1] to [4] options', () => {
+    it('renders the interactive 90s CRT bracket menu with 1 to 4 options', () => {
       const html = renderToString(React.createElement(Hero));
 
       expect(html).toContain('hero-bracket-menu');
-      expect(html).toContain('COMMAND SELECTION // SYS.96 [PRESS 1 - 4]');
+      expect(html).toContain('Navigation • Press 1–4');
 
-      // Menu option [1]
-      expect(html).toContain('[1]');
-      expect(html).toContain('ABOUT ME &amp; KERNEL ARCHITECTURE');
+      // Menu option 1
+      expect(html).toContain('1.');
+      expect(html).toContain('About &amp; Systems');
 
-      // Menu option [2]
-      expect(html).toContain('[2]');
-      expect(html).toContain('MY PROJECTS &amp; 3D SHADER DECK');
+      // Menu option 2
+      expect(html).toContain('2.');
+      expect(html).toContain('Selected Work');
 
-      // Menu option [3]
-      expect(html).toContain('[3]');
-      expect(html).toContain('GITHUB_ROM &amp; UBUNTU TERMINAL');
+      // Menu option 3
+      expect(html).toContain('3.');
+      expect(html).toContain('GitHub &amp; Terminal');
 
-      // Menu option [4]
-      expect(html).toContain('[4]');
-      expect(html).toContain('RESUME.PDF &amp; UPLINK DISPATCH');
+      // Menu option 4
+      expect(html).toContain('4.');
+      expect(html).toContain('Resume &amp; Contact');
     });
   });
 
@@ -73,10 +73,10 @@ describe('Retro 90s Cyberdeck Hero & PixelWorkstationCRT Verification', () => {
 
       // #D6CFC2 putty monitor bezel
       expect(html).toContain('bg-[#D6CFC2]');
-      expect(html).toContain('WATCHKNIGHT // SYS.96 CRT');
+      expect(html).toContain('MOAYED');
 
       // Window chrome controls [ - ] [ + ] [ x ]
-      expect(html).toContain('DEV_WORKSTATION.EXE');
+      expect(html).toContain('Developer Workstation');
       expect(html).toContain('bg-[#FF2A85]'); // Close control accent
 
       // Curved #0D1512 dark phosphor screen
@@ -97,13 +97,13 @@ describe('Retro 90s Cyberdeck Hero & PixelWorkstationCRT Verification', () => {
       const html = renderToString(React.createElement(PixelWorkstationCRT));
 
       // Mode toggle button
-      expect(html).toContain('PHOTO MODE');
+      expect(html).toContain('Photo Mode');
       expect(html).toContain('Toggle between 8-bit character sprite and real CRT portrait photo');
-      expect(html).toContain('DUAL-MODE PORTRAIT SWITCHER: [ AVATAR: 8-BIT SPRITE | REAL CRT PHOTO ]');
-      expect(html).toContain('[8-BIT SPRITE]');
+      expect(html).toContain('Portrait Switcher: 8-Bit Sprite or Real Photo');
+      expect(html).toContain('8-Bit Sprite');
 
       // Degauss button
-      expect(html).toContain('DEGAUSS');
+      expect(html).toContain('Degauss');
 
       // Hardware LEDs
       expect(html).toContain('HDD');
@@ -111,15 +111,15 @@ describe('Retro 90s Cyberdeck Hero & PixelWorkstationCRT Verification', () => {
       expect(html).toContain('bg-[#4AF626]'); // Green power LED
 
       // Initial active mode indicator badge
-      expect(html).toContain('8-BIT SPRITE');
+      expect(html).toContain('8-Bit Sprite');
     });
 
     it('renders correctly when initialized in photo mode', () => {
       const html = renderToString(React.createElement(PixelWorkstationCRT, { initialMode: 'photo' }));
 
       // Mode toggle button shows avatar mode target
-      expect(html).toContain('AVATAR MODE');
-      expect(html).toContain('[REAL CRT PHOTO]');
+      expect(html).toContain('Avatar Mode');
+      expect(html).toContain('Real Photo');
       expect(html).toContain('Real CRT Portrait Photo of Abdur Rahman Moayed');
     });
 
@@ -136,7 +136,7 @@ describe('Retro 90s Cyberdeck Hero & PixelWorkstationCRT Verification', () => {
 
       expect(html).toContain('23.7644° N, 90.4252° E');
       expect(html).toContain('Dhaka, BD (UTC+6)');
-      expect(html).toContain('SYS.96_ONLINE');
+      expect(html).toContain('Online');
     });
   });
 });

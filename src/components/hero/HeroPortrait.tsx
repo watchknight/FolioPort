@@ -574,7 +574,7 @@ export const HeroPortrait: React.FC<HeroPortraitProps> = ({
             <div className="flex items-center justify-between text-[10px] font-mono text-white/30 uppercase tracking-widest">
               <span className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-                <span>ATELIER SPEC // 2026</span>
+                <span>Studio • 2026</span>
               </span>
               <span>SEC.01</span>
             </div>
@@ -617,7 +617,7 @@ export const HeroPortrait: React.FC<HeroPortraitProps> = ({
             <img
               ref={imageRef}
               src={imageSrc}
-              alt="Abdur Rahman Moayed (@watchknight) — Full-Stack Architect & Low-Level Systems Engineer"
+              alt="Abdur Rahman Moayed (@watchknight) • Full-Stack Architect & Low-Level Systems Engineer"
               className={`w-full h-full object-cover object-[center_20%] contrast-[1.05] brightness-[0.98] transition-all duration-700 ease-out ${
                 isWebGLActive ? 'opacity-0' : 'opacity-100'
               } hover:scale-[1.03]`}
@@ -637,12 +637,12 @@ export const HeroPortrait: React.FC<HeroPortraitProps> = ({
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-wk-verdigris-signal opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-wk-verdigris-signal" />
               </span>
-              <span className="font-bold">ARCHITECT // @watchknight</span>
+              <span className="font-bold">@watchknight</span>
             </div>
 
             {/* Bottom subtle edge coordinate stamp */}
             <div className="absolute bottom-4 right-4 pointer-events-none font-pixel text-[8px] uppercase tracking-wider px-2 py-0.5 border-2 border-[#2D3645] bg-[#070814]/90 backdrop-blur-sm text-[#00F0FF] z-20">
-              SENTINEL // UTC+6
+              Dhaka • UTC+6
             </div>
           </div>
         </div>
@@ -651,7 +651,7 @@ export const HeroPortrait: React.FC<HeroPortraitProps> = ({
       {/* STAGGER-REVEAL METADATA COORDINATES DIRECTLY BENEATH PHOTO */}
       <div
         className="hero-portrait-meta mt-2.5 sm:mt-3 flex items-center justify-between gap-1.5 sm:gap-2 px-1 font-mono text-fluid-micro text-muted tracking-widest uppercase"
-        aria-label="Geographic Coordinates & Station Telemetry"
+        aria-label="Geographic Coordinates & Station Status"
       >
         <div className="hero-portrait-meta-marker flex items-center gap-1.5 text-alabaster-dim">
           <Compass className="w-3.5 h-3.5 text-accent shrink-0" />

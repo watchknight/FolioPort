@@ -1,5 +1,5 @@
 // src/components/ShutterSectionStack.tsx
-// @watchknight Awwwards Motion Architecture // SYS.96
+// @watchknight Awwwards Motion Architecture
 // Layered Cyber-Shutter (Shop-Shutter Roll-Up) Deck & 3D Articulated Louver Slats
 
 import React, {
@@ -278,16 +278,16 @@ const ShutterBottomBar: React.FC<{
             }`}
           />
           <span className={isOpening ? 'text-[#FFCC00] font-bold' : (isLight ? 'text-[#007A33]' : 'text-[#4AF626]')}>
-            {isOpening ? 'OPENING [▲]' : 'LOCKED [●]'}
+            {isOpening ? 'OPENING' : 'LOCKED'}
           </span>
           <span className={`hidden md:inline font-pixel text-[8px] ${isLight ? 'text-[#1A1D24]/60' : 'text-white/35'}`}>
-            {`// BAY_${bayNumber} // ${title.toUpperCase().replace(/\s+/g, '_')}`}
+            {`Bay ${bayNumber} • ${title}`}
           </span>
         </div>
 
         {/* Center: Interactive Manual Quick-Lift Handle */}
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Secondary [ ▼ PREV BAY ] button on sections 02–06 */}
+          {/* Secondary [ Prev Bay ] button on sections 02–06 */}
           {index > 0 && (
             <button
               type="button"
@@ -300,11 +300,11 @@ const ShutterBottomBar: React.FC<{
               }`}
               aria-label="Scroll back to previous bay"
             >
-              <span>[ ▼ PREV BAY ]</span>
+              <span>▼ Prev Bay</span>
             </button>
           )}
 
-          {/* Primary Quick-Lift Handle: [ ▲ LIFT SHUTTER // UNLOCK BAY_0{i+1} ▲ ] */}
+          {/* Primary Quick-Lift Handle: [ Lift Shutter ] */}
           <button
             type="button"
             onClick={handleLiftShutter}
@@ -327,8 +327,8 @@ const ShutterBottomBar: React.FC<{
             <span className={isLight ? 'text-[#007A33] group-hover:text-[#C85A00] transition-colors' : 'text-[#4AF626] group-hover:text-[#FFCC00] transition-colors'}>▲</span>
             <span>
               {index < total - 1
-                ? `[ ▲ LIFT SHUTTER // UNLOCK BAY_${nextBayNumber} ▲ ]`
-                : '[ ▲ RETURN TO SYS.96 // BAY_01 ▲ ]'}
+                ? `▲ Next: Bay ${nextBayNumber}`
+                : '▲ Return to Top'}
             </span>
           </button>
         </div>
@@ -351,7 +351,7 @@ const ShutterBottomBar: React.FC<{
           />
           <div className="flex items-center gap-2 font-mono text-[9px] sm:text-[10px]">
             <span className={`hidden sm:inline ${isOpening ? 'text-[#FFCC00] font-bold' : (isLight ? 'text-[#007A33]' : 'text-[#4AF626]')}`}>
-              {isOpening ? 'OPENING [▲]' : 'LOCKED [●]'}
+              {isOpening ? 'Opening ▲' : 'Locked ●'}
             </span>
             <span
               ref={(el) => {
@@ -585,7 +585,7 @@ export const ShutterLayer: React.FC<ShutterLayerProps> = ({
                 <span className={`w-1.5 h-1.5 rounded-full animate-ping ${
                   isLight ? 'bg-[#D90452]' : 'bg-[#FF2A85]'
                 }`} />
-                <span>H-SYNC: 15.734 kHz // ELECTRON_BEAM_ACTIVE</span>
+                <span>H-SYNC: 15.734 kHz • Beam Active</span>
               </div>
             </div>
           </div>
@@ -714,7 +714,7 @@ export const ShutterSectionStack: React.FC<ShutterSectionStackProps> = ({
     <ShutterDeckContext.Provider value={contextValue}>
       <div
         className={`shutter-section-stack relative w-full flex flex-col ${className}`}
-        data-shutter-deck="SYS.96"
+        data-shutter-deck="deck"
       >
         {children}
       </div>

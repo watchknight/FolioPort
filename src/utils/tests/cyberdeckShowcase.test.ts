@@ -18,7 +18,7 @@ import {
 import { TransitionProvider } from '../../context/TransitionContext';
 import { App } from '../../App';
 
-describe('SYS.96 Cyberdeck Station & Unified Showcase Verification', () => {
+describe('Cyberdeck Station & Unified Showcase Verification', () => {
   describe('Flagship ROM Cartridge Ledger Dataset (6 Flagship Works)', () => {
     it('contains all 6 required flagship projects with zero-padded pixel numbers', () => {
       expect(FLAGSHIP_PROJECTS).toHaveLength(6);
@@ -74,15 +74,15 @@ describe('SYS.96 Cyberdeck Station & Unified Showcase Verification', () => {
       expect(passIds).toEqual(['beauty', 'pixel', 'wireframe', 'clay', 'uv', 'normals']);
 
       const labels = SHADER_PASSES.map((s) => s.label);
-      expect(labels).toContain('[1] BEAUTY_PBR');
-      expect(labels).toContain('[2] 3D_PIXEL_PASS');
-      expect(labels).toContain('[3] WIREFRAME_WAVE');
-      expect(labels).toContain('[4] CLAY_MATTE');
-      expect(labels).toContain('[5] UV_MATRIX');
-      expect(labels).toContain('[6] NORMALS_RGB');
+      expect(labels).toContain('1. Beauty PBR');
+      expect(labels).toContain('2. 3D Pixel Pass');
+      expect(labels).toContain('3. Wireframe Wave');
+      expect(labels).toContain('4. Clay Matte');
+      expect(labels).toContain('5. UV Matrix');
+      expect(labels).toContain('6. Normals RGB');
 
       const pixelPass = SHADER_PASSES.find((s) => s.id === 'pixel');
-      expect(pixelPass?.badge).toContain('6PX');
+      expect(pixelPass?.badge).toContain('6px');
       expect(pixelPass?.description).toContain('RenderPixelatedPass');
     });
   });
@@ -98,19 +98,18 @@ describe('SYS.96 Cyberdeck Station & Unified Showcase Verification', () => {
       );
 
       // Station Chrome
-      expect(html).toContain('WATCHKNIGHT_OS // SYS.96');
-      expect(html).toContain('CYBERDECK_STATION.ROM');
-      expect(html).toContain('VOLUMETRIC_ENGINE // ACTIVE');
+      expect(html).toContain('Cyberdeck Station');
+      expect(html).toContain('Volumetric Engine • Active');
       expect(html).toContain('EAST WEST UNIVERSITY CSE');
 
       // Left Zone: ROM Cartridge Ledger
-      expect(html).toContain('ROM SLOTS [01 - 06] // LOADED');
-      expect(html).toContain('[01]');
-      expect(html).toContain('[02]');
-      expect(html).toContain('[03]');
-      expect(html).toContain('[04]');
-      expect(html).toContain('[05]');
-      expect(html).toContain('[06]');
+      expect(html).toContain('Slots 01 - 06 • Loaded');
+      expect(html).toContain('01');
+      expect(html).toContain('02');
+      expect(html).toContain('03');
+      expect(html).toContain('04');
+      expect(html).toContain('05');
+      expect(html).toContain('06');
       expect(html).toContain('Mental Defrag');
       expect(html).toContain('DocLensBD');
       expect(html).toContain('Rannabanna');
@@ -120,24 +119,24 @@ describe('SYS.96 Cyberdeck Station & Unified Showcase Verification', () => {
 
       // Right Zone: 3D Hologram Viewport & Shader Pass Frame
       expect(html).toContain('id="render-pass-inspector"');
-      expect(html).toContain('HOLO_VIEWPORT');
-      expect(html).toContain('[1] BEAUTY_PBR');
-      expect(html).toContain('[2] 3D_PIXEL_PASS');
-      expect(html).toContain('[3] WIREFRAME_WAVE');
-      expect(html).toContain('[4] CLAY_MATTE');
-      expect(html).toContain('[5] UV_MATRIX');
-      expect(html).toContain('[6] NORMALS_RGB');
+      expect(html).toContain('Viewport •');
+      expect(html).toContain('1. Beauty PBR');
+      expect(html).toContain('2. 3D Pixel Pass');
+      expect(html).toContain('3. Wireframe Wave');
+      expect(html).toContain('4. Clay Matte');
+      expect(html).toContain('5. UV Matrix');
+      expect(html).toContain('6. Normals RGB');
 
       // Action buttons
-      expect(html).toContain('[ INSPECT ARCHITECTURE ]');
-      expect(html).toContain('[ OPEN DOSSIER ]');
+      expect(html).toContain('Inspect Architecture');
+      expect(html).toContain('Open Dossier');
     });
 
     it('renders all 6 interactive simulation preview components safely', () => {
-      expect(renderToString(React.createElement(MentalDefragPreview))).toContain('SPATIAL_2D_PHYSICS.SYS');
-      expect(renderToString(React.createElement(DocLensBDPreview))).toContain('CLOUD_FIRESTORE_TELEMETRY.SYS');
+      expect(renderToString(React.createElement(MentalDefragPreview))).toContain('Spatial 2D Physics');
+      expect(renderToString(React.createElement(DocLensBDPreview))).toContain('Cloud Firestore Sync');
       expect(renderToString(React.createElement(RannabannaPreview))).toContain('রান্নাবান্না');
-      expect(renderToString(React.createElement(TrashTrailPreview))).toContain('SCROLL_SCRUB_SIMULATOR.SYS');
+      expect(renderToString(React.createElement(TrashTrailPreview))).toContain('Scroll Scrub Simulator');
       expect(renderToString(React.createElement(NeonVanguardPreview))).toContain('2D Canvas Combat');
       expect(renderToString(React.createElement(ChronosAetherPreview))).toContain('Navier-Stokes Fluid');
     });
@@ -212,7 +211,7 @@ describe('SYS.96 Cyberdeck Station & Unified Showcase Verification', () => {
 
       // Contains the single work section
       expect(html).toContain('id="work"');
-      expect(html).toContain('CYBERDECK_STATION.ROM');
+      expect(html).toContain('Cyberdeck Station');
 
       // Check that duplicate sections do not appear multiple times
       // "Mental Defrag" appears in ProjectsShowcase and in the 404 hidden crawl list

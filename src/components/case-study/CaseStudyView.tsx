@@ -182,8 +182,8 @@ export const CaseStudyView: React.FC = () => {
           className="flex items-center gap-2 px-3 py-1.5 border-2 border-[#2D3645] bg-[#131629] hover:border-[#00F0FF] text-[#F0EFE6] hover:text-[#00F0FF] font-pixel text-[9px] transition-all active:scale-95"
         >
           <ArrowLeft className="w-3.5 h-3.5 text-[#00F0FF]" />
-          <span>&lt; PROJECTS</span>
-          <span className="hidden sm:inline text-[#8E98AA] ml-1">[ESC]</span>
+          <span>Projects</span>
+          <span className="hidden sm:inline text-[#8E98AA] ml-1">Esc</span>
         </button>
 
         {/* Center: Case Study Monogram & Slide Counter */}
@@ -253,7 +253,7 @@ export const CaseStudyView: React.FC = () => {
         <div className="relative z-10 flex items-center justify-between">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-accent/15 border border-accent/30 font-mono text-fluid-micro text-accent-coral uppercase tracking-wider">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>ARCHITECTURAL DOSSIER // {activeProject.category}</span>
+            <span>Architecture • {activeProject.category}</span>
           </div>
 
           <span className="font-mono text-2xl sm:text-4xl font-black text-accent-coral opacity-80">
@@ -289,7 +289,7 @@ export const CaseStudyView: React.FC = () => {
       </section>
 
       {/* =========================================================================
-          PROJECT METADATA STRIP (CLIENT, ROLE, YEAR, LIVE URL) — STAGGERED
+          PROJECT METADATA STRIP (CLIENT, ROLE, YEAR, LIVE URL) • STAGGERED
          ========================================================================= */}
       <section className="w-full border-b border-white/10 bg-obsidian-surface/80 backdrop-blur-xl">
         <div className="container mx-auto px-4 sm:px-6 lg:px-12 max-w-7xl py-6 sm:py-8">
@@ -341,7 +341,7 @@ export const CaseStudyView: React.FC = () => {
                     rel="noreferrer"
                     className="inline-flex items-center gap-1.5 px-3 py-1 border-2 border-[#2D3645] bg-[#131629] text-[#00F0FF] hover:border-[#00F0FF] font-pixel text-[9px] transition-colors"
                   >
-                    <span>[ LIVE_SPEC ]</span>
+                    <span>Live Demo</span>
                     <ExternalLink className="w-3 h-3" />
                   </a>
                 )}
@@ -371,7 +371,7 @@ export const CaseStudyView: React.FC = () => {
           <div className="case-narrative-anim narrative-block lg:col-span-6 p-6 sm:p-8 border-2 border-[#2D3645] bg-[#131629] shadow-[0_0_20px_rgba(0,0,0,0.8)] space-y-4">
             <div className="inline-flex items-center gap-2 px-3 py-1 border-2 border-[#FF2A85] bg-[#070814] font-pixel text-[9px] text-[#FF2A85] uppercase tracking-wider">
               <AlertCircle className="w-3.5 h-3.5 text-[#FF2A85]" />
-              <span>THE PROBLEM &amp; SYSTEM BOTTLENECK</span>
+              <span>Problem</span>
             </div>
 
             <h3 className="font-display font-extrabold text-2xl sm:text-3xl text-alabaster tracking-tight">
@@ -394,7 +394,7 @@ export const CaseStudyView: React.FC = () => {
           <div className="case-narrative-anim narrative-block lg:col-span-6 p-6 sm:p-8 border-2 border-[#00F0FF] bg-[#131629] shadow-[0_0_25px_rgba(0,240,255,0.2)] space-y-4">
             <div className="inline-flex items-center gap-2 px-3 py-1 border-2 border-[#4AF626] bg-[#0D1512] font-pixel text-[9px] text-[#4AF626] font-semibold uppercase tracking-wider">
               <CheckCircle2 className="w-3.5 h-3.5 text-[#4AF626]" />
-              <span>ARCHITECTURAL RESOLUTION</span>
+              <span>How It Works</span>
             </div>
 
             <h3 className="font-display font-extrabold text-2xl sm:text-3xl text-alabaster tracking-tight">
@@ -408,12 +408,12 @@ export const CaseStudyView: React.FC = () => {
             {/* Architectural Mechanics List */}
             <div className="space-y-2 pt-2 border-t border-white/10">
               <span className="font-mono text-fluid-micro text-[#00F0FF] uppercase tracking-wider block font-semibold">
-                Core Architectural Mechanics:
+                Core Mechanics:
               </span>
               <ul className="space-y-2 font-mono text-xs text-alabaster-dim">
                 {activeProject.solution.architecture.map((item, idx) => (
                   <li key={idx} className="flex items-start gap-2">
-                    <span className="text-[#00F0FF] mt-0.5">❯</span>
+                    <span className="text-[#00F0FF] mt-0.5">•</span>
                     <span>{item}</span>
                   </li>
                 ))}
@@ -427,10 +427,10 @@ export const CaseStudyView: React.FC = () => {
           <div className="flex items-center justify-between border-b border-white/10 pb-4">
             <div>
               <div className="font-pixel text-[9px] text-[#00F0FF] uppercase tracking-widest">
-                QUANTIFIED VALIDATION // PRODUCTION METRICS
+                Key Results
               </div>
               <h3 className="font-display font-black text-2xl sm:text-3xl text-alabaster uppercase tracking-tight">
-                Empirical Telemetry &amp; Impact
+                Key Results
               </h3>
             </div>
             <span className="font-pixel text-[8px] text-[#8E98AA] hidden sm:inline">
@@ -465,10 +465,10 @@ export const CaseStudyView: React.FC = () => {
           <div className="flex items-center justify-between border-b border-white/10 pb-3">
             <div className="flex items-center gap-2 font-pixel text-[9px] text-[#00F0FF] uppercase tracking-wider">
               <TerminalIcon className="w-4 h-4 text-[#00F0FF]" />
-              <span>LIVE INTERACTIVE SIMULATION SANDBOX</span>
+              <span>Interactive Simulation</span>
             </div>
             <span className="font-pixel text-[8px] text-[#8E98AA]">
-              Interactive WebGL / Canvas / Telemetry
+              Interactive WebGL &amp; Canvas Demo
             </span>
           </div>
 

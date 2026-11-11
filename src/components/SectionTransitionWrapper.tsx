@@ -115,7 +115,7 @@ export const SectionTransitionWrapper: React.FC<SectionTransitionWrapperProps> =
 
             <div className="text-[#FF2A85] font-pixel text-[8px] tracking-tight hidden sm:flex items-center gap-1.5 opacity-80">
               <span className="w-1.5 h-1.5 bg-[#FF2A85] rounded-full animate-ping" />
-              <span>H-SYNC: 15.734 kHz // ELECTRON_BEAM_ACTIVE</span>
+              <span>H-SYNC: 15.734 kHz • Beam Active</span>
             </div>
           </div>
         </div>

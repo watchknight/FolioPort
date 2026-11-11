@@ -146,7 +146,7 @@ export const CRTViewportShell: React.FC<CRTViewportShellProps> = ({ children }) 
           type="button"
           onClick={triggerDegauss}
           disabled={isDegaussing}
-          className="px-2 py-0.5 text-[8px] font-pixel uppercase border active:scale-95 transition-all"
+          className="px-2 py-0.5 text-[8px] font-pixel border active:scale-95 transition-all"
           style={{
             backgroundColor: 'var(--crt-phosphor-dark, #0D1512)',
             color: 'var(--tech-cyan-wave, #00F0FF)',
@@ -154,10 +154,10 @@ export const CRTViewportShell: React.FC<CRTViewportShellProps> = ({ children }) 
           }}
           title="Degauss CRT Electron Guns"
         >
-          [ DEGAUSS ]
+          Degauss
         </button>
 
-        {/* Right: [ CRT FX: FULL / LITE / OFF ] & Glowing Power LED */}
+        {/* Right: CRT FX: FULL / LITE / OFF & Glowing Power LED */}
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -182,7 +182,7 @@ export const CRTViewportShell: React.FC<CRTViewportShellProps> = ({ children }) 
             title="Toggle CRT Scanlines & Curvature"
             aria-label={`Current CRT mode is ${fxMode}. Click to toggle.`}
           >
-            <span>CRT FX: [{fxMode}]</span>
+            <span>CRT FX: {fxMode}</span>
           </button>
 
           <div className="flex items-center gap-1.5">
@@ -194,7 +194,7 @@ export const CRTViewportShell: React.FC<CRTViewportShellProps> = ({ children }) 
               className="font-pixel text-[8px] font-bold"
               style={{ color: 'var(--pixel-phosphor-green, #4AF626)' }}
             >
-              PWR
+              Power
             </span>
           </div>
         </div>

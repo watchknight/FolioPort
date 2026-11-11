@@ -13,20 +13,20 @@ import { RetroOSWindow } from '../../components/RetroOSWindow';
 import { AMBER_PALETTE } from '../../components/CRTDioramaStage';
 
 describe('Retro 90s OS Window View Modules (Strict 4-Color Pixel UI)', () => {
-  describe('MODULE [2] ABOUT & SKILLS (ABOUT_ME.TXT — STREAMLINED ENGINEERING PROFILE)', () => {
+  describe('Module 2: About & Skills', () => {
     it('renders authentic 90s terminal header with testid="retro-content-about"', () => {
       const html = renderToString(React.createElement(AboutMeView));
       expect(html).toContain('data-testid="retro-content-about"');
-      expect(html).toContain('=== [2] ABOUT &amp; SKILLS // ABOUT_ME.TXT ===');
-      expect(html).toContain('title="=== [2] ABOUT &amp; SKILLS // ABOUT_ME.TXT ==="');
-      expect(html).toContain('SYS.96 // PROFILE');
+      expect(html).toContain('2. About');
+      expect(html).toContain('title="About"');
+      expect(html).toContain('Profile');
     });
 
     it('renders 16x16 2bpp pixel portrait SVG with pixelated rendering', () => {
       const html = renderToString(React.createElement(AboutMeView));
       expect(html).toContain('Pixel Portrait of Abdur Rahman Moayed (@watchknight)');
       expect(html).toContain('image-rendering:pixelated');
-      expect(html).toContain('[16x16 2BPP PHOSPHOR]');
+      expect(html).toContain('16x16 Pixel Art');
       expect(html).toContain('viewBox="0 0 16 16"');
     });
 
@@ -58,7 +58,7 @@ describe('Retro 90s OS Window View Modules (Strict 4-Color Pixel UI)', () => {
     it('renders concise 2-paragraph engineering biography in readable Plus Jakarta Sans (max-width: 62ch)', () => {
       const html = renderToString(React.createElement(AboutMeView));
       expect(html).toContain('data-testid="about-biography-section"');
-      expect(html).toContain('SYSTEM MANIFEST // ENGINEERING BIOGRAPHY:');
+      expect(html).toContain('About Me');
       expect(html).toContain('Plus Jakarta Sans');
       expect(html).toContain('max-width:62ch');
       expect(html).toContain('C/C++ Operating Systems engineering');
@@ -104,7 +104,7 @@ describe('Retro 90s OS Window View Modules (Strict 4-Color Pixel UI)', () => {
 
     it('renders core competencies list', () => {
       const html = renderToString(React.createElement(AboutMeView));
-      expect(html).toContain('CORE COMPETENCIES:');
+      expect(html).toContain('Core Competencies:');
       expect(html).toContain('• C++ / C Systems');
       expect(html).toContain('• TypeScript &amp; React');
       expect(html).toContain('• WebGL &amp; GLSL Shaders');
@@ -157,11 +157,11 @@ describe('Retro 90s OS Window View Modules (Strict 4-Color Pixel UI)', () => {
   });
 
   describe('MODULE [2] SELECTED WORK (4-PROJECT SHOWCASE & TWO-TIER PROGRESSIVE DISCLOSURE)', () => {
-    it('renders clean section header "SELECTED ENGINEERING WORK (4 FLAGSHIP CASE STUDIES)" and right-aligned link "[All 14 Repos on GitHub @watchknight]"', () => {
+    it('renders clean section header "SELECTED ENGINEERING WORK (4 FLAGSHIP CASE STUDIES)" and right-aligned link "All 14 Repos on GitHub @watchknight"', () => {
       const html = renderToString(React.createElement(ProjectsView));
       expect(html).toContain('data-testid="retro-content-projects"');
       expect(html).toContain('SELECTED ENGINEERING WORK (4 FLAGSHIP CASE STUDIES)');
-      expect(html).toContain('[All 14 Repos on GitHub @watchknight]');
+      expect(html).toContain('All 14 Repos on GitHub @watchknight');
       expect(html).toContain('href="https://github.com/watchknight"');
     });
 
@@ -212,10 +212,10 @@ describe('Retro 90s OS Window View Modules (Strict 4-Color Pixel UI)', () => {
       expect(html).toContain('120 FPS Zero-Alloc Canvas • &lt;1.2µs POSIX IPC');
       expect(html).toContain('Cloud Firestore • Real-Time Sync • CI/CD');
 
-      // 4. Action row with [Read Case Study], [Live Demo], and [GitHub]
-      expect(html).toContain('[Read Case Study]');
-      expect(html).toContain('[Live Demo]');
-      expect(html).toContain('[GitHub]');
+      // 4. Action row with Read Case Study, Live Demo, and GitHub
+      expect(html).toContain('Read Case Study');
+      expect(html).toContain('Live Demo');
+      expect(html).toContain('GitHub');
     });
 
     it('renders all 4 quantified outcome badges exactly as specified', () => {
@@ -226,7 +226,7 @@ describe('Retro 90s OS Window View Modules (Strict 4-Color Pixel UI)', () => {
       expect(html).toContain('Cloud Firestore • Real-Time Sync • CI/CD');
     });
 
-    it('renders bottom action row with [Read Case Study], [Live Demo], and [GitHub] for every card', () => {
+    it('renders bottom action row with Read Case Study, Live Demo, and GitHub for every card', () => {
       const html = renderToString(React.createElement(ProjectsView));
       expect(html).toContain('data-testid="retro-btn-read-case-study-01"');
       expect(html).toContain('data-testid="retro-btn-read-case-study-02"');
@@ -255,10 +255,10 @@ describe('Retro 90s OS Window View Modules (Strict 4-Color Pixel UI)', () => {
       });
     });
 
-    it('renders compact GitHub archive accordion bar "[+ View Additional Open-Source Labs & C/C++ Repos (8)]"', () => {
+    it('renders compact GitHub archive accordion bar "+ View Additional Labs (8)"', () => {
       const html = renderToString(React.createElement(ProjectsView));
       expect(html).toContain('data-testid="btn-toggle-github-accordion"');
-      expect(html).toContain('[+ View Additional Open-Source Labs &amp; C/C++ Repos (8)]');
+      expect(html).toContain('+ View Additional Labs (8)');
     });
 
     it('exports resilient static fallback array of at least 12 GitHub repositories including required labs', () => {
@@ -274,39 +274,39 @@ describe('Retro 90s OS Window View Modules (Strict 4-Color Pixel UI)', () => {
 
     it('includes backwards-compatible systems subsystems & architectural labs', () => {
       const html = renderToString(React.createElement(ProjectsView));
-      expect(html).toContain('HYPERDECK 3D PARTICLE ENGINE');
-      expect(html).toContain('RETRO 90S OS WINDOW MANAGER');
-      expect(html).toContain('PROCEDURAL CHIPTUNE AUDIO ENGINE');
-      expect(html).toContain('DEDICATED BROWSER EXTENSION STUDIO');
+      expect(html).toContain('Hyperdeck 3D Particle Engine');
+      expect(html).toContain('Retro 90s OS Window Manager');
+      expect(html).toContain('Procedural Chiptune Audio Engine');
+      expect(html).toContain('Dedicated Browser Extension Studio');
     });
   });
 
-  describe('MODULE [3] RESUME (RESUME_CV.DOC — INTERACTIVE DOSSIER & ZERO-FRICTION CONTACT)', () => {
+  describe('Resume & Contact (Module 3)', () => {
     it('renders scannable retro document viewer with testid="retro-content-resume"', () => {
       const html = renderToString(React.createElement(ResumeView));
       expect(html).toContain('data-testid="retro-content-resume"');
-      expect(html).toContain('=== [3] RESUME // RESUME_CV.DOC ===');
-      expect(html).toContain('DOSSIER_v4.96');
+      expect(html).toContain('3. Resume &amp; Contact');
+      expect(html).toContain('Resume');
     });
 
-    it('renders prominent top action bar with large, tactile pixel-bordered buttons: [Download Resume (PDF)], [Copy Email Address], [GitHub: @watchknight], and [LinkedIn]', () => {
+    it('renders prominent top action bar with large, tactile pixel-bordered buttons: Download Resume (PDF), Copy Email Address, GitHub: @watchknight, and LinkedIn', () => {
       const html = renderToString(React.createElement(ResumeView));
       expect(html).toContain('data-testid="retro-resume-action-bar"');
       expect(html).toContain('grid-cols-1 md:grid-cols-3');
-      expect(html).toContain('[Download Resume (PDF)]');
-      expect(html).toContain('[Copy Email Address]');
-      expect(html).toContain('[GitHub: @watchknight]');
-      expect(html).toContain('[LinkedIn]');
+      expect(html).toContain('Download Resume (PDF)');
+      expect(html).toContain('Copy Email Address');
+      expect(html).toContain('GitHub: @watchknight');
+      expect(html).toContain('LinkedIn');
       expect(html).toContain('data-testid="retro-resume-download-btn"');
       expect(html).toContain('data-testid="retro-resume-copy-email-btn"');
       expect(html).toContain('data-testid="retro-link-github"');
       expect(html).toContain('data-testid="retro-link-linkedin"');
     });
 
-    it('renders Academic Ledger with EWU CSE credentials and core coursework', () => {
+    it('renders Education section with EWU CSE credentials and core coursework', () => {
       const html = renderToString(React.createElement(ResumeView));
       expect(html).toContain('data-testid="academic-coursework-card"');
-      expect(html).toContain('ACADEMIC PROFILE // ACADEMIC LEDGER');
+      expect(html).toContain('Education');
       expect(html).toContain('B.Sc. in Computer Science &amp; Engineering (2022–2026)');
       expect(html).toContain('East West University (EWU), Dhaka, Bangladesh');
       expect(html).toContain('Operating Systems');
@@ -315,33 +315,33 @@ describe('Retro 90s OS Window View Modules (Strict 4-Color Pixel UI)', () => {
       expect(html).toContain('Software Engineering');
     });
 
-    it('renders Technical Matrix table with categorized monochrome skill sets', () => {
+    it('renders Skills table with categorized monochrome skill sets', () => {
       const html = renderToString(React.createElement(ResumeView));
-      expect(html).toContain('TECHNICAL SKILLS BREAKDOWN // TECHNICAL MATRIX');
-      expect(html).toContain('LANGUAGES');
+      expect(html).toContain('Skills');
+      expect(html).toContain('Languages');
       expect(html).toContain('C, C++, TypeScript, JavaScript, Python, Go, Rust, SQL, Bash (Linux)');
-      expect(html).toContain('FRAMEWORKS &amp; LIBS');
+      expect(html).toContain('Frameworks &amp; Libs');
       expect(html).toContain('React 18, Next.js, Vite, Tailwind CSS, Three.js, GSAP ScrollTrigger');
-      expect(html).toContain('DATABASES &amp; CLOUD');
+      expect(html).toContain('Databases &amp; Cloud');
       expect(html).toContain('PostgreSQL, MongoDB, Cloud Firestore, Firebase Auth, IndexedDB, Redis');
-      expect(html).toContain('LINUX &amp; TOOLING');
+      expect(html).toContain('Linux &amp; Tooling');
       expect(html).toContain('Ubuntu Linux, POSIX Shared Memory &amp; Pipes, Git, GitHub Actions CI/CD');
     });
 
-    it('renders [DOWNLOAD_RESUME.PDF] button with link to /resume.pdf', () => {
+    it('renders Download Resume (PDF) button with link to /resume.pdf', () => {
       const html = renderToString(React.createElement(ResumeView));
       expect(html).toContain('data-testid="retro-resume-download-btn"');
       expect(html).toContain('href="/resume.pdf"');
-      expect(html).toContain('title="[↓ DOWNLOAD RESUME.PDF]"');
-      expect(html).toContain('[Download Resume (PDF)]');
+      expect(html).toContain('title="Download Resume (PDF)"');
+      expect(html).toContain('Download Resume (PDF)');
       expect(html).toContain('download="Abdur_Rahman_Moayed_Resume.pdf"');
     });
 
-    it('renders [COPY_EMAIL.EXE] button and social terminal links', () => {
+    it('renders Copy Email Address button and social terminal links', () => {
       const html = renderToString(React.createElement(ResumeView));
       expect(html).toContain('data-testid="retro-resume-copy-email-btn"');
-      expect(html).toContain('title="[COPY_EMAIL.EXE]"');
-      expect(html).toContain('[Copy Email Address]');
+      expect(html).toContain('title="Copy Email Address"');
+      expect(html).toContain('Copy Email Address');
       expect(html).toContain('data-testid="retro-link-github"');
       expect(html).toContain('https://github.com/watchknight');
       expect(html).toContain('@watchknight');
@@ -352,7 +352,7 @@ describe('Retro 90s OS Window View Modules (Strict 4-Color Pixel UI)', () => {
     it('renders interactive Linux CLI toggle [Launch Interactive Linux CLI (moayed@ewu-cse)] and keeps it hidden by default', () => {
       const html = renderToString(React.createElement(ResumeView));
       expect(html).toContain('data-testid="btn-toggle-linux-cli"');
-      expect(html).toContain('[Launch Interactive Linux CLI (moayed@ewu-cse)]');
+      expect(html).toContain('Launch Interactive Linux CLI (moayed@ewu-cse)');
       // Verify CLI is completely hidden by default
       expect(html).not.toContain('data-testid="interactive-linux-cli"');
     });
@@ -411,15 +411,15 @@ describe('Retro 90s OS Window View Modules (Strict 4-Color Pixel UI)', () => {
       // ls / dir
       const lsRes = processCliCommand('ls');
       expect(lsRes?.output.join(' ')).toContain('resume.pdf');
-      expect(lsRes?.output.join(' ')).toContain('about_me.txt');
+      expect(lsRes?.output.join(' ')).toContain('about-me.md');
 
       // cat resume.pdf
       const catRes = processCliCommand('cat resume.pdf');
       expect(catRes?.output.join(' ')).toContain('Download Resume (PDF)');
 
-      // cat about_me.txt
-      const catAboutRes = processCliCommand('cat about_me.txt');
-      expect(catAboutRes?.output.join(' ')).toContain('ABOUT & SKILLS');
+      // cat about-me.md
+      const catAboutRes = processCliCommand('cat about-me.md');
+      expect(catAboutRes?.output.join(' ')).toContain('2. About');
 
       // Unknown command
       const unknownRes = processCliCommand('invalid_command_xyz');
@@ -446,7 +446,7 @@ describe('Retro 90s OS Window View Modules (Strict 4-Color Pixel UI)', () => {
       expect(htmlProjects).toContain('data-testid="retro-content-projects"');
       expect(htmlProjects).toContain('SELECTED ENGINEERING WORK (4 FLAGSHIP CASE STUDIES)');
       expect(htmlProjects).toContain('data-testid="flagship-projects-grid"');
-      expect(htmlProjects).toContain('[Read Case Study]');
+      expect(htmlProjects).toContain('Read Case Study');
     });
 
     it('seamlessly renders ResumeView in expanded mode when activeSection is resume', () => {
@@ -455,7 +455,7 @@ describe('Retro 90s OS Window View Modules (Strict 4-Color Pixel UI)', () => {
       );
       expect(htmlResume).toContain('data-testid="retro-content-resume"');
       expect(htmlResume).toContain('data-testid="retro-resume-download-btn"');
-      expect(htmlResume).toContain('[COPY_EMAIL.EXE]');
+      expect(htmlResume).toContain('title="Copy Email Address"');
     });
 
     it('strictly complies with GEMINI.md: zero banned legacy color hex codes in all views', () => {

@@ -9,7 +9,7 @@ import path from 'node:path';
 
 declare const process: any;
 
-describe('SYS.96 Retro 90s CRT Monitor Shell & Phosphor Engine Verification', () => {
+describe('Retro 90s CRT Monitor Shell & Phosphor Engine Verification', () => {
   describe('1. CRTMonitorShell Hardware Architecture (src/components/CRTMonitorShell.tsx)', () => {
     it('renders the centered 90s CRT monitor hardware frame with 4:3 desktop aspect ratio and #0a0e0b room background', () => {
       const html = renderToString(
@@ -60,22 +60,21 @@ describe('SYS.96 Retro 90s CRT Monitor Shell & Phosphor Engine Verification', ()
       expect(html).toContain('TERMINAL_SESSION_ACTIVE');
     });
 
-    it('renders tactile hardware controls along bottom-right bezel: clickable Power button with glowing pixel LED and [SFX: ON/OFF] toggle', () => {
+    it('renders tactile hardware controls along bottom-right bezel: clickable Power button with glowing pixel LED and Sound toggle', () => {
       const html = renderToString(
         React.createElement(CRTMonitorShell, null, React.createElement('div', null, 'TERMINAL_SESSION_ACTIVE'))
       );
 
       // Power button and PWR pixel LED
-      expect(html).toContain('[POWER]');
+      expect(html).toContain('Power');
       expect(html).toContain('PWR');
       expect(html).toContain('bg-[#c2cdb4]'); // Active glowing pixel LED
 
-      // [SFX: ON/OFF] hardware toggle switch
-      expect(html).toContain('[SFX: ON]');
+      // Sound hardware toggle switch
+      expect(html).toContain('Sound');
 
       // Debossed manufacturer branding
-      expect(html).toContain('WATCHKNIGHT');
-      expect(html).toContain('SYS.96 CRT');
+      expect(html).toContain('MOAYED');
     });
   });
 

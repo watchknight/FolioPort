@@ -104,26 +104,26 @@ describe('8x8 Ordered Bayer Matrix Dither Transition & Level 2 OS Reader Window'
 
       expect(htmlExpanded).toContain('data-testid="retro-window-persistent-nav"');
 
-      // Tab 1: [1] WORK
+      // Tab 1: 1. Work
       expect(htmlExpanded).toContain('data-testid="retro-window-tab-projects"');
-      expect(htmlExpanded).toContain('[1] WORK');
+      expect(htmlExpanded).toContain('1. Work');
 
-      // Tab 2: [2] ABOUT
+      // Tab 2: 2. About
       expect(htmlExpanded).toContain('data-testid="retro-window-tab-about"');
-      expect(htmlExpanded).toContain('[2] ABOUT');
+      expect(htmlExpanded).toContain('2. About');
 
-      // Tab 3: [3] RESUME & CONTACT
+      // Tab 3: 3. Resume
       expect(htmlExpanded).toContain('data-testid="retro-window-tab-resume"');
-      expect(htmlExpanded).toContain('[3] RESUME &amp; CONTACT');
+      expect(htmlExpanded).toContain('3. Resume');
     });
 
-    it('renders prominent [ESC / X] BACK TO DESKTOP button on the right of the persistent top nav', () => {
+    it('renders prominent Back to Desktop button on the right of the persistent top nav', () => {
       const htmlExpanded = renderToString(
         React.createElement(RetroOSWindow, { isExpanded: true, activeSection: 'about' })
       );
 
       expect(htmlExpanded).toContain('data-testid="retro-window-btn-back-desktop"');
-      expect(htmlExpanded).toContain('[ESC / X] BACK TO DESKTOP');
+      expect(htmlExpanded).toContain('Back to Desktop');
     });
 
     it('enforces generous internal breathing space (padding: 28px 32px) inside the window body', () => {

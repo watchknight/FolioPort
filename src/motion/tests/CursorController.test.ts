@@ -194,7 +194,7 @@ const setupMockEnvironment = () => {
   };
 };
 
-describe('CursorController — Zero-Allocation Pointer Tracking & Staggered Reveal', () => {
+describe('CursorController: Zero-Allocation Pointer Tracking & Staggered Reveal', () => {
   let env: ReturnType<typeof setupMockEnvironment>;
   let cursorEl: MockElement;
   let previewEl: MockElement;

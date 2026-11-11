@@ -8,7 +8,7 @@ import { SkillMatrix } from '../../components/SkillMatrix';
 import { TerminalLab } from '../../components/TerminalLab';
 import { App } from '../../App';
 
-describe('WATCHKNIGHT_OS SYS.96: Chrome Extension Studio & FocusGuard MV3 Architecture', () => {
+describe('Chrome Extension Studio & FocusGuard MV3 Architecture', () => {
   describe('1. Component Structure & Section ID Anchoring', () => {
     it('renders ExtensionStudio without throwing in SSR lifecycle', () => {
       const html = renderToString(React.createElement(ExtensionStudio));
@@ -20,10 +20,10 @@ describe('WATCHKNIGHT_OS SYS.96: Chrome Extension Studio & FocusGuard MV3 Archit
       expect(html).toContain('id="extensions"');
     });
 
-    it('is wired to > [02] EXTENSIONS in RetroCommandBar', () => {
+    it('is wired to 02 Extensions in RetroCommandBar', () => {
       const commandBarHtml = renderToString(React.createElement(RetroCommandBar));
       expect(commandBarHtml).toContain('02');
-      expect(commandBarHtml).toContain('EXTENSIONS');
+      expect(commandBarHtml).toContain('Extensions');
       expect(commandBarHtml).toContain('Browser Extension Studio');
     });
 
@@ -49,9 +49,9 @@ describe('WATCHKNIGHT_OS SYS.96: Chrome Extension Studio & FocusGuard MV3 Archit
 
       // Tab bar & Omnibox
       expect(html).toContain('chrome-extension://focusguard/popup.html');
-      expect(html).toContain('FocusGuard // popup.html');
+      expect(html).toContain('FocusGuard • popup.html');
       expect(html).toContain('target-host.org');
-      expect(html).toContain('telemetry.json');
+      expect(html).toContain('worker-logs.json');
       expect(html).toContain('SECURE');
     });
 
@@ -73,9 +73,9 @@ describe('WATCHKNIGHT_OS SYS.96: Chrome Extension Studio & FocusGuard MV3 Archit
     it('renders all 3 interactive architecture toggle tabs', () => {
       const html = renderToString(React.createElement(ExtensionStudio));
 
-      expect(html).toContain('[TAB 1: LIVE POPUP UI &amp; RAM THROTTLER]');
-      expect(html).toContain('[TAB 2: SHADOW DOM INJECTION HUD]');
-      expect(html).toContain('[TAB 3: MANIFEST V3 SERVICE WORKER TELEMETRY]');
+      expect(html).toContain('Tab 1: Live Popup &amp; RAM Throttler');
+      expect(html).toContain('Tab 2: Shadow DOM Injection HUD');
+      expect(html).toContain('Tab 3: Manifest V3 Service Worker Stream');
     });
   });
 
@@ -83,8 +83,8 @@ describe('WATCHKNIGHT_OS SYS.96: Chrome Extension Studio & FocusGuard MV3 Archit
     it('renders Distraction Shield toggle with phosphor status', () => {
       const html = renderToString(React.createElement(ExtensionStudio));
 
-      expect(html).toContain('DISTRACTION SHIELD: ENGAGED [ACTIVE]');
-      expect(html).toContain('[ ON ]');
+      expect(html).toContain('Distraction Shield: Active');
+      expect(html).toContain('On');
       expect(html).toContain('1,482 Declarative Net Rules Active');
     });
 
@@ -119,7 +119,7 @@ describe('WATCHKNIGHT_OS SYS.96: Chrome Extension Studio & FocusGuard MV3 Archit
     it('renders the 4 exact architectural specifications', () => {
       const html = renderToString(React.createElement(ExtensionStudio));
 
-      expect(html).toContain('SPEC_SHEET // FOCUSGUARD.SYS');
+      expect(html).toContain('FocusGuard Specifications');
       expect(html).toContain('Chrome Manifest V3 / TypeScript');
       expect(html).toContain('&lt; 12 MB background heap');
       expect(html).toContain('0ms (Local declarative blocking)');
@@ -137,7 +137,7 @@ describe('WATCHKNIGHT_OS SYS.96: Chrome Extension Studio & FocusGuard MV3 Archit
       const html = renderToString(React.createElement(ExtensionStudio));
 
       expect(html).toContain('href="https://github.com/watchknight/FocusGuard"');
-      expect(html).toContain('INSPECT FOCUSGUARD REPO ON GITHUB ↗');
+      expect(html).toContain('Inspect FocusGuard on GitHub ↗');
       expect(html).toContain('rel="noopener noreferrer"');
       expect(html).toContain('target="_blank"');
     });
@@ -149,7 +149,7 @@ describe('WATCHKNIGHT_OS SYS.96: Chrome Extension Studio & FocusGuard MV3 Archit
 
       expect(githubHtml).toContain('FocusGuard');
       expect(githubHtml).toContain('href="#extensions"');
-      expect(githubHtml).toContain('[ STUDIO ↗ ]');
+      expect(githubHtml).toContain('Studio ↗');
     });
 
     it('verifies coherent 01-05 sequence across the portfolio sections', () => {
@@ -162,16 +162,16 @@ describe('WATCHKNIGHT_OS SYS.96: Chrome Extension Studio & FocusGuard MV3 Archit
       expect(commandBarHtml).toContain('06');
 
       const extHtml = renderToString(React.createElement(ExtensionStudio));
-      expect(extHtml).toContain('&gt; [02] BROWSER EXTENSION STUDIO');
+      expect(extHtml).toContain('02. Browser Extension Studio');
 
       const skillHtml = renderToString(React.createElement(SkillMatrix));
-      expect(skillHtml).toContain('&gt; [03] ARCHITECTURAL PHILOSOPHY');
+      expect(skillHtml).toContain('03. Architectural Philosophy');
 
       const githubHtml = renderToString(React.createElement(GithubLab));
-      expect(githubHtml).toContain('&gt; [04] GITHUB_ROM');
+      expect(githubHtml).toContain('04. GitHub Repositories');
 
       const termHtml = renderToString(React.createElement(TerminalLab));
-      expect(termHtml).toContain('&gt; [05] TERMINAL');
+      expect(termHtml).toContain('05. Terminal');
     });
   });
 });

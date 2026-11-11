@@ -41,16 +41,16 @@ describe('Retro 90s OS Window Manager & Split-Console Verification', () => {
       expect(RETRO_SECTIONS).toEqual(['about', 'projects', 'resume']);
 
       expect(SECTION_METADATA.about.index).toBe(0);
-      expect(SECTION_METADATA.about.command).toBe('[1] ABOUT ME');
-      expect(SECTION_METADATA.about.fileName).toBe('C:\\MOAYED\\ABOUT.TXT');
+      expect(SECTION_METADATA.about.command).toBe('2. About');
+      expect(SECTION_METADATA.about.fileName).toBe('About');
 
       expect(SECTION_METADATA.projects.index).toBe(1);
-      expect(SECTION_METADATA.projects.command).toBe('[2] MY PROJECTS');
-      expect(SECTION_METADATA.projects.fileName).toBe('C:\\MOAYED\\PROJECTS.LST');
+      expect(SECTION_METADATA.projects.command).toBe('1. Work');
+      expect(SECTION_METADATA.projects.fileName).toBe('Selected Work');
 
       expect(SECTION_METADATA.resume.index).toBe(2);
-      expect(SECTION_METADATA.resume.command).toBe('[3] RESUME');
-      expect(SECTION_METADATA.resume.fileName).toBe('C:\\MOAYED\\RESUME.DAT');
+      expect(SECTION_METADATA.resume.command).toBe('3. Resume');
+      expect(SECTION_METADATA.resume.fileName).toBe('Resume & Contact');
     });
 
     it('supports custom initialSection and initialExpanded props in RetroOSProvider', () => {
@@ -79,9 +79,9 @@ describe('Retro 90s OS Window Manager & Split-Console Verification', () => {
       const html = renderToString(React.createElement(RetroCommandMenu));
 
       expect(html).toContain('data-testid="retro-command-menu"');
-      expect(html).toContain('[1] ABOUT ME');
-      expect(html).toContain('[2] MY PROJECTS');
-      expect(html).toContain('[3] RESUME');
+      expect(html).toContain('1. Work');
+      expect(html).toContain('2. About');
+      expect(html).toContain('3. Resume');
       expect(html).toContain('font-pixel');
     });
 
@@ -95,9 +95,9 @@ describe('Retro 90s OS Window Manager & Split-Console Verification', () => {
       expect(htmlAboutActive).toContain('background-color:#c2cdb4');
       expect(htmlAboutActive).toContain('color:#111712');
 
-      // Leading > pixel arrow indicator visible on active item
+      // Leading indicator visible on active item
       expect(htmlAboutActive).toContain('data-testid="retro-command-indicator-about"');
-      expect(htmlAboutActive).toContain('&gt;');
+      expect(htmlAboutActive).toContain('•');
 
       // Inactive items have transparent background and #c2cdb4 text
       expect(htmlAboutActive).toContain('data-testid="retro-command-item-projects"');
@@ -112,7 +112,7 @@ describe('Retro 90s OS Window Manager & Split-Console Verification', () => {
 
       // Projects is active
       expect(htmlProjectsActive).toContain('data-testid="retro-command-item-projects"');
-      expect(htmlProjectsActive).toContain('ACTIVE');
+      expect(htmlProjectsActive).toContain('Active');
 
       const htmlResumeActive = renderToString(
         React.createElement(RetroCommandMenu, { activeIndex: 2 })
@@ -120,7 +120,7 @@ describe('Retro 90s OS Window Manager & Split-Console Verification', () => {
 
       // Resume is active
       expect(htmlResumeActive).toContain('data-testid="retro-command-item-resume"');
-      expect(htmlResumeActive).toContain('ACTIVE');
+      expect(htmlResumeActive).toContain('Active');
     });
 
     it('adapts color tokens when custom palette is provided (Amber mode)', () => {
@@ -145,13 +145,13 @@ describe('Retro 90s OS Window Manager & Split-Console Verification', () => {
       expect(html).toContain('outline:2px solid #c2cdb4');
     });
 
-    it('renders solid #c2cdb4 title bar with dark #111712 pixel text C:\\MOAYED\\SYSTEM.DIR', () => {
+    it('renders solid #c2cdb4 title bar with dark #111712 pixel text Preview', () => {
       const html = renderToString(React.createElement(RetroOSWindow));
 
       expect(html).toContain('data-testid="retro-window-titlebar"');
       expect(html).toContain('background-color:#c2cdb4');
       expect(html).toContain('color:#111712');
-      expect(html).toContain('C:\\MOAYED\\SYSTEM.DIR');
+      expect(html).toContain('Preview');
       expect(html).toContain('data-testid="retro-window-title-text"');
     });
 
@@ -190,13 +190,11 @@ describe('Retro 90s OS Window Manager & Split-Console Verification', () => {
       );
 
       expect(htmlOverview).toContain('data-testid="retro-window-overview-mode"');
-      expect(htmlOverview).toContain('VOLUME IN DRIVE C IS WATCHKNIGHT_OS');
-      expect(htmlOverview).toContain('DIRECTORY OF C:\\MOAYED\\*.*');
-      expect(htmlOverview).toContain('[1] ABOUT ME');
-      expect(htmlOverview).toContain('[2] MY PROJECTS');
-      expect(htmlOverview).toContain('[3] RESUME');
-      expect(htmlOverview).toContain('STATUS: ACTIVE CANDIDATE // CSE @ EWU');
-      expect(htmlOverview).toContain('PRESS [ENTER] OR CLICK [□] TO EXPAND');
+      expect(htmlOverview).toContain('2. About');
+      expect(htmlOverview).toContain('1. Work');
+      expect(htmlOverview).toContain('3. Resume');
+      expect(htmlOverview).toContain('East West University • CSE');
+      expect(htmlOverview).toContain('Press Enter to expand');
     });
 
     it('Expanded Mode: renders stepped CSS wipe-up transition and full section content with persistent command bars', () => {
@@ -215,7 +213,7 @@ describe('Retro 90s OS Window Manager & Split-Console Verification', () => {
       expect(htmlExpandedAbout).toContain('data-testid="retro-window-tab-projects"');
       expect(htmlExpandedAbout).toContain('data-testid="retro-window-tab-resume"');
 
-      // Full content for [1] ABOUT ME
+      // Full content for About
       expect(htmlExpandedAbout).toContain('data-testid="retro-content-about"');
       expect(htmlExpandedAbout).toContain('ABDUR RAHMAN MOAYED');
       expect(htmlExpandedAbout).toContain('@watchknight');
@@ -225,7 +223,7 @@ describe('Retro 90s OS Window Manager & Split-Console Verification', () => {
       // Persistent bottom command bar
       expect(htmlExpandedAbout).toContain('data-testid="retro-window-persistent-footer"');
       expect(htmlExpandedAbout).toContain('data-testid="retro-window-footer-close"');
-      expect(htmlExpandedAbout).toContain('[X] ESC TO CLOSE');
+      expect(htmlExpandedAbout).toContain('Esc to close');
     });
 
     it('Expanded Mode: displays project systems and technical stack for [2] MY PROJECTS', () => {
@@ -234,10 +232,10 @@ describe('Retro 90s OS Window Manager & Split-Console Verification', () => {
       );
 
       expect(htmlExpandedProjects).toContain('data-testid="retro-content-projects"');
-      expect(htmlExpandedProjects).toContain('HYPERDECK 3D PARTICLE ENGINE');
-      expect(htmlExpandedProjects).toContain('RETRO 90S OS WINDOW MANAGER');
-      expect(htmlExpandedProjects).toContain('PROCEDURAL CHIPTUNE AUDIO ENGINE');
-      expect(htmlExpandedProjects).toContain('DEDICATED BROWSER EXTENSION STUDIO');
+      expect(htmlExpandedProjects).toContain('Mental Defrag');
+      expect(htmlExpandedProjects).toContain('FocusGuard');
+      expect(htmlExpandedProjects).toContain('Neon Vanguard &amp; POSIX');
+      expect(htmlExpandedProjects).toContain('DocLensBD');
     });
 
     it('Expanded Mode: displays academic credentials and verified PDF export link for [3] RESUME', () => {
@@ -246,10 +244,10 @@ describe('Retro 90s OS Window Manager & Split-Console Verification', () => {
       );
 
       expect(htmlExpandedResume).toContain('data-testid="retro-content-resume"');
-      expect(htmlExpandedResume).toContain('B.Sc. in Computer Science &amp; Engineering (2022–2026)');
+      expect(htmlExpandedResume).toContain('B.Sc. in Computer Science &amp; Engineering');
       expect(htmlExpandedResume).toContain('data-testid="retro-resume-download-btn"');
       expect(htmlExpandedResume).toContain('href="/resume.pdf"');
-      expect(htmlExpandedResume).toContain('[↓ DOWNLOAD RESUME.PDF]');
+      expect(htmlExpandedResume).toContain('Download Resume (PDF)');
     });
   });
 
@@ -270,7 +268,7 @@ describe('Retro 90s OS Window Manager & Split-Console Verification', () => {
       );
 
       expect(htmlAbout).toContain('data-testid="retro-window-aria-live"');
-      expect(htmlAbout).toContain('[1] ABOUT ME view opened. Systems architecture, low-level graphics &amp; procedural audio');
+      expect(htmlAbout).toContain('2. About view opened. Systems architecture, low-level graphics &amp; procedural audio');
     });
 
     it('announces [2] MY PROJECTS view opened and tagline when opened in expanded mode', () => {
@@ -279,7 +277,7 @@ describe('Retro 90s OS Window Manager & Split-Console Verification', () => {
       );
 
       expect(htmlProjects).toContain('data-testid="retro-window-aria-live"');
-      expect(htmlProjects).toContain('[2] MY PROJECTS view opened. HyperDeck 3D, Sentinel HUD, Audio Synth &amp; Extension Studio');
+      expect(htmlProjects).toContain('1. Work view opened. HyperDeck 3D, Sentinel HUD, Audio Synth &amp; Extension Studio');
     });
 
     it('announces [3] RESUME view opened and tagline when opened in expanded mode', () => {
@@ -288,24 +286,24 @@ describe('Retro 90s OS Window Manager & Split-Console Verification', () => {
       );
 
       expect(htmlResume).toContain('data-testid="retro-window-aria-live"');
-      expect(htmlResume).toContain('[3] RESUME view opened. Technical curriculum vitae &amp; verified PDF export');
+      expect(htmlResume).toContain('3. Resume view opened. Technical curriculum vitae &amp; verified PDF export');
     });
 
     it('announces directory overview selection when window is in overview mode', () => {
       const htmlOverviewAbout = renderToString(
         React.createElement(RetroOSWindow, { isExpanded: false, activeSection: 'about' })
       );
-      expect(htmlOverviewAbout).toContain('[1] ABOUT ME selected in overview.');
+      expect(htmlOverviewAbout).toContain('2. About selected in overview.');
 
       const htmlOverviewProjects = renderToString(
         React.createElement(RetroOSWindow, { isExpanded: false, activeSection: 'projects' })
       );
-      expect(htmlOverviewProjects).toContain('[2] MY PROJECTS selected in overview.');
+      expect(htmlOverviewProjects).toContain('1. Work selected in overview.');
 
       const htmlOverviewResume = renderToString(
         React.createElement(RetroOSWindow, { isExpanded: false, activeSection: 'resume' })
       );
-      expect(htmlOverviewResume).toContain('[3] RESUME selected in overview.');
+      expect(htmlOverviewResume).toContain('3. Resume selected in overview.');
     });
 
     it('announces window closed when isClosed is true', () => {
@@ -318,7 +316,7 @@ describe('Retro 90s OS Window Manager & Split-Console Verification', () => {
       );
 
       expect(htmlClosed).toContain('data-testid="retro-window-aria-live"');
-      expect(htmlClosed).toContain('Window closed. [1] ABOUT ME selected in overview.');
+      expect(htmlClosed).toContain('Window closed. 2. About selected in overview.');
     });
 
     it('supports custom accessible announcement override via announcement prop', () => {
@@ -369,7 +367,7 @@ describe('Retro 90s OS Window Manager & Split-Console Verification', () => {
       expect(htmlExpandedDiorama).toContain('data-testid="retro-window-aria-live"');
       expect(htmlExpandedDiorama).toContain('role="status"');
       expect(htmlExpandedDiorama).toContain('aria-live="polite"');
-      expect(htmlExpandedDiorama).toContain('[2] MY PROJECTS view opened.');
+      expect(htmlExpandedDiorama).toContain('1. Work view opened.');
     });
 
     it('full diorama integration: announces window closed when initialClosed is true inside CRTDioramaStage', () => {
@@ -382,7 +380,7 @@ describe('Retro 90s OS Window Manager & Split-Console Verification', () => {
       );
 
       expect(htmlClosedDiorama).toContain('data-testid="retro-window-aria-live"');
-      expect(htmlClosedDiorama).toContain('Window closed. [1] ABOUT ME selected in overview.');
+      expect(htmlClosedDiorama).toContain('Window closed. 2. About selected in overview.');
     });
   });
 
@@ -400,14 +398,14 @@ describe('Retro 90s OS Window Manager & Split-Console Verification', () => {
 
       // Bottom-Left Command Menu
       expect(htmlStage).toContain('data-testid="retro-command-menu"');
-      expect(htmlStage).toContain('[1] ABOUT ME');
-      expect(htmlStage).toContain('[2] MY PROJECTS');
-      expect(htmlStage).toContain('[3] RESUME');
+      expect(htmlStage).toContain('1. Work');
+      expect(htmlStage).toContain('2. About');
+      expect(htmlStage).toContain('3. Resume');
 
       // Bottom-Right 90s OS Window in Overview Mode
       expect(htmlStage).toContain('data-testid="retro-os-window"');
       expect(htmlStage).toContain('data-testid="retro-window-overview-mode"');
-      expect(htmlStage).toContain('C:\\MOAYED\\SYSTEM.DIR');
+      expect(htmlStage).toContain('Preview');
     });
 
     it('enforces GEMINI.md design rules: zero banned legacy colors in Retro OS components', () => {
@@ -458,8 +456,8 @@ describe('Retro 90s OS Window Manager & Split-Console Verification', () => {
       // Verify each section metadata has non-empty command, fileName, and tagline
       RETRO_SECTIONS.forEach((sec) => {
         const meta = SECTION_METADATA[sec];
-        expect(meta.command).toMatch(/^\[[1-3]\]/);
-        expect(meta.fileName).toContain('C:\\MOAYED\\');
+        expect(meta.command).toMatch(/^[1-3]\./);
+        expect(meta.fileName.length).toBeGreaterThan(0);
         expect(meta.status.length).toBeGreaterThan(0);
         expect(meta.tagline.length).toBeGreaterThan(0);
       });
@@ -492,7 +490,7 @@ describe('Retro 90s OS Window Manager & Split-Console Verification', () => {
       );
 
       expect(html).toContain('data-testid="retro-command-menu"');
-      expect(html).toContain('[1] ABOUT ME');
+      expect(html).toContain('2. About');
     });
 
     it('renders RetroOSWindow cleanly with explicit onClose and onToggleExpand callbacks', () => {
@@ -549,7 +547,7 @@ describe('Retro 90s OS Window Manager & Split-Console Verification', () => {
 
       // Verify the expanded mode view is active
       expect(htmlExpandedStage).toContain('data-testid="retro-window-expanded-mode"');
-      expect(htmlExpandedStage).toContain('[SYS.96 // WINDOW EXPANDED]');
+      expect(htmlExpandedStage).toContain('Back to Desktop');
     });
   });
 

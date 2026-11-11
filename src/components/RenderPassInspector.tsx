@@ -52,7 +52,7 @@ const RENDER_PASSES: RenderPassConfig[] = [
     key: '4',
     subtitle: 'Optical Glass Refraction & Dispersion',
     description: 'Activates refractive optical physical glass (transmission: 0.95, ior: 1.5, thickness: 1.2) simulating refractive flint crystal with internal optical caustics.',
-    badge: 'IOR 1.50 // GLASS',
+    badge: 'IOR 1.50 • Glass',
   },
   {
     id: 'uv',
@@ -837,7 +837,7 @@ export const RenderPassInspector: React.FC = () => {
           <div>
             <div className="flex items-center gap-2 font-mono text-fluid-micro text-accent-coral uppercase tracking-widest mb-2">
               <Sparkles className="w-4 h-4 text-accent" />
-              <span>Pipeline Stage 01 // Guillaume Colombel WebGL Architecture</span>
+              <span>Pipeline Stage 01 • WebGL Architecture</span>
             </div>
             <h2 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl uppercase tracking-tight text-alabaster">
               Interactive 3D <span className="text-accent-coral">Shader</span> & <span className="text-alabaster">Render-Pass</span> Inspector
@@ -893,7 +893,7 @@ export const RenderPassInspector: React.FC = () => {
               {/* Real-time Telemetry Metrics */}
               <div className="grid grid-cols-2 gap-2 pt-1 border-t border-white/10 text-[10px]">
                 <div>
-                  <span className="text-[#8E98AA] block text-[9px] font-pixel text-[8px] uppercase">Telemetry</span>
+                  <span className="text-[#8E98AA] block text-[9px] font-pixel text-[8px] uppercase">Diagnostics</span>
                   <span ref={fpsRef} className="text-[#4AF626] font-bold">60 FPS</span>
                   <span className="text-white/30 text-[9px] ml-1">Solid</span>
                 </div>

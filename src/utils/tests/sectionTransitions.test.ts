@@ -258,25 +258,23 @@ describe('Layer 1: 3D WebGL Camera Waypoints & Shader Morphing', () => {
 describe('Layer 2: CRT H-Sync Laser Dividers & Dynamic Text Decryption', () => {
   it('1. Formats standard HUD telemetry tag correctly', () => {
     const tag = formatSectorTag('02', 'EXTENSION_STUDIO');
-    expect(tag).toBe('[ SECTOR_02 // EXTENSION_STUDIO // SYNC_LOCKED ]');
+    expect(tag).toBe('Sector 02 • EXTENSION STUDIO');
 
     const tag3 = formatSectorTag('3', 'BROWSER_EXTENSION_STUDIO');
-    expect(tag3).toBe('[ SECTOR_03 // BROWSER_EXTENSION_STUDIO // SYNC_LOCKED ]');
+    expect(tag3).toBe('Sector 03 • BROWSER EXTENSION STUDIO');
   });
 
   it('2. Progressively decodes telemetry text from masked glyphs to plaintext', () => {
-    const target = '[ SECTOR_02 // EXTENSION_STUDIO // SYNC_LOCKED ]';
+    const target = 'Sector 02 • EXTENSION STUDIO';
 
     // At progress 0: text is masked
     const masked = decodeTelemetryText(target, 0);
-    expect(masked).toContain('[');
-    expect(masked).toContain(']');
-    expect(masked).toContain('//');
-    expect(masked).not.toContain('SECTOR_02');
+    expect(masked).toContain('•');
+    expect(masked).not.toContain('EXTENSION');
 
     // At progress 0.5: first half is decoded
     const half = decodeTelemetryText(target, 0.5);
-    expect(half.startsWith('[ SECTOR_02')).toBe(true);
+    expect(half.startsWith('Sector 02')).toBe(true);
 
     // At progress 1.0: completely unlocked
     const unlocked = decodeTelemetryText(target, 1.0);

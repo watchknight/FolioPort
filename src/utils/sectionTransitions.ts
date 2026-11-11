@@ -49,7 +49,7 @@ export interface InterpolatedWaypoint {
 }
 
 /**
- * 5 SPATIAL WAYPOINTS (WATCHKNIGHT_OS // SYS.96)
+ * 5 SPATIAL WAYPOINTS
  * Sector 01 (Hero): Angled horizon view (0, -2.8, 5.2), cyan #00F0FF troughs with magenta #FF2A85 crests.
  * Sector 02 (Flagship Systems & 3D Deck): Camera dives forward and banks diagonally (2.0, -1.2, 3.6, rotZ=0.08), increasing wireframe grid density.
  * Sector 03 (Chrome Extension Studio): Clean top-down cyber-grid perspective (0, 0, 5.8), electric cyan and amber #FFCC00.
@@ -237,8 +237,8 @@ export function decodeTelemetryText(targetText: string, progress: number, seed: 
 
   for (let i = 0; i < length; i++) {
     const char = targetText[i];
-    // Keep structural brackets, slashes and whitespace stable
-    if (char === '[' || char === ']' || char === '/' || char === ' ') {
+    // Keep structural brackets, slashes, bullets and whitespace stable
+    if (char === '[' || char === ']' || char === '/' || char === ' ' || char === '•') {
       result += char;
     } else if (i < revealedCount) {
       result += char;
@@ -254,12 +254,12 @@ export function decodeTelemetryText(targetText: string, progress: number, seed: 
 
 /**
  * Standardized HUD Telemetry Tag Formatter:
- * Produces format: `[ SECTOR_02 // EXTENSION_STUDIO // SYNC_LOCKED ]`
+ * Produces format: `Sector 02 • EXTENSION STUDIO`
  */
 export function formatSectorTag(sectionId: string, title: string): string {
   const paddedId = sectionId.padStart(2, '0');
-  const cleanTitle = title.toUpperCase().replace(/\s+/g, '_');
-  return `[ SECTOR_${paddedId} // ${cleanTitle} // SYNC_LOCKED ]`;
+  const cleanTitle = title.replace(/_/g, ' ');
+  return `Sector ${paddedId} • ${cleanTitle}`;
 }
 
 /**
@@ -463,7 +463,7 @@ export class SectionPortalController {
 /**
  * =========================================================================
  * LAYERED CYBER-SHUTTER (SHOP-SHUTTER ROLL-UP) DECK CONTROLLER
- * Awwwards Motion Architecture for 90s Cyberdeck Workstation (SYS.96)
+ * Motion Architecture for 90s Cyberdeck Workstation
  * Handles tall-section-safe unstacking, 5-slat 3D articulation,
  * sub-layer light uncover, and procedural ratchet audio tick feedback.
  * =========================================================================

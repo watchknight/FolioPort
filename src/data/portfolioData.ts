@@ -35,7 +35,7 @@ export const PORTFOLIO_DATA = {
   meta: {
     name: 'Abdur Rahman Moayed',
     handle: '@watchknight',
-    role: 'Computer Science & Engineering (CSE) Undergraduate at East West University, Bangladesh — Full-Stack Web Architect & Low-Level Systems Engineer',
+    role: 'Computer Science & Engineering (CSE) Undergraduate at East West University, Bangladesh • Full-Stack Web Architect & Low-Level Systems Engineer',
     academicAnchor: 'East West University, Bangladesh',
     location: 'Dhaka, BD (UTC+6)',
     status: 'Available for Systems & Full-Stack Roles',
@@ -54,7 +54,7 @@ export const PORTFOLIO_DATA = {
       title: 'Mental Defrag',
       tagline: 'Zero-Gravity Spatial Cognitive Obsidian Engine',
       category: 'Distributed Systems',
-      description: 'Zero-gravity spatial thought engine built with Vite, TypeScript, and Matter.js physics. Features local vector embeddings for semantic node clustering and native bi-directional Obsidian .canvas JSON parsing.',
+      description: 'A spatial cognitive canvas built with Vite, TypeScript, and Matter.js physics. Uses local vector embeddings for semantic clustering and syncs directly with Obsidian .canvas files.',
       architectureDetails: [
         'Matter.js rigid-body physics loop with zero-gravity friction decay',
         'Local cosine similarity vector clustering for semantic thought repulsion/attraction',
@@ -77,7 +77,7 @@ export const PORTFOLIO_DATA = {
       title: 'DocLensBD',
       tagline: 'Cloud-Backed Health Intelligence & Diagnostic Pipeline',
       category: 'Full-Stack Platform',
-      description: 'Cloud-backed medical diagnostic platform utilizing Cloud Firestore real-time snapshot listeners, AES-256 field encryption, and automated GitHub Actions CI/CD staging pipelines.',
+      description: 'A cloud diagnostic platform built with React, TypeScript, and Cloud Firestore. Features real-time sync, encrypted records, and automated test pipelines on GitHub Actions.',
       architectureDetails: [
         'Cloud Firestore real-time snapshot listeners with offline persistence',
         'Role-based access control (RBAC) security rules with encrypted fields',
@@ -100,7 +100,7 @@ export const PORTFOLIO_DATA = {
       title: 'Rannabanna',
       tagline: 'Localized Bengali Culinary & Nutrition Engine',
       category: 'Full-Stack Platform',
-      description: 'Ultra-optimized localized full-stack Bengali web application featuring specialized Bengali font glyph subsetting, phonetic search indexing, and real-time cloud database synchronization.',
+      description: 'A fast localized Bengali culinary platform with custom font subsetting, phonetic search, and real-time cloud database sync.',
       architectureDetails: [
         'Vite build pipeline with aggressive tree-shaking and dynamic code-splitting',
         'Custom Bengali Unicode glyph subsetting reducing font payload by 78%',
@@ -123,7 +123,7 @@ export const PORTFOLIO_DATA = {
       title: 'Trash Trail',
       tagline: 'Kinetic Scroll-Driven Interactive Storytelling Web Architecture',
       category: 'Graphics & Audio',
-      description: 'Cinematic scroll-driven storytelling web experience powered by vanilla JavaScript, GSAP, and ScrollTrigger. Implemented multi-stage pinned parallax scenes, dynamic viewport scrubbing, and audio-visual synchrony.',
+      description: 'An interactive scroll-driven storytelling experience built with vanilla JavaScript, GSAP, and ScrollTrigger, featuring pinned scenes and synchronized visuals.',
       architectureDetails: [
         'GSAP ScrollTrigger pinned multi-stage viewport narrative choreography',
         'Fixed coordinate aspect-ratio preservation ensuring 0 Cumulative Layout Shift (CLS)',
@@ -146,7 +146,7 @@ export const PORTFOLIO_DATA = {
       title: 'Neon Vanguard 2D & OS Kernel Labs',
       tagline: 'HTML5 2D Canvas Combat Engine & Linux C/C++ OS Kernel Labs',
       category: 'Real-time & Network',
-      description: 'High-throughput 2D HTML5 Canvas combat engine with piercing projectile raycasting and recursive chain-lightning algorithms; paired with Linux C/C++ Operating System implementations featuring IPC pipes, fork() process hierarchies, and POSIX shared memory.',
+      description: 'A 2D HTML5 canvas combat engine with raycasting and chain-lightning effects, paired with Linux C/C++ systems labs demonstrating IPC pipes, fork() process trees, and POSIX shared memory.',
       architectureDetails: [
         'HTML5 2D Canvas render loop with pre-allocated particle pools and raycast piercing',
         'Branching chain-lightning recursive arc generator with dynamic luminescence',
@@ -250,8 +250,8 @@ export const PORTFOLIO_DATA = {
   ] as SkillCategory[],
 
   terminalCommands: {
-    help: 'List of commands:\n  • about     : Display identity and core philosophy\n  • skills    : Technical competencies and systems stack\n  • projects  : Flagship engineered architectures\n  • dhaka     : Live Dhaka, Bangladesh timezone telemetry\n  • contact   : Transmission coordinates\n  • clear     : Clear terminal buffer',
-    about: 'Abdur Rahman Moayed (@watchknight) — CSE Undergraduate at East West University, Bangladesh.\nFull-Stack Web Architect & Low-Level Systems Engineer.\nBridging POSIX shared-memory pipelines in C and Linux kernel workflows with zero-gravity TypeScript & GSAP web applications.',
+    help: 'List of commands:\n  • about     : Display identity and core philosophy\n  • skills    : Technical competencies and systems stack\n  • projects  : Flagship engineered architectures\n  • dhaka     : Live Dhaka, Bangladesh local time\n  • contact   : Transmission coordinates\n  • clear     : Clear terminal buffer',
+    about: 'Abdur Rahman Moayed (@watchknight) • CSE Undergraduate at East West University, Bangladesh.\nFull-Stack Web Architect & Low-Level Systems Engineer.\nBridging POSIX shared-memory pipelines in C and Linux kernel workflows with zero-gravity TypeScript & GSAP web applications.',
     skills: 'Languages : C, C++, TypeScript, JavaScript, Rust, Go, Python, SQL, Bash\nFrontend  : React, Vite, GSAP Motion, ScrollTrigger, HTML5 Canvas, Tailwind, Lenis\nSystems   : POSIX Shared Memory, Linux IPC Pipes, fork() Trees, Valgrind\nCloud/DB  : Cloud Firestore, IndexedDB, Firebase Auth, GitHub Actions CI/CD',
     projects: '1. Mental Defrag   : Zero-Gravity Spatial Cognitive Canvas (Matter.js + Obsidian)\n2. DocLensBD        : Cloud Medical Diagnostic Platform (Firestore + CI/CD)\n3. Rannabanna       : Full-Stack Localized Bengali Culinary Engine (Vite + Cloud DB)\n4. Trash Trail      : Kinetic Scroll-Driven Storytelling (GSAP + ScrollTrigger)\n5. Neon Vanguard    : 2D Canvas Combat Engine & Linux C/C++ POSIX Kernel Labs',
     dhaka: 'Location : East West University, Dhaka, Bangladesh (UTC+6)\nStatus   : Open for Global Systems & Full-Stack Engineering Roles\nPing     : ~14ms (South Asia CDN edge), ~120ms (EU/US edge)',

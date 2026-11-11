@@ -1,5 +1,5 @@
 /**
- * WATCHKNIGHT_OS // SYS.96
+ * WATCHKNIGHT_OS
  * PROCEDURAL 8-BIT WEB AUDIO SYNTHESIZER (src/utils/retroAudio.ts)
  * 
  * Native browser Web Audio API synthesizer for retro UI lo-fi sound effects.

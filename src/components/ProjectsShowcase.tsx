@@ -95,7 +95,7 @@ export const FLAGSHIP_PROJECTS: FlagshipProject[] = [
     holoGeometryName: 'SPATIAL_DODECAHEDRON_CORE',
     problem: {
       headline: 'Cognitive Bottlenecking in Linear Note Systems',
-      description: 'Traditional linear notes enforce rigid hierarchical trees, creating cognitive bottlenecks when mapping multi-dimensional system architectures and emergent ideas.',
+      description: 'Traditional linear notes enforce rigid hierarchical trees, creating friction when mapping multi-dimensional system architectures and emergent ideas.',
       bottleneck: 'High mental overhead when traversing interconnected engineering concepts without spatial context.'
     },
     solution: {
@@ -144,7 +144,7 @@ export const FLAGSHIP_PROJECTS: FlagshipProject[] = [
     },
     solution: {
       headline: 'Cloud Firestore Real-Time Stream & Automated CI/CD',
-      description: 'Architected a resilient health platform with Cloud Firestore real-time snapshot streams, client-side optimistic UI reconciliations, role-based encryption rules, and an automated GitHub Actions CI/CD staging pipeline.',
+      description: 'Engineered a resilient health platform with Cloud Firestore real-time snapshot streams, client-side optimistic UI reconciliations, role-based encryption rules, and an automated GitHub Actions CI/CD staging pipeline.',
       architecture: [
         'Cloud Firestore real-time snapshot listeners with offline persistence',
         'Role-based access control (RBAC) security rules with AES-256 encrypted fields',
@@ -202,7 +202,7 @@ export const FLAGSHIP_PROJECTS: FlagshipProject[] = [
         { label: 'Critical Bundle', value: '42 KB', detail: 'Initial compressed payload' },
         { label: 'Search Latency', value: '< 15 ms', detail: 'Client-side phonetic lookup' }
       ],
-      summary: 'Brings high-performance culinary knowledge and nutritional telemetry to Bengali speakers globally with instant mobile load times.'
+      summary: 'Brings high-performance culinary knowledge and nutrition guidance to Bengali speakers globally with instant mobile load times.'
     },
     techStack: ['React', 'Vite', 'Cloud DB Sync', 'Bengali NLP / Localization', 'PWA', 'Tailwind CSS', 'IndexedDB'],
     githubUrl: 'https://github.com/watchknight/Rannabanna',
@@ -270,8 +270,8 @@ export const FLAGSHIP_PROJECTS: FlagshipProject[] = [
     trisCount: '21.0K TRIS',
     holoGeometryName: 'OCTAHEDRAL_COMBAT_GIMBAL',
     problem: {
-      headline: 'GC Jitter in Particle Combat & Opaque POSIX IPC Telemetry',
-      description: 'Web game engines suffer from GC stutter under dense projectile storms, while systems engineering students lack interactive real-time visual telemetry for understanding Linux IPC pipes and POSIX shared memory buffers.',
+      headline: 'GC Stutter in Particle Combat & POSIX IPC Visualizer',
+      description: 'Web game engines suffer from GC stutter under dense projectile storms, while systems engineering students lack interactive visual tools for understanding Linux IPC pipes and POSIX shared memory buffers.',
       bottleneck: 'Garbage collector pauses in JavaScript render loops and silent deadlocks in C multi-process IPC trees.'
     },
     solution: {
@@ -320,7 +320,7 @@ export const FLAGSHIP_PROJECTS: FlagshipProject[] = [
     },
     solution: {
       headline: 'SHA-256 Merkle Ledger & WebGPU Eulerian Fluid Dynamics Solver',
-      description: 'Architected a tamper-evident cryptographic agent ledger utilizing monotonic append-only Merkle tree state anchors with HMAC verification; paired with a dual-API WebGPU / WebGL2 Navier-Stokes fluid synthesizer driven by procedural FFT audio frequency injections.',
+      description: 'Engineered a tamper-evident cryptographic agent ledger utilizing monotonic append-only Merkle tree state anchors with HMAC verification; paired with a dual-API WebGPU / WebGL2 Navier-Stokes fluid synthesizer driven by procedural FFT audio frequency injections.',
       architecture: [
         'Monotonic append-only ledger secured via SHA-256 Merkle tree state anchors with sub-0.12ms tamper alerts',
         'HMAC-SHA256 authenticated agent signatures preventing unauthorized state mutations at 18,500 evt/s',
@@ -362,48 +362,48 @@ export const SHADER_PASSES: ShaderPassConfig[] = [
   {
     id: 'beauty',
     keyNumber: '1',
-    label: '[1] BEAUTY_PBR',
-    badge: 'PBR + CHROMA',
+    label: '1. Beauty PBR',
+    badge: 'PBR + Chroma',
     subtitle: 'Physically Based Studio Composite + GGX Sheen + Chromatic Aberration',
     description: 'Dual-point studio illumination with GGX specular sheen, Fresnel rim glow, subtle chromatic aberration, and interactive fluid mouse-ripple wave displacement.'
   },
   {
     id: 'pixel',
     keyNumber: '2',
-    label: '[2] 3D_PIXEL_PASS',
-    badge: 'PIXEL: 6PX // OUTLINES',
-    subtitle: 'Three.js RenderPixelatedPass 90s Cyberdeck Retro-Downsampling',
+    label: '2. 3D Pixel Pass',
+    badge: '6px Outlines',
+    subtitle: 'Three.js RenderPixelatedPass 90s Retro Downsampling',
     description: 'Direct RenderPixelatedPass hardware rasterization with pixelSize: 6 and single-pixel normal/depth outlines for authentic chunky 90s arcade workstation aesthetics.'
   },
   {
     id: 'wireframe',
     keyNumber: '3',
-    label: '[3] WIREFRAME_WAVE',
-    badge: 'TOPOLOGY // MATRIX',
+    label: '3. Wireframe Wave',
+    badge: 'Topology Matrix',
     subtitle: 'High-Contrast Polygon Edge Topology & Procedural Wave Flow',
     description: 'Isolates polygon density, quad tessellation, and procedural vertex manifold flow over deep obsidian depth.'
   },
   {
     id: 'clay',
     keyNumber: '4',
-    label: '[4] CLAY_MATTE',
-    badge: 'ROUGHNESS 0.85',
+    label: '4. Clay Matte',
+    badge: 'Roughness 0.85',
     subtitle: 'Matte Diffuse Studio Shading & Pure Silhouette Curvature',
     description: 'Matte diffuse studio lighting (roughness: 0.85, metalness: 0.0) isolating geometric silhouette curvature and volume without specular highlights.'
   },
   {
     id: 'uv',
     keyNumber: '5',
-    label: '[5] UV_MATRIX',
-    badge: '[U, V] MANIFOLD',
+    label: '5. UV Matrix',
+    badge: 'U, V Manifold',
     subtitle: 'Parametric Texture Coordinate Space & 16x16 Grid Checker',
     description: 'Procedural 16x16 UV coordinate checkerboard with 1px border lines and continuous [U, V] manifold coordinate color mapping.'
   },
   {
     id: 'normals',
     keyNumber: '6',
-    label: '[6] NORMALS_RGB',
-    badge: 'VECTORS [RGB]',
+    label: '6. Normals RGB',
+    badge: 'Vectors RGB',
     subtitle: 'Surface Normal Unit Vector Field in Camera Space',
     description: 'Maps surface normal unit vectors [Nx, Ny, Nz] directly into normalized [R, G, B] color space for geometric validation.'
   }
@@ -577,7 +577,7 @@ export const MentalDefragPreview: React.FC = () => {
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-[#4AF626] animate-pulse" />
           <span className="font-pixel text-[10px] text-[#00F0FF] uppercase tracking-wider">
-            SPATIAL_2D_PHYSICS.SYS
+            Spatial 2D Physics
           </span>
         </div>
         <span className="text-[10px] text-[#4AF626] bg-[#131629] px-2 py-0.5 border border-[#2D3645]">
@@ -700,7 +700,7 @@ export const DocLensBDPreview: React.FC = () => {
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-[#FFCC00] animate-pulse" />
           <span className="font-pixel text-[10px] text-[#FFCC00] uppercase tracking-wider">
-            CLOUD_FIRESTORE_TELEMETRY.SYS
+            Cloud Firestore Sync
           </span>
         </div>
         <span className="text-[10px] text-[#4AF626] bg-[#131629] px-2 py-0.5 border border-[#2D3645]">
@@ -800,7 +800,7 @@ export const RannabannaPreview: React.FC = () => {
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-[#00F0FF]" />
           <span className="font-pixel text-[10px] text-[#00F0FF] uppercase tracking-wider">
-            {lang === 'bn' ? 'রান্নাবান্না • ভোজনরসিক' : 'RANNABANNA.SYS'}
+            {lang === 'bn' ? 'রান্নাবান্না • ভোজনরসিক' : 'Rannabanna'}
           </span>
         </div>
         <div className="flex items-center bg-[#131629] border border-[#2D3645] p-0.5 text-[9px]">
@@ -897,7 +897,7 @@ export const TrashTrailPreview: React.FC = () => {
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-[#FF2A85]" />
           <span className="font-pixel text-[10px] text-[#FF2A85] uppercase tracking-wider">
-            SCROLL_SCRUB_SIMULATOR.SYS
+            Scroll Scrub Simulator
           </span>
         </div>
         <span className="text-[10px] text-[#4AF626] bg-[#131629] px-2 py-0.5 border border-[#2D3645]">
@@ -1118,7 +1118,7 @@ export const NeonVanguardPreview: React.FC = () => {
             </div>
             <div className="flex justify-between p-1 bg-[#131629]">
               <span className="text-[#4AF626]">└── [PID 1026] pipe_worker</span>
-              <span>pipe(fd[3]-&gt;fd[4]) [DUPLEX]</span>
+              <span>pipe(fd[3]-&gt;fd[4]) Duplex</span>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-2 text-center text-[9px] pt-1">
@@ -1473,7 +1473,7 @@ export const generateParticleFormation = (projectIndex: number, count: number): 
 };
 
 // ============================================================================
-// MAIN COMPONENT: ProjectsShowcase (UNIFIED SYS.96 CYBERDECK SHOWCASE)
+// MAIN COMPONENT: ProjectsShowcase (UNIFIED WORK SHOWCASE)
 // ============================================================================
 
 export const ProjectsShowcase: React.FC = () => {
@@ -2603,12 +2603,12 @@ export const ProjectsShowcase: React.FC = () => {
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 bg-[#4AF626] border border-[#070814] inline-block animate-pulse" />
               <span className="font-pixel text-[11px] uppercase tracking-wider">
-                [ WATCHKNIGHT_OS // SYS.96 ] :: CYBERDECK_STATION.ROM
+                Cyberdeck Station
               </span>
             </div>
             <div className="flex items-center gap-1 font-mono text-[10px]">
               <span className="hidden sm:inline-block px-1.5 py-0.5 bg-[#070814] text-[#4AF626] border border-[#2D3645]">
-                VOLUMETRIC_ENGINE // ACTIVE
+                Volumetric Engine • Active
               </span>
               <span className="px-1.5 py-0.5 bg-[#070814] text-[#F0EFE6] border border-[#2D3645]">
                 EAST WEST UNIVERSITY CSE
@@ -2619,10 +2619,10 @@ export const ProjectsShowcase: React.FC = () => {
             <div>
               <div className="text-[10px] text-[#00F0FF] font-pixel mb-1 flex items-center gap-1.5">
                 <Terminal className="w-3.5 h-3.5 text-[#00F0FF]" />
-                <span>UNIFIED ROM CARTRIDGE LEDGER &amp; LIVE 3D HOLOGRAM INSPECTOR</span>
+                <span>SELECTED WORK &amp; 3D INSPECTOR</span>
               </div>
               <p className="text-[#8E98AA] text-[11px] font-sans">
-                Select any ROM slot to dynamically morph the real-time 3D procedural hologram and inspect its geometric manifold across 6 live shader passes.
+                Select any project to dynamically morph the real-time 3D procedural hologram and inspect its geometric manifold across 6 live shader passes.
               </p>
             </div>
             <div className="flex items-center gap-2 shrink-0">
@@ -2649,7 +2649,7 @@ export const ProjectsShowcase: React.FC = () => {
               isLight ? 'bg-[#FFFFFF] border-[#1A1D24]/20' : 'bg-[#131629] border-[#2D3645]'
             }`}>
               <span className={`font-bold font-pixel ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'}`}>
-                ROM SLOTS [01 - 06] // LOADED
+                Slots 01 - 06 • Loaded
               </span>
               <span className={isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'}>CLICK TO ENGAGE WORKSPACE</span>
             </div>
@@ -2678,7 +2678,7 @@ export const ProjectsShowcase: React.FC = () => {
                         handleSelectWithCooldown(idx);
                       }
                     }}
-                    aria-label={`Select ROM [${project.number}] ${project.title}`}
+                    aria-label={`Select project ${project.number}: ${project.title}`}
                     aria-pressed={isActive}
                     className={`group w-full p-3 transition-all duration-200 border-2 cursor-pointer ${
                       isActive
@@ -2700,7 +2700,7 @@ export const ProjectsShowcase: React.FC = () => {
                             ? isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'
                             : isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'
                         }`}>
-                          [{project.number}]
+                          {project.number}
                         </span>
                         <h3 className={`font-bold text-sm tracking-tight leading-snug break-words ${
                           isActive
@@ -2750,7 +2750,7 @@ export const ProjectsShowcase: React.FC = () => {
                             ? isLight ? 'bg-[#0052FF] text-[#FFFFFF]' : 'bg-[#00F0FF] text-[#070814]'
                             : isLight ? 'bg-[#EDE8DE] text-[#3F4654] border border-[#1A1D24]/20' : 'bg-[#070814] text-[#8E98AA] border border-[#2D3645]'
                         }`}>
-                          {isActive ? 'ROM: ENGAGED' : 'ROM: READY'}
+                          {isActive ? 'Active' : 'Ready'}
                         </span>
                         <span className={isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'}>
                           p99: <span className={`font-bold ${isLight ? 'text-[#C85A00]' : 'text-[#FFCC00]'}`}>{project.p99Latency}</span>
@@ -2772,7 +2772,7 @@ export const ProjectsShowcase: React.FC = () => {
                             : 'bg-[#131629] hover:bg-[#00F0FF]/20 text-[#00F0FF] border border-[#00F0FF]/40'
                         }`}
                       >
-                        [ INSPECT ARCHITECTURE ]
+                        Inspect Architecture
                       </button>
                     </div>
                   </div>
@@ -2800,7 +2800,7 @@ export const ProjectsShowcase: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <span className={`w-2 h-2 rounded-full animate-ping ${isLight ? 'bg-[#D90452]' : 'bg-[#FF2A85]'}`} />
                   <span className="font-pixel">
-                    HOLO_VIEWPORT // [{activeProject.number}] {activeProject.title.toUpperCase()}
+                    Viewport • {activeProject.number}. {activeProject.title}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 font-mono">
@@ -2964,7 +2964,7 @@ export const ProjectsShowcase: React.FC = () => {
                       : 'bg-[#4AF626] hover:bg-[#6ef750] text-[#070814]'
                   }`}
                 >
-                  [ OPEN DOSSIER ]
+                  Open Dossier
                 </button>
               </div>
             </div>
@@ -2984,7 +2984,7 @@ export const ProjectsShowcase: React.FC = () => {
               <div className="flex items-center justify-between px-3 py-2 bg-[#D6CFC2] text-[#070814] font-bold text-xs select-none">
                 <div className="flex items-center gap-2">
                   <span className="font-pixel text-[10px] uppercase tracking-wider">
-                    [ ARCHITECTURE_DOSSIER // SYS.96 ] :: [{activeProject.number}] {activeProject.title.toUpperCase()}.EXE
+                    Architecture Dossier • {activeProject.number}. {activeProject.title}
                   </span>
                 </div>
                 <div className="flex items-center gap-1 font-mono text-[11px]">
@@ -3031,12 +3031,12 @@ export const ProjectsShowcase: React.FC = () => {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#2D3645] pb-4">
                   <div>
                     <div className="flex items-center gap-2 text-[#00F0FF] text-[10px] font-pixel mb-1">
-                      <span>PROJECT_SECTOR // {activeProject.category}</span>
+                      <span>Sector • {activeProject.category}</span>
                       <span>•</span>
                       <span className="text-[#FFCC00]">YEAR {activeProject.year}</span>
                     </div>
                     <h2 className="font-bold text-xl sm:text-2xl text-[#F0EFE6]">
-                      {activeProject.title} — <span className="text-[#8E98AA] text-base font-normal">{activeProject.subtitle}</span>
+                      {activeProject.title} • <span className="text-[#8E98AA] text-base font-normal">{activeProject.subtitle}</span>
                     </h2>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
@@ -3047,7 +3047,7 @@ export const ProjectsShowcase: React.FC = () => {
                       className="px-3 py-1.5 bg-[#131629] hover:bg-[#00F0FF]/20 text-[#00F0FF] border border-[#00F0FF]/40 text-xs flex items-center gap-1.5"
                     >
                       <GithubIcon className="w-3.5 h-3.5" />
-                      <span>@watchknight GITHUB ↗</span>
+                      <span>GitHub ↗</span>
                     </a>
                     {activeProject.liveUrl && (
                       <a
@@ -3057,7 +3057,7 @@ export const ProjectsShowcase: React.FC = () => {
                         className="px-3 py-1.5 bg-[#00F0FF] hover:bg-[#4df4ff] text-[#070814] font-bold text-xs flex items-center gap-1.5"
                       >
                         <ExternalLink className="w-3.5 h-3.5" />
-                        <span>LIVE DEMO ↗</span>
+                        <span>Live Demo ↗</span>
                       </a>
                     )}
                   </div>
@@ -3073,12 +3073,12 @@ export const ProjectsShowcase: React.FC = () => {
                     <div className="p-4 bg-[#131629] border border-[#2D3645] space-y-2">
                       <div className="text-[10px] text-[#FF2A85] font-pixel flex items-center gap-1.5">
                         <AlertTriangle className="w-3.5 h-3.5 text-[#FF2A85]" />
-                        <span>PROBLEM BOTTLENECK</span>
+                        <span>Problem</span>
                       </div>
                       <h4 className="font-bold text-sm text-[#F0EFE6]">{activeProject.problem.headline}</h4>
                       <p className="text-xs text-[#8E98AA] leading-relaxed">{activeProject.problem.description}</p>
                       <div className="p-2 bg-[#070814] border-l-2 border-[#FF2A85] text-[11px] text-[#D6CFC2]">
-                        <span className="text-[#FF2A85] font-bold">Root Bottleneck:</span> {activeProject.problem.bottleneck}
+                        <span className="text-[#FF2A85] font-bold">Bottleneck:</span> {activeProject.problem.bottleneck}
                       </div>
                     </div>
 
@@ -3086,7 +3086,7 @@ export const ProjectsShowcase: React.FC = () => {
                     <div className="p-4 bg-[#131629] border border-[#2D3645] space-y-2.5">
                       <div className="text-[10px] text-[#4AF626] font-pixel flex items-center gap-1.5">
                         <Cpu className="w-3.5 h-3.5 text-[#4AF626]" />
-                        <span>SYSTEM ARCHITECTURE SOLUTION</span>
+                        <span>How It Works</span>
                       </div>
                       <h4 className="font-bold text-sm text-[#F0EFE6]">{activeProject.solution.headline}</h4>
                       <p className="text-xs text-[#8E98AA] leading-relaxed">{activeProject.solution.description}</p>
@@ -3094,7 +3094,7 @@ export const ProjectsShowcase: React.FC = () => {
                       <div className="space-y-1.5 pt-1">
                         {activeProject.solution.architecture.map((archItem, aIdx) => (
                           <div key={aIdx} className="flex items-start gap-2 text-xs text-[#D6CFC2]">
-                            <span className="text-[#00F0FF] font-bold">❯</span>
+                            <span className="text-[#00F0FF] font-bold">•</span>
                             <span>{archItem}</span>
                           </div>
                         ))}
@@ -3116,7 +3116,7 @@ export const ProjectsShowcase: React.FC = () => {
                   {/* Right Column: Live Interactive Simulation Preview Box */}
                   <div className="lg:col-span-5 flex flex-col space-y-3">
                     <div className="text-[10px] text-[#00F0FF] font-pixel flex items-center justify-between">
-                      <span>LIVE SIMULATION PREVIEW:</span>
+                      <span>Simulation Preview</span>
                       <span className="text-[#4AF626]">{activeProject.fpsMetric}</span>
                     </div>
 
@@ -3135,7 +3135,7 @@ export const ProjectsShowcase: React.FC = () => {
                         }}
                         className="px-3 py-1 bg-[#00F0FF] hover:bg-[#4df4ff] text-[#070814] font-bold text-xs flex items-center gap-1 active:translate-y-0.5"
                       >
-                        <span>FULL CASE STUDY ⤢</span>
+                        <span>Case Study ↗</span>
                       </button>
                     </div>
                   </div>

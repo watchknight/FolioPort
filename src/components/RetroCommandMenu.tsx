@@ -30,20 +30,20 @@ export interface Level1ItemDef {
 export const LEVEL1_MENU_ITEMS: Level1ItemDef[] = [
   {
     section: 'projects',
-    command: '[1] SELECTED WORK',
-    legacyCommand: '[2] MY PROJECTS',
+    command: '1. Work',
+    legacyCommand: '1. Work',
     index: 0,
   },
   {
     section: 'about',
-    command: '[2] ABOUT & SKILLS',
-    legacyCommand: '[1] ABOUT ME',
+    command: '2. About',
+    legacyCommand: '2. About',
     index: 1,
   },
   {
     section: 'resume',
-    command: '[3] RESUME & CONTACT',
-    legacyCommand: '[3] RESUME',
+    command: '3. Resume',
+    legacyCommand: '3. Resume',
     index: 2,
   },
 ];
@@ -130,9 +130,9 @@ export const RetroCommandMenu: React.FC<RetroCommandMenuProps> = ({
             style={{ backgroundColor: brightColor }}
             aria-hidden="true"
           />
-          <span>&gt; COMMAND MENU</span>
+          <span>Navigation</span>
         </div>
-        <span className="text-[7px] sm:text-[8px] opacity-80 font-mono">[SYS.96 // NAV]</span>
+        <span className="text-[7px] sm:text-[8px] opacity-80 font-mono">Menu</span>
       </div>
 
       {/* Navigation Command Items: Clean, spacious 3-item selector in 'Press Start 2P' */}
@@ -187,7 +187,7 @@ export const RetroCommandMenu: React.FC<RetroCommandMenuProps> = ({
                     }
               }
             >
-              {/* Leading > Pixel Arrow Indicator */}
+              {/* Leading Indicator */}
               <span
                 data-testid={`retro-command-indicator-${item.section}`}
                 className="inline-block w-3 sm:w-3.5 shrink-0 font-bold text-center select-none"
@@ -197,10 +197,10 @@ export const RetroCommandMenu: React.FC<RetroCommandMenuProps> = ({
                 }}
                 aria-hidden="true"
               >
-                &gt;
+                •
               </span>
 
-              {/* Command text: [1] SELECTED WORK, [2] ABOUT & SKILLS, [3] RESUME & CONTACT */}
+              {/* Command text: 1. Work, 2. About, 3. Resume */}
               <span className="truncate font-pixel font-bold tracking-wider">
                 {item.command}
               </span>
@@ -220,7 +220,7 @@ export const RetroCommandMenu: React.FC<RetroCommandMenuProps> = ({
                     borderColor: voidColor,
                   }}
                 >
-                  ACTIVE
+                  Active
                 </span>
               )}
             </button>

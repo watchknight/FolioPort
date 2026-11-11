@@ -164,10 +164,10 @@ export const CRTMonitorShell: React.FC<CRTMonitorShellProps> = ({
               <div className="relative z-10 w-full h-full flex flex-col items-center justify-center p-6 text-center bg-[#070b08] select-none">
                 <div className="w-2.5 h-2.5 bg-[#2e3b2b] animate-ping mb-4" />
                 <p className="font-pixel text-[10px] text-[#6e7d62] uppercase tracking-wider mb-2">
-                  [ CRT TUBE STANDBY // POWER OFF ]
+                  Standby
                 </p>
                 <p className="font-crt text-sm text-[#2e3b2b]">
-                  PRESS [POWER] ON HARDWARE BEZEL TO RE-ENERGIZE CATHODE GUNS
+                  Press Power on monitor bezel to turn on
                 </p>
               </div>
             )}
@@ -197,10 +197,7 @@ export const CRTMonitorShell: React.FC<CRTMonitorShellProps> = ({
               className="font-pixel text-[9px] sm:text-[10px] font-bold text-[#3b3a32] tracking-widest"
               style={{ textShadow: '1px 1px 0 #ded8c1' }}
             >
-              WATCHKNIGHT
-            </span>
-            <span className="hidden sm:inline-block px-1.5 py-0.5 text-[8px] bg-[#3b3a32] text-[#c8c2ab] border border-[#8f8973] shadow-[inset_1px_1px_0_#22211c]">
-              SYS.96 CRT // 15"
+              MOAYED
             </span>
           </div>
 
@@ -216,31 +213,7 @@ export const CRTMonitorShell: React.FC<CRTMonitorShellProps> = ({
 
           {/* Bottom-Right: Tactile Hardware Controls */}
           <div className="flex items-center gap-1.5 sm:gap-2.5">
-            {/* [CRT: SAGE/AMBER] 1-Click Hardware Phosphor Toggle */}
-            <button
-              type="button"
-              onClick={() => {
-                if (os.isInsideProvider) {
-                  os.togglePhosphorMode();
-                  if (sfxEnabled) {
-                    try {
-                      watchknightAudio.play8BitBlip(os.phosphorMode === 'sage' ? 480 : 880);
-                    } catch {}
-                  }
-                }
-              }}
-              className={`px-2 py-1 font-mono text-[8px] uppercase tracking-wider transition-all duration-75 border-t-2 border-l-2 border-b-2 border-r-2 ${
-                os.phosphorMode === 'amber'
-                  ? 'bg-[#d4a359] text-[#140f07] border-t-[#ded8c1] border-l-[#ded8c1] border-b-[#8f8973] border-r-[#8f8973] shadow-[1px_1px_0_#3b3a32]'
-                  : 'bg-[#ded8c1] text-[#111712] border-t-[#ded8c1] border-l-[#ded8c1] border-b-[#8f8973] border-r-[#8f8973] shadow-[1px_1px_0_#3b3a32]'
-              }`}
-              title="Toggle Monochrome Phosphor Palette (Sage vs Amber)"
-              aria-label={`Current phosphor is ${os.phosphorMode.toUpperCase()}. Click to switch to ${os.phosphorMode === 'sage' ? 'Amber' : 'Sage'}.`}
-            >
-              {`[CRT: ${os.phosphorMode === 'amber' ? 'AMBER' : 'SAGE'}]`}
-            </button>
-
-            {/* [SFX: ON/OFF] Hardware Toggle Switch */}
+            {/* Sound Hardware Toggle Switch */}
             <button
               type="button"
               onClick={handleSfxToggle}
@@ -252,7 +225,7 @@ export const CRTMonitorShell: React.FC<CRTMonitorShellProps> = ({
               title="Toggle Web Audio Sound Effects"
               aria-label={`Sound effects are currently ${sfxEnabled ? 'ON' : 'OFF'}. Click to toggle.`}
             >
-              {`[SFX: ${sfxEnabled ? 'ON' : 'OFF'}]`}
+              Sound
             </button>
 
             {/* Glowing Pixel Power LED */}
@@ -276,7 +249,7 @@ export const CRTMonitorShell: React.FC<CRTMonitorShellProps> = ({
               className="px-2.5 py-1 font-pixel text-[8px] sm:text-[9px] font-bold uppercase tracking-wider bg-[#c8c2ab] text-[#3b3a32] border-t-2 border-l-2 border-[#ded8c1] border-b-2 border-r-2 border-[#8f8973] active:border-t-[#8f8973] active:border-l-[#8f8973] active:border-b-[#ded8c1] active:border-r-[#ded8c1] active:translate-y-[1px] disabled:opacity-50 disabled:cursor-not-allowed shadow-[1px_1px_0_#3b3a32] hover:bg-[#ded8c1] transition-all"
               aria-label="Toggle CRT Monitor Power"
             >
-              [POWER]
+              Power
             </button>
           </div>
         </aside>

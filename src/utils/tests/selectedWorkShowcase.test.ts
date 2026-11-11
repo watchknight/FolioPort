@@ -8,13 +8,13 @@ import {
 } from '../../components/views/ProjectsView';
 import { RetroOSProvider, useRetroOS } from '../../context/RetroOSContext';
 
-describe('SYS.96: [1] Selected Work 4-Project Showcase & Two-Tier Progressive Disclosure', () => {
+describe('Selected Work 4-Project Showcase & Two-Tier Progressive Disclosure', () => {
   describe('1. Curated 2x2 Flagship Project Grid (Default View)', () => {
     it('renders clean section header "SELECTED ENGINEERING WORK (4 FLAGSHIP CASE STUDIES)" and right-aligned GitHub link', () => {
       const html = renderToString(React.createElement(ProjectsView));
 
       expect(html).toContain('SELECTED ENGINEERING WORK (4 FLAGSHIP CASE STUDIES)');
-      expect(html).toContain('[All 14 Repos on GitHub @watchknight]');
+      expect(html).toContain('All 14 Repos on GitHub @watchknight');
       expect(html).toContain('href="https://github.com/watchknight"');
     });
 
@@ -68,14 +68,14 @@ describe('SYS.96: [1] Selected Work 4-Project Showcase & Two-Tier Progressive Di
       expect(html).toContain('120 FPS Zero-Alloc Canvas • &lt;1.2µs POSIX IPC');
       expect(html).toContain('Cloud Firestore • Real-Time Sync • CI/CD');
 
-      // Element (4): Bottom action row with [Read Case Study], [Live Demo], and [GitHub]
+      // Element (4): Bottom action row with Read Case Study, Live Demo, and GitHub
       expect(html).toContain('data-testid="retro-btn-read-case-study-01"');
       expect(html).toContain('data-testid="retro-btn-read-case-study-02"');
       expect(html).toContain('data-testid="retro-btn-read-case-study-03"');
       expect(html).toContain('data-testid="retro-btn-read-case-study-04"');
-      expect(html).toContain('[Read Case Study]');
-      expect(html).toContain('[Live Demo]');
-      expect(html).toContain('[GitHub]');
+      expect(html).toContain('Read Case Study');
+      expect(html).toContain('Live Demo');
+      expect(html).toContain('GitHub');
     });
   });
 
@@ -124,12 +124,12 @@ describe('SYS.96: [1] Selected Work 4-Project Showcase & Two-Tier Progressive Di
   });
 
   describe('3. Compact GitHub Archive Accordion Specifications', () => {
-    it('renders single collapsible accordion bar reading "[+ View Additional Open-Source Labs & C/C++ Repos (8)]"', () => {
+    it('renders single collapsible accordion bar reading "+ View Additional Labs (8)"', () => {
       const html = renderToString(React.createElement(ProjectsView));
 
       expect(html).toContain('data-testid="github-archive-accordion"');
       expect(html).toContain('data-testid="btn-toggle-github-accordion"');
-      expect(html).toContain('[+ View Additional Open-Source Labs &amp; C/C++ Repos (8)]');
+      expect(html).toContain('+ View Additional Labs (8)');
     });
 
     it('contains all required repositories in fallback archive table: BitForge, simd-json-stream, posix-shm-kernel-lab, TrashTrail, POSHRA, PureFeed', () => {

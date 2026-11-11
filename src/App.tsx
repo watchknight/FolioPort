@@ -181,7 +181,7 @@ export const App: React.FC = () => {
                   <ShutterLayer
                     index={0}
                     total={6}
-                    title="HERO_HORIZON"
+                    title="Hero Horizon"
                     id="hero-sector"
                     nextSectionId="work"
                     showDivider={false}
@@ -193,7 +193,7 @@ export const App: React.FC = () => {
                   <ShutterLayer
                     index={1}
                     total={6}
-                    title="FLAGSHIP_SYSTEMS_3D_DECK"
+                    title="Selected Work"
                     id="work"
                     nextSectionId="extensions-sector"
                     prevSectionId="hero-sector"
@@ -205,7 +205,7 @@ export const App: React.FC = () => {
                   <ShutterLayer
                     index={2}
                     total={6}
-                    title="BROWSER_EXTENSION_STUDIO"
+                    title="Browser Extension Studio"
                     id="extensions-sector"
                     nextSectionId="architecture-sector"
                     prevSectionId="work"
@@ -217,7 +217,7 @@ export const App: React.FC = () => {
                   <ShutterLayer
                     index={3}
                     total={6}
-                    title="MOTHERBOARD_BIOS_ARCHITECTURE"
+                    title="Architecture & Skills"
                     id="architecture-sector"
                     nextSectionId="lab-sector"
                     prevSectionId="extensions-sector"
@@ -229,7 +229,7 @@ export const App: React.FC = () => {
                   <ShutterLayer
                     index={4}
                     total={6}
-                    title="GITHUB_ROMS_TERMINAL_ARCADE"
+                    title="GitHub & Terminal"
                     id="lab-sector"
                     nextSectionId="contact-sector"
                     prevSectionId="architecture-sector"
@@ -242,7 +242,7 @@ export const App: React.FC = () => {
                   <ShutterLayer
                     index={5}
                     total={6}
-                    title="CONTACT_SATELLITE_UPLINK"
+                    title="Contact & Resume"
                     id="contact-sector"
                     prevSectionId="lab-sector"
                   >

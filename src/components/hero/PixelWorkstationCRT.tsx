@@ -39,7 +39,7 @@ const CODE_SNIPPETS = [
   '  bind_port(9042, "DHAKA");',
   '  watchknight_ready();',
   '}',
-  '// LIVE TELEMETRY: 23°N 90°E',
+  '/* Live Status: 23°N 90°E */',
   'while(sys_alive) {',
   '  poll_neural_events();',
   '  render_crt_frame();',
@@ -955,7 +955,7 @@ export const PixelWorkstationCRT: React.FC<PixelWorkstationCRTProps> = ({
 
           {/* Retro Monitor Brand Badge */}
           <div className={`font-pixel text-[8px] sm:text-[9px] font-bold ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'} tracking-wider uppercase`}>
-            WATCHKNIGHT // SYS.96 CRT
+            MOAYED
           </div>
 
           <div className="flex items-center gap-1 opacity-70">
@@ -972,7 +972,7 @@ export const PixelWorkstationCRT: React.FC<PixelWorkstationCRTProps> = ({
           <div className={`flex items-center justify-between px-2 py-1 text-[10px] mb-1.5 ${isLight ? 'bg-[#C8C1B4] text-[#11131A] shadow-[inset_1px_1px_0_#FFFFFF]' : 'bg-[#2D3645] text-[#F0EFE6] shadow-[inset_1px_1px_0_#D6CFC2]'}`}>
             <div className="flex items-center gap-1.5 font-pixel text-[8px] sm:text-[9px]">
               <Monitor className={`w-3 h-3 ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'}`} />
-              <span className="break-words">DEV_WORKSTATION.EXE</span>
+              <span className="break-words">Developer Workstation</span>
             </div>
 
             {/* Retro [ - ] [ + ] [ x ] Controls */}
@@ -1035,7 +1035,7 @@ export const PixelWorkstationCRT: React.FC<PixelWorkstationCRTProps> = ({
             {/* Corner HUD Pill: Active Mode Badge */}
             <div className="absolute top-2 left-2 z-20 pointer-events-none font-pixel text-[7px] sm:text-[8px] uppercase tracking-wider px-1.5 py-0.5 border border-[#2D3645] bg-[#070814]/85 text-[#F0EFE6] flex items-center gap-1.5 shadow">
               <span className="w-1.5 h-1.5 rounded-full bg-[#4AF626] animate-pulse" />
-              <span>{displayMode === 'avatar' ? '8-BIT SPRITE' : 'REAL CRT PHOTO'}</span>
+              <span>{displayMode === 'avatar' ? '8-Bit Sprite' : 'Real Photo'}</span>
             </div>
 
             {/* Bottom Coordinate Telemetry Stamp */}
@@ -1047,20 +1047,20 @@ export const PixelWorkstationCRT: React.FC<PixelWorkstationCRTProps> = ({
 
         {/* HARDWARE BEZEL CONTROLS & DUAL-MODE PORTRAIT SWITCHER */}
         <div className="flex flex-wrap items-center justify-between gap-2 pt-1 px-1">
-          {/* HARDWARE TOGGLE BUTTON: [ AVATAR: 8-BIT SPRITE | REAL CRT PHOTO ] */}
+          {/* HARDWARE TOGGLE BUTTON */}
           <button
             type="button"
             onClick={toggleDisplayMode}
             className="group flex items-center gap-2 px-2.5 sm:px-3 py-1.5 bg-[#D6CFC2] hover:bg-[#F5EFEB] active:bg-[#B8B0A2] text-[#2D3645] font-pixel text-[8px] sm:text-[9px] uppercase tracking-wider border-2 border-[#2D3645] shadow-[2px_2px_0_0_#070814] active:translate-x-0.5 active:translate-y-0.5 transition-all"
             aria-label="Toggle between 8-bit character sprite and real CRT portrait photo"
-            title="DUAL-MODE PORTRAIT SWITCHER: [ AVATAR: 8-BIT SPRITE | REAL CRT PHOTO ]"
+            title="Portrait Switcher: 8-Bit Sprite or Real Photo"
           >
             <RefreshCw className="w-3 h-3 text-[#FF2A85] group-hover:rotate-180 transition-transform duration-300" />
             <span className="font-bold">
-              {displayMode === 'avatar' ? 'PHOTO MODE' : 'AVATAR MODE'}
+              {displayMode === 'avatar' ? 'Photo Mode' : 'Avatar Mode'}
             </span>
             <span className="text-[7px] text-[#544F48] hidden sm:inline">
-              {displayMode === 'avatar' ? '[8-BIT SPRITE]' : '[REAL CRT PHOTO]'}
+              {displayMode === 'avatar' ? '8-Bit Sprite' : 'Real Photo'}
             </span>
           </button>
 
@@ -1073,7 +1073,7 @@ export const PixelWorkstationCRT: React.FC<PixelWorkstationCRTProps> = ({
               aria-label="Trigger CRT Degauss"
               title="Degauss CRT Monitor"
             >
-              DEGAUSS
+              Degauss
             </button>
 
             {/* Hardware LEDs */}
@@ -1101,7 +1101,7 @@ export const PixelWorkstationCRT: React.FC<PixelWorkstationCRTProps> = ({
       {/* METADATA COORDINATES DIRECTLY BENEATH CRT MONITOR */}
       <div
         className={`mt-2 flex items-center justify-between gap-2 px-1 text-[11px] ${isLight ? 'text-[#3F4654]' : 'text-[#8E98AA]'} tracking-wider uppercase font-mono`}
-        aria-label="Geographic Coordinates & Station Telemetry"
+        aria-label="Geographic Coordinates & Station Status"
       >
         <div className={`flex items-center gap-1.5 ${isLight ? 'text-[#11131A]' : 'text-[#F0EFE6]'}`}>
           <Compass className={`w-3.5 h-3.5 ${isLight ? 'text-[#0052FF]' : 'text-[#00F0FF]'} shrink-0`} />
@@ -1119,7 +1119,7 @@ export const PixelWorkstationCRT: React.FC<PixelWorkstationCRTProps> = ({
 
         <div className={`hidden sm:flex items-center gap-1.5 ${isLight ? 'text-[#007A33]' : 'text-[#4AF626]'} text-[10px]`}>
           <Activity className={`w-3 h-3 ${isLight ? 'text-[#007A33]' : 'text-[#4AF626]'} shrink-0`} />
-          <span className="font-bold">SYS.96_ONLINE</span>
+          <span className="font-bold">Online</span>
         </div>
       </div>
     </div>
