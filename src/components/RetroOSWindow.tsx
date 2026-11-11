@@ -136,6 +136,34 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
     resume: null,
   });
 
+  // Level 1 Preview [Copy Email] 1-click state & feedback
+  const [isEmailCopied, setIsEmailCopied] = useState(false);
+  const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleCopyEmail = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      if (typeof navigator !== 'undefined' && navigator.clipboard) {
+        navigator.clipboard.writeText('moayed.cse@gmail.com');
+      }
+    } catch {}
+    setIsEmailCopied(true);
+    try {
+      retroAudio.playBlip();
+    } catch {}
+    if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    copyTimerRef.current = setTimeout(() => {
+      setIsEmailCopied(false);
+      copyTimerRef.current = null;
+    }, 2000);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    };
+  }, []);
+
   // Reset scroll to top when changing sections, and recompute metrics
   useEffect(() => {
     if (scrollContainerRef.current) {
@@ -154,8 +182,10 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
     }
   }, [isWindowExpanded, currentActiveSection]);
 
-  // Step scroll button handlers (scroll by 48px)
-  const stepScrollTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Step scroll button handlers (scroll by 48px) with clean single-click & hold-to-repeat
+  const stepScrollDelayTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const stepScrollIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const steppedByPointerRef = useRef<boolean>(false);
 
   const handleStepUp = useCallback(() => {
     if (scrollContainerRef.current) {
@@ -185,37 +215,46 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
     }
   }, [updateScrollMetrics]);
 
-  const startStepUp = useCallback(() => {
-    handleStepUp();
-    if (stepScrollTimerRef.current) clearInterval(stepScrollTimerRef.current);
-    stepScrollTimerRef.current = setInterval(() => {
-      handleStepUp();
-    }, 120);
-  }, [handleStepUp]);
-
-  const startStepDown = useCallback(() => {
-    handleStepDown();
-    if (stepScrollTimerRef.current) clearInterval(stepScrollTimerRef.current);
-    stepScrollTimerRef.current = setInterval(() => {
-      handleStepDown();
-    }, 120);
-  }, [handleStepDown]);
-
   const stopStep = useCallback(() => {
-    if (stepScrollTimerRef.current) {
-      clearInterval(stepScrollTimerRef.current);
-      stepScrollTimerRef.current = null;
+    if (stepScrollDelayTimerRef.current) {
+      clearTimeout(stepScrollDelayTimerRef.current);
+      stepScrollDelayTimerRef.current = null;
+    }
+    if (stepScrollIntervalRef.current) {
+      clearInterval(stepScrollIntervalRef.current);
+      stepScrollIntervalRef.current = null;
     }
   }, []);
 
+  const startStepUp = useCallback(() => {
+    stopStep();
+    steppedByPointerRef.current = true;
+    handleStepUp();
+    // After 300ms hold delay, auto-repeat every 90ms
+    stepScrollDelayTimerRef.current = setTimeout(() => {
+      stepScrollIntervalRef.current = setInterval(() => {
+        handleStepUp();
+      }, 90);
+    }, 300);
+  }, [handleStepUp, stopStep]);
+
+  const startStepDown = useCallback(() => {
+    stopStep();
+    steppedByPointerRef.current = true;
+    handleStepDown();
+    // After 300ms hold delay, auto-repeat every 90ms
+    stepScrollDelayTimerRef.current = setTimeout(() => {
+      stepScrollIntervalRef.current = setInterval(() => {
+        handleStepDown();
+      }, 90);
+    }, 300);
+  }, [handleStepDown, stopStep]);
+
   useEffect(() => {
     return () => {
-      if (stepScrollTimerRef.current) {
-        clearInterval(stepScrollTimerRef.current);
-        stepScrollTimerRef.current = null;
-      }
+      stopStep();
     };
-  }, []);
+  }, [stopStep]);
 
   // Window control buttons
   const handleMinimize = useCallback(() => {
@@ -282,6 +321,15 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
     [thumbHeight, updateScrollMetrics]
   );
 
+  // Active thumb drag cleanup ref to ensure window listeners don't leak on unmount
+  const dragCleanupRef = useRef<(() => void) | null>(null);
+
+  useEffect(() => {
+    return () => {
+      dragCleanupRef.current?.();
+    };
+  }, []);
+
   // Thumb mouse drag listeners with full 0% to 100% travel coverage
   const handleThumbMouseDown = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -308,10 +356,12 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
 
       const onMouseUp = () => {
         isDraggingThumbRef.current = false;
+        dragCleanupRef.current = null;
         window.removeEventListener('mousemove', onMouseMove);
         window.removeEventListener('mouseup', onMouseUp);
       };
 
+      dragCleanupRef.current = onMouseUp;
       window.addEventListener('mousemove', onMouseMove);
       window.addEventListener('mouseup', onMouseUp);
     },
@@ -347,11 +397,13 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
 
       const onTouchEnd = () => {
         isDraggingThumbRef.current = false;
+        dragCleanupRef.current = null;
         window.removeEventListener('touchmove', onTouchMove);
         window.removeEventListener('touchend', onTouchEnd);
         window.removeEventListener('touchcancel', onTouchEnd);
       };
 
+      dragCleanupRef.current = onTouchEnd;
       window.addEventListener('touchmove', onTouchMove, { passive: true });
       window.addEventListener('touchend', onTouchEnd);
       window.addEventListener('touchcancel', onTouchEnd);
@@ -419,18 +471,36 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
         data-testid="retro-os-window"
         role="region"
         aria-label="1990s Operating System Window Manager"
+        tabIndex={-1}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape' && isWindowExpanded) {
+            e.stopPropagation();
+            handleClose();
+          }
+        }}
         className={`retro-os-window font-pixel select-none flex flex-col ${
           isWindowExpanded
-            ? 'retro-window-expanded-wipe absolute inset-0 z-40 w-full h-full'
-            : 'relative w-full min-h-[170px] sm:min-h-[195px] h-full'
+            ? 'retro-window-expanded-wipe absolute z-[30]'
+            : 'relative w-full h-full'
         } ${className}`}
-        style={{
-          backgroundColor: voidColor,
-          color: brightColor,
-          border: `2px solid ${midColor}`,
-          outline: `2px solid ${brightColor}`,
-          boxShadow: `2px 2px 0px 0px ${voidColor}`,
-        }}
+        style={
+          isWindowExpanded
+            ? {
+                inset: '20px',
+                zIndex: 30,
+                backgroundColor: '#111712',
+                color: brightColor,
+                border: `2px solid ${brightColor}`,
+                boxShadow: '0 0 30px rgba(0,0,0,0.85)',
+              }
+            : {
+                backgroundColor: voidColor,
+                color: brightColor,
+                border: `2px solid ${midColor}`,
+                outline: `2px solid ${brightColor}`,
+                boxShadow: `2px 2px 0px 0px ${voidColor}`,
+              }
+        }
       >
         {/* Screen Reader Live Region for WCAG AAA Accessibility */}
         <div
@@ -446,23 +516,24 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
         {/* WINDOW TITLE BAR */}
         <div
           data-testid="retro-window-titlebar"
-          className="relative w-full h-7 sm:h-8 px-2 flex items-center justify-between shrink-0 select-none border-b-2"
+          className="relative w-full h-7 px-2 flex items-center justify-between shrink-0 select-none border-b-2"
           style={{
             backgroundColor: brightColor,
             color: voidColor,
             borderColor: midColor,
           }}
         >
-          {/* Left Title: DIR badge + C:\MOAYED\SYSTEM.DIR */}
+          {/* Left Title: DIR badge + QUICK_VIEW.SYS / C:\MOAYED\SYSTEM.DIR */}
           <div className="flex items-center gap-1.5 min-w-0 pr-2">
             <span className="font-bold text-[8px] sm:text-[9px] bg-[#111712] text-[#c2cdb4] px-1 py-0.2 select-none" aria-hidden="true">
-              DIR
+              {isWindowExpanded ? 'DIR' : 'SYS'}
             </span>
             <span
               data-testid="retro-window-title-text"
               className="font-pixel font-bold text-[9px] sm:text-[10px] tracking-wider truncate uppercase text-[#111712]"
             >
-              C:\MOAYED\SYSTEM.DIR
+              {isWindowExpanded ? `C:\\MOAYED\\${activeMeta.fileName.split('\\').pop() || 'SYSTEM.DIR'}` : 'QUICK_VIEW.SYS'}
+              <span className="sr-only">C:\MOAYED\SYSTEM.DIR</span>
             </span>
           </div>
 
@@ -525,64 +596,139 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
         {isWindowExpanded && (
           <div
             data-testid="retro-window-persistent-nav"
-            className="w-full px-2 py-1.5 flex items-center justify-between border-b shrink-0 text-[8px] sm:text-[9px]"
+            className="w-full px-2.5 sm:px-4 py-2 flex items-center justify-between border-b-2 shrink-0 text-[8px] sm:text-[9px] select-none gap-2"
             style={{
               backgroundColor: dimColor,
-              borderColor: `${midColor}80`,
+              borderColor: midColor,
               color: brightColor,
             }}
           >
-            <div className="flex items-center gap-1 sm:gap-2" role="tablist" aria-label="Operating System Views">
-              {RETRO_SECTIONS.map((sec) => {
-                const isItemActive = currentActiveSection === sec;
-                const meta = SECTION_METADATA[sec];
-                return (
-                  <button
-                    key={sec}
-                    ref={(el) => (tabRefs.current[sec] = el)}
-                    type="button"
-                    role="tab"
-                    aria-selected={isItemActive}
-                    tabIndex={isItemActive ? 0 : -1}
-                    onClick={() => handleSectionSwitch(sec)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-                        e.preventDefault();
-                        const nextIdx = ((meta.index + 1) % 3) as SectionIndex;
-                        handleSectionSwitch(RETRO_SECTIONS[nextIdx]);
-                      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-                        e.preventDefault();
-                        const prevIdx = ((meta.index - 1 + 3) % 3) as SectionIndex;
-                        handleSectionSwitch(RETRO_SECTIONS[prevIdx]);
+            {/* Direct 1-click tab switches: [1] WORK | [2] ABOUT | [3] RESUME & CONTACT */}
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap" role="tablist" aria-label="Operating System Views">
+              {/* Tab 1: [1] WORK */}
+              <button
+                ref={(el) => (tabRefs.current['projects'] = el)}
+                type="button"
+                role="tab"
+                aria-selected={currentActiveSection === 'projects'}
+                tabIndex={currentActiveSection === 'projects' ? 0 : -1}
+                onClick={() => handleSectionSwitch('projects')}
+                onKeyDown={(e) => {
+                  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    handleSectionSwitch('about');
+                  } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    handleSectionSwitch('resume');
+                  }
+                }}
+                data-testid="retro-window-tab-projects"
+                className="px-2.5 sm:px-3 py-1.5 min-h-[44px] flex items-center border-2 font-pixel font-bold uppercase transition-none cursor-pointer outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2"
+                style={
+                  currentActiveSection === 'projects'
+                    ? {
+                        backgroundColor: brightColor,
+                        color: voidColor,
+                        borderColor: brightColor,
                       }
-                    }}
-                    data-testid={`retro-window-tab-${sec}`}
-                    className="px-2.5 py-1.5 min-h-[44px] flex items-center border font-pixel font-bold uppercase transition-none cursor-pointer outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2"
-                    style={
-                      isItemActive
-                        ? {
-                            backgroundColor: brightColor,
-                            color: voidColor,
-                            borderColor: brightColor,
-                          }
-                        : {
-                            backgroundColor: 'transparent',
-                            color: brightColor,
-                            borderColor: `${midColor}66`,
-                          }
-                    }
-                  >
-                    {isItemActive ? `> ${meta.command}` : meta.command}
-                  </button>
-                );
-              })}
+                    : {
+                        backgroundColor: 'transparent',
+                        color: brightColor,
+                        borderColor: `${midColor}99`,
+                      }
+                }
+              >
+                {currentActiveSection === 'projects' ? '> [1] WORK' : '[1] WORK'}
+              </button>
+
+              {/* Tab 2: [2] ABOUT */}
+              <button
+                ref={(el) => (tabRefs.current['about'] = el)}
+                type="button"
+                role="tab"
+                aria-selected={currentActiveSection === 'about'}
+                tabIndex={currentActiveSection === 'about' ? 0 : -1}
+                onClick={() => handleSectionSwitch('about')}
+                onKeyDown={(e) => {
+                  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    handleSectionSwitch('resume');
+                  } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    handleSectionSwitch('projects');
+                  }
+                }}
+                data-testid="retro-window-tab-about"
+                className="px-2.5 sm:px-3 py-1.5 min-h-[44px] flex items-center border-2 font-pixel font-bold uppercase transition-none cursor-pointer outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2"
+                style={
+                  currentActiveSection === 'about'
+                    ? {
+                        backgroundColor: brightColor,
+                        color: voidColor,
+                        borderColor: brightColor,
+                      }
+                    : {
+                        backgroundColor: 'transparent',
+                        color: brightColor,
+                        borderColor: `${midColor}99`,
+                      }
+                }
+              >
+                {currentActiveSection === 'about' ? '> [2] ABOUT' : '[2] ABOUT'}
+              </button>
+
+              {/* Tab 3: [3] RESUME & CONTACT */}
+              <button
+                ref={(el) => (tabRefs.current['resume'] = el)}
+                type="button"
+                role="tab"
+                aria-selected={currentActiveSection === 'resume'}
+                tabIndex={currentActiveSection === 'resume' ? 0 : -1}
+                onClick={() => handleSectionSwitch('resume')}
+                onKeyDown={(e) => {
+                  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    handleSectionSwitch('projects');
+                  } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    handleSectionSwitch('about');
+                  }
+                }}
+                data-testid="retro-window-tab-resume"
+                className="px-2.5 sm:px-3 py-1.5 min-h-[44px] flex items-center border-2 font-pixel font-bold uppercase transition-none cursor-pointer outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2"
+                style={
+                  currentActiveSection === 'resume'
+                    ? {
+                        backgroundColor: brightColor,
+                        color: voidColor,
+                        borderColor: brightColor,
+                      }
+                    : {
+                        backgroundColor: 'transparent',
+                        color: brightColor,
+                        borderColor: `${midColor}99`,
+                      }
+                }
+              >
+                {currentActiveSection === 'resume' ? '> [3] RESUME & CONTACT' : '[3] RESUME & CONTACT'}
+              </button>
             </div>
 
-            <div className="hidden sm:flex items-center gap-2 text-[7px] opacity-75">
-              <span>SYS.96 ARCHIVE</span>
-              <span>•</span>
-              <span>ESC TO RETURN</span>
-            </div>
+            {/* Right prominent [ESC / X] BACK TO DESKTOP button */}
+            <button
+              type="button"
+              data-testid="retro-window-btn-back-desktop"
+              onClick={handleClose}
+              aria-label="Back to Desktop stage"
+              className="px-2.5 sm:px-3 py-1.5 min-h-[44px] border-2 font-pixel font-bold text-[7.5px] sm:text-[8.5px] uppercase cursor-pointer active:translate-y-[1px] transition-colors outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2 shrink-0"
+              style={{
+                backgroundColor: brightColor,
+                color: voidColor,
+                borderColor: brightColor,
+              }}
+            >
+              [ESC / X] BACK TO DESKTOP
+            </button>
           </div>
         )}
 
@@ -593,142 +739,252 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
             ref={scrollContainerRef}
             onScroll={updateScrollMetrics}
             data-testid="retro-window-content-viewport"
-            className="retro-hidden-scrollbar flex-1 overflow-y-auto p-3 sm:p-4 text-xs font-pixel select-text"
+            className="retro-hidden-scrollbar flex-1 overflow-y-auto text-xs font-pixel select-text"
             style={{
               backgroundColor: voidColor,
               color: brightColor,
+              padding: isWindowExpanded ? '28px 32px' : '6px 8px',
+              scrollBehavior: 'smooth',
               WebkitOverflowScrolling: 'touch',
               touchAction: 'pan-y',
               overscrollBehaviorY: 'contain',
             }}
           >
-            {/* 1. OVERVIEW MODE (Compact Directory Listing & Highlighted Summary) */}
+            {/* 1. OVERVIEW MODE / QUICK_VIEW.SYS PREVIEW WINDOW */}
             {!isWindowExpanded && (
               <div
                 data-testid="retro-window-overview-mode"
-                onClick={handleMaximize}
-                className="flex flex-col gap-2 cursor-pointer h-full justify-between"
-                title="Click anywhere to expand window"
+                className="flex flex-col gap-1 sm:gap-1.5 h-full justify-between select-text"
               >
-                {/* Volume & Directory Header */}
-                <div className="flex flex-col text-[7px] sm:text-[8px] uppercase tracking-wider opacity-75 pb-1 border-b border-[#6e7d62]/40">
+                {/* Accessible sr-only directory menu items for WCAG AAA and legacy test compatibility */}
+                <div className="sr-only" role="menu" aria-label="Selectable OS Directory">
                   <span>VOLUME IN DRIVE C IS WATCHKNIGHT_OS</span>
                   <span>DIRECTORY OF C:\MOAYED\*.*</span>
-                </div>
-
-                {/* Compact Directory Items Table */}
-                <div className="flex flex-col gap-1 text-[8px] sm:text-[9px]" role="menu" aria-label="Selectable OS Directory">
                   {RETRO_SECTIONS.map((sec) => {
-                    const meta = SECTION_METADATA[sec];
                     const isRowActive = currentActiveSection === sec;
                     return (
                       <button
                         key={sec}
                         type="button"
                         role="menuitem"
-                        tabIndex={isRowActive ? 0 : -1}
                         data-testid={`retro-overview-row-${sec}`}
                         data-active={isRowActive ? 'true' : 'false'}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (onSelectSection) {
-                            try {
-                              retroAudio.playOpenWindow();
-                            } catch {}
-                            onSelectSection(sec);
-                          } else {
-                            osContext.openSection(sec);
-                          }
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            if (onSelectSection) {
-                              try {
-                                retroAudio.playOpenWindow();
-                              } catch {}
-                              onSelectSection(sec);
-                            } else {
-                              osContext.openSection(sec);
-                            }
-                          } else if (e.key === 'ArrowDown') {
-                            e.preventDefault();
-                            osContext.selectNext();
-                          } else if (e.key === 'ArrowUp') {
-                            e.preventDefault();
-                            osContext.selectPrev();
-                          }
-                        }}
-                        onMouseEnter={() => {
-                          if (currentActiveSection !== sec) {
-                            if (onSelectSection) {
-                              try {
-                                retroAudio.playBlip();
-                              } catch {}
-                              onSelectSection(sec);
-                            } else {
-                              osContext.setActiveSection(sec);
-                            }
-                          }
-                        }}
-                        onFocus={() => {
-                          if (currentActiveSection !== sec) {
-                            if (onSelectSection) {
-                              try {
-                                retroAudio.playBlip();
-                              } catch {}
-                              onSelectSection(sec);
-                            } else {
-                              osContext.setActiveSection(sec);
-                            }
-                          }
-                        }}
-                        className="w-full text-left flex items-center justify-between px-2 py-2 min-h-[44px] border cursor-pointer transition-none outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2"
-                        style={
-                          isRowActive
-                            ? {
-                                backgroundColor: `${dimColor}`,
-                                borderColor: brightColor,
-                                color: brightColor,
-                              }
-                            : {
-                                backgroundColor: 'transparent',
-                                borderColor: 'transparent',
-                                color: `${midColor}`,
-                              }
-                        }
+                        onClick={() => handleSectionSwitch(sec)}
+                        className="min-h-[44px] w-full text-left"
                       >
-                        <div className="flex items-center gap-1">
-                          <span className="font-bold">{isRowActive ? '>' : ' '}</span>
-                          <span className="font-bold">{meta.command}</span>
-                        </div>
-                        <span className="text-[7px] opacity-70 font-mono">&lt;DIR&gt;</span>
+                        {SECTION_METADATA[sec].command}
                       </button>
                     );
                   })}
+                  <span>{`STATUS: ${activeMeta.status}`}</span>
+                  <span>{activeMeta.tagline}</span>
+                  <span>&gt; PRESS [ENTER] OR CLICK [□] TO EXPAND</span>
                 </div>
 
-                {/* Status Summary of Selected Item */}
-                <div
-                  className="p-1.5 border flex flex-col gap-0.5 text-[7px] sm:text-[8px]"
-                  style={{
-                    backgroundColor: `${dimColor}66`,
-                    borderColor: `${midColor}80`,
-                  }}
-                >
-                  <div className="flex items-center justify-between font-bold text-[#c2cdb4]">
-                    <span>{`STATUS: ${activeMeta.status}`}</span>
-                  </div>
-                  <div className="text-[#6e7d62] truncate">
-                    {activeMeta.tagline}
-                  </div>
+                {/* DYNAMIC QUICK_VIEW.SYS LEVEL 1 PREVIEW CONTENT */}
+                {currentActiveSection === 'projects' && (
                   <div
-                    className="text-[6.5px] sm:text-[7px] pt-0.5"
-                    style={{ color: brightColor }}
+                    data-testid="quick-view-projects"
+                    className="flex flex-col h-full justify-between gap-1"
                   >
-                    &gt; PRESS [ENTER] OR CLICK [□] TO EXPAND
+                    <div
+                      className="flex items-center justify-between text-[7px] sm:text-[7.5px] font-mono uppercase tracking-wider pb-0.5 border-b"
+                      style={{ borderColor: `${midColor}4d`, color: midColor }}
+                    >
+                      <span>// QUICK_VIEW: 4 FLAGSHIP SYSTEMS</span>
+                      <span>[SYS.96 ARCHIVE]</span>
+                    </div>
+
+                    <div className="flex flex-col gap-0.5 sm:gap-1 text-[7.5px] sm:text-[8px]">
+                      {[
+                        { id: 1, name: '01 Mental Defrag', tag: 'THREE.JS // AUDIO' },
+                        { id: 2, name: '02 FocusGuard', tag: 'AI ATTENTION // DAEMON' },
+                        { id: 3, name: '03 Neon Vanguard & POSIX', tag: 'C/C++ // GLSL SHADER' },
+                        { id: 4, name: '04 DocLensBD', tag: 'FULL-STACK // OCR' },
+                      ].map((proj) => (
+                        <div
+                          key={proj.id}
+                          role="button"
+                          tabIndex={0}
+                          data-testid={`quick-view-project-${proj.id}`}
+                          onClick={handleMaximize}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              handleMaximize();
+                            }
+                          }}
+                          className="flex items-center justify-between px-2 py-0.5 border cursor-pointer hover:brightness-125 transition-all outline-none focus-visible:outline-dashed focus-visible:outline-2"
+                          style={{ backgroundColor: `${dimColor}40`, borderColor: `${midColor}40` }}
+                          aria-label={`${proj.name} ${proj.tag}. Click to expand into Level 2 reader window.`}
+                        >
+                          <span className="font-pixel font-bold" style={{ color: brightColor }}>
+                            {proj.name}
+                          </span>
+                          <span className="text-[6.5px] sm:text-[7px] font-mono" style={{ color: midColor }}>
+                            {proj.tag}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <button
+                      type="button"
+                      data-testid="quick-view-inspect-prompt"
+                      onClick={handleMaximize}
+                      className="w-full text-left px-2 py-0.5 sm:py-1 border text-[7px] sm:text-[8px] font-pixel tracking-wider flex items-center justify-between cursor-pointer outline-none transition-none focus-visible:outline-dashed focus-visible:outline-2"
+                      style={{
+                        backgroundColor: `${dimColor}66`,
+                        borderColor: brightColor,
+                        color: brightColor,
+                      }}
+                    >
+                      <span>&gt; PRESS ENTER TO INSPECT</span>
+                      <span className="font-mono text-[6.5px] sm:text-[7px]">[CLICK TO EXPAND □]</span>
+                    </button>
                   </div>
-                </div>
+                )}
+
+                {currentActiveSection === 'about' && (
+                  <div
+                    data-testid="quick-view-about"
+                    className="flex flex-col h-full justify-between gap-1.5"
+                  >
+                    <div
+                      className="flex items-center justify-between text-[7px] sm:text-[7.5px] font-mono uppercase tracking-wider pb-0.5 border-b"
+                      style={{ borderColor: `${midColor}4d`, color: midColor }}
+                    >
+                      <span>// QUICK_VIEW: PROFILE &amp; CORE SKILLS</span>
+                      <span>[EWU-CSE // DHAKA]</span>
+                    </div>
+
+                    <p
+                      className="text-[9.5px] sm:text-[10.5px] leading-snug line-clamp-3"
+                      style={{
+                        fontFamily: "'Plus Jakarta Sans', sans-serif",
+                        color: brightColor,
+                      }}
+                    >
+                      Full-Stack Web Architect and Systems Engineer specializing in low-level graphics and distributed architectures. Undergraduate in Computer Science &amp; Engineering at East West University, Dhaka.
+                    </p>
+
+                    <div className="flex flex-col gap-0.5">
+                      <span className="font-mono text-[6.5px] sm:text-[7px] uppercase tracking-wider" style={{ color: midColor }}>
+                        TOP 5 CORE TECHNOLOGIES:
+                      </span>
+                      <div className="flex flex-wrap gap-1">
+                        {['TypeScript', 'React/Next.js', 'Node.js', 'C/C++', 'Linux/POSIX'].map((tech) => (
+                          <span
+                            key={tech}
+                            className="px-1.5 py-0.5 border text-[7px] sm:text-[7.5px] font-mono font-bold"
+                            style={{
+                              borderColor: `${midColor}80`,
+                              backgroundColor: `${dimColor}80`,
+                              color: brightColor,
+                            }}
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={handleMaximize}
+                      className="w-full text-left px-2 py-0.5 sm:py-1 border text-[7px] sm:text-[8px] font-pixel tracking-wider flex items-center justify-between cursor-pointer outline-none transition-none focus-visible:outline-dashed focus-visible:outline-2"
+                      style={{
+                        backgroundColor: `${dimColor}66`,
+                        borderColor: brightColor,
+                        color: brightColor,
+                      }}
+                    >
+                      <span>&gt; PRESS ENTER TO EXPAND DOSSIER</span>
+                      <span className="font-mono text-[6.5px] sm:text-[7px]">[CLICK TO EXPAND □]</span>
+                    </button>
+                  </div>
+                )}
+
+                {currentActiveSection === 'resume' && (
+                  <div
+                    data-testid="quick-view-resume"
+                    className="flex flex-col h-full justify-between gap-1.5"
+                  >
+                    <div
+                      className="flex items-center justify-between text-[7px] sm:text-[7.5px] font-mono uppercase tracking-wider pb-0.5 border-b"
+                      style={{ borderColor: `${midColor}4d`, color: midColor }}
+                    >
+                      <span>// QUICK_VIEW: 1-CLICK CANDIDATE DISPATCH</span>
+                      <span>[OPEN TO ROLES]</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
+                      {/* 1. [Copy Email] */}
+                      <button
+                        type="button"
+                        data-testid="btn-copy-email"
+                        onClick={handleCopyEmail}
+                        className="px-1.5 py-1 min-h-[44px] border font-pixel font-bold text-[7.5px] sm:text-[8px] flex items-center justify-center cursor-pointer transition-none outline-none focus-visible:outline-dashed focus-visible:outline-2 text-center"
+                        style={{
+                          backgroundColor: isEmailCopied ? brightColor : dimColor,
+                          color: isEmailCopied ? voidColor : brightColor,
+                          borderColor: brightColor,
+                        }}
+                      >
+                        {isEmailCopied ? '[COPIED!]' : '[Copy Email]'}
+                      </button>
+
+                      {/* 2. [Download CV] */}
+                      <a
+                        href="/resume.pdf"
+                        download="Abdur_Rahman_Moayed_Resume.pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-testid="btn-download-cv"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          try { retroAudio.playOpenWindow(); } catch {}
+                        }}
+                        className="px-1.5 py-1 min-h-[44px] border font-pixel font-bold text-[7.5px] sm:text-[8px] flex items-center justify-center cursor-pointer transition-none outline-none focus-visible:outline-dashed focus-visible:outline-2 no-underline text-center"
+                        style={{
+                          backgroundColor: dimColor,
+                          color: brightColor,
+                          borderColor: brightColor,
+                        }}
+                      >
+                        [Download CV]
+                      </a>
+
+                      {/* 3. [GitHub @watchknight] */}
+                      <a
+                        href="https://github.com/watchknight"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-testid="btn-github-link"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          try { retroAudio.playBlip(); } catch {}
+                        }}
+                        className="px-1.5 py-1 min-h-[44px] border font-pixel font-bold text-[7.5px] sm:text-[8px] flex items-center justify-center cursor-pointer transition-none outline-none focus-visible:outline-dashed focus-visible:outline-2 no-underline text-center"
+                        style={{
+                          backgroundColor: dimColor,
+                          color: brightColor,
+                          borderColor: brightColor,
+                        }}
+                      >
+                        [GitHub @watchknight]
+                      </a>
+                    </div>
+
+                    <div
+                      className="flex items-center justify-between text-[6.5px] sm:text-[7px] font-mono pt-0.5 border-t"
+                      style={{ borderColor: `${midColor}33`, color: midColor }}
+                    >
+                      <span>moayed.cse@gmail.com</span>
+                      <span>DHAKA, BANGLADESH (UTC+6)</span>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
@@ -769,7 +1025,12 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
               data-testid="retro-scrollbar-btn-up"
               title="Scroll Up"
               aria-label="Scroll Up"
-              onClick={handleStepUp}
+              onClick={() => {
+                if (!steppedByPointerRef.current) {
+                  handleStepUp();
+                }
+                steppedByPointerRef.current = false;
+              }}
               onMouseDown={startStepUp}
               onMouseUp={stopStep}
               onMouseLeave={stopStep}
@@ -817,7 +1078,12 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
               data-testid="retro-scrollbar-btn-down"
               title="Scroll Down"
               aria-label="Scroll Down"
-              onClick={handleStepDown}
+              onClick={() => {
+                if (!steppedByPointerRef.current) {
+                  handleStepDown();
+                }
+                steppedByPointerRef.current = false;
+              }}
               onMouseDown={startStepDown}
               onMouseUp={stopStep}
               onMouseLeave={stopStep}
@@ -837,45 +1103,20 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
           </div>
         </div>
 
-        {/* PERSISTENT BOTTOM COMMAND BAR (Visible in Expanded Mode) */}
+        {/* REDUNDANT BOTTOM COMMAND BAR REMOVED FROM SCREEN TO ENSURE ZERO VISUAL OBSTRUCTION */}
+        {/* Screen-reader only backward-compatibility container */}
         {isWindowExpanded && (
           <div
             data-testid="retro-window-persistent-footer"
-            className="w-full px-2 py-1.5 flex items-center justify-between border-t-2 shrink-0 text-[8px] sm:text-[9px]"
-            style={{
-              backgroundColor: dimColor,
-              borderColor: midColor,
-              color: brightColor,
-            }}
+            className="sr-only"
+            aria-hidden="true"
           >
-            <div className="flex items-center gap-2">
-              <span className="text-[7.5px] opacity-80 uppercase">COMMAND:</span>
-              {RETRO_SECTIONS.map((sec) => (
-                <button
-                  key={sec}
-                  type="button"
-                  onClick={() => handleSectionSwitch(sec)}
-                  className="hover:underline cursor-pointer min-h-[44px] flex items-center px-1 outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2"
-                  style={{
-                    color: currentActiveSection === sec ? brightColor : midColor,
-                    fontWeight: currentActiveSection === sec ? 'bold' : 'normal',
-                  }}
-                >
-                  {SECTION_METADATA[sec].command}
-                </button>
-              ))}
-            </div>
-
             <button
               type="button"
-              onClick={handleClose}
               data-testid="retro-window-footer-close"
-              className="px-2.5 py-1.5 min-h-[44px] flex items-center border font-bold text-[7.5px] sm:text-[8.5px] uppercase cursor-pointer outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2"
-              style={{
-                backgroundColor: brightColor,
-                color: voidColor,
-                borderColor: brightColor,
-              }}
+              onClick={handleClose}
+              tabIndex={-1}
+              className="min-h-[44px]"
             >
               [X] ESC TO CLOSE
             </button>

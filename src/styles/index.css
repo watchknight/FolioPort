@@ -62,6 +62,10 @@
     -webkit-font-smoothing: none;
     font-smooth: never;
     transition: background-color 300ms ease, color 300ms ease;
+    overflow: hidden !important;
+    height: 100%;
+    margin: 0;
+    padding: 0;
   }
 
   ::selection {
@@ -69,9 +73,10 @@
     color: var(--crt-bg, #111712);
   }
 
-  /* Lenis smooth scrolling reset */
+  /* Lenis smooth scrolling reset - locked inside 90s CRT viewport */
   html.lenis, html.lenis body {
-    height: auto;
+    height: 100% !important;
+    overflow: hidden !important;
   }
 
   .lenis.lenis-smooth {
@@ -311,7 +316,7 @@
       transparent 1px,
       transparent 3px
     );
-    opacity: 0.045;
+    opacity: 0.04;
   }
 
   /* CRT Screen Curvature & Vignette */

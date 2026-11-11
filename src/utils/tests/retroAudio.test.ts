@@ -67,7 +67,7 @@ describe('PROCEDURAL 8-BIT WEB AUDIO SYNTHESIZER (src/utils/retroAudio.ts)', () 
     expect(engine.isMuted()).toBe(false);
   });
 
-  it('playBlip(): synthesizes 12ms low-volume square-wave tick at 680Hz', () => {
+  it('playBlip(): synthesizes 10ms low-volume square-wave tick at 680Hz', () => {
     const engine = new RetroAudioEngine();
     engine.setContext(mockCtx);
 
@@ -83,12 +83,12 @@ describe('PROCEDURAL 8-BIT WEB AUDIO SYNTHESIZER (src/utils/retroAudio.ts)', () 
     expect(osc.type).toBe('square');
     // 680Hz frequency
     expect(osc.frequency.setValueAtTime).toHaveBeenCalledWith(680, 10);
-    // Low volume click-free envelope (12ms)
+    // Low volume click-free envelope (10ms)
     expect(gain.gain.setValueAtTime).toHaveBeenCalledWith(0.05, 10);
-    expect(gain.gain.exponentialRampToValueAtTime).toHaveBeenCalledWith(0.001, 10 + 0.012);
+    expect(gain.gain.exponentialRampToValueAtTime).toHaveBeenCalledWith(0.001, 10 + 0.010);
     // Starts and stops cleanly
     expect(osc.start).toHaveBeenCalledWith(10);
-    expect(osc.stop).toHaveBeenCalledWith(10 + 0.012);
+    expect(osc.stop).toHaveBeenCalledWith(10 + 0.010);
   });
 
   it('playOpenWindow(): synthesizes two-tone 8-bit confirm chime (520Hz -> 880Hz)', () => {

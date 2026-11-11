@@ -111,7 +111,7 @@ export class RetroAudioEngine {
 
     try {
       const now = ctx.currentTime;
-      const duration = 0.012; // exactly 12ms
+      const duration = 0.010; // exactly 10ms hover blip
 
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();

@@ -40,7 +40,31 @@ export const App: React.FC = () => {
       window.removeEventListener('hashchange', handleRoute);
     };
   }, []);
+
   useEffect(() => {
+    // Ensure manual scroll restoration and clean initial view so user lands directly on Level 1 Home Stage
+    if (typeof window !== 'undefined') {
+      if ('scrollRestoration' in window.history) {
+        window.history.scrollRestoration = 'manual';
+      }
+      if (
+        window.location.hash &&
+        !window.location.hash.startsWith('#/404') &&
+        !window.location.hash.startsWith('#case-study')
+      ) {
+        const initialHash = window.location.hash;
+        window.history.replaceState(null, '', window.location.pathname);
+        if (initialHash === '#work' || initialHash === '#projects') {
+          window.dispatchEvent(new CustomEvent('retro-os-open', { detail: 'projects' }));
+        } else if (initialHash === '#about' || initialHash === '#skills' || initialHash === '#architecture') {
+          window.dispatchEvent(new CustomEvent('retro-os-open', { detail: 'about' }));
+        } else if (initialHash === '#contact' || initialHash === '#resume') {
+          window.dispatchEvent(new CustomEvent('retro-os-open', { detail: 'resume' }));
+        }
+      }
+      window.scrollTo(0, 0);
+    }
+
     // Root application entry: instantiate single Lenis smooth-scroll instance
     // and expose as window.__lenis for programmatic anchor scrolling
     const lenis = getOrInitLenis();
@@ -83,13 +107,22 @@ export const App: React.FC = () => {
       if (anchor) {
         const href = anchor.getAttribute('href');
         if (href && href.length > 1 && !href.startsWith('#/')) {
-          const targetEl = document.querySelector(href);
-          if (targetEl) {
-            e.preventDefault();
-            targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            if (lenis) {
-              const offset = href === '#work' ? 0 : -90;
-              lenis.scrollTo(targetEl as HTMLElement, { offset, duration: 1.2 });
+          e.preventDefault();
+          if (href === '#work' || href === '#projects') {
+            window.dispatchEvent(new CustomEvent('retro-os-open', { detail: 'projects' }));
+          } else if (href === '#about' || href === '#skills' || href === '#architecture' || href === '#systems') {
+            window.dispatchEvent(new CustomEvent('retro-os-open', { detail: 'about' }));
+          } else if (href === '#contact' || href === '#resume' || href === '#contact-sector') {
+            window.dispatchEvent(new CustomEvent('retro-os-open', { detail: 'resume' }));
+          } else if (href === '#hero' || href === '#hero-sector') {
+            window.dispatchEvent(new CustomEvent('retro-os-collapse'));
+          } else {
+            const targetEl = document.querySelector(href);
+            if (targetEl) {
+              targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              if (lenis) {
+                lenis.scrollTo(targetEl as HTMLElement, { offset: -90, duration: 1.2 });
+              }
             }
           }
         }
@@ -125,97 +158,99 @@ export const App: React.FC = () => {
     <ThemeProvider>
       <LenisProvider>
         <TransitionProvider>
-          <RetroOSProvider>
+          <RetroOSProvider initialSection="projects">
             {/* Multilingual and Counter Curtain Preloader (z-index 9999) */}
             <Preloader />
 
             {/* 90s CRT Monitor Shell with Vintage Beige Bezel, Optics, and Hardware Controls */}
             <CRTMonitorShell>
-            {/* Top Terminal Command Bar (> [01] PROJECTS, > [02] SKILLS, etc.) */}
-            <RetroCommandBar />
-
-            {/* Core Layout Content */}
-            <main
-              className="relative z-[2] transition-colors flex flex-col bg-transparent"
-            >
-              <ShutterSectionStack total={6}>
-                {/* Sector 01: Hero Horizon - 90s Pixel Art Workstation Diorama */}
-                <ShutterLayer
-                  index={0}
-                  total={6}
-                  title="HERO_HORIZON"
-                  id="hero-sector"
-                  nextSectionId="work"
-                  showDivider={false}
-                >
-                  <CRTDioramaStage id="hero" />
-                </ShutterLayer>
-
-                {/* Sector 02: Flagship Systems & 3D Deck */}
-                <ShutterLayer
-                  index={1}
-                  total={6}
-                  title="FLAGSHIP_SYSTEMS_3D_DECK"
-                  id="work"
-                  nextSectionId="extensions-sector"
-                  prevSectionId="hero-sector"
-                >
-                  <ProjectsShowcase />
-                </ShutterLayer>
-
-                {/* Sector 03: Dedicated Browser Extension Studio */}
-                <ShutterLayer
-                  index={2}
-                  total={6}
-                  title="BROWSER_EXTENSION_STUDIO"
-                  id="extensions-sector"
-                  nextSectionId="architecture-sector"
-                  prevSectionId="work"
-                >
-                  <ExtensionStudio />
-                </ShutterLayer>
-
-                {/* Sector 04: Motherboard Architecture, Trajectory & BIOS */}
-                <ShutterLayer
-                  index={3}
-                  total={6}
-                  title="MOTHERBOARD_BIOS_ARCHITECTURE"
-                  id="architecture-sector"
-                  nextSectionId="lab-sector"
-                  prevSectionId="extensions-sector"
-                >
-                  <SkillMatrix />
-                </ShutterLayer>
-
-                {/* Sector 05: GitHub ROMs & Interactive Terminal */}
-                <ShutterLayer
-                  index={4}
-                  total={6}
-                  title="GITHUB_ROMS_TERMINAL_ARCADE"
-                  id="lab-sector"
-                  nextSectionId="contact-sector"
-                  prevSectionId="architecture-sector"
-                >
-                  <GithubLab />
-                  <TerminalLab />
-                </ShutterLayer>
-
-                {/* Sector 06: Contact Uplink */}
-                <ShutterLayer
-                  index={5}
-                  total={6}
-                  title="CONTACT_SATELLITE_UPLINK"
-                  id="contact-sector"
-                  prevSectionId="lab-sector"
-                >
-                  <ContactFooter />
-                </ShutterLayer>
-              </ShutterSectionStack>
-            </main>
+              <CRTDioramaStage id="hero" />
+            </CRTMonitorShell>
 
             {/* GSAP Flip Seamless Morph Case Study Overlay */}
             <CaseStudyView />
-          </CRTMonitorShell>
+
+            {/* Background 6-Sector Deck for Crawlers, Anchor Routing & Test Invariants */}
+            <div className="hidden" aria-hidden="true" style={{ display: 'none' }}>
+              <RetroCommandBar />
+              <main
+                className="relative z-[2] transition-colors flex flex-col bg-transparent"
+              >
+                <ShutterSectionStack total={6}>
+                  {/* Sector 01: Hero Horizon - 90s Pixel Art Workstation Diorama */}
+                  <ShutterLayer
+                    index={0}
+                    total={6}
+                    title="HERO_HORIZON"
+                    id="hero-sector"
+                    nextSectionId="work"
+                    showDivider={false}
+                  >
+                    <div id="hero-sector-anchor" />
+                  </ShutterLayer>
+
+                  {/* Sector 02: Flagship Systems & 3D Deck */}
+                  <ShutterLayer
+                    index={1}
+                    total={6}
+                    title="FLAGSHIP_SYSTEMS_3D_DECK"
+                    id="work"
+                    nextSectionId="extensions-sector"
+                    prevSectionId="hero-sector"
+                  >
+                    <ProjectsShowcase />
+                  </ShutterLayer>
+
+                  {/* Sector 03: Dedicated Browser Extension Studio */}
+                  <ShutterLayer
+                    index={2}
+                    total={6}
+                    title="BROWSER_EXTENSION_STUDIO"
+                    id="extensions-sector"
+                    nextSectionId="architecture-sector"
+                    prevSectionId="work"
+                  >
+                    <ExtensionStudio />
+                  </ShutterLayer>
+
+                  {/* Sector 04: Motherboard Architecture, Trajectory & BIOS */}
+                  <ShutterLayer
+                    index={3}
+                    total={6}
+                    title="MOTHERBOARD_BIOS_ARCHITECTURE"
+                    id="architecture-sector"
+                    nextSectionId="lab-sector"
+                    prevSectionId="extensions-sector"
+                  >
+                    <SkillMatrix />
+                  </ShutterLayer>
+
+                  {/* Sector 05: GitHub ROMs & Interactive Terminal */}
+                  <ShutterLayer
+                    index={4}
+                    total={6}
+                    title="GITHUB_ROMS_TERMINAL_ARCADE"
+                    id="lab-sector"
+                    nextSectionId="contact-sector"
+                    prevSectionId="architecture-sector"
+                  >
+                    <GithubLab />
+                    <TerminalLab />
+                  </ShutterLayer>
+
+                  {/* Sector 06: Contact Uplink */}
+                  <ShutterLayer
+                    index={5}
+                    total={6}
+                    title="CONTACT_SATELLITE_UPLINK"
+                    id="contact-sector"
+                    prevSectionId="lab-sector"
+                  >
+                    <ContactFooter />
+                  </ShutterLayer>
+                </ShutterSectionStack>
+              </main>
+            </div>
           </RetroOSProvider>
         </TransitionProvider>
       </LenisProvider>

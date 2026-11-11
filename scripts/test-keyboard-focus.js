@@ -126,10 +126,10 @@ await evalInPage(`
 `);
 await new Promise((r) => setTimeout(r, 600));
 
-async function pressKey(key, code) {
+async function pressKey(key, code, delay = 400) {
   await sendCommand('Input.dispatchKeyEvent', { type: 'keyDown', key, code });
   await sendCommand('Input.dispatchKeyEvent', { type: 'keyUp', key, code });
-  await new Promise((r) => setTimeout(r, 120));
+  await new Promise((r) => setTimeout(r, delay));
 }
 
 console.log('--- TEST 1: Initial State & Tab Navigation ---');
@@ -185,9 +185,9 @@ const arrowDownResult2 = await evalInPage(`
 `);
 console.log('After ArrowDown 2:', arrowDownResult2);
 
-console.log('\n--- TEST 3: Key 2 to open Projects, Key 3 to open Resume, Key 1 to open About ---');
-await pressKey('2', 'Digit2');
-const key2Result = await evalInPage(`
+console.log('\n--- TEST 3: Key 1 to open Projects, Key 2 to open About, Key 3 to open Resume ---');
+await pressKey('1', 'Digit1');
+const key1Result = await evalInPage(`
   (() => {
     const isExpanded = !!document.querySelector('[data-testid="retro-window-expanded-mode"]');
     const activeContent = document.querySelector('[data-testid="retro-content-projects"]') ? 'projects' : 'unknown';
@@ -204,7 +204,23 @@ const key2Result = await evalInPage(`
     };
   })()
 `);
-console.log('After Key 2 (Projects):', key2Result);
+console.log('After Key 1 (Projects):', key1Result);
+
+await pressKey('2', 'Digit2');
+const key2Result = await evalInPage(`
+  (() => {
+    const activeContent = document.querySelector('[data-testid="retro-content-about"]') ? 'about' : 'unknown';
+    const activeEl = document.activeElement;
+    const liveRegion = document.querySelector('[data-testid="retro-window-aria-live"]');
+    return {
+      activeContent,
+      activeElTag: activeEl?.tagName,
+      activeElTestId: activeEl?.getAttribute('data-testid'),
+      ariaLiveText: liveRegion?.textContent?.trim(),
+    };
+  })()
+`);
+console.log('After Key 2 (About):', key2Result);
 
 await pressKey('3', 'Digit3');
 const key3Result = await evalInPage(`
@@ -221,22 +237,6 @@ const key3Result = await evalInPage(`
   })()
 `);
 console.log('After Key 3 (Resume):', key3Result);
-
-await pressKey('1', 'Digit1');
-const key1Result = await evalInPage(`
-  (() => {
-    const activeContent = document.querySelector('[data-testid="retro-content-about"]') ? 'about' : 'unknown';
-    const activeEl = document.activeElement;
-    const liveRegion = document.querySelector('[data-testid="retro-window-aria-live"]');
-    return {
-      activeContent,
-      activeElTag: activeEl?.tagName,
-      activeElTestId: activeEl?.getAttribute('data-testid'),
-      ariaLiveText: liveRegion?.textContent?.trim(),
-    };
-  })()
-`);
-console.log('After Key 1 (About):', key1Result);
 
 console.log('\n--- TEST 4: Escape key to collapse window ---');
 await pressKey('Escape', 'Escape');

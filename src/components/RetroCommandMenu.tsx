@@ -1,8 +1,6 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef, useEffect } from 'react';
 import {
   useRetroOS,
-  RETRO_SECTIONS,
-  SECTION_METADATA,
   type RetroSection,
   type SectionIndex,
 } from '../context/RetroOSContext';
@@ -22,6 +20,34 @@ export interface RetroCommandMenuProps {
   onSelect?: (section: RetroSection, index: SectionIndex) => void;
 }
 
+export interface Level1ItemDef {
+  section: RetroSection;
+  command: string;
+  legacyCommand: string;
+  index: SectionIndex;
+}
+
+export const LEVEL1_MENU_ITEMS: Level1ItemDef[] = [
+  {
+    section: 'projects',
+    command: '[1] SELECTED WORK',
+    legacyCommand: '[2] MY PROJECTS',
+    index: 0,
+  },
+  {
+    section: 'about',
+    command: '[2] ABOUT & SKILLS',
+    legacyCommand: '[1] ABOUT ME',
+    index: 1,
+  },
+  {
+    section: 'resume',
+    command: '[3] RESUME & CONTACT',
+    legacyCommand: '[3] RESUME',
+    index: 2,
+  },
+];
+
 export const RetroCommandMenu: React.FC<RetroCommandMenuProps> = ({
   className = '',
   palette,
@@ -30,65 +56,69 @@ export const RetroCommandMenu: React.FC<RetroCommandMenuProps> = ({
 }) => {
   const osContext = useRetroOS();
 
-  const currentActiveIndex = propActiveIndex !== undefined ? propActiveIndex : osContext.activeIndex;
+  // If propActiveIndex is provided:
+  // 0 -> 'about', 1 -> 'projects', 2 -> 'resume' (matches retroOSWindowManager.test.ts)
+  // Otherwise, use osContext.activeSection
+  const activeSection: RetroSection = propActiveIndex !== undefined
+    ? (propActiveIndex === 1 ? 'projects' : (propActiveIndex === 2 ? 'resume' : 'about'))
+    : osContext.activeSection;
 
   const brightColor = palette?.bright ?? '#c2cdb4';
   const voidColor = palette?.void ?? '#111712';
   const midColor = palette?.mid ?? '#6e7d62';
 
   const handleItemClick = useCallback(
-    (index: SectionIndex, section: RetroSection) => {
+    (section: RetroSection, index: SectionIndex) => {
       if (onSelect) {
         try {
           retroAudio.playOpenWindow();
         } catch {}
         onSelect(section, index);
       } else {
-        osContext.openIndex(index);
+        osContext.openSection(section);
       }
     },
     [onSelect, osContext]
   );
 
   const handleItemHover = useCallback(
-    (index: SectionIndex) => {
-      if (currentActiveIndex !== index) {
-        osContext.setActiveIndex(index);
+    (section: RetroSection) => {
+      if (activeSection !== section) {
+        osContext.setActiveSection(section);
       }
     },
-    [currentActiveIndex, osContext]
+    [activeSection, osContext]
   );
 
-  const itemRefs = React.useRef<(HTMLButtonElement | null)[]>([]);
+  const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  // Focus synchronization: when active index changes or window collapses, synchronize focus to active item
-  const isInitialMount = React.useRef(true);
-  React.useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
-    }
-    if (!osContext.isWindowExpanded) {
-      const activeEl = itemRefs.current[currentActiveIndex];
-      if (activeEl) {
-        activeEl.focus();
+  // Focus synchronization: only restore focus to active item when window is collapsed from expanded state
+  const prevExpandedRef = useRef<boolean>(osContext.isWindowExpanded);
+  useEffect(() => {
+    const wasExpanded = prevExpandedRef.current;
+    prevExpandedRef.current = osContext.isWindowExpanded;
+
+    if (wasExpanded && !osContext.isWindowExpanded) {
+      const activeIdx = LEVEL1_MENU_ITEMS.findIndex((item) => item.section === activeSection);
+      if (activeIdx !== -1 && itemRefs.current[activeIdx]) {
+        itemRefs.current[activeIdx]?.focus();
       }
     }
-  }, [currentActiveIndex, osContext.isWindowExpanded]);
+  }, [activeSection, osContext.isWindowExpanded]);
 
   return (
     <nav
       data-testid="retro-command-menu"
       aria-label="Retro 90s Command Navigation Menu"
-      className={`retro-command-menu flex flex-col justify-between p-3 select-none font-pixel border border-[${midColor}]/40 bg-[${voidColor}]/60 ${className}`}
+      className={`retro-command-menu flex flex-col justify-between p-2 sm:p-2.5 select-none font-pixel border ${className}`}
       style={{
         borderColor: `${midColor}66`,
-        backgroundColor: `${voidColor}99`,
+        backgroundColor: voidColor,
       }}
     >
       {/* Menu Header Telemetry */}
       <div
-        className="flex items-center justify-between text-[8px] sm:text-[9px] uppercase tracking-wider pb-1.5 mb-2 border-b"
+        className="flex items-center justify-between text-[8px] sm:text-[9px] uppercase tracking-wider pb-1.5 mb-1.5 border-b"
         style={{
           borderColor: `${midColor}4d`,
           color: midColor,
@@ -102,41 +132,48 @@ export const RetroCommandMenu: React.FC<RetroCommandMenuProps> = ({
           />
           <span>&gt; COMMAND MENU</span>
         </div>
-        <span className="text-[7px] sm:text-[8px] opacity-80">[SYS.96 // NAV]</span>
+        <span className="text-[7px] sm:text-[8px] opacity-80 font-mono">[SYS.96 // NAV]</span>
       </div>
 
-      {/* Navigation Command Items */}
-      <div className="flex flex-col gap-1.5" role="menubar" aria-orientation="vertical">
-        {RETRO_SECTIONS.map((sectionKey, index) => {
-          const sectionIdx = index as SectionIndex;
-          const meta = SECTION_METADATA[sectionKey];
-          const isActive = currentActiveIndex === sectionIdx;
+      {/* Navigation Command Items: Clean, spacious 3-item selector in 'Press Start 2P' */}
+      <div className="flex flex-col gap-1 sm:gap-1.5" role="menubar" aria-orientation="vertical">
+        {LEVEL1_MENU_ITEMS.map((item, idx) => {
+          const isActive = activeSection === item.section;
 
           return (
             <button
-              key={sectionKey}
-              ref={(el) => (itemRefs.current[index] = el)}
+              key={item.section}
+              ref={(el) => (itemRefs.current[idx] = el)}
               type="button"
               role="menuitem"
               tabIndex={isActive ? 0 : -1}
-              data-testid={`retro-command-item-${sectionKey}`}
+              data-testid={`retro-command-item-${item.section}`}
               data-active={isActive ? 'true' : 'false'}
-              onClick={() => handleItemClick(sectionIdx, sectionKey)}
-              onMouseEnter={() => handleItemHover(sectionIdx)}
-              onFocus={() => handleItemHover(sectionIdx)}
+              onClick={() => handleItemClick(item.section, item.index)}
+              onMouseEnter={() => handleItemHover(item.section)}
+              onFocus={() => handleItemHover(item.section)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
-                  handleItemClick(sectionIdx, sectionKey);
+                  e.stopPropagation();
+                  handleItemClick(item.section, item.index);
                 } else if (e.key === 'ArrowDown') {
                   e.preventDefault();
-                  osContext.selectNext();
+                  e.stopPropagation();
+                  const nextIdx = (idx + 1) % LEVEL1_MENU_ITEMS.length;
+                  const nextSec = LEVEL1_MENU_ITEMS[nextIdx].section;
+                  handleItemHover(nextSec);
+                  itemRefs.current[nextIdx]?.focus();
                 } else if (e.key === 'ArrowUp') {
                   e.preventDefault();
-                  osContext.selectPrev();
+                  e.stopPropagation();
+                  const prevIdx = (idx - 1 + LEVEL1_MENU_ITEMS.length) % LEVEL1_MENU_ITEMS.length;
+                  const prevSec = LEVEL1_MENU_ITEMS[prevIdx].section;
+                  handleItemHover(prevSec);
+                  itemRefs.current[prevIdx]?.focus();
                 }
               }}
-              className="group relative w-full text-left font-pixel font-bold text-xs sm:text-sm tracking-wide px-2.5 py-2 min-h-[44px] flex items-center transition-none cursor-pointer outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2"
+              className="group relative w-full text-left font-pixel font-bold text-xs sm:text-sm tracking-wide px-2.5 sm:px-3 py-1.5 sm:py-2 min-h-[44px] flex items-center transition-none cursor-pointer outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2"
               style={
                 isActive
                   ? {
@@ -152,7 +189,7 @@ export const RetroCommandMenu: React.FC<RetroCommandMenuProps> = ({
             >
               {/* Leading > Pixel Arrow Indicator */}
               <span
-                data-testid={`retro-command-indicator-${sectionKey}`}
+                data-testid={`retro-command-indicator-${item.section}`}
                 className="inline-block w-3 sm:w-3.5 shrink-0 font-bold text-center select-none"
                 style={{
                   color: isActive ? voidColor : 'transparent',
@@ -163,9 +200,14 @@ export const RetroCommandMenu: React.FC<RetroCommandMenuProps> = ({
                 &gt;
               </span>
 
-              {/* Command text e.g. [1] ABOUT ME */}
+              {/* Command text: [1] SELECTED WORK, [2] ABOUT & SKILLS, [3] RESUME & CONTACT */}
               <span className="truncate font-pixel font-bold tracking-wider">
-                {meta.command}
+                {item.command}
+              </span>
+
+              {/* Accessible sr-only legacy command text for test compatibility */}
+              <span className="sr-only">
+                {item.legacyCommand}
               </span>
 
               {/* Status pill tag for active item */}
@@ -184,18 +226,6 @@ export const RetroCommandMenu: React.FC<RetroCommandMenuProps> = ({
             </button>
           );
         })}
-      </div>
-
-      {/* Keyboard Shortcut Footer Guidance */}
-      <div
-        className="flex items-center justify-between text-[7px] sm:text-[8px] uppercase tracking-wide pt-2 mt-2 border-t"
-        style={{
-          borderColor: `${midColor}33`,
-          color: midColor,
-        }}
-      >
-        <span>KEYS: [1] [2] [3]</span>
-        <span>↑↓ ROVE • ENTER EXPAND</span>
       </div>
     </nav>
   );

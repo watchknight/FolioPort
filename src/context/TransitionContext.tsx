@@ -87,7 +87,7 @@ export const TransitionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
     const onFinishClose = () => {
       setActiveProject(null);
-      document.body.style.overflow = '';
+      document.body.style.overflow = 'hidden';
       window.__lenis?.start();
 
       // Restore scroll position to prevent page jump to apex
@@ -105,7 +105,7 @@ export const TransitionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       }, 50);
 
       if (typeof window !== 'undefined' && window.location.hash.startsWith('#case-study')) {
-        window.history.pushState(null, '', '#work');
+        window.history.pushState(null, '', window.location.pathname);
       }
     };
 

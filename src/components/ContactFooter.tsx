@@ -388,7 +388,7 @@ export const ContactFooter: React.FC = () => {
     window.addEventListener('keydown', handleKeyDown);
     return () => {
       clearTimeout(timer);
-      document.body.style.overflow = originalOverflow;
+      document.body.style.overflow = originalOverflow || 'hidden';
       window.removeEventListener('keydown', handleKeyDown);
       setTimeout(() => {
         const target = credentialsTriggerRef.current || triggerElementRef.current || document.querySelector<HTMLElement>('button[aria-label="View interactive credentials modal"]');

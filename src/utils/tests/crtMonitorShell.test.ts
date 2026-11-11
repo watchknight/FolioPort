@@ -121,7 +121,7 @@ describe('SYS.96 Retro 90s CRT Monitor Shell & Phosphor Engine Verification', ()
       expect(cssContent).toContain('4px 0 0 0 #6e7d62');
     });
 
-    it('enforces crt-glass-screen ::after pseudo-element scanline gradient with 0.045 opacity', () => {
+    it('enforces crt-glass-screen ::after pseudo-element scanline gradient with 0.04 opacity', () => {
       const cssPath = path.resolve(process.cwd(), 'src/styles/index.css');
       const cssContent = fs.readFileSync(cssPath, 'utf8');
 
@@ -131,7 +131,7 @@ describe('SYS.96 Retro 90s CRT Monitor Shell & Phosphor Engine Verification', ()
       expect(cssContent).toContain('repeating-linear-gradient');
       expect(cssContent).toContain('rgba(0, 0, 0, 0.22) 0px');
       expect(cssContent).toContain('rgba(0, 0, 0, 0.22) 1px');
-      expect(cssContent).toContain('opacity: 0.045;');
+      expect(cssContent).toContain('opacity: 0.04;');
     });
 
     it('declares crtTubeCollapse and crtTubeExpand horizontal line collapse keyframes', () => {

@@ -28,7 +28,7 @@ const COMMAND_NAV_ITEMS: RetroNavItem[] = [
 export const RetroCommandBar: React.FC = () => {
   const { lenis, scrollTo } = useLenis();
   const { theme, toggleTheme } = useTheme();
-  const [activeSection, setActiveSection] = useState<string>('#work');
+  const [activeSection, setActiveSection] = useState<string>('');
   const [renderMode, setRenderModeState] = useState<RenderMode>('3D VECTOR');
   const [dhakaTime, setDhakaTime] = useState<string>('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -195,7 +195,7 @@ export const RetroCommandBar: React.FC = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-[9997] pointer-events-auto select-none overflow-x-clip transition-shadow duration-200 ${
+      className={`retro-command-bar fixed top-0 left-0 right-0 z-[9997] pointer-events-auto select-none overflow-x-clip transition-shadow duration-200 ${
         scrolled ? 'shadow-[0_4px_20px_rgba(0,0,0,0.85)]' : ''
       }`}
       style={{

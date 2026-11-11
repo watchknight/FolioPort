@@ -114,6 +114,9 @@ export default {
           glow: 'transparent',
         },
       },
+      borderColor: {
+        DEFAULT: '#6e7d62',
+      },
       spacing: {
         'px-1': '4px',
         'px-2': '8px',

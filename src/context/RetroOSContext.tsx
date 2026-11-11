@@ -2,6 +2,7 @@ import React, {
   createContext,
   useContext,
   useState,
+  useRef,
   useEffect,
   useCallback,
   useMemo,
@@ -13,6 +14,7 @@ export type RetroSection = 'about' | 'projects' | 'resume';
 export type SectionIndex = 0 | 1 | 2;
 
 export const RETRO_SECTIONS: readonly RetroSection[] = ['about', 'projects', 'resume'] as const;
+export const LEVEL1_ORDER: readonly RetroSection[] = ['projects', 'about', 'resume'] as const;
 
 export interface SectionMetadata {
   index: SectionIndex;
@@ -54,6 +56,8 @@ export const SECTION_METADATA: Record<RetroSection, SectionMetadata> = {
   },
 };
 
+export type PhosphorMode = 'sage' | 'amber';
+
 export interface RetroOSContextValue {
   isInsideProvider?: boolean;
   activeSection: RetroSection;
@@ -62,11 +66,14 @@ export interface RetroOSContextValue {
   wasWindowClosed?: boolean;
   soundEnabled: boolean;
   isBooting: boolean;
+  phosphorMode: PhosphorMode;
   setIsBooting: (booting: boolean) => void;
   setActiveSection: (section: RetroSection) => void;
   setActiveIndex: (index: SectionIndex) => void;
   setIsWindowExpanded: (expanded: boolean | ((prev: boolean) => boolean)) => void;
   setSoundEnabled: (enabled: boolean | ((prev: boolean) => boolean)) => void;
+  setPhosphorMode: (mode: PhosphorMode | ((prev: PhosphorMode) => PhosphorMode)) => void;
+  togglePhosphorMode: () => void;
   openSection: (section: RetroSection) => void;
   openIndex: (index: SectionIndex) => void;
   toggleExpand: () => void;
@@ -74,6 +81,11 @@ export interface RetroOSContextValue {
   collapseWindow: () => void;
   selectNext: () => void;
   selectPrev: () => void;
+  isDitherTransitioning?: boolean;
+  registerDitherTransition?: (
+    handler: (swapFn: () => void, completeCb?: () => void) => void
+  ) => () => void;
+  triggerDitherTransition?: (swapFn: () => void, completeCb?: () => void) => void;
 }
 
 export const defaultRetroOSContextValue: RetroOSContextValue = {
@@ -84,11 +96,14 @@ export const defaultRetroOSContextValue: RetroOSContextValue = {
   wasWindowClosed: false,
   soundEnabled: true,
   isBooting: false,
+  phosphorMode: 'sage',
   setIsBooting: () => {},
   setActiveSection: () => {},
   setActiveIndex: () => {},
   setIsWindowExpanded: () => {},
   setSoundEnabled: () => {},
+  setPhosphorMode: () => {},
+  togglePhosphorMode: () => {},
   openSection: () => {},
   openIndex: () => {},
   toggleExpand: () => {},
@@ -96,6 +111,12 @@ export const defaultRetroOSContextValue: RetroOSContextValue = {
   collapseWindow: () => {},
   selectNext: () => {},
   selectPrev: () => {},
+  isDitherTransitioning: false,
+  registerDitherTransition: () => () => {},
+  triggerDitherTransition: (swapFn, completeCb) => {
+    swapFn();
+    completeCb?.();
+  },
 };
 
 export const RetroOSContext = createContext<RetroOSContextValue>(defaultRetroOSContextValue);
@@ -107,6 +128,7 @@ export interface RetroOSProviderProps {
   initialClosed?: boolean;
   initialSoundEnabled?: boolean;
   initialBooting?: boolean;
+  initialPhosphor?: PhosphorMode;
 }
 
 export interface RetroOSKeyEvaluationResult {
@@ -127,12 +149,14 @@ export function evaluateRetroOSKeyEvent(
     altKey?: boolean;
     shiftKey?: boolean;
     targetTagName?: string;
+    targetRole?: string;
     targetIsContentEditable?: boolean;
     hasExternalModal?: boolean;
   },
   isWindowExpanded: boolean
 ): RetroOSKeyEvaluationResult {
   const targetTag = e.targetTagName?.toUpperCase();
+  const targetRole = e.targetRole?.toLowerCase();
   if (
     targetTag === 'INPUT' ||
     targetTag === 'TEXTAREA' ||
@@ -166,8 +190,8 @@ export function evaluateRetroOSKeyEvent(
 
   // Enter or Space expands the active section inside the 90s OS Window
   if (e.key === 'Enter' || e.key === ' ') {
-    // If user is focused on a button or link, let the browser activate that element
-    if (targetTag === 'BUTTON' || targetTag === 'A') {
+    // If user is focused on a button, link, or role="button", let the element handle it
+    if (targetTag === 'BUTTON' || targetTag === 'A' || targetRole === 'button') {
       return { handled: false };
     }
     if (!isWindowExpanded) {
@@ -194,6 +218,7 @@ export const RetroOSProvider: React.FC<RetroOSProviderProps> = ({
   initialClosed = false,
   initialSoundEnabled = true,
   initialBooting = false,
+  initialPhosphor = 'sage',
 }) => {
   const [activeSection, setActiveSectionState] = useState<RetroSection>(initialSection);
   const [activeIndex, setActiveIndexState] = useState<SectionIndex>(() => {
@@ -203,6 +228,46 @@ export const RetroOSProvider: React.FC<RetroOSProviderProps> = ({
   const [wasWindowClosed, setWasWindowClosed] = useState<boolean>(initialClosed);
   const [soundEnabled, setSoundEnabledState] = useState<boolean>(initialSoundEnabled);
   const [isBooting, setIsBootingState] = useState<boolean>(initialBooting);
+  const [phosphorMode, setPhosphorModeState] = useState<PhosphorMode>(initialPhosphor);
+  const [isDitherTransitioning, setIsDitherTransitioning] = useState<boolean>(false);
+
+  const ditherHandlerRef = useRef<((swapFn: () => void, completeCb?: () => void) => void) | null>(null);
+
+  const registerDitherTransition = useCallback(
+    (handler: (swapFn: () => void, completeCb?: () => void) => void) => {
+      ditherHandlerRef.current = handler;
+      return () => {
+        if (ditherHandlerRef.current === handler) {
+          ditherHandlerRef.current = null;
+        }
+      };
+    },
+    []
+  );
+
+  const triggerDitherTransition = useCallback(
+    (swapFn: () => void, completeCb?: () => void) => {
+      if (ditherHandlerRef.current) {
+        setIsDitherTransitioning(true);
+        ditherHandlerRef.current(swapFn, () => {
+          setIsDitherTransitioning(false);
+          completeCb?.();
+        });
+      } else {
+        swapFn();
+        completeCb?.();
+      }
+    },
+    []
+  );
+
+  const setPhosphorMode = useCallback((mode: PhosphorMode | ((prev: PhosphorMode) => PhosphorMode)) => {
+    setPhosphorModeState(mode);
+  }, []);
+
+  const togglePhosphorMode = useCallback(() => {
+    setPhosphorModeState((prev) => (prev === 'sage' ? 'amber' : 'sage'));
+  }, []);
 
   const setIsBooting = useCallback((booting: boolean) => {
     setIsBootingState(booting);
@@ -212,32 +277,34 @@ export const RetroOSProvider: React.FC<RetroOSProviderProps> = ({
     (section: RetroSection) => {
       const meta = SECTION_METADATA[section];
       if (meta) {
-        setActiveSectionState(section);
-        setActiveIndexState(meta.index);
-        setWasWindowClosed(false);
         if (soundEnabled) {
           try {
             retroAudio.playBlip();
           } catch {}
         }
+        const perform = () => {
+          setActiveSectionState(section);
+          setActiveIndexState(meta.index);
+          setWasWindowClosed(false);
+        };
+        // When expanded, switching modules triggers 340ms dither transition with swap at 170ms
+        if (ditherHandlerRef.current && isWindowExpanded && activeSection !== section) {
+          setIsDitherTransitioning(true);
+          ditherHandlerRef.current(perform, () => setIsDitherTransitioning(false));
+        } else {
+          perform();
+        }
       }
     },
-    [soundEnabled]
+    [soundEnabled, isWindowExpanded, activeSection]
   );
 
   const setActiveIndex = useCallback(
     (index: SectionIndex) => {
       const clampedIndex = (index >= 0 && index <= 2 ? index : 0) as SectionIndex;
-      setActiveIndexState(clampedIndex);
-      setActiveSectionState(RETRO_SECTIONS[clampedIndex]);
-      setWasWindowClosed(false);
-      if (soundEnabled) {
-        try {
-          retroAudio.playBlip();
-        } catch {}
-      }
+      setActiveSection(RETRO_SECTIONS[clampedIndex]);
     },
-    [soundEnabled]
+    [setActiveSection]
   );
 
   const setIsWindowExpanded = useCallback((expanded: boolean | ((prev: boolean) => boolean)) => {
@@ -256,96 +323,124 @@ export const RetroOSProvider: React.FC<RetroOSProviderProps> = ({
     (section: RetroSection) => {
       const meta = SECTION_METADATA[section];
       if (meta) {
-        setActiveSectionState(section);
-        setActiveIndexState(meta.index);
-        setIsWindowExpandedState(true);
-        setWasWindowClosed(false);
         if (soundEnabled) {
           try {
             retroAudio.playOpenWindow();
           } catch {}
         }
+        const perform = () => {
+          setActiveSectionState(section);
+          setActiveIndexState(meta.index);
+          setIsWindowExpandedState(true);
+          setWasWindowClosed(false);
+        };
+        // Opening Level 2 window or switching modules triggers 340ms dither transition with swap at 170ms
+        if (ditherHandlerRef.current && (!isWindowExpanded || activeSection !== section)) {
+          setIsDitherTransitioning(true);
+          ditherHandlerRef.current(perform, () => setIsDitherTransitioning(false));
+        } else {
+          perform();
+        }
       }
     },
-    [soundEnabled]
+    [soundEnabled, isWindowExpanded, activeSection]
   );
 
   const openIndex = useCallback(
     (index: SectionIndex) => {
       const clampedIndex = (index >= 0 && index <= 2 ? index : 0) as SectionIndex;
-      setActiveIndexState(clampedIndex);
-      setActiveSectionState(RETRO_SECTIONS[clampedIndex]);
-      setIsWindowExpandedState(true);
-      setWasWindowClosed(false);
-      if (soundEnabled) {
-        try {
-          retroAudio.playOpenWindow();
-        } catch {}
-      }
+      openSection(RETRO_SECTIONS[clampedIndex]);
     },
-    [soundEnabled]
+    [openSection]
   );
 
   const expandWindow = useCallback(() => {
-    setIsWindowExpandedState(true);
-    setWasWindowClosed(false);
     if (soundEnabled) {
       try {
         retroAudio.playOpenWindow();
       } catch {}
     }
-  }, [soundEnabled]);
+    const perform = () => {
+      setIsWindowExpandedState(true);
+      setWasWindowClosed(false);
+    };
+    if (ditherHandlerRef.current && !isWindowExpanded) {
+      setIsDitherTransitioning(true);
+      ditherHandlerRef.current(perform, () => setIsDitherTransitioning(false));
+    } else {
+      perform();
+    }
+  }, [soundEnabled, isWindowExpanded]);
 
   const collapseWindow = useCallback(() => {
-    setIsWindowExpandedState(false);
-    setWasWindowClosed(true);
-  }, []);
+    if (soundEnabled) {
+      try {
+        retroAudio.playBlip();
+      } catch {}
+    }
+    const perform = () => {
+      setIsWindowExpandedState(false);
+      setWasWindowClosed(true);
+    };
+    // Closing window back to Level 1 triggers 340ms dither transition with swap at 170ms
+    if (ditherHandlerRef.current && isWindowExpanded) {
+      setIsDitherTransitioning(true);
+      ditherHandlerRef.current(perform, () => setIsDitherTransitioning(false));
+    } else {
+      perform();
+    }
+  }, [soundEnabled, isWindowExpanded]);
 
   const toggleExpand = useCallback(() => {
-    setIsWindowExpandedState((prev) => {
-      const next = !prev;
-      setWasWindowClosed(!next);
-      if (next && soundEnabled) {
-        try {
-          retroAudio.playOpenWindow();
-        } catch {}
-      }
-      return next;
-    });
-  }, [soundEnabled]);
+    if (isWindowExpanded) {
+      collapseWindow();
+    } else {
+      expandWindow();
+    }
+  }, [isWindowExpanded, collapseWindow, expandWindow]);
 
   const selectNext = useCallback(() => {
-    setActiveIndexState((prev) => {
-      const nextIdx = ((prev + 1) % 3) as SectionIndex;
-      setActiveSectionState(RETRO_SECTIONS[nextIdx]);
+    setActiveSectionState((currentSec) => {
+      const curIdx = LEVEL1_ORDER.indexOf(currentSec);
+      const nextIdx = (curIdx + 1) % LEVEL1_ORDER.length;
+      const nextSec = LEVEL1_ORDER[nextIdx];
+      const meta = SECTION_METADATA[nextSec];
+      if (meta) {
+        setActiveIndexState(meta.index);
+      }
       setWasWindowClosed(false);
       if (soundEnabled) {
         try {
           retroAudio.playBlip();
         } catch {}
       }
-      return nextIdx;
+      return nextSec;
     });
   }, [soundEnabled]);
 
   const selectPrev = useCallback(() => {
-    setActiveIndexState((prev) => {
-      const prevIdx = ((prev - 1 + 3) % 3) as SectionIndex;
-      setActiveSectionState(RETRO_SECTIONS[prevIdx]);
+    setActiveSectionState((currentSec) => {
+      const curIdx = LEVEL1_ORDER.indexOf(currentSec);
+      const prevIdx = (curIdx - 1 + LEVEL1_ORDER.length) % LEVEL1_ORDER.length;
+      const prevSec = LEVEL1_ORDER[prevIdx];
+      const meta = SECTION_METADATA[prevSec];
+      if (meta) {
+        setActiveIndexState(meta.index);
+      }
       setWasWindowClosed(false);
       if (soundEnabled) {
         try {
           retroAudio.playBlip();
         } catch {}
       }
-      return prevIdx;
+      return prevSec;
     });
   }, [soundEnabled]);
 
   // Global Keyboard Navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      const target = e.target as HTMLElement | null;
+      const target = e.target as Element | null;
       let hasExternalModal = false;
 
       if (typeof document !== 'undefined') {
@@ -354,6 +449,16 @@ export const RetroOSProvider: React.FC<RetroOSProviderProps> = ({
         );
         hasExternalModal = Boolean(modalDialog || document.querySelector('.easter-egg-modal'));
       }
+
+      const targetRole =
+        target && typeof target.getAttribute === 'function'
+          ? target.getAttribute('role') || undefined
+          : undefined;
+
+      const targetIsContentEditable =
+        target && 'isContentEditable' in target
+          ? (target as HTMLElement).isContentEditable
+          : false;
 
       const evalResult = evaluateRetroOSKeyEvent(
         {
@@ -364,7 +469,8 @@ export const RetroOSProvider: React.FC<RetroOSProviderProps> = ({
           altKey: e.altKey,
           shiftKey: e.shiftKey,
           targetTagName: target?.tagName,
-          targetIsContentEditable: target?.isContentEditable,
+          targetRole,
+          targetIsContentEditable,
           hasExternalModal,
         },
         isWindowExpanded
@@ -382,15 +488,15 @@ export const RetroOSProvider: React.FC<RetroOSProviderProps> = ({
       switch (evalResult.action) {
         case 'open_1':
           e.preventDefault();
-          openIndex(0);
+          openSection('projects');
           break;
         case 'open_2':
           e.preventDefault();
-          openIndex(1);
+          openSection('about');
           break;
         case 'open_3':
           e.preventDefault();
-          openIndex(2);
+          openSection('resume');
           break;
         case 'prev':
           e.preventDefault();
@@ -411,11 +517,27 @@ export const RetroOSProvider: React.FC<RetroOSProviderProps> = ({
       }
     };
 
+    const handleOpenEvent = (e: Event) => {
+      const section = (e as CustomEvent<RetroSection>).detail;
+      if (section && RETRO_SECTIONS.includes(section)) {
+        openSection(section);
+      }
+    };
+    const handleCollapseEvent = () => {
+      collapseWindow();
+    };
+
     if (typeof window !== 'undefined') {
       window.addEventListener('keydown', handleKeyDown);
-      return () => window.removeEventListener('keydown', handleKeyDown);
+      window.addEventListener('retro-os-open', handleOpenEvent);
+      window.addEventListener('retro-os-collapse', handleCollapseEvent);
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+        window.removeEventListener('retro-os-open', handleOpenEvent);
+        window.removeEventListener('retro-os-collapse', handleCollapseEvent);
+      };
     }
-  }, [openIndex, selectNext, selectPrev, expandWindow, collapseWindow, isWindowExpanded]);
+  }, [openIndex, openSection, selectNext, selectPrev, expandWindow, collapseWindow, isWindowExpanded]);
 
   const value = useMemo<RetroOSContextValue>(
     () => ({
@@ -426,11 +548,14 @@ export const RetroOSProvider: React.FC<RetroOSProviderProps> = ({
       wasWindowClosed,
       soundEnabled,
       isBooting,
+      phosphorMode,
       setIsBooting,
       setActiveSection,
       setActiveIndex,
       setIsWindowExpanded,
       setSoundEnabled,
+      setPhosphorMode,
+      togglePhosphorMode,
       openSection,
       openIndex,
       toggleExpand,
@@ -438,6 +563,9 @@ export const RetroOSProvider: React.FC<RetroOSProviderProps> = ({
       collapseWindow,
       selectNext,
       selectPrev,
+      isDitherTransitioning,
+      registerDitherTransition,
+      triggerDitherTransition,
     }),
     [
       activeSection,
@@ -446,11 +574,14 @@ export const RetroOSProvider: React.FC<RetroOSProviderProps> = ({
       wasWindowClosed,
       soundEnabled,
       isBooting,
+      phosphorMode,
       setIsBooting,
       setActiveSection,
       setActiveIndex,
       setIsWindowExpanded,
       setSoundEnabled,
+      setPhosphorMode,
+      togglePhosphorMode,
       openSection,
       openIndex,
       toggleExpand,
@@ -458,6 +589,9 @@ export const RetroOSProvider: React.FC<RetroOSProviderProps> = ({
       collapseWindow,
       selectNext,
       selectPrev,
+      isDitherTransitioning,
+      registerDitherTransition,
+      triggerDitherTransition,
     ]
   );
 

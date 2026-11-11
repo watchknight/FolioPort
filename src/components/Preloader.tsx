@@ -51,7 +51,7 @@ export const Preloader: React.FC<PreloaderProps> = ({ onCurtainLifting, onComple
 
     if (prefersReducedMotion) {
       if (window.__lenis) window.__lenis.start();
-      document.body.style.overflow = '';
+      document.body.style.overflow = 'hidden';
       if (containerRef.current) {
         gsap.set(containerRef.current, { autoAlpha: 0, pointerEvents: 'none' });
       }
@@ -78,7 +78,7 @@ export const Preloader: React.FC<PreloaderProps> = ({ onCurtainLifting, onComple
         if (window.__lenis) {
           window.__lenis.start();
         }
-        document.body.style.overflow = '';
+        document.body.style.overflow = 'hidden';
         onComplete?.();
       },
     });
@@ -185,7 +185,7 @@ export const Preloader: React.FC<PreloaderProps> = ({ onCurtainLifting, onComple
       if (window.__lenis) {
         window.__lenis.start();
       }
-      document.body.style.overflow = '';
+      document.body.style.overflow = 'hidden';
       setIsFinished(true);
       onComplete?.();
     });
@@ -196,9 +196,13 @@ export const Preloader: React.FC<PreloaderProps> = ({ onCurtainLifting, onComple
       if (window.__lenis) {
         window.__lenis.start();
       }
-      document.body.style.overflow = '';
+      document.body.style.overflow = 'hidden';
     };
   }, [onCurtainLifting, onComplete]);
+
+  if (isFinished) {
+    return null;
+  }
 
   return (
     <div

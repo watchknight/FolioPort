@@ -97,7 +97,7 @@ export const CRTMonitorShell: React.FC<CRTMonitorShellProps> = ({
     >
       {/* 90s CRT Monitor Outer Hardware Chassis Frame */}
       <div
-        className="relative w-full max-w-[980px] h-[100dvh] md:h-auto md:aspect-[4/3] flex flex-col bg-[#c8c2ab] border-t-[8px] border-l-[8px] border-[#ded8c1] border-b-[12px] border-r-[12px] border-[#8f8973] shadow-[0_25px_60px_rgba(0,0,0,0.85),0_0_0_2px_#3b3a32] p-2.5 sm:p-4 md:p-6 transition-all duration-300 min-h-screen md:min-h-0 overflow-x-hidden"
+        className="relative w-full max-w-[980px] h-[100dvh] md:h-auto md:aspect-[4/3] flex flex-col bg-[#c8c2ab] border-t-[8px] border-l-[8px] border-[#ded8c1] border-b-[12px] border-r-[12px] border-[#8f8973] shadow-[0_25px_60px_rgba(0,0,0,0.85),0_0_0_2px_#3b3a32] p-2.5 sm:p-4 md:p-6 transition-all duration-300 min-h-screen md:min-h-0 overflow-hidden overflow-x-hidden"
         style={{
           maxWidth: '980px',
           backgroundColor: '#c8c2ab',
@@ -156,7 +156,7 @@ export const CRTMonitorShell: React.FC<CRTMonitorShellProps> = ({
             {isPoweredOn ? (
               <div
                 data-lenis-prevent
-                className="relative z-10 w-full h-full overflow-y-auto overflow-x-hidden crt-screen-scroll flex flex-col text-[#c2cdb4]"
+                className="relative z-10 w-full h-full overflow-y-auto crt-screen-scroll flex flex-col text-[#c2cdb4]"
               >
                 {children}
               </div>
@@ -215,7 +215,31 @@ export const CRTMonitorShell: React.FC<CRTMonitorShellProps> = ({
           </div>
 
           {/* Bottom-Right: Tactile Hardware Controls */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-2.5">
+            {/* [CRT: SAGE/AMBER] 1-Click Hardware Phosphor Toggle */}
+            <button
+              type="button"
+              onClick={() => {
+                if (os.isInsideProvider) {
+                  os.togglePhosphorMode();
+                  if (sfxEnabled) {
+                    try {
+                      watchknightAudio.play8BitBlip(os.phosphorMode === 'sage' ? 480 : 880);
+                    } catch {}
+                  }
+                }
+              }}
+              className={`px-2 py-1 font-mono text-[8px] uppercase tracking-wider transition-all duration-75 border-t-2 border-l-2 border-b-2 border-r-2 ${
+                os.phosphorMode === 'amber'
+                  ? 'bg-[#d4a359] text-[#140f07] border-t-[#ded8c1] border-l-[#ded8c1] border-b-[#8f8973] border-r-[#8f8973] shadow-[1px_1px_0_#3b3a32]'
+                  : 'bg-[#ded8c1] text-[#111712] border-t-[#ded8c1] border-l-[#ded8c1] border-b-[#8f8973] border-r-[#8f8973] shadow-[1px_1px_0_#3b3a32]'
+              }`}
+              title="Toggle Monochrome Phosphor Palette (Sage vs Amber)"
+              aria-label={`Current phosphor is ${os.phosphorMode.toUpperCase()}. Click to switch to ${os.phosphorMode === 'sage' ? 'Amber' : 'Sage'}.`}
+            >
+              {`[CRT: ${os.phosphorMode === 'amber' ? 'AMBER' : 'SAGE'}]`}
+            </button>
+
             {/* [SFX: ON/OFF] Hardware Toggle Switch */}
             <button
               type="button"
