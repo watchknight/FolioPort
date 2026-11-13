@@ -58,14 +58,14 @@ describe('CRTDioramaStage Retro 90s Pixel Art Diorama & Header Verification', ()
     });
   });
 
-  describe('3. Three Pure Inline SVG Pixel-Grid Artworks (shape-rendering="crispEdges")', () => {
-    it('renders three inline SVG artworks with shape-rendering="crispEdges" on integer pixel grids', () => {
+  describe('3. Inline SVG Pixel-Grid Artworks (shape-rendering="crispEdges")', () => {
+    it('renders inline SVG pixel-artworks with shape-rendering="crispEdges" on integer pixel grids', () => {
       const html = renderToString(React.createElement(CRTDioramaStage));
 
       // All SVGs enforce crispEdges for pixel-perfect rendering without antialiasing
       const matches = html.match(/shape-rendering="crispEdges"/g);
       expect(matches).not.toBeNull();
-      expect(matches!.length).toBe(3);
+      expect(matches!.length).toBe(4);
     });
 
     it('strictly adheres to the 4-color monochrome phosphor palette: #c2cdb4, #6e7d62, #2e3b2b, and #111712', () => {
@@ -248,14 +248,14 @@ describe('CRTDioramaStage Retro 90s Pixel Art Diorama & Header Verification', ()
   });
 
   describe('5. Level 1 CRT Home Stage Refactor (/boost Verification)', () => {
-    it('removes cluttered COMMAND PROMPT // INITIALIZING sub-header and enforces generous 32px padding', () => {
+    it('removes cluttered COMMAND PROMPT // INITIALIZING sub-header and enforces generous fluid padding', () => {
       const html = renderToString(React.createElement(CRTDioramaStage));
 
       // Cluttered sub-header is removed
       expect(html).not.toContain('COMMAND PROMPT // INITIALIZING');
 
-      // Header has generous 32px padding (p-8 and padding: 32px)
-      expect(html).toContain('padding:32px');
+      // Header has generous fluid padding inside CRT screen
+      expect(html).toContain('padding:clamp(24px, 3vw, 44px) clamp(28px, 4vw, 64px)');
     });
 
     it('renders clean two-line pixel header in Press Start 2P with blinking cursor block', () => {
@@ -266,13 +266,13 @@ describe('CRTDioramaStage Retro 90s Pixel Art Diorama & Header Verification', ()
       expect(html).toContain('data-testid="crt-blinking-cursor"');
     });
 
-    it('renders single human-readable positioning line in Plus Jakarta Sans (15px, #6e7d62)', () => {
+    it('renders single human-readable positioning line in Plus Jakarta Sans (#6e7d62) with fluid scaling', () => {
       const html = renderToString(React.createElement(CRTDioramaStage));
 
       expect(html).toContain('data-testid="crt-positioning-line"');
-      expect(html).toContain('Full-Stack Web &amp; Systems Engineer • CSE @ East West University, Dhaka');
+      expect(html).toContain('Full-Stack Product &amp; Web Engineer • CSE at East West University, Dhaka');
       expect(html).toContain('Plus Jakarta Sans');
-      expect(html).toContain('15px');
+      expect(html).toContain('font-size:clamp(1rem, 1.25vw, 1.25rem)');
       expect(html).toContain('#6e7d62');
     });
 
@@ -303,36 +303,36 @@ describe('CRTDioramaStage Retro 90s Pixel Art Diorama & Header Verification', ()
 
       // Compact Mac hover tooltip
       expect(html).toContain('data-testid="mac-hover-tooltip"');
-      expect(html).toContain('Click: Toggle Green / Amber CRT');
+      expect(html).toContain('Click: Switch Green / Amber Screen');
 
       // IBM Desktop PC hover tooltip
       expect(html).toContain('data-testid="ibm-hover-tooltip"');
       expect(html).toContain('Click: Open Selected Work');
     });
 
-    it('renders clean, spacious 3-item selector in Press Start 2P: 1. Work, 2. About, and 3. Resume', () => {
+    it('renders clean, spacious 3-item selector in Press Start 2P: 1. Selected Work, 2. About & Skills, and 3. Resume & Contact', () => {
       const html = renderToString(React.createElement(CRTDioramaStage));
 
       expect(html).toContain('data-testid="retro-command-menu"');
-      expect(html).toContain('1. Work');
-      expect(html).toContain('2. About');
-      expect(html).toContain('3. Resume');
+      expect(html).toContain('1. Selected Work');
+      expect(html).toContain('2. About &amp; Skills');
+      expect(html).toContain('3. Resume &amp; Contact');
       // Noisy keyboard instruction clutter removed
       expect(html).not.toContain('↑↓ ROVE • ENTER EXPAND');
     });
 
-    it('renders compact 90s OS Preview Window (Preview) with #c2cdb4 title bar and controls', () => {
+    it('renders compact 90s OS Preview Window (Quick Preview) with #c2cdb4 title bar and controls', () => {
       const html = renderToString(React.createElement(CRTDioramaStage));
 
       expect(html).toContain('data-testid="retro-window-titlebar"');
-      expect(html).toContain('Preview');
+      expect(html).toContain('Quick Preview');
       expect(html).toContain('data-testid="retro-window-btn-minimize"');
       expect(html).toContain('data-testid="retro-window-btn-maximize"');
       expect(html).toContain('data-testid="retro-window-btn-close"');
       expect(html).toContain('data-testid="retro-pixel-scrollbar"');
     });
 
-    it('Preview for 1. Work lists the 4 Flagship Projects with prompt to press Enter to inspect', () => {
+    it('Preview for 1. Selected Work lists the 4 Flagship Projects with prompt to press Enter to inspect', () => {
       const html = renderToString(
         React.createElement(
           RetroOSProvider,
@@ -341,14 +341,14 @@ describe('CRTDioramaStage Retro 90s Pixel Art Diorama & Header Verification', ()
         )
       );
 
-      expect(html).toContain('01 Mental Defrag');
-      expect(html).toContain('02 FocusGuard');
-      expect(html).toContain('03 Neon Vanguard &amp; POSIX');
+      expect(html).toContain('01 BitForge');
+      expect(html).toContain('02 FocusLab');
+      expect(html).toContain('03 Rannabanna');
       expect(html).toContain('04 DocLensBD');
-      expect(html).toContain('Press Enter to expand');
+      expect(html).toContain('Press Enter to inspect');
     });
 
-    it('Preview for 2. About displays 2-sentence bio summary and top 5 core technologies', () => {
+    it('Preview for 2. About & Skills displays 2-sentence bio summary and core tech stack', () => {
       const html = renderToString(
         React.createElement(
           RetroOSProvider,
@@ -357,16 +357,17 @@ describe('CRTDioramaStage Retro 90s Pixel Art Diorama & Header Verification', ()
         )
       );
 
-      expect(html).toContain('Full-Stack Web Architect and Systems Engineer');
+      expect(html).toContain('Full-Stack Product &amp; Web Engineer');
       expect(html).toContain('East West University, Dhaka');
       expect(html).toContain('TypeScript');
-      expect(html).toContain('React/Next.js');
+      expect(html).toContain('React');
+      expect(html).toContain('Next.js');
       expect(html).toContain('Node.js');
-      expect(html).toContain('C/C++');
-      expect(html).toContain('Linux/POSIX');
+      expect(html).toContain('C++');
+      expect(html).toContain('Cloud Firestore');
     });
 
-    it('Preview for 3. Resume & Contact surfaces immediate 1-click Copy Email, Download CV, and GitHub: @watchknight buttons', () => {
+    it('Preview for 3. Resume & Contact surfaces immediate 1-click Copy Email, Download Resume, LinkedIn, and GitHub buttons', () => {
       const html = renderToString(
         React.createElement(
           RetroOSProvider,
@@ -379,10 +380,13 @@ describe('CRTDioramaStage Retro 90s Pixel Art Diorama & Header Verification', ()
       expect(html).toContain('Copy Email');
 
       expect(html).toContain('data-testid="btn-download-cv"');
-      expect(html).toContain('Download CV');
+      expect(html).toContain('Download Resume');
 
       expect(html).toContain('data-testid="btn-github-link"');
-      expect(html).toContain('GitHub: @watchknight');
+      expect(html).toContain('GitHub');
+
+      expect(html).toContain('data-testid="btn-linkedin-link"');
+      expect(html).toContain('LinkedIn');
     });
 
     it('wires interactive callback hooks on Avatar, Compact Mac, and IBM PC sprites', () => {
@@ -401,6 +405,236 @@ describe('CRTDioramaStage Retro 90s Pixel Art Diorama & Header Verification', ()
       expect(html).toContain('data-testid="developer-avatar-sprite"');
       expect(html).toContain('data-testid="compact-mac-sprite"');
       expect(html).toContain('data-testid="ibm-workstation-sprite"');
+    });
+  });
+
+  describe('6. 3-Second Recruiter Hook & Self-Sufficient Level 1 Console (/boost Spec)', () => {
+    it('renders clean top greeting with > WELCOME TO MOAYED\'S PORTFOLIO and no COMMAND PROMPT / SYS.96 clutter', () => {
+      const html = renderToString(React.createElement(CRTDioramaStage));
+
+      expect(html).toContain('&gt; WELCOME TO MOAYED');
+      expect(html).toContain('PORTFOLIO');
+      expect(html).toContain('data-testid="crt-blinking-cursor"');
+      expect(html).not.toContain('COMMAND PROMPT // INITIALIZING');
+      expect(html).not.toContain('SYS.96');
+      expect(html).toContain('padding:clamp(24px, 3vw, 44px) clamp(28px, 4vw, 64px)');
+    });
+
+    it('renders exact human-readable positioning line: Full-Stack Product & Web Engineer • CSE at East West University, Dhaka', () => {
+      const html = renderToString(React.createElement(CRTDioramaStage));
+
+      expect(html).toContain('data-testid="crt-positioning-line"');
+      expect(html).toContain('Full-Stack Product &amp; Web Engineer • CSE at East West University, Dhaka');
+      expect(html).toContain('Plus Jakarta Sans');
+      expect(html).toContain('font-size:clamp(1rem, 1.25vw, 1.25rem)');
+      expect(html).toContain('#6e7d62');
+    });
+
+    it('displays only clean live Dhaka clock in top-right corner', () => {
+      const html = renderToString(React.createElement(CRTDioramaStage));
+
+      expect(html).toContain('data-testid="crt-telemetry-readout"');
+      expect(html).toContain('Dhaka • UTC+6');
+    });
+
+    it('renders 2px pixel corner brackets on hover for all three center-stage sprites', () => {
+      const html = renderToString(React.createElement(CRTDioramaStage));
+
+      // Left Avatar 2px corner brackets
+      expect(html).toContain('data-testid="avatar-corner-brackets"');
+      // Center-Right Mac 2px corner brackets
+      expect(html).toContain('data-testid="mac-corner-brackets"');
+      // Far-Right IBM Desktop PC 2px corner brackets
+      expect(html).toContain('data-testid="ibm-corner-brackets"');
+
+      // Unboxed sprites stand on 2px #6e7d62 horizontal desk line
+      expect(html).toContain('data-testid="crt-horizontal-desk-line"');
+      expect(html).toContain('border-bottom:2px solid #6e7d62');
+    });
+
+    it('renders exact sprite hover tooltips: Avatar, Mac, and IBM PC', () => {
+      const html = renderToString(React.createElement(CRTDioramaStage));
+
+      // Avatar tooltip
+      expect(html).toContain('Hi! Press 1, 2, or 3 below');
+      // Compact Mac tooltip
+      expect(html).toContain('Click: Switch Green / Amber Screen');
+      // IBM PC tooltip
+      expect(html).toContain('Click: Open Selected Work');
+    });
+
+    it('renders clean, spacious 3-item selector: 1. Selected Work, 2. About & Skills, 3. Resume & Contact', () => {
+      const html = renderToString(React.createElement(CRTDioramaStage));
+
+      expect(html).toContain('data-testid="retro-command-menu"');
+      expect(html).toContain('1. Selected Work');
+      expect(html).toContain('2. About &amp; Skills');
+      expect(html).toContain('3. Resume &amp; Contact');
+    });
+
+    it('renders compact 90s OS Preview Window titled Quick Preview with #c2cdb4 title bar', () => {
+      const html = renderToString(React.createElement(CRTDioramaStage));
+
+      expect(html).toContain('data-testid="retro-window-titlebar"');
+      expect(html).toContain('Quick Preview');
+      expect(html).toContain('data-testid="retro-window-btn-minimize"');
+      expect(html).toContain('data-testid="retro-window-btn-maximize"');
+      expect(html).toContain('data-testid="retro-window-btn-close"');
+      expect(html).toContain('data-testid="retro-pixel-scrollbar"');
+    });
+
+    it('previewing 1. Selected Work lists the 4 Flagship Projects: 01 BitForge, 02 FocusLab, 03 Rannabanna, 04 DocLensBD with prompt to press Enter to inspect', () => {
+      const html = renderToString(
+        React.createElement(
+          RetroOSProvider,
+          { initialSection: 'projects' },
+          React.createElement(CRTDioramaStage)
+        )
+      );
+
+      expect(html).toContain('01 BitForge');
+      expect(html).toContain('02 FocusLab');
+      expect(html).toContain('03 Rannabanna');
+      expect(html).toContain('04 DocLensBD');
+      expect(html).toContain('Press Enter to inspect');
+    });
+
+    it('previewing 2. About & Skills displays 2-sentence bio summary and core stack (TypeScript, React, Next.js, Node.js, C++, Cloud Firestore)', () => {
+      const html = renderToString(
+        React.createElement(
+          RetroOSProvider,
+          { initialSection: 'about' },
+          React.createElement(CRTDioramaStage)
+        )
+      );
+
+      expect(html).toContain('Full-Stack Product &amp; Web Engineer');
+      expect(html).toContain('East West University, Dhaka');
+      expect(html).toContain('TypeScript');
+      expect(html).toContain('React');
+      expect(html).toContain('Next.js');
+      expect(html).toContain('Node.js');
+      expect(html).toContain('C++');
+      expect(html).toContain('Cloud Firestore');
+    });
+
+    it('previewing 3. Resume & Contact surfaces immediate one-click Copy Email, LinkedIn, GitHub, and Download Resume action buttons', () => {
+      const html = renderToString(
+        React.createElement(
+          RetroOSProvider,
+          { initialSection: 'resume' },
+          React.createElement(CRTDioramaStage)
+        )
+      );
+
+      expect(html).toContain('data-testid="btn-copy-email"');
+      expect(html).toContain('Copy Email');
+
+      expect(html).toContain('data-testid="btn-linkedin-link"');
+      expect(html).toContain('LinkedIn');
+      expect(html).toContain('https://linkedin.com/in/watchknight');
+
+      expect(html).toContain('data-testid="btn-github-link"');
+      expect(html).toContain('GitHub');
+      expect(html).toContain('https://github.com/watchknight');
+
+      expect(html).toContain('data-testid="btn-download-cv"');
+      expect(html).toContain('Download Resume');
+    });
+  });
+
+  describe('7. Widescreen CRT Stage Proportional Scaling & Quick Preview Split (/boost)', () => {
+    it('applies generous fluid padding and fluid viewport typography scaling to the header zone', () => {
+      const html = renderToString(React.createElement(CRTDioramaStage));
+
+      // Fluid padding inside CRT screen
+      expect(html).toContain('padding:clamp(24px, 3vw, 44px) clamp(28px, 4vw, 64px)');
+
+      // Fluid font-size, line-height, and letter-spacing on main prompt
+      expect(html).toContain('font-size:clamp(1.6rem, 2.8vw, 2.65rem)');
+      expect(html).toContain('line-height:1.35');
+      expect(html).toContain('letter-spacing:0.04em');
+
+      // Fluid font-size and margin on subtitle
+      expect(html).toContain('font-size:clamp(1rem, 1.25vw, 1.25rem)');
+      expect(html).toContain('margin-top:8px');
+
+      // Anchored status badge and live Dhaka clock
+      expect(html).toContain('data-testid="crt-status-badge"');
+      expect(html).toContain('Status: Available for Roles');
+      expect(html).toContain('data-testid="crt-telemetry-readout"');
+      expect(html).toContain('Dhaka • UTC+6');
+    });
+
+    it('scales up SVG pixel-art sprites using clamp() heights and renders steaming coffee mug on the desk', () => {
+      const html = renderToString(React.createElement(CRTDioramaStage));
+
+      // Scaled up SVG pixel-art sprites (clamp(96px, 14vh, 150px))
+      expect(html).toContain('height:clamp(96px, 14vh, 150px)');
+      expect(html).toContain('width:auto');
+
+      // Subtle pixel coffee mug with 2-frame steam animation and crispEdges shapeRendering
+      expect(html).toContain('data-testid="crt-desk-coffee-mug"');
+      expect(html).toContain('shape-rendering="crispEdges"');
+      expect(html).toContain('crt-coffee-steam');
+      expect(html).toContain('crtCoffeeSteamRise');
+      expect(html).toContain('steps(2)');
+    });
+
+    it('allocates roughly 44% of CRT screen height to 12-column grid with 5:7 split', () => {
+      const html = renderToString(React.createElement(CRTDioramaStage));
+
+      // Bottom split console allocated 44% height
+      expect(html).toContain('data-testid="crt-split-console"');
+      expect(html).toContain('height:44%');
+      expect(html).toContain('min-height:44%');
+
+      // 12-column grid layout with 5:7 ratio and fluid gap
+      expect(html).toContain('lg:grid-cols-12');
+      expect(html).toContain('lg:col-span-5');
+      expect(html).toContain('lg:col-span-7');
+      expect(html).toContain('gap:clamp(20px, 2.5vw, 40px)');
+    });
+
+    it('scales 3 navigation command buttons with fluid typography and taller vertical padding', () => {
+      const html = renderToString(React.createElement(CRTDioramaStage));
+
+      expect(html).toContain('font-size:clamp(1rem, 1.4vw, 1.35rem)');
+      expect(html).toContain('padding:clamp(14px, 1.8vh, 22px) 20px');
+    });
+
+    it('renders 2-column widescreen Quick Preview split with 4 project rows and live mini preview card', () => {
+      const html = renderToString(
+        React.createElement(
+          RetroOSProvider,
+          { initialSection: 'projects' },
+          React.createElement(CRTDioramaStage)
+        )
+      );
+
+      // Left half: 4 interactive project rows with listbox accessibility
+      expect(html).toContain('data-testid="quick-view-project-1"');
+      expect(html).toContain('data-testid="quick-view-project-2"');
+      expect(html).toContain('data-testid="quick-view-project-3"');
+      expect(html).toContain('data-testid="quick-view-project-4"');
+      expect(html).toContain('01 BitForge');
+      expect(html).toContain('02 FocusLab');
+      expect(html).toContain('03 Rannabanna');
+      expect(html).toContain('04 DocLensBD');
+      expect(html).toContain('role="listbox"');
+      expect(html).toContain('role="option"');
+
+      // Right half: live mini preview card
+      expect(html).toContain('data-testid="quick-view-mini-card"');
+      expect(html).toContain('data-testid="preview-btn-case-study-01"');
+      expect(html).toContain('Open Case Study');
+      expect(html).toContain('data-testid="preview-btn-live-app-01"');
+      expect(html).toContain('Live App');
+      expect(html).toContain('https://bitforge-3u2q.onrender.com');
+
+      // Inspect prompt
+      expect(html).toContain('data-testid="quick-view-inspect-prompt"');
+      expect(html).toContain('Press Enter to inspect');
     });
   });
 });

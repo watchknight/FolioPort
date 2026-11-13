@@ -1,25 +1,12 @@
-import React, { useEffect } from 'react';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { LenisProvider, getOrInitLenis } from './hooks/useLenis';
+import React, { useEffect, useState } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
-import { TransitionProvider } from './context/TransitionContext';
 import { RetroOSProvider } from './context/RetroOSContext';
-import { CaseStudyView } from './components/case-study/CaseStudyView';
-import { Preloader } from './components/Preloader';
-import { RetroCommandBar } from './components/navigation/RetroCommandBar';
 import { CRTMonitorShell } from './components/CRTMonitorShell';
 import { CRTDioramaStage } from './components/CRTDioramaStage';
-import { ProjectsShowcase } from './components/ProjectsShowcase';
-import { ExtensionStudio } from './components/ExtensionStudio';
-import { GithubLab } from './components/GithubLab';
-import { SkillMatrix } from './components/SkillMatrix';
-import { TerminalLab } from './components/TerminalLab';
-import { ContactFooter } from './components/ContactFooter';
 import { NotFoundPage } from './pages/404';
-import { ShutterSectionStack, ShutterLayer } from './components/ShutterSectionStack';
 
 export const App: React.FC = () => {
-  const [is404, setIs404] = React.useState<boolean>(() => {
+  const [is404, setIs404] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false;
     const path = window.location.pathname;
     const hash = window.location.hash;
@@ -42,218 +29,93 @@ export const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Ensure manual scroll restoration and clean initial view so user lands directly on Level 1 Home Stage
     if (typeof window !== 'undefined') {
       if ('scrollRestoration' in window.history) {
         window.history.scrollRestoration = 'manual';
       }
-      if (
-        window.location.hash &&
-        !window.location.hash.startsWith('#/404') &&
-        !window.location.hash.startsWith('#case-study')
-      ) {
-        const initialHash = window.location.hash;
-        window.history.replaceState(null, '', window.location.pathname);
-        if (initialHash === '#work' || initialHash === '#projects') {
+      window.scrollTo(0, 0);
+
+      // Handle direct hash navigation into Retro OS views
+      const handleHashNavigation = () => {
+        const hash = window.location.hash;
+        if (hash === '#work' || hash === '#projects') {
           window.dispatchEvent(new CustomEvent('retro-os-open', { detail: 'projects' }));
-        } else if (initialHash === '#about' || initialHash === '#skills' || initialHash === '#architecture') {
+        } else if (hash === '#about' || hash === '#skills' || hash === '#architecture') {
           window.dispatchEvent(new CustomEvent('retro-os-open', { detail: 'about' }));
-        } else if (initialHash === '#contact' || initialHash === '#resume') {
+        } else if (hash === '#contact' || hash === '#resume') {
           window.dispatchEvent(new CustomEvent('retro-os-open', { detail: 'resume' }));
         }
+      };
+
+      if (window.location.hash && !window.location.hash.startsWith('#/404')) {
+        handleHashNavigation();
       }
-      window.scrollTo(0, 0);
+
+      window.addEventListener('hashchange', handleHashNavigation);
+      return () => {
+        window.removeEventListener('hashchange', handleHashNavigation);
+      };
     }
-
-    // Root application entry: instantiate single Lenis smooth-scroll instance
-    // and expose as window.__lenis for programmatic anchor scrolling
-    const lenis = getOrInitLenis();
-    window.__lenis = lenis;
-
-    // Global layout stabilization listener: refresh ScrollTrigger once document.fonts.ready resolves
-    // and after lazy-loaded case-study images finish decoding
-    if (typeof document !== 'undefined') {
-      if (document.fonts?.ready) {
-        document.fonts.ready.then(() => {
-          ScrollTrigger.refresh();
-        }).catch(() => {});
-      }
-
-      // Check case-study and project images decoding
-      const images = Array.from(document.querySelectorAll('img'));
-      if (images.length > 0) {
-        const decodePromises = images.map((img) => {
-          if (img.complete) return Promise.resolve();
-          if (typeof img.decode === 'function') {
-            return img.decode().catch(() => {});
-          }
-          return new Promise((resolve) => {
-            img.addEventListener('load', () => resolve(null), { once: true });
-            img.addEventListener('error', () => resolve(null), { once: true });
-          });
-        });
-        Promise.all(decodePromises).then(() => {
-          ScrollTrigger.refresh();
-        }).catch(() => {});
-      }
-
-      const onWindowLoad = () => ScrollTrigger.refresh();
-      window.addEventListener('load', onWindowLoad, { once: true });
-    }
-
-    // Unified programmatic anchor scrolling delegation for all <a href="#..."> links
-    const handleAnchorClick = (e: MouseEvent) => {
-      const anchor = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]');
-      if (anchor) {
-        const href = anchor.getAttribute('href');
-        if (href && href.length > 1 && !href.startsWith('#/')) {
-          e.preventDefault();
-          if (href === '#work' || href === '#projects') {
-            window.dispatchEvent(new CustomEvent('retro-os-open', { detail: 'projects' }));
-          } else if (href === '#about' || href === '#skills' || href === '#architecture' || href === '#systems') {
-            window.dispatchEvent(new CustomEvent('retro-os-open', { detail: 'about' }));
-          } else if (href === '#contact' || href === '#resume' || href === '#contact-sector') {
-            window.dispatchEvent(new CustomEvent('retro-os-open', { detail: 'resume' }));
-          } else if (href === '#hero' || href === '#hero-sector') {
-            window.dispatchEvent(new CustomEvent('retro-os-collapse'));
-          } else {
-            const targetEl = document.querySelector(href);
-            if (targetEl) {
-              targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              if (lenis) {
-                lenis.scrollTo(targetEl as HTMLElement, { offset: -90, duration: 1.2 });
-              }
-            }
-          }
-        }
-      }
-    };
-
-    document.addEventListener('click', handleAnchorClick);
-    return () => {
-      document.removeEventListener('click', handleAnchorClick);
-    };
   }, []);
 
   if (is404) {
     return (
       <ThemeProvider>
-        <NotFoundPage
-          onReturnHome={() => {
-            setIs404(false);
-            if (typeof window !== 'undefined') {
-              if (window.location.hash.startsWith('#/404') || window.location.hash.startsWith('#404')) {
-                window.location.hash = '';
-              } else {
-                window.history.pushState(null, '', '/');
-              }
-            }
-          }}
-        />
+        <RetroOSProvider initialSection="projects">
+          <main
+            id="main-content"
+            role="main"
+            className="w-screen h-[100dvh] m-0 p-0 overflow-hidden"
+            style={{
+              width: '100vw',
+              height: '100dvh',
+              margin: 0,
+              padding: 0,
+              overflow: 'hidden',
+              backgroundColor: '#c8c2ab',
+            }}
+          >
+            <CRTMonitorShell initialBoot={false}>
+              <NotFoundPage
+                onReturnHome={() => {
+                  setIs404(false);
+                  if (typeof window !== 'undefined') {
+                    if (window.location.hash.startsWith('#/404') || window.location.hash.startsWith('#404')) {
+                      window.location.hash = '';
+                    } else {
+                      window.history.pushState(null, '', '/');
+                    }
+                  }
+                }}
+              />
+            </CRTMonitorShell>
+          </main>
+        </RetroOSProvider>
       </ThemeProvider>
     );
   }
 
   return (
     <ThemeProvider>
-      <LenisProvider>
-        <TransitionProvider>
-          <RetroOSProvider initialSection="projects">
-            {/* Multilingual and Counter Curtain Preloader (z-index 9999) */}
-            <Preloader />
-
-            {/* 90s CRT Monitor Shell with Vintage Beige Bezel, Optics, and Hardware Controls */}
-            <CRTMonitorShell>
-              <CRTDioramaStage id="hero" />
-            </CRTMonitorShell>
-
-            {/* GSAP Flip Seamless Morph Case Study Overlay */}
-            <CaseStudyView />
-
-            {/* Background 6-Sector Deck for Crawlers, Anchor Routing & Test Invariants */}
-            <div className="hidden" aria-hidden="true" style={{ display: 'none' }}>
-              <RetroCommandBar />
-              <main
-                className="relative z-[2] transition-colors flex flex-col bg-transparent"
-              >
-                <ShutterSectionStack total={6}>
-                  {/* Sector 01: Hero Horizon - 90s Pixel Art Workstation Diorama */}
-                  <ShutterLayer
-                    index={0}
-                    total={6}
-                    title="Hero Horizon"
-                    id="hero-sector"
-                    nextSectionId="work"
-                    showDivider={false}
-                  >
-                    <div id="hero-sector-anchor" />
-                  </ShutterLayer>
-
-                  {/* Sector 02: Flagship Systems & 3D Deck */}
-                  <ShutterLayer
-                    index={1}
-                    total={6}
-                    title="Selected Work"
-                    id="work"
-                    nextSectionId="extensions-sector"
-                    prevSectionId="hero-sector"
-                  >
-                    <ProjectsShowcase />
-                  </ShutterLayer>
-
-                  {/* Sector 03: Dedicated Browser Extension Studio */}
-                  <ShutterLayer
-                    index={2}
-                    total={6}
-                    title="Browser Extension Studio"
-                    id="extensions-sector"
-                    nextSectionId="architecture-sector"
-                    prevSectionId="work"
-                  >
-                    <ExtensionStudio />
-                  </ShutterLayer>
-
-                  {/* Sector 04: Motherboard Architecture, Trajectory & BIOS */}
-                  <ShutterLayer
-                    index={3}
-                    total={6}
-                    title="Architecture & Skills"
-                    id="architecture-sector"
-                    nextSectionId="lab-sector"
-                    prevSectionId="extensions-sector"
-                  >
-                    <SkillMatrix />
-                  </ShutterLayer>
-
-                  {/* Sector 05: GitHub ROMs & Interactive Terminal */}
-                  <ShutterLayer
-                    index={4}
-                    total={6}
-                    title="GitHub & Terminal"
-                    id="lab-sector"
-                    nextSectionId="contact-sector"
-                    prevSectionId="architecture-sector"
-                  >
-                    <GithubLab />
-                    <TerminalLab />
-                  </ShutterLayer>
-
-                  {/* Sector 06: Contact Uplink */}
-                  <ShutterLayer
-                    index={5}
-                    total={6}
-                    title="Contact & Resume"
-                    id="contact-sector"
-                    prevSectionId="lab-sector"
-                  >
-                    <ContactFooter />
-                  </ShutterLayer>
-                </ShutterSectionStack>
-              </main>
-            </div>
-          </RetroOSProvider>
-        </TransitionProvider>
-      </LenisProvider>
+      <RetroOSProvider initialSection="projects">
+        <main
+          id="main-content"
+          role="main"
+          className="w-screen h-[100dvh] m-0 p-0 overflow-hidden"
+          style={{
+            width: '100vw',
+            height: '100dvh',
+            margin: 0,
+            padding: 0,
+            overflow: 'hidden',
+            backgroundColor: '#c8c2ab',
+          }}
+        >
+          <CRTMonitorShell>
+            <CRTDioramaStage id="hero" />
+          </CRTMonitorShell>
+        </main>
+      </RetroOSProvider>
     </ThemeProvider>
   );
 };

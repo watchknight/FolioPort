@@ -201,8 +201,8 @@ console.log('Removals Check:', removalsTest);
 console.log('\n--- TEST 3: Hardware Controls (Power Button, SFX Toggle & Rapid Click Resilience) ---');
 const hardwareControlsTest = await evalInPage(`
   (async () => {
-    const pwrBtn = Array.from(document.querySelectorAll('button')).find(b => b.innerText.includes('POWER') || b.getAttribute('aria-label')?.includes('Power'));
-    const sfxBtn = Array.from(document.querySelectorAll('button')).find(b => b.innerText.includes('SFX'));
+    const pwrBtn = Array.from(document.querySelectorAll('button')).find(b => b.innerText.toUpperCase().includes('POWER') || b.getAttribute('aria-label')?.includes('Power'));
+    const sfxBtn = Array.from(document.querySelectorAll('button')).find(b => b.innerText.toUpperCase().includes('SOUND') || b.innerText.toUpperCase().includes('SFX'));
     const pwrLed = document.querySelector('aside .w-2.h-2, aside .w-2\\\\.5.h-2\\\\.5');
     
     const initialPowerText = pwrBtn?.innerText;

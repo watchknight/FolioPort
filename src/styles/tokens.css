@@ -76,14 +76,6 @@
 
   --wk-neutral-buffer-dark: var(--crt-bg);
   --wk-neutral-buffer-light: var(--pixel-bright);
-
-  /* 90s CRT Hardware Bevel & Shadow Geometry */
-  --bevel-light: #ded8c1;
-  --bevel-dark: #3b3a32;
-  --bevel-mid: #8f8973;
-  --pixel-border-width: 2px;
-  --card-border: 1px solid #3b3a32;
-  --card-shadow: 2px 2px 0 0 #0a0e0b;
 }
 
 [data-theme="light"] {
@@ -131,64 +123,6 @@
   --wk-terracotta-pulse: var(--pixel-mid);
   --wk-verdigris-signal: var(--pixel-bright);
 
-  --bevel-light: #ded8c1;
-  --bevel-dark: #3b3a32;
-  --bevel-mid: #8f8973;
-  --pixel-border-width: 2px;
-  --card-border: 1px solid #3b3a32;
-  --card-shadow: 2px 2px 0 0 #0a0e0b;
-}
-
-/* 90s Retro OS 2px Inset and Outset Bevel Borders */
-.retro-bevel-outset {
-  border-width: 2px;
-  border-style: solid;
-  border-color: var(--bevel-light) var(--bevel-dark) var(--bevel-dark) var(--bevel-light);
-}
-
-.retro-bevel-inset {
-  border-width: 2px;
-  border-style: solid;
-  border-color: var(--bevel-dark) var(--bevel-light) var(--bevel-light) var(--bevel-dark);
-}
-
-.retro-cyber-border {
-  border: 2px solid var(--tech-cyan-wave);
-  box-shadow: 0 0 10px rgba(var(--tech-cyan-wave-rgb), 0.25), inset 0 0 8px rgba(var(--tech-cyan-wave-rgb), 0.1);
-}
-
-.retro-magenta-border {
-  border: 2px solid var(--tech-magenta-crest);
-  box-shadow: 0 0 10px rgba(var(--tech-magenta-crest-rgb), 0.25), inset 0 0 8px rgba(var(--tech-magenta-crest-rgb), 0.1);
-}
-
-.retro-bezel-border {
-  border: 2px solid var(--crt-bezel-shadow);
-  box-shadow: inset 1px 1px 0 rgba(214, 207, 194, 0.35), inset -1px -1px 0 rgba(0, 0, 0, 0.4);
-}
-
-/* Crisp Brutalist Architectural Card Surface with Hard Drop-Shadow */
-.retro-cad-card {
-  background-color: var(--crt-panel-slate);
-  border: 2px solid var(--crt-bezel-shadow);
-  box-shadow: 4px 4px 0px #c8c2ab;
-}
-
-[data-theme="dark"] .retro-cad-card {
-  box-shadow: 2px 2px 0px #111712;
-}
-
-/* 1px SVG Data-Draw Rules */
-.wk-rule-h {
-  width: 100%;
-  height: 1px;
-  background-color: var(--border-hairline);
-}
-
-.wk-rule-v {
-  width: 1px;
-  height: 100%;
-  background-color: var(--border-hairline);
 }
 
 /* Fast 250ms CRT Horizontal-Sync Flash / Degauss Wipe */
@@ -229,10 +163,4 @@
     transparent 100%
   );
   animation: crt-hsync-flash 250ms cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
-}
-
-/* Zero-Jank Velocity Skew Isolation */
-.wk-velocity-item {
-  will-change: transform;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow !important;
 }

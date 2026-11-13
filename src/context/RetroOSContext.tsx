@@ -43,7 +43,7 @@ export const SECTION_METADATA: Record<RetroSection, SectionMetadata> = {
     label: 'Selected Work',
     fileName: 'Selected Work',
     status: '4 Systems Online',
-    tagline: 'HyperDeck 3D, Sentinel HUD, Audio Synth & Extension Studio',
+    tagline: 'Spatial web, cloud platforms & interactive storytelling',
   },
   resume: {
     index: 2,
@@ -67,12 +67,15 @@ export interface RetroOSContextValue {
   soundEnabled: boolean;
   isBooting: boolean;
   phosphorMode: PhosphorMode;
+  selectedProjectId?: string | null;
   setIsBooting: (booting: boolean) => void;
   setActiveSection: (section: RetroSection) => void;
   setActiveIndex: (index: SectionIndex) => void;
   setIsWindowExpanded: (expanded: boolean | ((prev: boolean) => boolean)) => void;
   setSoundEnabled: (enabled: boolean | ((prev: boolean) => boolean)) => void;
   setPhosphorMode: (mode: PhosphorMode | ((prev: PhosphorMode) => PhosphorMode)) => void;
+  setSelectedProjectId?: (id: string | null) => void;
+  openCaseStudy?: (projectId: string) => void;
   togglePhosphorMode: () => void;
   openSection: (section: RetroSection) => void;
   openIndex: (index: SectionIndex) => void;
@@ -97,12 +100,15 @@ export const defaultRetroOSContextValue: RetroOSContextValue = {
   soundEnabled: true,
   isBooting: false,
   phosphorMode: 'sage',
+  selectedProjectId: null,
   setIsBooting: () => {},
   setActiveSection: () => {},
   setActiveIndex: () => {},
   setIsWindowExpanded: () => {},
   setSoundEnabled: () => {},
   setPhosphorMode: () => {},
+  setSelectedProjectId: () => {},
+  openCaseStudy: () => {},
   togglePhosphorMode: () => {},
   openSection: () => {},
   openIndex: () => {},
@@ -129,6 +135,7 @@ export interface RetroOSProviderProps {
   initialSoundEnabled?: boolean;
   initialBooting?: boolean;
   initialPhosphor?: PhosphorMode;
+  initialSelectedProjectId?: string | null;
 }
 
 export interface RetroOSKeyEvaluationResult {
@@ -219,6 +226,7 @@ export const RetroOSProvider: React.FC<RetroOSProviderProps> = ({
   initialSoundEnabled = true,
   initialBooting = false,
   initialPhosphor = 'sage',
+  initialSelectedProjectId = null,
 }) => {
   const [activeSection, setActiveSectionState] = useState<RetroSection>(initialSection);
   const [activeIndex, setActiveIndexState] = useState<SectionIndex>(() => {
@@ -229,9 +237,11 @@ export const RetroOSProvider: React.FC<RetroOSProviderProps> = ({
   const [soundEnabled, setSoundEnabledState] = useState<boolean>(initialSoundEnabled);
   const [isBooting, setIsBootingState] = useState<boolean>(initialBooting);
   const [phosphorMode, setPhosphorModeState] = useState<PhosphorMode>(initialPhosphor);
+  const [selectedProjectId, setSelectedProjectIdState] = useState<string | null>(initialSelectedProjectId);
   const [isDitherTransitioning, setIsDitherTransitioning] = useState<boolean>(false);
 
   const ditherHandlerRef = useRef<((swapFn: () => void, completeCb?: () => void) => void) | null>(null);
+  const activeTransitionsRef = useRef<number>(0);
 
   const registerDitherTransition = useCallback(
     (handler: (swapFn: () => void, completeCb?: () => void) => void) => {
@@ -248,9 +258,13 @@ export const RetroOSProvider: React.FC<RetroOSProviderProps> = ({
   const triggerDitherTransition = useCallback(
     (swapFn: () => void, completeCb?: () => void) => {
       if (ditherHandlerRef.current) {
+        activeTransitionsRef.current += 1;
         setIsDitherTransitioning(true);
         ditherHandlerRef.current(swapFn, () => {
-          setIsDitherTransitioning(false);
+          activeTransitionsRef.current = Math.max(0, activeTransitionsRef.current - 1);
+          if (activeTransitionsRef.current === 0) {
+            setIsDitherTransitioning(false);
+          }
           completeCb?.();
         });
       } else {
@@ -289,14 +303,13 @@ export const RetroOSProvider: React.FC<RetroOSProviderProps> = ({
         };
         // When expanded, switching modules triggers 340ms dither transition with swap at 170ms
         if (ditherHandlerRef.current && isWindowExpanded && activeSection !== section) {
-          setIsDitherTransitioning(true);
-          ditherHandlerRef.current(perform, () => setIsDitherTransitioning(false));
+          triggerDitherTransition(perform);
         } else {
           perform();
         }
       }
     },
-    [soundEnabled, isWindowExpanded, activeSection]
+    [soundEnabled, isWindowExpanded, activeSection, triggerDitherTransition]
   );
 
   const setActiveIndex = useCallback(
@@ -319,6 +332,33 @@ export const RetroOSProvider: React.FC<RetroOSProviderProps> = ({
     });
   }, []);
 
+  const setSelectedProjectId = useCallback((id: string | null) => {
+    setSelectedProjectIdState(id);
+  }, []);
+
+  const openCaseStudy = useCallback(
+    (projectId: string) => {
+      if (soundEnabled) {
+        try {
+          retroAudio.playOpenWindow();
+        } catch {}
+      }
+      const perform = () => {
+        setActiveSectionState('projects');
+        setActiveIndexState(SECTION_METADATA.projects.index);
+        setSelectedProjectIdState(projectId);
+        setIsWindowExpandedState(true);
+        setWasWindowClosed(false);
+      };
+      if (ditherHandlerRef.current && (!isWindowExpanded || activeSection !== 'projects')) {
+        triggerDitherTransition(perform);
+      } else {
+        perform();
+      }
+    },
+    [soundEnabled, isWindowExpanded, activeSection, triggerDitherTransition]
+  );
+
   const openSection = useCallback(
     (section: RetroSection) => {
       const meta = SECTION_METADATA[section];
@@ -331,19 +371,19 @@ export const RetroOSProvider: React.FC<RetroOSProviderProps> = ({
         const perform = () => {
           setActiveSectionState(section);
           setActiveIndexState(meta.index);
+          setSelectedProjectIdState(null);
           setIsWindowExpandedState(true);
           setWasWindowClosed(false);
         };
         // Opening Level 2 window or switching modules triggers 340ms dither transition with swap at 170ms
         if (ditherHandlerRef.current && (!isWindowExpanded || activeSection !== section)) {
-          setIsDitherTransitioning(true);
-          ditherHandlerRef.current(perform, () => setIsDitherTransitioning(false));
+          triggerDitherTransition(perform);
         } else {
           perform();
         }
       }
     },
-    [soundEnabled, isWindowExpanded, activeSection]
+    [soundEnabled, isWindowExpanded, activeSection, triggerDitherTransition]
   );
 
   const openIndex = useCallback(
@@ -365,12 +405,11 @@ export const RetroOSProvider: React.FC<RetroOSProviderProps> = ({
       setWasWindowClosed(false);
     };
     if (ditherHandlerRef.current && !isWindowExpanded) {
-      setIsDitherTransitioning(true);
-      ditherHandlerRef.current(perform, () => setIsDitherTransitioning(false));
+      triggerDitherTransition(perform);
     } else {
       perform();
     }
-  }, [soundEnabled, isWindowExpanded]);
+  }, [soundEnabled, isWindowExpanded, triggerDitherTransition]);
 
   const collapseWindow = useCallback(() => {
     if (soundEnabled) {
@@ -384,12 +423,11 @@ export const RetroOSProvider: React.FC<RetroOSProviderProps> = ({
     };
     // Closing window back to Level 1 triggers 340ms dither transition with swap at 170ms
     if (ditherHandlerRef.current && isWindowExpanded) {
-      setIsDitherTransitioning(true);
-      ditherHandlerRef.current(perform, () => setIsDitherTransitioning(false));
+      triggerDitherTransition(perform);
     } else {
       perform();
     }
-  }, [soundEnabled, isWindowExpanded]);
+  }, [soundEnabled, isWindowExpanded, triggerDitherTransition]);
 
   const toggleExpand = useCallback(() => {
     if (isWindowExpanded) {
@@ -441,6 +479,22 @@ export const RetroOSProvider: React.FC<RetroOSProviderProps> = ({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target as Element | null;
+      const targetTag = target?.tagName?.toUpperCase();
+      const activeEl = typeof document !== 'undefined' ? document.activeElement : null;
+      const activeTag = activeEl?.tagName?.toUpperCase();
+
+      // Automatically disable global shortcuts whenever user is typing in an input/textarea/editable element
+      if (
+        targetTag === 'INPUT' ||
+        targetTag === 'TEXTAREA' ||
+        targetTag === 'SELECT' ||
+        activeTag === 'INPUT' ||
+        activeTag === 'TEXTAREA' ||
+        activeTag === 'SELECT'
+      ) {
+        return;
+      }
+
       let hasExternalModal = false;
 
       if (typeof document !== 'undefined') {
@@ -549,12 +603,15 @@ export const RetroOSProvider: React.FC<RetroOSProviderProps> = ({
       soundEnabled,
       isBooting,
       phosphorMode,
+      selectedProjectId,
       setIsBooting,
       setActiveSection,
       setActiveIndex,
       setIsWindowExpanded,
       setSoundEnabled,
       setPhosphorMode,
+      setSelectedProjectId,
+      openCaseStudy,
       togglePhosphorMode,
       openSection,
       openIndex,
@@ -575,12 +632,15 @@ export const RetroOSProvider: React.FC<RetroOSProviderProps> = ({
       soundEnabled,
       isBooting,
       phosphorMode,
+      selectedProjectId,
       setIsBooting,
       setActiveSection,
       setActiveIndex,
       setIsWindowExpanded,
       setSoundEnabled,
       setPhosphorMode,
+      setSelectedProjectId,
+      openCaseStudy,
       togglePhosphorMode,
       openSection,
       openIndex,

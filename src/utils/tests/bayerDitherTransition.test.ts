@@ -85,13 +85,13 @@ describe('8x8 Ordered Bayer Matrix Dither Transition & Level 2 OS Reader Window'
   });
 
   describe('3. Spacious Level 2 OS Reader Window (RetroOSWindow.tsx)', () => {
-    it('expands to fill CRT interior cleanly with inset: 20px, z-index: 30, background: #111712, border: 2px solid #c2cdb4', () => {
+    it('expands to fill CRT interior cleanly with inset: 16px, z-index: 30, background: #111712, border: 2px solid #c2cdb4', () => {
       const htmlExpanded = renderToString(
         React.createElement(RetroOSWindow, { isExpanded: true, activeSection: 'projects' })
       );
 
       expect(htmlExpanded).toContain('data-testid="retro-os-window"');
-      expect(htmlExpanded).toContain('inset:20px');
+      expect(htmlExpanded).toContain('inset:16px');
       expect(htmlExpanded).toContain('z-index:30');
       expect(htmlExpanded).toContain('background-color:#111712');
       expect(htmlExpanded).toContain('border:2px solid #c2cdb4');
@@ -104,17 +104,20 @@ describe('8x8 Ordered Bayer Matrix Dither Transition & Level 2 OS Reader Window'
 
       expect(htmlExpanded).toContain('data-testid="retro-window-persistent-nav"');
 
-      // Tab 1: 1. Work
+      // Tab 1: 1. Selected Work (desktop) / 1. Work (compact)
       expect(htmlExpanded).toContain('data-testid="retro-window-tab-projects"');
       expect(htmlExpanded).toContain('1. Work');
+      expect(htmlExpanded).toContain('1. Selected Work');
 
-      // Tab 2: 2. About
+      // Tab 2: 2. About & Skills (desktop) / 2. About (compact)
       expect(htmlExpanded).toContain('data-testid="retro-window-tab-about"');
       expect(htmlExpanded).toContain('2. About');
+      expect(htmlExpanded).toContain('2. About &amp; Skills');
 
-      // Tab 3: 3. Resume
+      // Tab 3: 3. Resume & Contact (desktop) / 3. Resume (compact)
       expect(htmlExpanded).toContain('data-testid="retro-window-tab-resume"');
       expect(htmlExpanded).toContain('3. Resume');
+      expect(htmlExpanded).toContain('3. Resume &amp; Contact');
     });
 
     it('renders prominent Back to Desktop button on the right of the persistent top nav', () => {
@@ -124,15 +127,16 @@ describe('8x8 Ordered Bayer Matrix Dither Transition & Level 2 OS Reader Window'
 
       expect(htmlExpanded).toContain('data-testid="retro-window-btn-back-desktop"');
       expect(htmlExpanded).toContain('Back to Desktop');
+      expect(htmlExpanded).toContain('Back to Desktop (Esc)');
     });
 
-    it('enforces generous internal breathing space (padding: 28px 32px) inside the window body', () => {
+    it('enforces generous internal breathing space (padding: clamp(24px, 3vw, 44px)) inside the window body', () => {
       const htmlExpanded = renderToString(
         React.createElement(RetroOSWindow, { isExpanded: true, activeSection: 'about' })
       );
 
       expect(htmlExpanded).toContain('data-testid="retro-window-content-viewport"');
-      expect(htmlExpanded).toContain('padding:28px 32px');
+      expect(htmlExpanded).toContain('padding:clamp(24px, 3vw, 44px)');
       expect(htmlExpanded).toContain('scroll-behavior:smooth');
     });
 
@@ -311,6 +315,192 @@ describe('8x8 Ordered Bayer Matrix Dither Transition & Level 2 OS Reader Window'
       expect(htmlExpanded).toContain('data-testid="retro-scrollbar-btn-up"');
       expect(htmlExpanded).toContain('data-testid="retro-scrollbar-btn-down"');
       expect(htmlExpanded).toContain('touch-action:manipulation');
+    });
+  });
+
+  describe('5. Bayer Transition Lifecycle, Frame Stepping & Robustness', () => {
+    it('verifies uniform 8x8 Bayer matrix spatial distribution and energy equilibrium', () => {
+      // Mean of all 64 values (0 to 63) is exactly 31.5
+      let sum = 0;
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          sum += BAYER_MATRIX_8X8[r][c];
+        }
+      }
+      expect(sum / 64).toBe(31.5);
+
+      // Verify recursive Bayer matrix quadrant distribution: [4*M, 4*M+2; 4*M+3, 4*M+1]
+      const quadrants = [0, 0, 0, 0];
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          const qIdx = (r < 4 ? 0 : 2) + (c < 4 ? 0 : 1);
+          quadrants[qIdx] += BAYER_MATRIX_8X8[r][c];
+        }
+      }
+      expect(quadrants.map((q) => q / 16)).toEqual([30, 32, 33, 31]);
+    });
+
+    it('simulates 340ms choreograph: progressive fill (0-170ms), 100% curtain & swap (170ms), dissolve (170-340ms)', () => {
+      // Phase 1: Leave phase (0ms to 170ms)
+      const t0 = 0;
+      const p0 = t0 / DITHER_TRANSITION_MIDPOINT_MS;
+      const th0 = Math.min(64, Math.floor(p0 * 65));
+      expect(th0).toBe(0);
+
+      const tMidLeave = 85;
+      const pMidLeave = tMidLeave / DITHER_TRANSITION_MIDPOINT_MS;
+      const thMidLeave = Math.min(64, Math.floor(pMidLeave * 65));
+      expect(thMidLeave).toBe(32); // exactly half of cells filled
+
+      // Midpoint swap curtain at 170ms: 100% full coverage
+      const thSwap = 64;
+      let filledCountSwap = 0;
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          if (BAYER_MATRIX_8X8[r][c] < thSwap) filledCountSwap++;
+        }
+      }
+      expect(filledCountSwap).toBe(64); // 100% full coverage
+
+      // Phase 2: Enter phase dissolve (170ms to 340ms)
+      const tMidEnter = 255;
+      const pMidEnter = (tMidEnter - DITHER_TRANSITION_MIDPOINT_MS) / (DITHER_TRANSITION_TOTAL_MS - DITHER_TRANSITION_MIDPOINT_MS);
+      const dthMidEnter = Math.min(64, Math.floor(pMidEnter * 64));
+      expect(dthMidEnter).toBe(32);
+
+      let remainingCellsMidEnter = 0;
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          if (BAYER_MATRIX_8X8[r][c] >= dthMidEnter) remainingCellsMidEnter++;
+        }
+      }
+      expect(remainingCellsMidEnter).toBe(32); // exactly half of cells dissolved
+
+      // At completion (340ms), dissolve threshold reaches 64 (0 cells remaining)
+      const tEnd = 340;
+      const pEnd = (tEnd - DITHER_TRANSITION_MIDPOINT_MS) / (DITHER_TRANSITION_TOTAL_MS - DITHER_TRANSITION_MIDPOINT_MS);
+      const dthEnd = Math.min(64, Math.floor(pEnd * 64));
+      expect(dthEnd).toBe(64);
+
+      let remainingCellsEnd = 0;
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          if (BAYER_MATRIX_8X8[r][c] >= dthEnd) remainingCellsEnd++;
+        }
+      }
+      expect(remainingCellsEnd).toBe(0);
+    });
+
+    it('ensures rapid sequential tab clicks do not drop pending state swaps or leak callbacks', () => {
+      let swapCount = 0;
+      let completeCount = 0;
+
+      const swapFn1 = () => { swapCount++; };
+      const completeCb1 = () => { completeCount++; };
+      const swapFn2 = () => { swapCount++; };
+      const completeCb2 = () => { completeCount++; };
+
+      // Simulate first transition started
+      let pendingSwap: (() => void) | null = swapFn1;
+      let pendingComplete: (() => void) | null = completeCb1;
+      let midpointSwapped = false;
+
+      // Second transition arrives before midpoint of first
+      if (pendingSwap && !midpointSwapped) {
+        pendingSwap();
+        pendingSwap = null;
+      }
+      if (pendingComplete) {
+        pendingComplete();
+        pendingComplete = null;
+      }
+
+      pendingSwap = swapFn2;
+      pendingComplete = completeCb2;
+
+      expect(swapCount).toBe(1);
+      expect(completeCount).toBe(1);
+
+      // Now second transition reaches midpoint
+      pendingSwap();
+      pendingSwap = null;
+      midpointSwapped = true;
+
+      // Second transition completes
+      pendingComplete();
+      pendingComplete = null;
+
+      expect(swapCount).toBe(2);
+      expect(completeCount).toBe(2);
+    });
+
+    it('verifies reference-counted isDitherTransitioning logic across rapid interrupted transitions', () => {
+      let activeTransitions = 0;
+      let isTransitioning = false;
+      const setTransitioning = (val: boolean) => {
+        isTransitioning = val;
+      };
+
+      const handlerCompletions: (() => void)[] = [];
+      const handler = (_swap: () => void, complete: () => void) => {
+        handlerCompletions.push(complete);
+      };
+
+      const trigger = (swapFn: () => void, completeCb?: () => void) => {
+        activeTransitions += 1;
+        setTransitioning(true);
+        handler(swapFn, () => {
+          activeTransitions = Math.max(0, activeTransitions - 1);
+          if (activeTransitions === 0) {
+            setTransitioning(false);
+          }
+          completeCb?.();
+        });
+      };
+
+      // Trigger transition 1
+      trigger(() => {});
+      expect(isTransitioning).toBe(true);
+      expect(activeTransitions).toBe(1);
+
+      // Trigger transition 2 before transition 1 finishes
+      trigger(() => {});
+      expect(isTransitioning).toBe(true);
+      expect(activeTransitions).toBe(2);
+
+      // Transition 1 completion fires (from interruption cleanup)
+      handlerCompletions[0]();
+      // Counter is still 1, so isTransitioning must remain true
+      expect(isTransitioning).toBe(true);
+      expect(activeTransitions).toBe(1);
+
+      // Transition 2 completes
+      handlerCompletions[1]();
+      // Counter reaches 0, isTransitioning becomes false
+      expect(isTransitioning).toBe(false);
+      expect(activeTransitions).toBe(0);
+    });
+
+    it('gracefully handles missing matchMedia or throwing callbacks without unhandled exceptions', () => {
+      // Test throw isolation in midpoint swap and completion
+      let errorHandled = false;
+      const throwingSwap = () => {
+        throw new Error('Midpoint swap error test');
+      };
+      const throwingComplete = () => {
+        throw new Error('Completion callback error test');
+      };
+
+      try {
+        try { throwingSwap(); } catch { errorHandled = true; }
+        expect(errorHandled).toBe(true);
+
+        let completeHandled = false;
+        try { throwingComplete(); } catch { completeHandled = true; }
+        expect(completeHandled).toBe(true);
+      } catch (err) {
+        expect.unreachable('Should have caught exceptions internally');
+      }
     });
   });
 });

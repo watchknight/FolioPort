@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { chiptuneAudio } from '../utils/chiptuneAudio';
 
 export type ThemeMode = 'dark' | 'light' | 'obsidian' | 'alabaster' | 'forest';
@@ -23,77 +23,77 @@ export interface ThemeColors {
 export const THEMES: Record<string, ThemeColors> = {
   dark: {
     id: 'dark',
-    name: 'Night CRT • Void',
-    primaryColor: '#070814',
-    accentColor: '#FF2A85',
-    bgHex: '#070814',
-    textHex: '#F0EFE6',
+    name: 'Monochrome Phosphor Sage',
+    primaryColor: '#111712',
+    accentColor: '#c2cdb4',
+    bgHex: '#111712',
+    textHex: '#c2cdb4',
     shaderColors: {
-      baseColor: '#070814',
-      rimColor: '#00F0FF',
-      accentColor: '#FF2A85',
-      pointLight: '#00F0FF',
-      wireframe: '#00F0FF',
+      baseColor: '#111712',
+      rimColor: '#c2cdb4',
+      accentColor: '#6e7d62',
+      pointLight: '#c2cdb4',
+      wireframe: '#2e3b2b',
     },
   },
   light: {
     id: 'light',
-    name: 'Daylight CAD • Putty',
-    primaryColor: '#F2EFE9',
-    accentColor: '#D90452',
-    bgHex: '#F2EFE9',
-    textHex: '#11131A',
+    name: 'Vintage Amber CRT',
+    primaryColor: '#140f07',
+    accentColor: '#d4a359',
+    bgHex: '#140f07',
+    textHex: '#d4a359',
     shaderColors: {
-      baseColor: '#F2EFE9',
-      rimColor: '#0052FF',
-      accentColor: '#D90452',
-      pointLight: '#0052FF',
-      wireframe: '#0052FF',
+      baseColor: '#140f07',
+      rimColor: '#d4a359',
+      accentColor: '#8c6830',
+      pointLight: '#d4a359',
+      wireframe: '#3d2b12',
     },
   },
   obsidian: {
     id: 'obsidian',
-    name: 'Cyber-CRT Void',
-    primaryColor: '#070814',
-    accentColor: '#FF2A85',
-    bgHex: '#070814',
-    textHex: '#F0EFE6',
+    name: 'Monochrome Phosphor Sage',
+    primaryColor: '#111712',
+    accentColor: '#c2cdb4',
+    bgHex: '#111712',
+    textHex: '#c2cdb4',
     shaderColors: {
-      baseColor: '#070814',
-      rimColor: '#00F0FF',
-      accentColor: '#FF2A85',
-      pointLight: '#00F0FF',
-      wireframe: '#00F0FF',
+      baseColor: '#111712',
+      rimColor: '#c2cdb4',
+      accentColor: '#6e7d62',
+      pointLight: '#c2cdb4',
+      wireframe: '#2e3b2b',
     },
   },
   alabaster: {
     id: 'alabaster',
-    name: 'Retro Putty Bezel',
-    primaryColor: '#D6CFC2',
-    accentColor: '#FF2A85',
-    bgHex: '#D6CFC2',
-    textHex: '#070814',
+    name: 'Vintage Amber CRT',
+    primaryColor: '#140f07',
+    accentColor: '#d4a359',
+    bgHex: '#140f07',
+    textHex: '#d4a359',
     shaderColors: {
-      baseColor: '#D6CFC2',
-      rimColor: '#2D3645',
-      accentColor: '#FF2A85',
-      pointLight: '#00F0FF',
-      wireframe: '#2D3645',
+      baseColor: '#140f07',
+      rimColor: '#d4a359',
+      accentColor: '#8c6830',
+      pointLight: '#d4a359',
+      wireframe: '#3d2b12',
     },
   },
   forest: {
     id: 'forest',
     name: 'Phosphor Green Terminal',
-    primaryColor: '#0D1512',
-    accentColor: '#4AF626',
-    bgHex: '#0D1512',
-    textHex: '#4AF626',
+    primaryColor: '#111712',
+    accentColor: '#c2cdb4',
+    bgHex: '#111712',
+    textHex: '#c2cdb4',
     shaderColors: {
-      baseColor: '#0D1512',
-      rimColor: '#4AF626',
-      accentColor: '#4AF626',
-      pointLight: '#4AF626',
-      wireframe: '#4AF626',
+      baseColor: '#111712',
+      rimColor: '#c2cdb4',
+      accentColor: '#6e7d62',
+      pointLight: '#c2cdb4',
+      wireframe: '#2e3b2b',
     },
   },
 };
@@ -127,6 +127,15 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   });
 
   const [isThemeFlashing, setIsThemeFlashing] = useState<boolean>(false);
+  const flashTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const toggleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (flashTimerRef.current) clearTimeout(flashTimerRef.current);
+      if (toggleTimerRef.current) clearTimeout(toggleTimerRef.current);
+    };
+  }, []);
 
   const applyTheme = useCallback((newMode: ThemeMode, playSfx = true) => {
     setThemeState(newMode);
@@ -144,8 +153,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       // Fast 250ms CRT horizontal-sync flash / degauss wipe across viewport
       setIsThemeFlashing(true);
-      setTimeout(() => {
+      if (flashTimerRef.current) clearTimeout(flashTimerRef.current);
+      flashTimerRef.current = setTimeout(() => {
         setIsThemeFlashing(false);
+        flashTimerRef.current = null;
       }, 250);
 
       // Procedural Web Audio toggle chime
@@ -189,8 +200,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setThemeState((current) => {
       const next: ThemeMode = current === 'dark' ? 'light' : 'dark';
       // Apply theme effects asynchronously outside of reducer phase
-      setTimeout(() => {
+      if (toggleTimerRef.current) clearTimeout(toggleTimerRef.current);
+      toggleTimerRef.current = setTimeout(() => {
         applyTheme(next, true);
+        toggleTimerRef.current = null;
       }, 0);
       return next;
     });

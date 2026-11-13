@@ -79,9 +79,9 @@ describe('Retro 90s OS Window Manager & Split-Console Verification', () => {
       const html = renderToString(React.createElement(RetroCommandMenu));
 
       expect(html).toContain('data-testid="retro-command-menu"');
-      expect(html).toContain('1. Work');
-      expect(html).toContain('2. About');
-      expect(html).toContain('3. Resume');
+      expect(html).toContain('1. Selected Work');
+      expect(html).toContain('2. About &amp; Skills');
+      expect(html).toContain('3. Resume &amp; Contact');
       expect(html).toContain('font-pixel');
     });
 
@@ -233,9 +233,9 @@ describe('Retro 90s OS Window Manager & Split-Console Verification', () => {
 
       expect(htmlExpandedProjects).toContain('data-testid="retro-content-projects"');
       expect(htmlExpandedProjects).toContain('Mental Defrag');
-      expect(htmlExpandedProjects).toContain('FocusGuard');
-      expect(htmlExpandedProjects).toContain('Neon Vanguard &amp; POSIX');
       expect(htmlExpandedProjects).toContain('DocLensBD');
+      expect(htmlExpandedProjects).toContain('Rannabanna');
+      expect(htmlExpandedProjects).toContain('Trash Trail');
     });
 
     it('Expanded Mode: displays academic credentials and verified PDF export link for [3] RESUME', () => {
@@ -277,7 +277,7 @@ describe('Retro 90s OS Window Manager & Split-Console Verification', () => {
       );
 
       expect(htmlProjects).toContain('data-testid="retro-window-aria-live"');
-      expect(htmlProjects).toContain('1. Work view opened. HyperDeck 3D, Sentinel HUD, Audio Synth &amp; Extension Studio');
+      expect(htmlProjects).toContain('1. Work view opened. Spatial web, cloud platforms &amp; interactive storytelling');
     });
 
     it('announces [3] RESUME view opened and tagline when opened in expanded mode', () => {

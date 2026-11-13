@@ -23,27 +23,23 @@ export interface RetroCommandMenuProps {
 export interface Level1ItemDef {
   section: RetroSection;
   command: string;
-  legacyCommand: string;
   index: SectionIndex;
 }
 
 export const LEVEL1_MENU_ITEMS: Level1ItemDef[] = [
   {
     section: 'projects',
-    command: '1. Work',
-    legacyCommand: '1. Work',
+    command: '1. Selected Work',
     index: 0,
   },
   {
     section: 'about',
-    command: '2. About',
-    legacyCommand: '2. About',
+    command: '2. About & Skills',
     index: 1,
   },
   {
     section: 'resume',
-    command: '3. Resume',
-    legacyCommand: '3. Resume',
+    command: '3. Resume & Contact',
     index: 2,
   },
 ];
@@ -110,7 +106,7 @@ export const RetroCommandMenu: React.FC<RetroCommandMenuProps> = ({
     <nav
       data-testid="retro-command-menu"
       aria-label="Retro 90s Command Navigation Menu"
-      className={`retro-command-menu flex flex-col justify-between p-2 sm:p-2.5 select-none font-pixel border ${className}`}
+      className={`retro-command-menu flex flex-col justify-between p-2.5 sm:p-4 select-none font-pixel border h-full overflow-hidden box-border max-w-full ${className}`}
       style={{
         borderColor: `${midColor}66`,
         backgroundColor: voidColor,
@@ -118,7 +114,7 @@ export const RetroCommandMenu: React.FC<RetroCommandMenuProps> = ({
     >
       {/* Menu Header Telemetry */}
       <div
-        className="flex items-center justify-between text-[8px] sm:text-[9px] uppercase tracking-wider pb-1.5 mb-1.5 border-b"
+        className="flex items-center justify-between text-[8px] sm:text-[9px] uppercase tracking-wider pb-2 mb-2 border-b shrink-0"
         style={{
           borderColor: `${midColor}4d`,
           color: midColor,
@@ -136,7 +132,11 @@ export const RetroCommandMenu: React.FC<RetroCommandMenuProps> = ({
       </div>
 
       {/* Navigation Command Items: Clean, spacious 3-item selector in 'Press Start 2P' */}
-      <div className="flex flex-col gap-1 sm:gap-1.5" role="menubar" aria-orientation="vertical">
+      <div
+        className="flex flex-col justify-around gap-2 sm:gap-3 flex-1 my-auto"
+        role="menubar"
+        aria-orientation="vertical"
+      >
         {LEVEL1_MENU_ITEMS.map((item, idx) => {
           const isActive = activeSection === item.section;
 
@@ -173,9 +173,11 @@ export const RetroCommandMenu: React.FC<RetroCommandMenuProps> = ({
                   itemRefs.current[prevIdx]?.focus();
                 }
               }}
-              className="group relative w-full text-left font-pixel font-bold text-xs sm:text-sm tracking-wide px-2.5 sm:px-3 py-1.5 sm:py-2 min-h-[44px] flex items-center transition-none cursor-pointer outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2"
-              style={
-                isActive
+              className="group relative w-full text-left font-pixel font-bold tracking-wide min-h-[44px] flex items-center transition-none cursor-pointer outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2 overflow-hidden box-border max-w-full"
+              style={{
+                fontSize: 'clamp(1rem, 1.4vw, 1.35rem)',
+                padding: 'clamp(14px, 1.8vh, 22px) 20px',
+                ...(isActive
                   ? {
                       backgroundColor: brightColor,
                       color: voidColor,
@@ -184,13 +186,13 @@ export const RetroCommandMenu: React.FC<RetroCommandMenuProps> = ({
                   : {
                       backgroundColor: 'transparent',
                       color: brightColor,
-                    }
-              }
+                    }),
+              }}
             >
               {/* Leading Indicator */}
               <span
                 data-testid={`retro-command-indicator-${item.section}`}
-                className="inline-block w-3 sm:w-3.5 shrink-0 font-bold text-center select-none"
+                className="inline-block w-3.5 sm:w-4 shrink-0 font-bold text-center select-none"
                 style={{
                   color: isActive ? voidColor : 'transparent',
                   visibility: isActive ? 'visible' : 'hidden',
@@ -200,20 +202,15 @@ export const RetroCommandMenu: React.FC<RetroCommandMenuProps> = ({
                 •
               </span>
 
-              {/* Command text: 1. Work, 2. About, 3. Resume */}
-              <span className="truncate font-pixel font-bold tracking-wider">
+              {/* Command text: 1. Selected Work, 2. About & Skills, 3. Resume & Contact */}
+              <span className="truncate min-w-0 flex-1 font-pixel font-bold tracking-wider">
                 {item.command}
-              </span>
-
-              {/* Accessible sr-only legacy command text for test compatibility */}
-              <span className="sr-only">
-                {item.legacyCommand}
               </span>
 
               {/* Status pill tag for active item */}
               {isActive && (
                 <span
-                  className="ml-auto text-[7px] uppercase font-mono px-1 py-0.5 border"
+                  className="ml-1.5 sm:ml-2 text-[7px] uppercase font-mono px-1 py-0.5 border shrink-0"
                   style={{
                     backgroundColor: voidColor,
                     color: brightColor,

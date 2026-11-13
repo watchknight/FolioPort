@@ -187,6 +187,11 @@ export class WatchknightAudioEngine {
     return this.isUnlocked;
   }
 
+  public unlock(): void {
+    this.isUnlocked = true;
+    this.initContext();
+  }
+
   public getContext(): AudioContext | null {
     return this.ctx;
   }

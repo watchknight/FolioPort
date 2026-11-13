@@ -388,8 +388,7 @@ const dataIntegrityTest = await evalInPage(`
       'Mental Defrag',
       'DocLensBD',
       'Rannabanna',
-      'Trash Trail',
-      'Neon Vanguard 2D & OS Kernel Labs'
+      'Trash Trail'
     ];
 
     const tags = [
@@ -399,7 +398,7 @@ const dataIntegrityTest = await evalInPage(`
       'Cloud Firestore',
       'Bengali NLP',
       'ScrollTrigger',
-      'Linux POSIX'
+      'Linux Systems'
     ];
 
     const urls = [

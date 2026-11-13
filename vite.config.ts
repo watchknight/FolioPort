@@ -29,8 +29,6 @@ export default defineConfig({
         manualChunks: {
           'vendor-react': ['react', 'react-dom'],
           'vendor-gsap': ['gsap'],
-          'vendor-lenis': ['lenis'],
-          'vendor-three': ['three'],
         }
       }
     }

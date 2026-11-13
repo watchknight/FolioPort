@@ -227,7 +227,7 @@ export const CRTBootSequence: React.FC<CRTBootSequenceProps> = ({
               e.stopPropagation();
               handleSkip();
             }}
-            className="text-[#c2cdb4] hover:underline focus:outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2 min-h-[44px] flex items-center"
+            className="font-mono text-[#c2cdb4] hover:underline focus:outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2 min-h-[44px] flex items-center"
             aria-label="Instant skip boot sequence"
           >
             Press any key or click to skip

@@ -35,15 +35,3 @@
   --pixel-phosphor-green-rgb: 194 205 180;
   --pixel-amber-gold-rgb: 194 205 180;
 }
-
-/**
- * Legacy compatibility tokens for crtViewportAndNavigation.test.ts:
- * --crt-void-bg: #070814;
- * --crt-phosphor-dark: #0D1512;
- * --crt-panel-slate: #131629;
- * --tech-cyan-wave: #00F0FF;
- * --tech-magenta-crest: #FF2A85;
- * --pixel-phosphor-green: #4AF626;
- * --pixel-amber-gold: #FFCC00;
- * --pixel-ivory-text: #F0EFE6;
- */

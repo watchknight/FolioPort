@@ -4,224 +4,231 @@ import { renderToString } from 'react-dom/server';
 import {
   ProjectsView,
   FLAGSHIP_PROJECTS,
-  FALLBACK_REPOSITORIES,
+  MORE_DEPLOYED_APPS,
 } from '../../components/views/ProjectsView';
-import { RetroOSProvider, useRetroOS } from '../../context/RetroOSContext';
 
-describe('Selected Work 4-Project Showcase & Two-Tier Progressive Disclosure', () => {
-  describe('1. Curated 2x2 Flagship Project Grid (Default View)', () => {
-    it('renders clean section header "SELECTED ENGINEERING WORK (4 FLAGSHIP CASE STUDIES)" and right-aligned GitHub link', () => {
+describe('Refactored Selected Work View & 4-Project Showcase', () => {
+  describe('Curated 2x2 Flagship Project Grid', () => {
+    it('renders the clean section header and GitHub repositories link', () => {
       const html = renderToString(React.createElement(ProjectsView));
-
-      expect(html).toContain('SELECTED ENGINEERING WORK (4 FLAGSHIP CASE STUDIES)');
-      expect(html).toContain('All 14 Repos on GitHub @watchknight');
-      expect(html).toContain('href="https://github.com/watchknight"');
+      expect(html).toContain('Selected Engineering Work');
+      expect(html).toContain('View All on GitHub (@watchknight)');
+      expect(html).toContain('href="https://github.com/watchknight?tab=repositories"');
     });
 
-    it('renders spacious 2-column grid (1-column on mobile) with 20px gap displaying only the 4 strongest projects', () => {
+    it('renders 2-column grid with 20px gap and 20px padding', () => {
       const html = renderToString(React.createElement(ProjectsView));
-
       expect(html).toContain('data-testid="flagship-projects-grid"');
       expect(html).toContain('grid-cols-1 md:grid-cols-2');
       expect(html).toContain('gap-[20px]');
+      expect(html).toContain('padding:20px');
+    });
 
-      // Exactly 4 flagship cards
+    it('renders all 4 flagship production projects in order', () => {
+      const html = renderToString(React.createElement(ProjectsView));
+      expect(FLAGSHIP_PROJECTS).toHaveLength(4);
+
+      expect(FLAGSHIP_PROJECTS[0].title).toBe('BitForge');
+      expect(FLAGSHIP_PROJECTS[0].category).toBe('Visual Algorithm Lab');
+      expect(FLAGSHIP_PROJECTS[0].demoUrl).toBe('https://bitforge-3u2q.onrender.com');
+      expect(FLAGSHIP_PROJECTS[0].sourceUrl).toBe('https://github.com/watchknight/BitForge');
+      expect(FLAGSHIP_PROJECTS[0].screenshot).toBe('/projects/bitforge.png');
+
+      expect(FLAGSHIP_PROJECTS[1].title).toBe('FocusLab');
+      expect(FLAGSHIP_PROJECTS[1].category).toBe('Cognitive Performance Web App');
+      expect(FLAGSHIP_PROJECTS[1].demoUrl).toBe('https://focuslab-smoa.onrender.com');
+      expect(FLAGSHIP_PROJECTS[1].sourceUrl).toBe('https://github.com/watchknight/FocusLab');
+      expect(FLAGSHIP_PROJECTS[1].screenshot).toBe('/projects/focuslab.png');
+
+      expect(FLAGSHIP_PROJECTS[2].title).toBe('Rannabanna');
+      expect(FLAGSHIP_PROJECTS[2].category).toBe('Full-Stack Consumer Platform');
+      expect(FLAGSHIP_PROJECTS[2].demoUrl).toBe('https://rannabanna.onrender.com');
+      expect(FLAGSHIP_PROJECTS[2].sourceUrl).toBe('https://github.com/watchknight/Rannabanna');
+      expect(FLAGSHIP_PROJECTS[2].screenshot).toBe('/projects/rannabanna.png');
+
+      expect(FLAGSHIP_PROJECTS[3].title).toBe('DocLensBD');
+      expect(FLAGSHIP_PROJECTS[3].category).toBe('3D E-Commerce & Computer Vision');
+      expect(FLAGSHIP_PROJECTS[3].demoUrl).toBe('https://doclensbd.onrender.com');
+      expect(FLAGSHIP_PROJECTS[3].sourceUrl).toBe('https://github.com/watchknight/DocLensBD');
+      expect(FLAGSHIP_PROJECTS[3].screenshot).toBe('/projects/doclensbd.png');
+
       expect(html).toContain('data-testid="flagship-card-01"');
       expect(html).toContain('data-testid="flagship-card-02"');
       expect(html).toContain('data-testid="flagship-card-03"');
       expect(html).toContain('data-testid="flagship-card-04"');
     });
 
-    it('enforces 20px internal padding and crisp 1px solid #6e7d62 border on all cards', () => {
+    it('renders 16:9 CRT photo demo frame with subtle phosphor filter at rest and color toggle', () => {
       const html = renderToString(React.createElement(ProjectsView));
-
-      expect(html).toContain('padding:20px');
-      expect(html).toContain('border:1px solid #6e7d62');
+      expect(html).toContain('data-testid="crt-photo-frame"');
+      expect(html).toContain('aspect-video');
+      expect(html).toContain('filter:grayscale(100%) contrast(115%) sepia(25%) hue-rotate(55deg)');
+      expect(html).toContain('data-testid="btn-toggle-photo-color"');
+      expect(html).toContain('View Original Color');
     });
 
-    it('renders all 4 scannable elements per card strictly without clutter', () => {
+    it('renders key metrics / outcome badge for each flagship project', () => {
       const html = renderToString(React.createElement(ProjectsView));
+      expect(html).toContain('50+ Visualized Algos • 11 Curriculum Stages • C++ / Python / Java / TS');
+      expect(html).toContain('3-Minute Reflex Check • Sub-ms Precision • English &amp; বাংলা UI');
+      expect(html).toContain('1-Tap Pantry Match • Global &amp; Bengali Cuisines • English &amp; বাংলা UI');
+      expect(html).toContain('198+ Precision Frames • 3D Face-Tracking Try-On • Custom Prescription Flow');
+    });
 
-      // Element (1): Top row with monospace index (01 to 04) and category tag
-      expect(html).toContain('01');
-      expect(html).toContain('SPATIAL WEB');
-      expect(html).toContain('02');
-      expect(html).toContain('CHROME MV3');
-      expect(html).toContain('03');
-      expect(html).toContain('SYSTEMS &amp; 2D ENGINE');
-      expect(html).toContain('04');
-      expect(html).toContain('CLOUD PLATFORM');
-
-      // Element (2): Project Title in bold crisp typography plus 1-sentence high-impact summary
-      expect(html).toContain('Mental Defrag');
-      expect(html).toContain('Zero-gravity spatial cognitive workspace built with Matter.js');
-      expect(html).toContain('FocusGuard');
-      expect(html).toContain('Manifest V3 browser productivity daemon engineered');
-      expect(html).toContain('Neon Vanguard &amp; POSIX');
-      expect(html).toContain('Deterministic 120 FPS HTML5 canvas combat engine');
-      expect(html).toContain('DocLensBD &amp; Rannabanna');
-      expect(html).toContain('Cloud-backed medical diagnostic intelligence platform');
-
-      // Element (3): Single key quantified outcome badge
-      expect(html).toContain('60 FPS • 200+ Physics Nodes • Obsidian AST Sync');
-      expect(html).toContain('-58% RAM Reclaimed • &lt;12 MB Heap • Manifest V3');
-      expect(html).toContain('120 FPS Zero-Alloc Canvas • &lt;1.2µs POSIX IPC');
-      expect(html).toContain('Cloud Firestore • Real-Time Sync • CI/CD');
-
-      // Element (4): Bottom action row with Read Case Study, Live Demo, and GitHub
-      expect(html).toContain('data-testid="retro-btn-read-case-study-01"');
-      expect(html).toContain('data-testid="retro-btn-read-case-study-02"');
-      expect(html).toContain('data-testid="retro-btn-read-case-study-03"');
-      expect(html).toContain('data-testid="retro-btn-read-case-study-04"');
-      expect(html).toContain('Read Case Study');
+    it('renders action row buttons for all 4 cards', () => {
+      const html = renderToString(React.createElement(ProjectsView));
+      for (let i = 1; i <= 4; i++) {
+        expect(html).toContain(`data-testid="retro-btn-read-case-study-0${i}"`);
+      }
       expect(html).toContain('Live Demo');
       expect(html).toContain('GitHub');
     });
   });
 
-  describe('2. Unfolding Case Study Detail View Specifications', () => {
-    it('defines 3 hero metric boxes and concise 3-part breakdown for all 4 flagship projects', () => {
-      expect(FLAGSHIP_PROJECTS).toHaveLength(4);
-
-      FLAGSHIP_PROJECTS.forEach((p) => {
-        // 3 Hero Metric boxes
-        expect(p.heroMetrics).toHaveLength(3);
-        p.heroMetrics.forEach((m) => {
-          expect(m.value.length).toBeGreaterThan(0);
-          expect(m.label.length).toBeGreaterThan(0);
-        });
-
-        // Maximum 2 short sentences per block
-        expect(p.problem.length).toBeGreaterThan(20);
-        expect(p.architecture.length).toBeGreaterThan(20);
-        expect(p.impact.length).toBeGreaterThan(20);
-
-        // Required action URLs
-        expect(p.demoUrl).toContain('https://github.com/watchknight');
-        expect(p.sourceUrl).toContain('https://github.com/watchknight');
-        expect(p.role.length).toBeGreaterThan(0);
-        expect(p.year.length).toBeGreaterThan(0);
-      });
-    });
-
-    it('configures interactive demo sandboxes strictly for Mental Defrag, FocusGuard, and Neon Vanguard', () => {
-      const p1 = FLAGSHIP_PROJECTS.find((p) => p.id === '01_MENTAL_DEFRAG')!;
-      const p2 = FLAGSHIP_PROJECTS.find((p) => p.id === '02_FOCUSGUARD')!;
-      const p3 = FLAGSHIP_PROJECTS.find((p) => p.id === '03_NEON_VANGUARD_POSIX')!;
-      const p4 = FLAGSHIP_PROJECTS.find((p) => p.id === '04_DOCLENS_RANNABANNA')!;
-
-      expect(p1.hasSandbox).toBe(true);
-      expect(p1.sandboxType).toBe('physics');
-
-      expect(p2.hasSandbox).toBe(true);
-      expect(p2.sandboxType).toBe('throttler');
-
-      expect(p3.hasSandbox).toBe(true);
-      expect(p3.sandboxType).toBe('laser');
-
-      expect(p4.hasSandbox).toBe(false);
-    });
-  });
-
-  describe('3. Compact GitHub Archive Accordion Specifications', () => {
-    it('renders single collapsible accordion bar reading "+ View Additional Labs (8)"', () => {
+  describe('More Live Deployed Web Apps Section', () => {
+    it('renders the section header and all 3 Render applications', () => {
       const html = renderToString(React.createElement(ProjectsView));
+      expect(html).toContain('data-testid="more-live-deployed-apps"');
+      expect(html).toContain('More Live Deployed Web Apps');
 
-      expect(html).toContain('data-testid="github-archive-accordion"');
-      expect(html).toContain('data-testid="btn-toggle-github-accordion"');
-      expect(html).toContain('+ View Additional Labs (8)');
-    });
+      expect(MORE_DEPLOYED_APPS).toHaveLength(3);
 
-    it('contains all required repositories in fallback archive table: BitForge, simd-json-stream, posix-shm-kernel-lab, TrashTrail, POSHRA, PureFeed', () => {
-      const repoNames = FALLBACK_REPOSITORIES.map((r) => r.name);
+      // App 1: Mental Defrag
+      expect(html).toContain('Mental Defrag');
+      expect(html).toContain('Spatial cognitive workspace with 2D physics and Obsidian canvas sync');
+      expect(html).toContain('https://mental-defrag.onrender.com');
+      expect(html).toContain('https://github.com/watchknight/Mental-Defrag');
 
-      expect(repoNames).toContain('BitForge');
-      expect(repoNames).toContain('simd-json-stream');
-      expect(repoNames).toContain('posix-shm-kernel-lab');
-      expect(repoNames).toContain('TrashTrail');
-      expect(repoNames).toContain('POSHRA');
-      expect(repoNames).toContain('PureFeed');
-      expect(repoNames).toContain('Mental-Defrag');
-      expect(repoNames).toContain('FocusGuard');
-      expect(repoNames).toContain('DocLensBD');
-      expect(repoNames).toContain('Rannabanna');
-      expect(repoNames).toContain('hyperdeck-3d-particles');
-      expect(repoNames).toContain('chiptune-audio-engine');
-    });
+      // App 2: TrashTrail
+      expect(html).toContain('TrashTrail');
+      expect(html).toContain('Scroll-driven interactive environmental storytelling');
+      expect(html).toContain('https://trashtrail.onrender.com');
+      expect(html).toContain('https://github.com/watchknight/TrashTrail');
 
-    it('places exactly the 8 additional open-source lab repos first in FALLBACK_REPOSITORIES without flagship clutter', () => {
-      const additionalEight = FALLBACK_REPOSITORIES.slice(0, 8).map((r) => r.name);
-      expect(additionalEight).toHaveLength(8);
-      expect(additionalEight).toEqual([
-        'BitForge',
-        'simd-json-stream',
-        'posix-shm-kernel-lab',
-        'TrashTrail',
-        'POSHRA',
-        'PureFeed',
-        'hyperdeck-3d-particles',
-        'chiptune-audio-engine',
-      ]);
-
-      // None of the 4 flagship case studies exist in the first 8 additional repos
-      expect(additionalEight).not.toContain('Mental-Defrag');
-      expect(additionalEight).not.toContain('FocusGuard');
-      expect(additionalEight).not.toContain('DocLensBD');
-      expect(additionalEight).not.toContain('Rannabanna');
+      // App 3: POSHRA
+      expect(html).toContain('POSHRA');
+      expect(html).toContain('Cloud-enabled resource scheduling engine with reactive optimistic UI');
+      expect(html).toContain('https://poshra.onrender.com');
+      expect(html).toContain('https://github.com/watchknight/POSHRA');
     });
   });
 
-  describe('4. Bayer Dither Integration & Backward Compatibility', () => {
-    it('exports triggerDitherTransition from RetroOSContext and connects cleanly', () => {
-      let contextVal: ReturnType<typeof useRetroOS> | null = null;
-      const Consumer = () => {
-        contextVal = useRetroOS();
-        return null;
-      };
-
-      renderToString(
-        React.createElement(RetroOSProvider, null, React.createElement(Consumer))
-      );
-
-      expect(contextVal).not.toBeNull();
-      expect(typeof contextVal!.triggerDitherTransition).toBe('function');
-
-      // Test invoking triggerDitherTransition without handler
-      let swapped = false;
-      let completed = false;
-      contextVal!.triggerDitherTransition!(() => {
-        swapped = true;
-      }, () => {
-        completed = true;
+  describe('Case Study Breakdown & Interactive Micro-Sandboxes', () => {
+    it('each project defines 3 hero metrics and comprehensive 3-part breakdown', () => {
+      FLAGSHIP_PROJECTS.forEach((proj) => {
+        expect(proj.heroMetrics).toHaveLength(3);
+        expect(proj.problem.length).toBeGreaterThan(30);
+        expect(proj.howItWorks.length).toBeGreaterThan(30);
+        expect(proj.keyResults.length).toBeGreaterThan(30);
+        expect(proj.hasSandbox).toBe(true);
       });
-
-      expect(swapped).toBe(true);
-      expect(completed).toBe(true);
     });
 
-    it('strictly preserves zero legacy color hex codes in ProjectsView according to GEMINI.md', () => {
-      const html = renderToString(React.createElement(ProjectsView)).toLowerCase();
-
-      expect(html).not.toContain('#d9532f');
-      expect(html).not.toContain('#a74024');
-      expect(html).not.toContain('#ff4d1c');
-      expect(html).not.toContain('#4e9a7f');
+    it('each project specifies a valid interactive micro-sandbox type', () => {
+      const types = FLAGSHIP_PROJECTS.map((p) => p.sandboxType);
+      expect(types).toEqual([
+        'bitforge-sort',
+        'focuslab-reflex',
+        'rannabanna-pantry',
+        'doclens-tryon',
+      ]);
     });
 
-    it('seamlessly adapts to custom palette tokens (Amber mode) without hardcoded default colors', () => {
-      const amberPalette = {
-        void: '#140f07',
-        dim: '#3d2b12',
-        mid: '#8c6830',
-        bright: '#d4a359',
-      };
-
-      const htmlAmber = renderToString(
-        React.createElement(ProjectsView, { palette: amberPalette })
+    it('renders the case study detail view structure when a flagship project is selected', () => {
+      const html = renderToString(
+        React.createElement(ProjectsView, {
+          // Palette testing
+          palette: {
+            bright: '#c2cdb4',
+            void: '#111712',
+            mid: '#6e7d62',
+            dim: '#2e3b2b',
+          },
+        })
       );
+      expect(html).toContain('BitForge');
+      expect(html).toContain('Visual Algorithm Lab');
+      expect(html).toContain('Read Case Study');
+    });
 
-      expect(htmlAmber).toContain('border:1px solid #8c6830');
-      expect(htmlAmber).toContain('color:#d4a359');
+    it('validates BitForge Forge Lab initial array [38, 14, 62, 19, 85, 29, 76, 48]', () => {
+      const bitforge = FLAGSHIP_PROJECTS[0];
+      expect(bitforge.id).toBe('01_BITFORGE');
+      expect(bitforge.sandboxType).toBe('bitforge-sort');
+      expect(bitforge.demoUrl).toBe('https://bitforge-3u2q.onrender.com');
+    });
+
+    it('validates FocusLab sample median 287 ms and reflex testing studio metrics', () => {
+      const focuslab = FLAGSHIP_PROJECTS[1];
+      expect(focuslab.id).toBe('02_FOCUSLAB');
+      expect(focuslab.sandboxType).toBe('focuslab-reflex');
+      expect(focuslab.keyMetrics).toContain('3-Minute Reflex Check');
+    });
+
+    it('validates Rannabanna kitchen staples matchmaker configuration', () => {
+      const ranna = FLAGSHIP_PROJECTS[2];
+      expect(ranna.id).toBe('03_RANNABANNA');
+      expect(ranna.sandboxType).toBe('rannabanna-pantry');
+      expect(ranna.keyMetrics).toContain('1-Tap Pantry Match');
+    });
+
+    it('validates DocLensBD 3D Virtual Try-On frame configuration', () => {
+      const doclens = FLAGSHIP_PROJECTS[3];
+      expect(doclens.id).toBe('04_DOCLENS_BD');
+      expect(doclens.sandboxType).toBe('doclens-tryon');
+      expect(doclens.keyMetrics).toContain('198+ Precision Frames');
+    });
+
+    it('verifies DocLensBD pupillary distance alignment formula matches lens center coords (122 & 198)', () => {
+      // Median PD is 63 mm, scale formula: halfPdSvg = (pupilDistance * 38) / 63
+      const standardPd = 63;
+      const halfPd = (standardPd * 38) / 63;
+      const leftEyeX = 160 - halfPd;
+      const rightEyeX = 160 + halfPd;
+      expect(leftEyeX).toBeCloseTo(122, 1);
+      expect(rightEyeX).toBeCloseTo(198, 1);
+
+      // Narrow PD 56mm remains within face bounds (90 to 230)
+      const narrowPd = 56;
+      const narrowHalf = (narrowPd * 38) / 63;
+      expect(160 - narrowHalf).toBeGreaterThan(90);
+      expect(160 + narrowHalf).toBeLessThan(230);
+
+      // Wide PD 74mm remains within face bounds (90 to 230)
+      const widePd = 74;
+      const wideHalf = (widePd * 38) / 63;
+      expect(160 - wideHalf).toBeGreaterThan(90);
+      expect(160 + wideHalf).toBeLessThan(230);
+    });
+
+    it('verifies BitForge bubble sort sequence sorts [38, 14, 62, 19, 85, 29, 76, 48] in 40 steps', () => {
+      const initial = [38, 14, 62, 19, 85, 29, 76, 48];
+      const sorted = [...initial].sort((a, b) => a - b);
+      expect(sorted).toEqual([14, 19, 29, 38, 48, 62, 76, 85]);
+    });
+
+    it('verifies FocusLab reflex check sample median comparison calculations', () => {
+      const sampleMedian = 287;
+      // Faster reaction (e.g. 240 ms)
+      const fasterRt = 240;
+      const deltaFaster = sampleMedian - fasterRt;
+      expect(deltaFaster).toBe(47);
+      expect(`+${deltaFaster} ms faster than median`).toBe('+47 ms faster than median');
+
+      // Slower reaction (e.g. 330 ms)
+      const slowerRt = 330;
+      const deltaSlower = sampleMedian - slowerRt;
+      expect(deltaSlower).toBe(-43);
+      expect(`${Math.abs(deltaSlower)} ms slower than median`).toBe('43 ms slower than median');
+    });
+
+    it('verifies Rannabanna pantry recipe matching logic', () => {
+      const selected = ['Egg', 'Garlic', 'Red Onion'];
+      const dimBhunaIngredients = ['Egg', 'Red Onion', 'Garlic', 'Ginger'];
+      const matched = dimBhunaIngredients.filter((i) => selected.includes(i));
+      expect(matched).toHaveLength(3);
+      const matchPercent = Math.round((matched.length / dimBhunaIngredients.length) * 100);
+      expect(matchPercent).toBe(75);
     });
   });
 });

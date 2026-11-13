@@ -142,8 +142,8 @@ const bootAudit = await evalInPage(`
     const skipBtn = document.querySelector('[data-testid="crt-boot-skip-btn"]');
     
     const initialPresent = !!bootEl;
-    const hasBiosText = biosText ? biosText.innerText.includes('EWU-CSE ROM BIOS v1.96') : false;
-    const hasPortfolioSys = biosText ? biosText.innerText.includes('PORTFOLIO.SYS') : false;
+    const hasBiosText = biosText ? biosText.innerText.includes('East West University') : false;
+    const hasPortfolioLoading = biosText ? biosText.innerText.includes('Loading Portfolio') : false;
     const hasSkipBtn = !!skipBtn;
     
     // Test instant skip by clicking skip button
@@ -154,7 +154,7 @@ const bootAudit = await evalInPage(`
     return {
       initialPresent,
       hasBiosText,
-      hasPortfolioSys,
+      hasPortfolioLoading,
       hasSkipBtn,
     };
   })()
@@ -247,7 +247,7 @@ console.log('Console errors:', consoleLogs.filter(l => l.type === 'error'));
 const passed = (
   bootAudit.initialPresent &&
   bootAudit.hasBiosText &&
-  bootAudit.hasPortfolioSys &&
+  bootAudit.hasPortfolioLoading &&
   bootAudit.hasSkipBtn &&
   postSkipAudit.bootDismissedAfterSkip &&
   !mobileAudit.horizontalOverflow &&

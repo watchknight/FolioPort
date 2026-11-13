@@ -51,6 +51,7 @@ export const BayerDitherTransition: React.FC<BayerDitherTransitionProps> = ({
   const dimColor = palette?.dim ?? (os.phosphorMode === 'amber' ? '#3d2b12' : '#2e3b2b');
 
   const rafIdRef = useRef<number | null>(null);
+  const fallbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const activeRef = useRef<boolean>(false);
   const midpointSwappedRef = useRef<boolean>(false);
   const pendingSwapRef = useRef<(() => void) | null>(null);
@@ -77,7 +78,7 @@ export const BayerDitherTransition: React.FC<BayerDitherTransitionProps> = ({
       }
 
       // Respect prefers-reduced-motion: instant swap without dither animation
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         swapFn();
         completeCallback?.();
         return;
@@ -102,16 +103,57 @@ export const BayerDitherTransition: React.FC<BayerDitherTransitionProps> = ({
         cancelAnimationFrame(rafIdRef.current);
         rafIdRef.current = null;
       }
+      if (fallbackTimerRef.current) {
+        clearTimeout(fallbackTimerRef.current);
+        fallbackTimerRef.current = null;
+      }
       if (pendingSwapRef.current && !midpointSwappedRef.current) {
         try {
           pendingSwapRef.current();
         } catch {}
+      }
+      if (pendingCompleteRef.current) {
+        try {
+          pendingCompleteRef.current();
+        } catch {}
+        pendingCompleteRef.current = null;
       }
 
       pendingSwapRef.current = swapFn;
       pendingCompleteRef.current = completeCallback ?? null;
       midpointSwappedRef.current = false;
       activeRef.current = true;
+
+      // Fallback timer: prevents screen from getting stuck mid-transition if tab is backgrounded
+      fallbackTimerRef.current = setTimeout(() => {
+        if (activeRef.current) {
+          if (rafIdRef.current) {
+            cancelAnimationFrame(rafIdRef.current);
+            rafIdRef.current = null;
+          }
+          if (!midpointSwappedRef.current && pendingSwapRef.current) {
+            midpointSwappedRef.current = true;
+            try {
+              pendingSwapRef.current();
+            } catch {}
+            pendingSwapRef.current = null;
+          }
+          activeRef.current = false;
+          if (canvasRef.current) {
+            const fCtx = canvasRef.current.getContext('2d');
+            if (fCtx) {
+              fCtx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+            }
+          }
+          if (pendingCompleteRef.current) {
+            const cb = pendingCompleteRef.current;
+            pendingCompleteRef.current = null;
+            try {
+              cb();
+            } catch {}
+          }
+        }
+      }, DITHER_TRANSITION_TOTAL_MS + 50);
 
       // Sync canvas dimensions to client bounds
       const rect = canvas.getBoundingClientRect();
@@ -138,13 +180,26 @@ export const BayerDitherTransition: React.FC<BayerDitherTransitionProps> = ({
 
         // Completion at 340ms: clear canvas, halt RAF loop, 0% CPU consumption
         if (elapsed >= DITHER_TRANSITION_TOTAL_MS) {
+          if (fallbackTimerRef.current) {
+            clearTimeout(fallbackTimerRef.current);
+            fallbackTimerRef.current = null;
+          }
+          if (!midpointSwappedRef.current && pendingSwapRef.current) {
+            midpointSwappedRef.current = true;
+            try {
+              pendingSwapRef.current();
+            } catch {}
+            pendingSwapRef.current = null;
+          }
           activeRef.current = false;
           rafIdRef.current = null;
           ctx.clearRect(0, 0, canvas.width, canvas.height);
           if (pendingCompleteRef.current) {
             const cb = pendingCompleteRef.current;
             pendingCompleteRef.current = null;
-            cb();
+            try {
+              cb();
+            } catch {}
           }
           return;
         }
@@ -157,7 +212,9 @@ export const BayerDitherTransition: React.FC<BayerDitherTransitionProps> = ({
           if (pendingSwapRef.current) {
             const swap = pendingSwapRef.current;
             pendingSwapRef.current = null;
-            swap();
+            try {
+              swap();
+            } catch {}
           }
         }
 
@@ -233,13 +290,17 @@ export const BayerDitherTransition: React.FC<BayerDitherTransitionProps> = ({
           }
           pCtx.fill();
 
+          let patternDrawn = false;
           try {
             const pattern = ctx.createPattern(patternCanvas, 'repeat');
             if (pattern) {
               ctx.fillStyle = pattern;
               ctx.fillRect(0, 0, canvas.width, canvas.height);
+              patternDrawn = true;
             }
-          } catch {
+          } catch {}
+
+          if (!patternDrawn) {
             // Fallback to direct rect drawing if pattern creation fails
             fallbackDirectDraw(ctx, width, height, threshold, dissolveThreshold, isLeavePhase, isSwapFrame);
           }
@@ -332,7 +393,23 @@ export const BayerDitherTransition: React.FC<BayerDitherTransitionProps> = ({
         cancelAnimationFrame(rafIdRef.current);
         rafIdRef.current = null;
       }
+      if (fallbackTimerRef.current) {
+        clearTimeout(fallbackTimerRef.current);
+        fallbackTimerRef.current = null;
+      }
+      if (pendingSwapRef.current && !midpointSwappedRef.current) {
+        try {
+          pendingSwapRef.current();
+        } catch {}
+        pendingSwapRef.current = null;
+      }
       activeRef.current = false;
+      if (canvasRef.current) {
+        const uCtx = canvasRef.current.getContext('2d');
+        if (uCtx) {
+          uCtx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+        }
+      }
       if (pendingCompleteRef.current) {
         const cb = pendingCompleteRef.current;
         pendingCompleteRef.current = null;

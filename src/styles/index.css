@@ -53,7 +53,7 @@
 
   html,
   body {
-    background-color: var(--retro-void, #0a0e0b);
+    background-color: var(--bezel-base, #c8c2ab);
     color: var(--pixel-bright, #c2cdb4);
     font-family: 'Press Start 2P', 'VT323', monospace;
     text-rendering: optimizeLegibility;
@@ -71,28 +71,6 @@
   ::selection {
     background-color: var(--pixel-mid, #6e7d62);
     color: var(--crt-bg, #111712);
-  }
-
-  /* Lenis smooth scrolling reset - locked inside 90s CRT viewport */
-  html.lenis, html.lenis body {
-    height: 100% !important;
-    overflow: hidden !important;
-  }
-
-  .lenis.lenis-smooth {
-    scroll-behavior: auto !important;
-  }
-
-  .lenis.lenis-smooth [data-lenis-prevent] {
-    overscroll-behavior: contain;
-  }
-
-  .lenis.lenis-stopped {
-    overflow: hidden;
-  }
-
-  .lenis.lenis-scrolling iframe {
-    pointer-events: none;
   }
 
   /* 90s Cyberdeck Scrollbar */
@@ -161,128 +139,9 @@
       -4px 0 0 0 #2e3b2b,
       4px 0 0 0 #2e3b2b !important;
   }
-
-  /* 2px Stepped Pixel Corner Notches */
-  .pixel-corners {
-    clip-path: polygon(
-      0 4px, 4px 4px, 4px 0,
-      calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px,
-      100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%,
-      4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px)
-    );
-  }
-
-  .pixel-corners-sm {
-    clip-path: polygon(
-      0 2px, 2px 2px, 2px 0,
-      calc(100% - 2px) 0, calc(100% - 2px) 2px, 100% 2px,
-      100% calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) 100%,
-      2px 100%, 2px calc(100% - 2px), 0 calc(100% - 2px)
-    );
-  }
 }
 
 @layer components {
-  /* 90s Retro OS Tactile Window Frames */
-  .retro-window-frame {
-    position: relative;
-    background-color: var(--crt-panel-slate, #2e3b2b);
-    border: 2px solid var(--crt-bezel-shadow, #8f8973);
-    box-shadow: 
-      2px 2px 0 0 rgba(0, 0, 0, 0.7),
-      inset 1px 1px 0 0 rgba(214, 207, 194, 0.35),
-      inset -1px -1px 0 0 rgba(0, 0, 0, 0.5);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  }
-
-  .retro-window-frame:hover {
-    border-color: var(--tech-cyan-wave, #c2cdb4);
-    box-shadow: 
-      0 0 10px rgba(194, 205, 180, 0.25),
-      2px 2px 0 0 rgba(0, 0, 0, 0.8),
-      inset 1px 1px 0 0 rgba(194, 205, 180, 0.2);
-  }
-
-  .retro-window-magenta {
-    position: relative;
-    background-color: var(--crt-panel-slate, #2e3b2b);
-    border: 2px solid var(--tech-magenta-crest, #6e7d62);
-    box-shadow: 
-      0 0 10px rgba(110, 125, 98, 0.25),
-      2px 2px 0 0 rgba(0, 0, 0, 0.8),
-      inset 1px 1px 0 0 rgba(110, 125, 98, 0.25);
-  }
-
-  /* 90s Retro OS Window Titlebar */
-  .retro-titlebar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 4px 8px;
-    background: #2e3b2b;
-    border-bottom: 2px solid var(--crt-bezel-shadow, #8f8973);
-    user-select: none;
-  }
-
-  .retro-titlebar-active {
-    background: #3b3a32;
-    border-bottom: 2px solid var(--tech-cyan-wave, #c2cdb4);
-  }
-
-  /* 90s Retro Square [ - ] [ + ] [ x ] Window Controls */
-  .retro-btn-box {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 18px;
-    height: 18px;
-    font-family: 'Press Start 2P', monospace;
-    font-size: 9px;
-    line-height: 1;
-    background: #c8c2ab;
-    color: #111712;
-    border-top: 2px solid #ded8c1;
-    border-left: 2px solid #ded8c1;
-    border-right: 2px solid #8f8973;
-    border-bottom: 2px solid #8f8973;
-    cursor: pointer;
-    box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);
-    transition: transform 0.05s ease;
-  }
-
-  .retro-btn-box:active {
-    border-top: 2px solid #8f8973;
-    border-left: 2px solid #8f8973;
-    border-right: 2px solid #ded8c1;
-    border-bottom: 2px solid #ded8c1;
-    transform: translate(1px, 1px);
-  }
-
-  /* Dotted pixel drag handle pattern */
-  .retro-drag-dots {
-    background-image: radial-gradient(rgba(110, 125, 98, 0.5) 1px, transparent 1px);
-    background-size: 4px 4px;
-    height: 8px;
-    width: 48px;
-  }
-
-  /* Phosphor glow text */
-  .glow-phosphor {
-    text-shadow: 0 0 6px rgba(194, 205, 180, 0.7);
-  }
-
-  .glow-cyan {
-    text-shadow: 0 0 6px rgba(194, 205, 180, 0.7);
-  }
-
-  .glow-magenta {
-    text-shadow: 0 0 6px rgba(110, 125, 98, 0.7);
-  }
-
-  .glow-amber {
-    text-shadow: 0 0 6px rgba(194, 205, 180, 0.7);
-  }
-
   /* CRT Scanlines Overlay: opacity strictly capped between 0.04 and 0.08 for readability */
   .crt-scanlines {
     background: repeating-linear-gradient(
@@ -317,22 +176,6 @@
       transparent 3px
     );
     opacity: 0.04;
-  }
-
-  /* CRT Screen Curvature & Vignette */
-  .crt-screen-curved {
-    border-radius: 14px;
-    box-shadow: 
-      inset 0 0 60px rgba(0, 0, 0, 0.6),
-      inset 0 0 120px rgba(0, 0, 0, 0.45);
-  }
-
-  /* Cyber Grid Background */
-  .bg-grid-cyber {
-    background-size: 32px 32px;
-    background-image: 
-      linear-gradient(to right, rgba(110, 125, 98, 0.06) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(110, 125, 98, 0.06) 1px, transparent 1px);
   }
 }
 
@@ -385,7 +228,7 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .animate-tube-off {
-    animation: crtTubeCollapse 0.45s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    animation: crtTubeCollapse 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
   }
 
   .animate-tube-on {
@@ -398,34 +241,6 @@
   .animate-tube-on {
     animation: none !important;
   }
-}
-
-/* Procedural Web Audio Sound Wave Animation */
-@keyframes sound-wave {
-  0%, 100% { height: 3px; }
-  50% { height: 12px; }
-}
-.animate-sound-bar-1 { animation: sound-wave 0.8s ease-in-out infinite; }
-.animate-sound-bar-2 { animation: sound-wave 0.6s ease-in-out infinite 0.15s; }
-.animate-sound-bar-3 { animation: sound-wave 0.9s ease-in-out infinite 0.3s; }
-.animate-sound-bar-4 { animation: sound-wave 0.7s ease-in-out infinite 0.1s; }
-
-/* Procedural PCB Circuit Pulse Flow Animation */
-@keyframes pcbPulseFlow {
-  from {
-    stroke-dashoffset: 70;
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-.animate-pcb-pulse {
-  animation: pcbPulseFlow 1.2s linear infinite;
-}
-
-.animate-pcb-pulse-fast {
-  animation: pcbPulseFlow 0.65s linear infinite;
 }
 
 /* Keyboard Accessibility: High-contrast pixel focus indicators (WCAG AAA) */
@@ -469,55 +284,7 @@ html[data-crt-fx="OFF"] .crt-scanlines {
   display: none !important;
 }
 
-/* Layered Cyber-Shutter translucency overrides to let persistent 3D CyberWaveCanvas shine through */
-.shutter-content > section,
-.shutter-content > div > section,
-.shutter-content > .projects-showcase {
-  background-color: transparent !important;
-}
-
-/* Retro Command Bar Responsive Calibration */
-.retro-command-inner {
-  zoom: 0.75;
-}
-@media (min-width: 1536px) {
-  .retro-command-inner {
-    zoom: 0.85;
-  }
-}
-@media (max-width: 1279px) {
-  .retro-command-inner {
-    zoom: 1;
-  }
-}
-
-/* Fixed Retro Command Bar anchor clearance guard (68px scroll-margin-top) */
-#hero-sector, #work, #extensions, #extensions-sector, #systems, #architecture-sector, #experience, #lab, #lab-sector, #terminal, #contact, #contact-sector,
-[id="work"], [id="extensions"], [id="systems"], [id="experience"], [id="lab"], [id="terminal"], [id="contact"] {
-  scroll-margin-top: 68px !important;
-}
-
-/* Fast 150ms CRT scanline wipe animation for BIOS Console tab transitions */
-@keyframes crtScanlineWipe {
-  0% {
-    clip-path: inset(0 0 100% 0);
-    opacity: 0.85;
-  }
-  50% {
-    clip-path: inset(0 0 0 0);
-    opacity: 0.95;
-  }
-  100% {
-    clip-path: inset(100% 0 0 0);
-    opacity: 0;
-  }
-}
-
-.animate-crt-wipe {
-  animation: crtScanlineWipe 150ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-/* Complete removal of backdrop-filter glass cards and velocity skew in favor of solid retro CRT styling */
+/* Complete removal of backdrop-filter glass cards in favor of solid retro CRT styling */
 *,
 *::before,
 *::after {
@@ -525,17 +292,82 @@ html[data-crt-fx="OFF"] .crt-scanlines {
   -webkit-backdrop-filter: none !important;
 }
 
-.retro-window-frame,
-.retro-window-magenta,
-.retro-cad-card,
-.hero-bracket-menu,
-.showcase-item {
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  background-color: var(--crt-bg, #111712) !important;
+/* ==========================================================================
+   MULTI-DEVICE RESPONSIVE BREAKPOINT ADAPTATIONS
+   Mobile (320px–767px), Tablet (768px–1023px), Laptop (1024px–1440px)
+   ========================================================================== */
+
+/* CRT Touch Screen Scroll Container */
+.crt-screen-scroll {
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
 }
 
-.wk-velocity-item {
-  transform: none !important;
+/* Mobile Viewport Adaptation (< 768px) */
+@media (max-width: 767px) {
+  /* Level 2 OS Window: Inset 6px with 16px internal padding */
+  .retro-os-window.retro-window-expanded-wipe {
+    inset: 6px !important;
+  }
+  .retro-os-window.retro-window-expanded-wipe [data-testid="retro-window-content-viewport"] {
+    padding: 16px !important;
+  }
+
+  /* Compact Home Stage Header */
+  header.crt-stage-header {
+    padding: 12px 14px !important;
+  }
+
+  /* Prevent header typewriter greeting collision on mobile */
+  header.crt-stage-header h1 {
+    font-size: clamp(11px, 3.2vw, 15px) !important;
+    line-height: 1.4 !important;
+  }
+  header.crt-stage-header .crt-typewriter-steps {
+    max-width: 100% !important;
+  }
+
+  /* Prevent navigation command buttons from overflowing container */
+  [data-testid="retro-command-menu"] button[data-testid^="retro-command-item-"] {
+    font-size: clamp(8px, 2.5vw, 11px) !important;
+    padding: 10px 12px !important;
+  }
 }
+
+/* Tablet & Intermediate Viewports (768px to 1279px) */
+@media (min-width: 768px) and (max-width: 1279px) {
+  header.crt-stage-header h1 {
+    font-size: clamp(14px, 2vw, 20px) !important;
+    line-height: 1.35 !important;
+  }
+  [data-testid="retro-command-menu"] button[data-testid^="retro-command-item-"] {
+    font-size: clamp(9px, 1.1vw, 12px) !important;
+    padding: 12px 14px !important;
+  }
+}
+
+/* Mobile & Tablet Split Console Layout (< 1024px) */
+@media (max-width: 1023px) {
+  [data-testid="crt-split-console"] {
+    height: auto !important;
+    min-height: auto !important;
+    flex: 1 1 auto !important;
+  }
+}
+
+/* 13-inch Laptop Fit Adaptation (1280x720 / 1366x768 within 100dvh) */
+@media (min-width: 1024px) and (max-height: 820px) {
+  header.crt-stage-header {
+    padding-top: 14px !important;
+    padding-bottom: 14px !important;
+  }
+  .crt-stage-diorama-area {
+    min-height: 70px !important;
+  }
+  .crt-stage-diorama-sprite {
+    height: 84px !important;
+  }
+}
+
 

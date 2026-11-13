@@ -333,7 +333,7 @@ const dataPreservationTest = await evalInPage(`
     const hasName = textContent.includes('Abdur Rahman Moayed');
     const hasHandle = textContent.includes('@watchknight');
     const hasEWU = textContent.includes('East West University');
-    const hasBio = textContent.includes('POSIX shared-memory pipelines');
+    const hasBio = textContent.includes('shared-memory pipelines');
     
     const workBtn = document.querySelector('button[aria-label="Explore Flagship Case Studies"]');
     const terminalBtn = document.querySelector('button[aria-label*="Launch Interactive Terminal"]');

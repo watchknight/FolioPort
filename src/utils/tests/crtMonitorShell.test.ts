@@ -11,19 +11,20 @@ declare const process: any;
 
 describe('Retro 90s CRT Monitor Shell & Phosphor Engine Verification', () => {
   describe('1. CRTMonitorShell Hardware Architecture (src/components/CRTMonitorShell.tsx)', () => {
-    it('renders the centered 90s CRT monitor hardware frame with 4:3 desktop aspect ratio and #0a0e0b room background', () => {
+    it('renders the edge-to-edge 90s CRT monitor hardware casing filling 100vw by 100dvh with zero room deadspace', () => {
       const html = renderToString(
         React.createElement(CRTMonitorShell, null, React.createElement('div', null, 'TERMINAL_SESSION_ACTIVE'))
       );
 
-      // #0a0e0b dark outer room background
-      expect(html).toContain('bg-[#0a0e0b]');
+      // Edge-to-edge room and casing filling viewport with beige chassis #c8c2ab
+      expect(html).toContain('bg-[#c8c2ab]');
       expect(html).toContain('data-testid="crt-monitor-room"');
 
-      // 980px max width and 4/3 aspect ratio on desktop with full viewport adaptive frame on mobile
-      expect(html).toContain('max-w-[980px]');
-      expect(html).toContain('md:aspect-[4/3]');
-      expect(html).toContain('min-h-screen md:min-h-0');
+      // 100vw by 100dvh without max-width or 4:3 aspect ratio locks
+      expect(html).not.toContain('max-w-[980px]');
+      expect(html).not.toContain('md:aspect-[4/3]');
+      expect(html).toContain('w-screen');
+      expect(html).toContain('h-[100dvh]');
       expect(html).toContain('data-testid="crt-monitor-casing"');
     });
 
@@ -46,14 +47,14 @@ describe('Retro 90s CRT Monitor Shell & Phosphor Engine Verification', () => {
       expect(html).toContain('data-testid="crt-bezel-lip"');
     });
 
-    it('frames the curved CRT glass screen with 28px border radius, 65px inset shadow, and dark green background #111712', () => {
+    it('frames the curved CRT glass screen with 22px border radius, 65px inset shadow, and dark green background #111712', () => {
       const html = renderToString(
         React.createElement(CRTMonitorShell, null, React.createElement('div', null, 'TERMINAL_SESSION_ACTIVE'))
       );
 
       // Curved CRT glass screen
       expect(html).toContain('bg-[#111712]');
-      expect(html).toContain('rounded-[28px]');
+      expect(html).toContain('rounded-[22px]');
       expect(html).toContain('shadow-[inset_0_0_65px_rgba(0,0,0,0.75)]');
       expect(html).toContain('crt-glass-screen');
       expect(html).toContain('data-lenis-prevent');
@@ -73,8 +74,9 @@ describe('Retro 90s CRT Monitor Shell & Phosphor Engine Verification', () => {
       // Sound hardware toggle switch
       expect(html).toContain('Sound');
 
-      // Debossed manufacturer branding
+      // Debossed manufacturer branding & center speaker grille
       expect(html).toContain('MOAYED');
+      expect(html).toContain('data-testid="crt-speaker-grille"');
     });
   });
 

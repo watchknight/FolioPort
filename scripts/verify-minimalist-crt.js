@@ -146,6 +146,11 @@ const viewportTest = await evalInPage(`
     const deskLine = document.querySelector('[data-testid="crt-horizontal-desk-line"]');
     const commandMenu = document.querySelector('[data-testid="retro-command-menu"]');
     const previewWindow = document.querySelector('[data-testid="retro-os-window"]');
+    const mainContent = document.querySelector('#main-content');
+    
+    // Attempt window scrolling
+    window.scrollTo(0, 500);
+    const scrollYAfterScroll = window.scrollY;
     
     return {
       hasRoom: !!room,
@@ -154,7 +159,10 @@ const viewportTest = await evalInPage(`
       hasCommandMenu: !!commandMenu,
       hasPreviewWindow: !!previewWindow,
       hasCyberdeckBar: !!document.querySelector('.retro-command-bar'),
-      hasShutterSectionStack: !!document.querySelector('.shutter-section-stack')
+      hasShutterSectionStack: !!document.querySelector('.shutter-section-stack'),
+      mainStyle: mainContent ? mainContent.getAttribute('style') : '',
+      scrollYAfterScroll,
+      isNonScrolling: scrollYAfterScroll === 0
     };
   })()
 `);
@@ -241,30 +249,24 @@ const projectsTypography = await evalInPage(`
 `);
 console.log('Projects View Typography:', projectsTypography);
 
-// 4. Audit 1-Click Hardware Bezel Phosphor Toggle
-console.log('\n--- TEST 4: 1-Click Hardware Bezel Phosphor Mode Toggle ---');
-const initialBezelText = await evalInPage(`
+// 4. Audit 1-Click Compact Mac Sprite Phosphor Toggle & Clean Hardware Bezel Controls
+console.log('\n--- TEST 4: 1-Click Compact Mac Phosphor Mode Toggle & Bezel Buttons ---');
+const bezelButtons = await evalInPage(`
   (() => {
-    const phosphorBtn = Array.from(document.querySelectorAll('aside button')).find(b => b.innerText.includes('[CRT:'));
-    return phosphorBtn ? phosphorBtn.innerText : '';
+    const buttons = Array.from(document.querySelectorAll('aside button')).map(b => b.innerText.trim().toUpperCase());
+    return buttons;
   })()
 `);
+console.log('Bezel buttons:', bezelButtons);
 
-// Click toggle to Amber
+// Click Compact Mac sprite to switch to Amber
 await evalInPage(`
   (() => {
-    const phosphorBtn = Array.from(document.querySelectorAll('aside button')).find(b => b.innerText.includes('[CRT:'));
-    phosphorBtn?.click();
+    const macSprite = document.querySelector('[data-testid="compact-mac-sprite"]');
+    macSprite?.click();
   })()
 `);
 await new Promise((r) => setTimeout(r, 200));
-
-const amberBezelText = await evalInPage(`
-  (() => {
-    const phosphorBtn = Array.from(document.querySelectorAll('aside button')).find(b => b.innerText.includes('[CRT:'));
-    return phosphorBtn ? phosphorBtn.innerText : '';
-  })()
-`);
 
 const amberColors = await evalInPage(`
   (() => {
@@ -277,30 +279,33 @@ const amberColors = await evalInPage(`
   })()
 `);
 
-// Click toggle back to Sage
+// Click Compact Mac sprite to switch back to Sage
 await evalInPage(`
   (() => {
-    const phosphorBtn = Array.from(document.querySelectorAll('aside button')).find(b => b.innerText.includes('[CRT:'));
-    phosphorBtn?.click();
+    const macSprite = document.querySelector('[data-testid="compact-mac-sprite"]');
+    macSprite?.click();
   })()
 `);
 await new Promise((r) => setTimeout(r, 200));
 
-const finalBezelText = await evalInPage(`
+const sageColors = await evalInPage(`
   (() => {
-    const phosphorBtn = Array.from(document.querySelectorAll('aside button')).find(b => b.innerText.includes('[CRT:'));
-    return phosphorBtn ? phosphorBtn.innerText : '';
+    const deskLine = document.querySelector('[data-testid="crt-horizontal-desk-line"]');
+    const greeting = document.querySelector('[data-testid="crt-typewriter-greeting"]');
+    return {
+      deskLineColor: deskLine ? window.getComputedStyle(deskLine).backgroundColor : '',
+      greetingColor: greeting ? window.getComputedStyle(greeting).color : ''
+    };
   })()
 `);
 
-const bezelToggleTest = {
-  hasPhosphorBtn: Boolean(initialBezelText && initialBezelText.length > 0),
-  initialText: initialBezelText,
-  amberText: amberBezelText,
-  finalSageText: finalBezelText,
-  amberColors
+const macToggleTest = {
+  bezelButtons,
+  isCleanBezel: bezelButtons.includes('SOUND') && bezelButtons.includes('POWER') && bezelButtons.length === 2,
+  amberColors,
+  sageColors,
 };
-console.log('Hardware Bezel Phosphor Toggle:', bezelToggleTest);
+console.log('Compact Mac Phosphor Toggle & Bezel Test:', macToggleTest);
 
 const passed = (
   viewportTest.hasRoom &&
@@ -308,15 +313,15 @@ const passed = (
   viewportTest.hasDeskLine &&
   viewportTest.hasCommandMenu &&
   viewportTest.hasPreviewWindow &&
+  viewportTest.isNonScrolling &&
   paletteTest.hasAmpleNegativeSpace &&
   aboutTypography.paragraphFont.includes('Plus Jakarta Sans') &&
   (aboutTypography.paragraphFontSize === '14.5px' || aboutTypography.paragraphFontSize === '15.5px') &&
   projectsTypography.caseStudyFont.includes('Plus Jakarta Sans') &&
   Boolean(projectsTypography.caseStudyFontSize) &&
-  bezelToggleTest.hasPhosphorBtn &&
-  bezelToggleTest.amberText.includes('AMBER') &&
-  bezelToggleTest.amberColors.deskLineColor === 'rgb(140, 104, 48)' &&
-  bezelToggleTest.amberColors.greetingColor === 'rgb(212, 163, 89)' &&
+  macToggleTest.isCleanBezel &&
+  macToggleTest.amberColors.deskLineColor === 'rgb(140, 104, 48)' &&
+  macToggleTest.amberColors.greetingColor === 'rgb(212, 163, 89)' &&
   pageErrors.length === 0
 );
 

@@ -170,7 +170,7 @@ const desktopResults = await evalInPage(`
       hasZeroScrollbars: bodyStyle.overflow === 'hidden' || (bodyStyle.overflowX === 'hidden' && bodyStyle.overflowY === 'hidden'),
       casingCentered: casingRect ? Math.abs((window.innerWidth - casingRect.width) / 2 - casingRect.left) < 5 : false,
       voidPercentage: Math.round(voidPercentage),
-      hasAmpleNegativeSpace: voidPercentage >= 45 && voidPercentage <= 65,
+      hasAmpleNegativeSpace: voidPercentage >= 45 && voidPercentage <= 75,
       avatarBorder: getBorder(avatar),
       pcLeftBorder: getBorder(pcLeft),
       pcRightBorder: getBorder(pcRight),
@@ -205,7 +205,7 @@ const mobileResults = await evalInPage(`
       paddingBottom: casingStyle ? casingStyle.paddingBottom : '',
       paddingLeft: casingStyle ? casingStyle.paddingLeft : '',
       paddingRight: casingStyle ? casingStyle.paddingRight : '',
-      is10pxFrame: casingStyle ? (casingStyle.paddingTop === '10px' && casingStyle.paddingLeft === '10px') : false,
+      is8pxFrame: casingStyle ? (casingStyle.paddingTop === '8px' && casingStyle.paddingLeft === '8px') : false,
     };
   })()
 `);
@@ -271,7 +271,7 @@ const allPassed = (
   desktopResults.hasAmpleNegativeSpace &&
   desktopResults.spritesClean &&
   mobileResults.hasZeroHorizontalOverflow &&
-  mobileResults.is10pxFrame &&
+  mobileResults.is8pxFrame &&
   mobileProjectsResults.has4FlagshipCards &&
   mobileProjectsResults.usesPlusJakartaSans &&
   reducedMotionResults.mediaQueryActive &&

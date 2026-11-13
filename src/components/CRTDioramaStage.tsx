@@ -105,9 +105,25 @@ const CRTDioramaStageInner: React.FC<CRTDioramaStageProps> = ({
     };
   }, []);
 
-  // Keyboard accessibility: Escape key dismisses open speech bubble and HUD
+  // Keyboard accessibility: Escape key dismisses open speech bubble and HUD (disabled during input typing)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      const targetTag = target?.tagName?.toUpperCase();
+      const activeEl = typeof document !== 'undefined' ? document.activeElement : null;
+      const activeTag = activeEl?.tagName?.toUpperCase();
+      const isTyping =
+        targetTag === 'INPUT' ||
+        targetTag === 'TEXTAREA' ||
+        targetTag === 'SELECT' ||
+        activeTag === 'INPUT' ||
+        activeTag === 'TEXTAREA' ||
+        activeTag === 'SELECT' ||
+        target?.isContentEditable ||
+        Boolean(activeEl && 'isContentEditable' in activeEl && (activeEl as HTMLElement).isContentEditable);
+
+      if (isTyping) return;
+
       if (e.key === 'Escape') {
         setIsAvatarBubbleOpen(false);
         setIsGithubHudVisible(false);
@@ -213,7 +229,7 @@ const CRTDioramaStageInner: React.FC<CRTDioramaStageProps> = ({
     <div
       id={id}
       data-testid="crt-diorama-stage"
-      className={`crt-diorama-container relative w-full min-h-full flex-1 flex flex-col justify-between select-none font-pixel transition-colors duration-300 ${className}`}
+      className={`crt-diorama-container relative w-full min-h-full flex-1 flex flex-col justify-between select-none font-pixel overflow-hidden transition-colors duration-300 ${className}`}
       style={{
         backgroundColor: palette.void,
         color: palette.bright,
@@ -226,7 +242,7 @@ const CRTDioramaStageInner: React.FC<CRTDioramaStageProps> = ({
             max-width: 0ch;
           }
           100% {
-            max-width: 32ch;
+            max-width: 24ch;
           }
         }
 
@@ -284,6 +300,21 @@ const CRTDioramaStageInner: React.FC<CRTDioramaStageProps> = ({
             opacity: 0.35;
             filter: none;
           }
+        }
+
+        @keyframes crtCoffeeSteamRise {
+          0%, 100% {
+            transform: translateY(0);
+            opacity: 0.9;
+          }
+          50% {
+            transform: translateY(-2px);
+            opacity: 0.4;
+          }
+        }
+
+        .crt-coffee-steam {
+          animation: crtCoffeeSteamRise 1.6s steps(2) infinite;
         }
 
         @media (prefers-reduced-motion: no-preference) {
@@ -364,19 +395,33 @@ const CRTDioramaStageInner: React.FC<CRTDioramaStageProps> = ({
             animation: none !important;
             opacity: 1 !important;
           }
+
+          .crt-coffee-steam {
+            animation: none !important;
+            opacity: 0.7 !important;
+          }
         }
       `}</style>
 
       {/* TOP-LEFT TERMINAL GREETING HEADER & TOP-RIGHT TELEMETRY READOUT */}
       <header
-        className="relative w-full flex items-start justify-between gap-4 p-8 z-20 shrink-0"
-        style={{ padding: '32px' }}
+        className={`crt-stage-header relative w-full flex flex-col xl:flex-row items-start xl:items-start justify-between gap-3 xl:gap-4 z-20 shrink-0 !p-3 sm:!p-6 md:!p-[clamp(24px,3vw,44px)_clamp(28px,4vw,64px)] ${
+          os.isWindowExpanded ? 'invisible pointer-events-none' : ''
+        }`}
+        style={{ padding: 'clamp(24px, 3vw, 44px) clamp(28px, 4vw, 64px)' }}
+        aria-hidden={os.isWindowExpanded}
       >
         {/* UPPER-LEFT QUADRANT: Two-line Pixel Greeting & Positioning Line */}
-        <div className="flex flex-col items-start text-left min-w-0 max-w-[65%] sm:max-w-[78%]">
+        <div className="flex flex-col items-start text-left min-w-0 w-full xl:max-w-[72%]">
           <h1
-            className="font-pixel text-xs sm:text-base md:text-xl lg:text-2xl font-bold tracking-tight leading-snug uppercase"
-            style={{ color: palette.bright }}
+            className="font-pixel text-xs sm:text-base md:text-xl lg:text-2xl font-bold tracking-tight uppercase !text-[12px] sm:!text-[15px] md:!text-[clamp(1.6rem,2.8vw,2.65rem)]"
+            style={{
+              color: palette.bright,
+              fontFamily: "'Press Start 2P', monospace",
+              fontSize: 'clamp(1.6rem, 2.8vw, 2.65rem)',
+              lineHeight: 1.35,
+              letterSpacing: '0.04em',
+            }}
           >
             <span
               data-testid="crt-typewriter-greeting"
@@ -386,7 +431,7 @@ const CRTDioramaStageInner: React.FC<CRTDioramaStageProps> = ({
                 animationPlayState: os.isBooting ? 'paused' : 'running',
               }}
             >
-              WELCOME TO MOAYED&apos;S{'\n'}PORTFOLIO <span
+              &gt; WELCOME TO MOAYED&apos;S{'\n'}PORTFOLIO <span
                 data-testid="crt-blinking-cursor"
                 className="crt-block-cursor"
                 style={{ color: palette.bright }}
@@ -400,36 +445,77 @@ const CRTDioramaStageInner: React.FC<CRTDioramaStageProps> = ({
           {/* Human-Readable Positioning Line in Plus Jakarta Sans */}
           <p
             data-testid="crt-positioning-line"
-            className="mt-2 text-[15px] font-sans font-medium tracking-normal normal-case"
+            className="mt-2 font-sans font-medium tracking-normal normal-case !text-[11px] sm:!text-[13px] md:!text-[clamp(1rem,1.25vw,1.25rem)]"
             style={{
               fontFamily: "'Plus Jakarta Sans', sans-serif",
-              fontSize: '15px',
+              fontSize: 'clamp(1rem, 1.25vw, 1.25rem)',
+              marginTop: '8px',
               color: palette.mid,
             }}
           >
-            Full-Stack Web &amp; Systems Engineer • CSE @ East West University, Dhaka
+            Full-Stack Product &amp; Web Engineer • CSE at East West University, Dhaka
           </p>
         </div>
 
-        {/* TOP-RIGHT CORNER: Clean Live Dhaka Clock */}
-        <div
-          data-testid="crt-telemetry-readout"
-          className="text-right font-mono text-[8px] sm:text-[9px] md:text-[10px] tracking-wider uppercase shrink-0 pt-1"
-          style={{ color: palette.mid }}
-          aria-label="Dhaka • UTC+6"
-        >
-          <span>{dhakaTime ? `Dhaka • ${dhakaTime} (UTC+6)` : 'Dhaka • UTC+6'}</span>
+        {/* TOP-RIGHT CORNER: Status Badge & Clean Live Dhaka Clock */}
+        <div className="flex flex-row xl:flex-col items-start xl:items-end justify-between xl:justify-start gap-1.5 shrink-0 pt-0.5 w-full xl:w-auto flex-wrap">
+          <div
+            data-testid="crt-status-badge"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 border text-[8px] sm:text-[9px] font-pixel tracking-wider uppercase select-none"
+            style={{
+              borderColor: `${palette.mid}80`,
+              backgroundColor: `${palette.dim}40`,
+              color: palette.bright,
+            }}
+          >
+            <span
+              className="w-1.5 h-1.5 inline-block animate-pulse shrink-0"
+              style={{ backgroundColor: palette.bright }}
+              aria-hidden="true"
+            />
+            <span>Status: Available for Roles</span>
+          </div>
+
+          <div
+            data-testid="crt-telemetry-readout"
+            className="text-right font-mono text-[9px] sm:text-[10px] md:text-[11px] tracking-wider uppercase shrink-0"
+            style={{ color: palette.mid }}
+            aria-label="Dhaka • UTC+6"
+          >
+            <span>{dhakaTime ? `Dhaka • ${dhakaTime} (UTC+6)` : 'Dhaka • UTC+6'}</span>
+          </div>
         </div>
       </header>
 
       {/* CENTER PIXEL-ART SPRITE DIORAMA STAGE (Middle of CRT Viewport) */}
-      <div className="relative w-full flex-1 min-h-[72px] sm:min-h-0 flex flex-col justify-end pb-0">
+      <div
+        className={`crt-stage-diorama-area relative w-full flex-1 flex-grow min-h-[70px] sm:min-h-0 flex flex-col justify-end pb-0 ${
+          os.isWindowExpanded ? 'invisible pointer-events-none' : ''
+        }`}
+        aria-hidden={os.isWindowExpanded}
+      >
         {/* DIORAMA STAGE CONTAINER */}
-        <div className="relative w-full max-w-[960px] mx-auto px-4 sm:px-8 md:px-12">
+        <div className="relative w-full max-w-[1440px] mx-auto px-2 sm:px-6 md:px-12 flex-1 flex flex-col justify-end">
           {/* THREE PURE INLINE SVG PIXEL-GRID SPRITES (Resting directly on top of desk line) */}
-          <div className="flex items-end justify-between gap-2 sm:gap-6 relative z-20">
+          <div className="flex items-end justify-between gap-1 sm:gap-4 md:gap-6 relative z-20 w-full overflow-hidden">
             {/* 1. LEFT DIORAMA ELEMENT: PIXEL DEVELOPER AVATAR (32x48, Moayed standing facing right) */}
             <div className="relative group shrink-0">
+              {/* Subtle 2px Pixel Corner Brackets on Hover */}
+              <div
+                data-testid="avatar-corner-brackets"
+                className={`pointer-events-none absolute -inset-1 sm:-inset-1.5 transition-opacity duration-150 z-20 ${
+                  isAvatarHovered
+                    ? 'opacity-100'
+                    : 'opacity-0 group-hover:opacity-100 group-focus-within:opacity-100'
+                }`}
+                aria-hidden="true"
+              >
+                <span className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-solid" style={{ borderColor: palette.bright }} />
+                <span className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-solid" style={{ borderColor: palette.bright }} />
+                <span className="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-solid" style={{ borderColor: palette.bright }} />
+                <span className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-solid" style={{ borderColor: palette.bright }} />
+              </div>
+
               {/* Avatar 90s RPG Speech Bubble (Minimal Pixel Tooltip: Hi! Press [1], [2], or [3] below) */}
               <div
                 role="dialog"
@@ -485,7 +571,11 @@ const CRTDioramaStageInner: React.FC<CRTDioramaStageProps> = ({
                   height="96"
                   viewBox="0 0 32 48"
                   shapeRendering="crispEdges"
-                  className="block w-12 h-18 sm:w-16 sm:h-24 transform group-hover:scale-105 transition-transform"
+                  style={{
+                    height: 'clamp(96px, 14vh, 150px)',
+                    width: 'auto',
+                  }}
+                  className="crt-stage-diorama-sprite block transform group-hover:scale-105 transition-transform !h-[54px] sm:!h-[72px] md:!h-[clamp(96px,14vh,150px)] w-auto"
                   aria-hidden="true"
                 >
                   {/* UPPER BODY: Styled Hair, Face, Eyes, Neck, Jacket, Shirt (Breathing motion steps(2)) */}
@@ -573,10 +663,70 @@ const CRTDioramaStageInner: React.FC<CRTDioramaStageProps> = ({
               </div>
             </div>
 
+            {/* DESK ACCESSORY: Subtle Pixel Coffee Mug with rising 2-frame steam animation */}
+            <div
+              data-testid="crt-desk-coffee-mug"
+              className="relative self-end mb-0 flex flex-col items-center select-none shrink-0"
+              aria-label="Pixel coffee mug on desk with rising steam"
+            >
+              <svg
+                width="20"
+                height="24"
+                viewBox="0 0 20 24"
+                shapeRendering="crispEdges"
+                className="block !h-[22px] sm:!h-[28px] md:!h-[clamp(36px,5vh,52px)] w-auto"
+                style={{
+                  shapeRendering: 'crispEdges',
+                  height: 'clamp(36px, 5vh, 52px)',
+                  width: 'auto',
+                }}
+                aria-hidden="true"
+              >
+                {/* RISING 2-FRAME STEAM ANIMATION */}
+                <g className="crt-coffee-steam">
+                  <rect x="7" y="8" width="2" height="2" fill={palette.mid} />
+                  <rect x="8" y="5" width="2" height="2" fill={palette.bright} />
+                  <rect x="7" y="2" width="2" height="2" fill={palette.dim} />
+
+                  <rect x="11" y="9" width="2" height="2" fill={palette.mid} />
+                  <rect x="12" y="6" width="2" height="2" fill={palette.bright} />
+                  <rect x="11" y="3" width="2" height="2" fill={palette.dim} />
+                </g>
+
+                {/* COFFEE MUG BODY */}
+                <rect x="4" y="12" width="12" height="1" fill={palette.bright} />
+                <rect x="5" y="13" width="10" height="1" fill={palette.void} />
+                <rect x="5" y="14" width="10" height="9" fill={palette.dim} />
+                <rect x="6" y="14" width="1" height="8" fill={palette.bright} />
+                <rect x="5" y="23" width="10" height="1" fill={palette.void} />
+
+                {/* MUG HANDLE */}
+                <rect x="15" y="15" width="3" height="1" fill={palette.bright} />
+                <rect x="17" y="16" width="1" height="4" fill={palette.bright} />
+                <rect x="15" y="20" width="3" height="1" fill={palette.bright} />
+              </svg>
+            </div>
+
             {/* COMPUTER WORKSTATION CLUSTER: CENTER-RIGHT COMPACT MAC & FAR-RIGHT IBM PC */}
-            <div className="flex items-end gap-3 sm:gap-6 md:gap-10 shrink-0">
+            <div className="flex items-end gap-1.5 sm:gap-4 md:gap-8 shrink-0">
               {/* 2. CENTER-RIGHT DIORAMA ELEMENT: COMPACT 90S MACINTOSH MONITOR */}
               <div className="relative group shrink-0">
+                {/* Subtle 2px Pixel Corner Brackets on Hover */}
+                <div
+                  data-testid="mac-corner-brackets"
+                  className={`pointer-events-none absolute -inset-1 sm:-inset-1.5 transition-opacity duration-150 z-20 ${
+                    isMacHovered
+                      ? 'opacity-100'
+                      : 'opacity-0 group-hover:opacity-100 group-focus-within:opacity-100'
+                  }`}
+                  aria-hidden="true"
+                >
+                  <span className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-solid" style={{ borderColor: palette.bright }} />
+                  <span className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-solid" style={{ borderColor: palette.bright }} />
+                  <span className="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-solid" style={{ borderColor: palette.bright }} />
+                  <span className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-solid" style={{ borderColor: palette.bright }} />
+                </div>
+
                 {/* Compact Macintosh Phosphor Mode Tooltip */}
                 <div
                   data-testid="mac-hover-tooltip"
@@ -592,7 +742,7 @@ const CRTDioramaStageInner: React.FC<CRTDioramaStageProps> = ({
                     boxShadow: `2px 2px 0 0 ${palette.void}`,
                   }}
                 >
-                  Click: Toggle Green / Amber CRT
+                  Click: Switch Green / Amber Screen
                 </div>
 
                 <div
@@ -619,7 +769,11 @@ const CRTDioramaStageInner: React.FC<CRTDioramaStageProps> = ({
                     height="96"
                     viewBox="0 0 56 48"
                     shapeRendering="crispEdges"
-                    className="block w-20 h-18 sm:w-28 sm:h-24 transform group-hover:scale-105 transition-transform"
+                    style={{
+                      height: 'clamp(96px, 14vh, 150px)',
+                      width: 'auto',
+                    }}
+                    className="crt-stage-diorama-sprite block transform group-hover:scale-105 transition-transform !h-[54px] sm:!h-[72px] md:!h-[clamp(96px,14vh,150px)] w-auto"
                     aria-hidden="true"
                   >
                     {/* MACINTOSH ALL-IN-ONE CHASSIS */}
@@ -674,6 +828,22 @@ const CRTDioramaStageInner: React.FC<CRTDioramaStageProps> = ({
 
               {/* 3. FAR-RIGHT DIORAMA ELEMENT: LARGE 90S IBM DESKTOP PC & CRT MONITOR */}
               <div className="relative group shrink-0">
+                {/* Subtle 2px Pixel Corner Brackets on Hover */}
+                <div
+                  data-testid="ibm-corner-brackets"
+                  className={`pointer-events-none absolute -inset-1 sm:-inset-1.5 transition-opacity duration-150 z-20 ${
+                    isIBMHovered
+                      ? 'opacity-100'
+                      : 'opacity-0 group-hover:opacity-100 group-focus-within:opacity-100'
+                  }`}
+                  aria-hidden="true"
+                >
+                  <span className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-solid" style={{ borderColor: palette.bright }} />
+                  <span className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-solid" style={{ borderColor: palette.bright }} />
+                  <span className="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-solid" style={{ borderColor: palette.bright }} />
+                  <span className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-solid" style={{ borderColor: palette.bright }} />
+                </div>
+
                 {/* IBM PC Tooltip: Click: Open Selected Work [1] */}
                 <div
                   data-testid="github-status-hud"
@@ -721,7 +891,11 @@ const CRTDioramaStageInner: React.FC<CRTDioramaStageProps> = ({
                     height="96"
                     viewBox="0 0 72 48"
                     shapeRendering="crispEdges"
-                    className="block w-26 h-18 sm:w-36 sm:h-24 transform group-hover:scale-105 transition-transform"
+                    style={{
+                      height: 'clamp(96px, 14vh, 150px)',
+                      width: 'auto',
+                    }}
+                    className="crt-stage-diorama-sprite block transform group-hover:scale-105 transition-transform !h-[54px] sm:!h-[72px] md:!h-[clamp(96px,14vh,150px)] w-auto"
                     aria-hidden="true"
                   >
                     {/* SVG DEF: ClipPath to prevent scrolling code from spilling onto monitor bezel */}
@@ -835,21 +1009,26 @@ const CRTDioramaStageInner: React.FC<CRTDioramaStageProps> = ({
       {/* WORKSTATION DESK SURFACE & SPLIT-CONSOLE INTERFACE DIRECTLY BELOW HORIZONTAL DESK LINE */}
       <div
         data-testid="crt-split-console"
-        className="w-full relative z-0 flex flex-col justify-center px-3 sm:px-6 md:px-8 py-1.5 sm:py-2 md:py-2.5 mb-2 sm:mb-3 md:mb-4 select-none shrink-0"
+        className="w-full relative z-0 flex flex-col justify-start px-2 sm:px-6 md:px-8 py-2 sm:py-3 mb-1 select-none shrink-0"
         style={{
+          minHeight: '44%',
+          height: '44%',
           backgroundColor: palette.void,
           color: palette.mid,
         }}
       >
-        {/* SPLIT CONSOLE: BOTTOM-LEFT COMMAND MENU & BOTTOM-RIGHT 90S OS PREVIEW WINDOW */}
-        <div className="relative z-10 w-full grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-4 md:gap-5 items-stretch">
-          {/* Bottom-Left Numbered Command Menu [1]-[3] */}
-          <div className="w-full flex flex-col justify-start">
+        {/* SPLIT CONSOLE: WIDESCREEN 12-COLUMN CSS GRID (5:7 RATIO) */}
+        <div
+          className="relative z-10 w-full h-full grid grid-cols-1 lg:grid-cols-12 items-stretch gap-3 lg:gap-[clamp(20px,2.5vw,40px)]"
+          style={{ gap: 'clamp(20px, 2.5vw, 40px)' }}
+        >
+          {/* Bottom-Left Numbered Command Menu [1]-[3] (5 columns wide) */}
+          <div className="w-full lg:h-full lg:col-span-5 flex flex-col justify-stretch min-h-0">
             <RetroCommandMenu palette={palette} />
           </div>
 
-          {/* Bottom-Right 90s OS Preview Window */}
-          <div className="w-full flex flex-col justify-start">
+          {/* Bottom-Right 90s OS Preview Window (7 columns wide) */}
+          <div className="w-full lg:h-full lg:col-span-7 flex flex-col justify-stretch min-h-0">
             {!os.isWindowExpanded ? (
               <RetroOSWindow palette={palette} isClosed={os.wasWindowClosed} />
             ) : (

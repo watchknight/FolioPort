@@ -2,1113 +2,1345 @@ import React, { useState, useEffect, useRef } from 'react';
 import type { PhosphorColorTokens } from '../RetroOSWindow';
 import { useRetroOS } from '../../context/RetroOSContext';
 import { watchknightAudio } from '../../audio/WatchknightAudioEngine';
+import {
+  FLAGSHIP_PROJECTS,
+  MORE_DEPLOYED_APPS,
+  FALLBACK_REPOSITORIES,
+  type FlagshipProject,
+  type HeroMetric,
+  type GitHubRepoItem,
+  type DeployedApp,
+} from '../../data/projects';
+
+// Re-export data and types for backwards compatibility
+export {
+  FLAGSHIP_PROJECTS,
+  MORE_DEPLOYED_APPS,
+  FALLBACK_REPOSITORIES,
+  type FlagshipProject,
+  type HeroMetric,
+  type GitHubRepoItem,
+  type DeployedApp,
+};
+
+export type FeaturedProject = FlagshipProject;
+export const FEATURED_PROJECTS = FLAGSHIP_PROJECTS;
+
+// Tech stack captions displayed under each 16:9 CRT photo demo thumbnail
+const FLAGSHIP_STACK_CAPTIONS: Record<string, string> = {
+  '01_BITFORGE': 'React • TypeScript • Canvas',
+  '02_FOCUSLAB': 'React • IndexedDB • Web Audio',
+  '03_RANNABANNA': 'Vite • React • Bilingual UI',
+  '04_DOCLENS_BD': 'React • 3D Try-On • Cloud',
+};
 
 export interface ProjectsViewProps {
   palette?: PhosphorColorTokens;
+  initialSelectedProjectId?: string;
 }
 
-export interface HeroMetric {
-  value: string;
-  label: string;
-}
-
-export interface FlagshipProject {
-  id: string;
-  index: string;
-  category: string;
+// ----------------------------------------------------------------------------
+// CRT PHOTO DEMO COMPONENT (16:9 Frame with CRT Phosphor Filter & Color Toggle)
+// ----------------------------------------------------------------------------
+interface CRTPhotoDemoProps {
+  screenshot: string;
   title: string;
-  summary: string;
-  outcomeBadge: string;
-  demoUrl: string;
-  sourceUrl: string;
-  role: string;
-  year: string;
-  heroMetrics: HeroMetric[];
-  problem: string;
-  architecture: string;
-  impact: string;
-  hasSandbox: boolean;
-  sandboxType?: 'physics' | 'throttler' | 'laser';
-  // Backwards compatibility alias fields
-  fileCode?: string;
-  tagline?: string;
-  stack?: string;
-  status?: string;
-  date?: string;
-  size?: string;
-}
-
-export interface GitHubRepoItem {
-  id: number;
-  name: string;
-  description: string | null;
-  html_url: string;
-  stargazers_count: number;
-  language: string | null;
-  updated_at: string;
-  forks_count?: number;
-}
-
-// Backwards compatibility type alias
-export type FeaturedProject = FlagshipProject;
-
-// 4 FLAGSHIP CASE STUDIES (Curated 2x2 Flagship Project Grid)
-export const FLAGSHIP_PROJECTS: FlagshipProject[] = [
-  {
-    id: '01_MENTAL_DEFRAG',
-    index: '01',
-    category: 'SPATIAL WEB',
-    title: 'Mental Defrag',
-    summary:
-      'Zero-gravity spatial cognitive workspace built with Matter.js physics and bi-directional Obsidian .canvas AST synchronization.',
-    outcomeBadge: '60 FPS • 200+ Physics Nodes • Obsidian AST Sync',
-    demoUrl: 'https://github.com/watchknight/Mental-Defrag',
-    sourceUrl: 'https://github.com/watchknight/Mental-Defrag',
-    role: 'Lead Systems & Graphics Architect',
-    year: '2024',
-    heroMetrics: [
-      { value: '60 FPS', label: 'Solid Physics Loop' },
-      { value: '200+', label: 'Physics Nodes' },
-      { value: '100%', label: 'Obsidian AST Parity' },
-    ],
-    problem:
-      'Hierarchical note-taking tools enforce rigid tree structures that stifle non-linear ideation and spatial conceptual clustering. Users struggle to organize divergent thoughts without experiencing cognitive friction.',
-    architecture:
-      'Engineered with Vite, TypeScript, and Matter.js rigid-body physics featuring zero-gravity decay and cosine similarity vector clustering. Integrated a bi-directional Obsidian .canvas JSON AST compiler with lossless synchronization.',
-    impact:
-      'Sustained 60 FPS spatial physics loop across 200+ active nodes with zero layout jitter. Achieved 100% bi-directional Obsidian schema parity with zero-latency local vector queries.',
-    hasSandbox: true,
-    sandboxType: 'physics',
-    fileCode: 'Mental Defrag',
-    tagline: 'Zero-gravity spatial cognitive workspace',
-    stack: 'Vite • TypeScript • Matter.js • Vector Embeddings • Obsidian Canvas',
-    status: 'Production',
-    date: '1996-11-04',
-    size: '142KB',
-  },
-  {
-    id: '02_FOCUSGUARD',
-    index: '02',
-    category: 'CHROME MV3',
-    title: 'FocusGuard',
-    summary:
-      'Manifest V3 browser productivity daemon engineered for contextual tab suspension and background heap throttling.',
-    outcomeBadge: '-58% RAM Reclaimed • <12 MB Heap • Manifest V3',
-    demoUrl: 'https://github.com/watchknight/FocusGuard',
-    sourceUrl: 'https://github.com/watchknight/FocusGuard',
-    role: 'Systems & Extension Engineer',
-    year: '2024',
-    heroMetrics: [
-      { value: '-58% RAM', label: 'Heap Reclaimed' },
-      { value: '<12 MB', label: 'Heap Footprint' },
-      { value: '0 LEAKS', label: 'MV3 Service Worker' },
-    ],
-    problem:
-      'Modern browser workflows accumulate dozens of inactive tabs that consume gigabytes of memory and degrade workstation performance. Existing tab suspenders break page states and introduce intrusive service worker latency.',
-    architecture:
-      'Engineered a Chrome Manifest V3 daemon utilizing declarativeNetRequest rules and alarm-driven service workers. Implemented an adaptive background tab throttler that serialized DOM states before shedding memory.',
-    impact:
-      'Reclaimed 58% of dormant browser RAM while restricting background heap overhead to under 12 MB. Maintained instant zero-latency tab hydration without breaking session forms or audio streams.',
-    hasSandbox: true,
-    sandboxType: 'throttler',
-    fileCode: 'FocusGuard',
-    tagline: 'Contextual distraction blocker and background tab throttler',
-    stack: 'Chrome Extension MV3 • TypeScript • WebSockets • React',
-    status: 'Production',
-    date: '1996-10-18',
-    size: '188KB',
-  },
-  {
-    id: '03_NEON_VANGUARD_POSIX',
-    index: '03',
-    category: 'SYSTEMS & 2D ENGINE',
-    title: 'Neon Vanguard & POSIX',
-    summary:
-      'Deterministic 120 FPS HTML5 canvas combat engine coupled with Linux C POSIX shared memory and multi-process IPC labs.',
-    outcomeBadge: '120 FPS Zero-Alloc Canvas • <1.2µs POSIX IPC',
-    demoUrl: 'https://github.com/watchknight/BitForge',
-    sourceUrl: 'https://github.com/watchknight/BitForge',
-    role: 'Low-Level Systems & Graphics Engineer',
-    year: '2023–2024',
-    heroMetrics: [
-      { value: '120 FPS', label: 'Zero-Alloc Canvas' },
-      { value: '<1.2µs', label: 'POSIX IPC Latency' },
-      { value: '0 LEAKS', label: '24hr Valgrind Audit' },
-    ],
-    problem:
-      'High particle-count collision overhead causes severe GC pauses in web engines, while process IPC in operating systems suffers from locking contention. Developers need predictable frame pacing and sub-microsecond message dispatch.',
-    architecture:
-      'Engineered an HTML5 2D canvas engine with pre-allocated object pools, raycast piercing, and branching chain-lightning. Coupled with Linux C POSIX shared memory (shmget/shmat), anonymous duplex pipes, and multi-process fork hierarchies.',
-    impact:
-      'Sustained 120 FPS render pacing with zero garbage-collector allocations during intense combat scenes. Verified sub-1.2 microsecond round-trip IPC latency with zero memory leaks under 24-hour Valgrind stress runs.',
-    hasSandbox: true,
-    sandboxType: 'laser',
-    fileCode: 'Neon Vanguard',
-    tagline: 'HTML5 2D canvas combat engine & Linux C/C++ POSIX IPC',
-    stack: 'C / C++ • Linux POSIX IPC • fork() • HTML5 Canvas • Shm',
-    status: 'Active',
-    date: '1996-08-30',
-    size: '312KB',
-  },
-  {
-    id: '04_DOCLENS_RANNABANNA',
-    index: '04',
-    category: 'CLOUD PLATFORM',
-    title: 'DocLensBD & Rannabanna',
-    summary:
-      'Cloud-backed medical diagnostic intelligence platform featuring real-time Firestore synchronization and automated CI/CD staging pipelines.',
-    outcomeBadge: 'Cloud Firestore • Real-Time Sync • CI/CD',
-    demoUrl: 'https://github.com/watchknight/DocLensBD',
-    sourceUrl: 'https://github.com/watchknight/DocLensBD',
-    role: 'Full-Stack & Cloud Infrastructure Engineer',
-    year: '2023–2024',
-    heroMetrics: [
-      { value: '<45 ms', label: 'Regional Snapshot Sync' },
-      { value: '99.98%', label: 'Production SLA' },
-      { value: '14/14 PASS', label: 'Automated CI/CD' },
-    ],
-    problem:
-      'Regional health platforms in Bangladesh struggle with unreliable networks, packet loss, and unencrypted clinical records. Simultaneously, non-Latin localized web apps suffer from bloated fonts and sluggish search latency.',
-    architecture:
-      'Engineered on Cloud Firestore real-time snapshot listeners with offline IndexedDB caching and AES-256 field encryption. Paired with custom Bengali font glyph subsetting and automated GitHub Actions CI/CD deployment pipelines.',
-    impact:
-      'Delivered sub-45ms regional data propagation with a 99.98% production uptime SLA. Maintained 14/14 passing automated CI/CD tests and scored 99/100 on Google Lighthouse performance audits.',
-    hasSandbox: false,
-    fileCode: 'DocLensBD',
-    tagline: 'Cloud-backed document & healthcare platform',
-    stack: 'React • TypeScript • Cloud Firestore • Firebase Auth • CI/CD',
-    status: 'Verified',
-    date: '1996-10-28',
-    size: '284KB',
-  },
-];
-
-// Backwards-compatible export
-export const FEATURED_PROJECTS = FLAGSHIP_PROJECTS;
-
-// Resilient Static Fallback Array for GitHub Archive Accordion
-export const FALLBACK_REPOSITORIES: GitHubRepoItem[] = [
-  {
-    id: 201,
-    name: 'BitForge',
-    description: 'HTML5 2D canvas combat engine paired with Linux C/C++ Operating Systems IPC & fork() labs.',
-    html_url: 'https://github.com/watchknight/BitForge',
-    stargazers_count: 32,
-    language: 'C++',
-    updated_at: '2026-08-30T16:00:00Z',
-    forks_count: 8,
-  },
-  {
-    id: 202,
-    name: 'simd-json-stream',
-    description: 'Zero-allocation JSON stream parser utilizing AVX-512 SIMD vector instructions for batch parsing.',
-    html_url: 'https://github.com/watchknight/simd-json-stream',
-    stargazers_count: 482,
-    language: 'C++',
-    updated_at: '2026-04-11T13:00:00Z',
-    forks_count: 64,
-  },
-  {
-    id: 203,
-    name: 'posix-shm-kernel-lab',
-    description: 'Linux C Operating Systems lab featuring POSIX shared memory, process hierarchies & spinlocks.',
-    html_url: 'https://github.com/watchknight/posix-shm-kernel-lab',
-    stargazers_count: 29,
-    language: 'C',
-    updated_at: '2026-05-24T12:00:00Z',
-    forks_count: 7,
-  },
-  {
-    id: 204,
-    name: 'TrashTrail',
-    description: 'Interactive scroll-driven environmental storytelling web application with GSAP ScrollTrigger.',
-    html_url: 'https://github.com/watchknight/TrashTrail',
-    stargazers_count: 18,
-    language: 'JavaScript',
-    updated_at: '2026-09-22T14:00:00Z',
-    forks_count: 4,
-  },
-  {
-    id: 205,
-    name: 'POSHRA',
-    description: 'High-throughput distributed data stream and component architecture for cyberdeck terminals.',
-    html_url: 'https://github.com/watchknight/POSHRA',
-    stargazers_count: 26,
-    language: 'TypeScript',
-    updated_at: '2026-07-28T10:00:00Z',
-    forks_count: 3,
-  },
-  {
-    id: 206,
-    name: 'PureFeed',
-    description: 'Distraction-free web productivity client with declarative content filtering and zero DOM leaks.',
-    html_url: 'https://github.com/watchknight/PureFeed',
-    stargazers_count: 21,
-    language: 'TypeScript',
-    updated_at: '2026-06-12T11:00:00Z',
-    forks_count: 2,
-  },
-  {
-    id: 211,
-    name: 'hyperdeck-3d-particles',
-    description: 'Volumetric wave synthesizer with 14,400+ points displaced on GPU via GLSL vertex shaders.',
-    html_url: 'https://github.com/watchknight/hyperdeck-3d-particles',
-    stargazers_count: 27,
-    language: 'TypeScript',
-    updated_at: '2026-08-14T08:00:00Z',
-    forks_count: 6,
-  },
-  {
-    id: 212,
-    name: 'chiptune-audio-engine',
-    description: 'Zero-asset procedural chiptune synthesizer and spatial panner using native Web Audio API.',
-    html_url: 'https://github.com/watchknight/chiptune-audio-engine',
-    stargazers_count: 16,
-    language: 'TypeScript',
-    updated_at: '2026-07-02T15:00:00Z',
-    forks_count: 3,
-  },
-  {
-    id: 207,
-    name: 'Mental-Defrag',
-    description: 'Zero-gravity spatial cognitive workspace built with Vite, TypeScript, 2D physics & Obsidian canvas.',
-    html_url: 'https://github.com/watchknight/Mental-Defrag',
-    stargazers_count: 24,
-    language: 'TypeScript',
-    updated_at: '2026-11-04T12:00:00Z',
-    forks_count: 5,
-  },
-  {
-    id: 208,
-    name: 'FocusGuard',
-    description: 'Chrome Manifest V3 distraction blocker and background tab heap throttler.',
-    html_url: 'https://github.com/watchknight/FocusGuard',
-    stargazers_count: 35,
-    language: 'TypeScript',
-    updated_at: '2026-10-18T14:00:00Z',
-    forks_count: 6,
-  },
-  {
-    id: 209,
-    name: 'DocLensBD',
-    description: 'Cloud-backed medical diagnostic platform engineered with Cloud Firestore & CI/CD pipelines.',
-    html_url: 'https://github.com/watchknight/DocLensBD',
-    stargazers_count: 19,
-    language: 'TypeScript',
-    updated_at: '2026-10-28T10:00:00Z',
-    forks_count: 3,
-  },
-  {
-    id: 210,
-    name: 'Rannabanna',
-    description: 'Full-stack localized Bengali culinary web application built with Vite and real-time cloud DB sync.',
-    html_url: 'https://github.com/watchknight/Rannabanna',
-    stargazers_count: 15,
-    language: 'TypeScript',
-    updated_at: '2026-10-15T09:00:00Z',
-    forks_count: 2,
-  },
-];
-
-const GITHUB_CACHE_KEY = 'watchknight_repos_v2';
-const GITHUB_CACHE_TTL = 1000 * 60 * 30; // 30 minutes
-
-// -------------------------------------------------------------
-// SUB-COMPONENT: Mental Defrag Draggable Physics Nodes Sandbox
-// -------------------------------------------------------------
-interface PhysicsNode {
-  id: number;
-  label: string;
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  radius: number;
-}
-
-const AST_EDGES: [number, number][] = [
-  [1, 2], // Obsidian AST <-> Matter.js
-  [1, 3], // Obsidian AST <-> Vector Math
-  [2, 4], // Matter.js <-> Cosine Repulsion
-  [3, 4], // Vector Math <-> Cosine Repulsion
-  [2, 5], // Matter.js <-> Lossless Sync
-  [4, 6], // Cosine Repulsion <-> Zero Gravity
-  [3, 6], // Vector Math <-> Zero Gravity
-];
-
-const MentalDefragSandbox: React.FC<{
+  category: string;
+  isCardHovered?: boolean;
   bright: string;
   mid: string;
   dim: string;
   voidCol: string;
-}> = ({ bright, mid, dim, voidCol }) => {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const [nodes, setNodes] = useState<PhysicsNode[]>([
-    { id: 1, label: 'Obsidian AST', x: 80, y: 60, vx: 0.2, vy: -0.15, radius: 28 },
-    { id: 2, label: 'Matter.js', x: 210, y: 95, vx: -0.15, vy: 0.25, radius: 24 },
-    { id: 3, label: 'Vector Math', x: 135, y: 160, vx: 0.25, vy: 0.2, radius: 26 },
-    { id: 4, label: 'Cosine Repulsion', x: 285, y: 135, vx: -0.2, vy: -0.2, radius: 26 },
-    { id: 5, label: 'Lossless Sync', x: 365, y: 70, vx: 0.15, vy: 0.3, radius: 25 },
-    { id: 6, label: 'Zero Gravity', x: 245, y: 205, vx: -0.25, vy: 0.15, radius: 24 },
-  ]);
-  const [activeDragId, setActiveDragId] = useState<number | null>(null);
-  const dragOffsetRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
-  const lastPointerRef = useRef<{ x: number; y: number; time: number }>({ x: 0, y: 0, time: 0 });
-  const dragVelocityRef = useRef<{ vx: number; vy: number }>({ vx: 0, vy: 0 });
+  className?: string;
+  showColorToggle?: boolean;
+}
 
-  const pulseForce = () => {
-    try {
-      watchknightAudio.play8BitBlip(740);
-    } catch {}
-    setNodes((prev) =>
-      prev.map((n) => ({
-        ...n,
-        vx: (Math.random() - 0.5) * 5,
-        vy: (Math.random() - 0.5) * 5,
-      }))
-    );
-  };
+const CRTPhotoDemo: React.FC<CRTPhotoDemoProps> = ({
+  screenshot,
+  title,
+  category,
+  isCardHovered = false,
+  bright,
+  mid,
+  dim,
+  voidCol,
+  className = '',
+  showColorToggle = true,
+}) => {
+  const [explicitMode, setExplicitMode] = useState<'color' | 'mono' | null>(null);
+  const [isFrameHovered, setIsFrameHovered] = useState<boolean>(false);
+  const [imgError, setImgError] = useState<boolean>(false);
 
-  const handlePointerDown = (id: number, e: React.PointerEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    try {
-      e.currentTarget.setPointerCapture(e.pointerId);
-    } catch {}
-
-    try {
-      watchknightAudio.play8BitBlip(880);
-    } catch {}
-
-    setActiveDragId(id);
-    const rect = containerRef.current?.getBoundingClientRect();
-    if (rect) {
-      const clickX = e.clientX - rect.left;
-      const clickY = e.clientY - rect.top;
-      const targetNode = nodes.find((n) => n.id === id);
-      if (targetNode) {
-        dragOffsetRef.current = {
-          x: clickX - targetNode.x,
-          y: clickY - targetNode.y,
-        };
-      }
-    }
-    lastPointerRef.current = { x: e.clientX, y: e.clientY, time: performance.now() };
-    dragVelocityRef.current = { vx: 0, vy: 0 };
-  };
-
-  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (activeDragId === null) return;
-    const rect = containerRef.current?.getBoundingClientRect();
-    if (!rect) return;
-
-    const now = performance.now();
-    const dt = Math.max(1, now - lastPointerRef.current.time);
-    const vx = ((e.clientX - lastPointerRef.current.x) / dt) * 16;
-    const vy = ((e.clientY - lastPointerRef.current.y) / dt) * 16;
-    dragVelocityRef.current = {
-      vx: Math.max(-5, Math.min(5, vx)),
-      vy: Math.max(-5, Math.min(5, vy)),
-    };
-    lastPointerRef.current = { x: e.clientX, y: e.clientY, time: now };
-
-    const currentX = e.clientX - rect.left - dragOffsetRef.current.x;
-    const currentY = e.clientY - rect.top - dragOffsetRef.current.y;
-
-    const clampX = Math.max(30, Math.min(rect.width - 30, currentX));
-    const clampY = Math.max(30, Math.min(rect.height - 30, currentY));
-
-    setNodes((prev) =>
-      prev.map((n) =>
-        n.id === activeDragId
-          ? { ...n, x: clampX, y: clampY, vx: dragVelocityRef.current.vx, vy: dragVelocityRef.current.vy }
-          : n
-      )
-    );
-  };
-
-  const handlePointerUp = (e?: React.PointerEvent<HTMLDivElement>) => {
-    if (e && e.currentTarget && typeof e.currentTarget.releasePointerCapture === 'function') {
-      try {
-        e.currentTarget.releasePointerCapture(e.pointerId);
-      } catch {}
-    }
-    if (activeDragId !== null) {
-      try {
-        watchknightAudio.play8BitBlip(560);
-      } catch {}
-
-      // Apply kinetic release velocity to the released node
-      const releaseVx = dragVelocityRef.current.vx;
-      const releaseVy = dragVelocityRef.current.vy;
-
-      setNodes((prev) =>
-        prev.map((n) =>
-          n.id === activeDragId
-            ? { ...n, vx: releaseVx, vy: releaseVy }
-            : n
-        )
-      );
-    }
-    setActiveDragId(null);
-  };
-
-  // Zero-gravity animation loop with authentic Hooke's Law spring tension and wall bounds
-  useEffect(() => {
-    let animId: number;
-
-    const step = () => {
-      setNodes((prev) => {
-        const width = containerRef.current?.clientWidth || 450;
-        const height = containerRef.current?.clientHeight || 260;
-
-        // Clone current state for spring physics integration
-        const next = prev.map((n) => ({ ...n }));
-        const nodeMap = new Map(next.map((n) => [n.id, n]));
-
-        // Calculate Hooke's Law spring forces between connected AST edges
-        const REST_LENGTH = 110;
-        const SPRING_K = 0.0022;
-
-        for (const [idA, idB] of AST_EDGES) {
-          const a = nodeMap.get(idA);
-          const b = nodeMap.get(idB);
-          if (!a || !b) continue;
-
-          const dx = b.x - a.x;
-          const dy = b.y - a.y;
-          const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-          const displacement = dist - REST_LENGTH;
-          const force = displacement * SPRING_K;
-          const fx = (dx / dist) * force;
-          const fy = (dy / dist) * force;
-
-          if (a.id !== activeDragId) {
-            a.vx += fx;
-            a.vy += fy;
-          }
-          if (b.id !== activeDragId) {
-            b.vx -= fx;
-            b.vy -= fy;
-          }
-        }
-
-        // Apply velocities, subtle zero-gravity drift, wall collisions and damping
-        return next.map((node) => {
-          if (node.id === activeDragId) return node;
-
-          // Subtle zero-gravity ambient wander drift
-          const driftX = (Math.random() - 0.5) * 0.04;
-          const driftY = (Math.random() - 0.5) * 0.04;
-
-          let nx = node.x + node.vx;
-          let ny = node.y + node.vy;
-          let nvx = (node.vx + driftX) * 0.988; // zero-gravity viscous resistance
-          let nvy = (node.vy + driftY) * 0.988;
-
-          // Wall boundaries reflection
-          if (nx < node.radius) {
-            nx = node.radius;
-            nvx = Math.abs(nvx) * 0.82;
-          } else if (nx > width - node.radius) {
-            nx = width - node.radius;
-            nvx = -Math.abs(nvx) * 0.82;
-          }
-
-          if (ny < node.radius) {
-            ny = node.radius;
-            nvy = Math.abs(nvy) * 0.82;
-          } else if (ny > height - node.radius) {
-            ny = height - node.radius;
-            nvy = -Math.abs(nvy) * 0.82;
-          }
-
-          return { ...node, x: nx, y: ny, vx: nvx, vy: nvy };
-        });
-      });
-
-      animId = requestAnimationFrame(step);
-    };
-
-    animId = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(animId);
-  }, [activeDragId]);
+  const isFullColor =
+    explicitMode !== null
+      ? explicitMode === 'color'
+      : isCardHovered || isFrameHovered;
+  const showFallback = !screenshot || imgError;
 
   return (
     <div
-      data-testid="interactive-demo-sandbox"
-      className="p-3 border flex flex-col gap-2 mt-2 select-none"
-      style={{ backgroundColor: `${voidCol}f0`, borderColor: mid }}
+      data-testid="crt-photo-frame"
+      onMouseEnter={() => setIsFrameHovered(true)}
+      onMouseLeave={() => {
+        setIsFrameHovered(false);
+        setExplicitMode(null);
+      }}
+      className={`relative w-full aspect-video overflow-hidden border select-none group ${className}`}
+      style={{
+        borderColor: isFullColor ? bright : `${mid}80`,
+        backgroundColor: voidCol,
+      }}
     >
-      <div className="flex items-center justify-between text-[8px] sm:text-[9px] font-mono pb-1 border-b" style={{ borderColor: `${mid}40` }}>
-        <span className="font-bold" style={{ color: bright }}>
-          Simulation: Draggable Physics Nodes (Matter.js • Zero-Gravity AST)
-        </span>
-        <button
-          type="button"
-          onClick={pulseForce}
-          className="px-2 py-0.5 border text-[7.5px] font-mono cursor-pointer transition-none outline-none focus-visible:outline-dashed"
-          style={{ backgroundColor: dim, borderColor: bright, color: bright }}
+      {/* Fallback preview if image fails or is missing */}
+      {showFallback ? (
+        <div
+          className="absolute inset-0 flex flex-col items-center justify-center p-3 text-center font-mono gap-1"
+          style={{ backgroundColor: `${dim}40`, color: bright }}
         >
-          Pulse Force
-        </button>
-      </div>
+          <div className="text-[8px] uppercase tracking-widest" style={{ color: mid }}>
+            [ CRT PHOTO DEMO ]
+          </div>
+          <div className="font-pixel text-[11px] font-bold">{title}</div>
+          <div className="text-[8px]" style={{ color: `${bright}aa` }}>
+            {category}
+          </div>
+        </div>
+      ) : (
+        <img
+          src={screenshot}
+          alt={`${title} CRT Photo Demo`}
+          onError={() => setImgError(true)}
+          className="w-full h-full object-cover object-top"
+          style={{
+            filter: isFullColor
+              ? 'none'
+              : 'grayscale(100%) contrast(115%) sepia(25%) hue-rotate(55deg)',
+            transition: 'filter 0.3s ease',
+          }}
+        />
+      )}
 
+      {/* Subtle CRT scanline overlay */}
       <div
-        ref={containerRef}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onPointerLeave={handlePointerUp}
-        className="relative w-full h-[240px] sm:h-[260px] border overflow-hidden cursor-grab active:cursor-grabbing touch-none"
+        className="pointer-events-none absolute inset-0 opacity-20"
         style={{
-          backgroundColor: '#070814',
-          borderColor: `${mid}40`,
-          touchAction: 'none',
+          backgroundImage:
+            'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.45) 50%)',
+          backgroundSize: '100% 4px',
         }}
-      >
-        {/* Connection spring lines with dynamic spring tension opacity */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 1 }}>
-          {AST_EDGES.map(([idA, idB]) => {
-            const nodeA = nodes.find((n) => n.id === idA);
-            const nodeB = nodes.find((n) => n.id === idB);
-            if (!nodeA || !nodeB) return null;
+      />
 
-            const dx = nodeA.x - nodeB.x;
-            const dy = nodeA.y - nodeB.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            const tension = Math.min(1, Math.abs(dist - 110) / 90);
-            const opacity = Math.max(0.2, 0.45 + tension * 0.45);
+      {/* Retro CRT corner brackets */}
+      <span className="pointer-events-none absolute top-1 left-1.5 font-mono text-[8px] opacity-70" style={{ color: bright }}>
+        +
+      </span>
+      <span className="pointer-events-none absolute top-1 right-1.5 font-mono text-[8px] opacity-70" style={{ color: bright }}>
+        +
+      </span>
+      <span className="pointer-events-none absolute bottom-1 left-1.5 font-mono text-[8px] opacity-70" style={{ color: bright }}>
+        +
+      </span>
+      <span className="pointer-events-none absolute bottom-1 right-1.5 font-mono text-[8px] opacity-70" style={{ color: bright }}>
+        +
+      </span>
 
-            return (
-              <line
-                key={`${idA}-${idB}`}
-                x1={nodeA.x}
-                y1={nodeA.y}
-                x2={nodeB.x}
-                y2={nodeB.y}
-                stroke={tension > 0.4 ? '#00F0FF' : bright}
-                strokeWidth={tension > 0.5 ? '1.5' : '1'}
-                strokeOpacity={opacity}
-                strokeDasharray={tension > 0.6 ? '4,2' : '2,2'}
-              />
-            );
-          })}
-        </svg>
-
-        {/* Nodes */}
-        {nodes.map((node) => (
-          <div
-            key={node.id}
-            onPointerDown={(e) => handlePointerDown(node.id, e)}
-            className="absolute flex items-center justify-center p-1 border font-pixel text-[7px] text-center transition-none shadow-sm touch-none"
+      {/* "View Original Color" / CRT toggle button */}
+      {showColorToggle && (
+        <div
+          className="absolute bottom-1.5 right-1.5 flex items-center gap-1 z-10"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            type="button"
+            data-testid="btn-toggle-photo-color"
+            onClick={() => {
+              try {
+                watchknightAudio.play8BitBlip(720);
+              } catch {}
+              setExplicitMode((prev) =>
+                prev === 'color' || (prev === null && isFullColor) ? 'mono' : 'color'
+              );
+            }}
+            title={isFullColor ? 'Switch to Phosphor CRT Filter' : 'View Original Color'}
+            className="px-1.5 py-0.5 border font-mono text-[7px] sm:text-[7.5px] uppercase cursor-pointer transition-none outline-none focus-visible:outline-dashed"
             style={{
-              left: `${node.x}px`,
-              top: `${node.y}px`,
-              transform: 'translate(-50%, -50%)',
-              zIndex: activeDragId === node.id ? 10 : 2,
-              backgroundColor: activeDragId === node.id ? bright : `${dim}e6`,
-              color: activeDragId === node.id ? voidCol : bright,
-              borderColor: bright,
-              minWidth: '70px',
-              cursor: 'grab',
-              touchAction: 'none',
+              backgroundColor: isFullColor ? bright : `${voidCol}d9`,
+              color: isFullColor ? voidCol : bright,
+              borderColor: isFullColor ? bright : mid,
             }}
           >
-            {node.label}
-          </div>
-        ))}
-      </div>
-
-      <div className="flex items-center justify-between text-[7px] sm:text-[7.5px] font-mono" style={{ color: mid }}>
-        <span>DRAG NODES TO TEST REVERSIBLE SPRING TENSION</span>
-        <span>STATUS: LOSSLESS OBSIDIAN SYNC • 60 FPS</span>
-      </div>
+            {isFullColor ? 'CRT Filter' : 'View Original Color'}
+          </button>
+        </div>
+      )}
     </div>
   );
 };
 
-// -------------------------------------------------------------
-// SUB-COMPONENT: FocusGuard Interactive RAM Throttler Slider Sandbox
-// -------------------------------------------------------------
-const FocusGuardSandbox: React.FC<{
+// ----------------------------------------------------------------------------
+// MICRO-SANDBOX 1: BitForge — Forge Lab Array Sort
+// ----------------------------------------------------------------------------
+export interface SortStepState {
+  array: number[];
+  comparing: [number, number] | null;
+  swapping: boolean;
+  sortedIndices: number[];
+  stepCount: number;
+  comparisons: number;
+  swaps: number;
+  status: string;
+}
+
+export const INITIAL_SORT_ARRAY = [38, 14, 62, 19, 85, 29, 76, 48];
+
+export function buildBubbleSortSequence(initial: number[]): SortStepState[] {
+  const steps: SortStepState[] = [];
+  const arr = [...initial];
+  const n = arr.length;
+  let comparisons = 0;
+  let swaps = 0;
+  const sorted: number[] = [];
+
+  // Step 0: Initial
+  steps.push({
+    array: [...arr],
+    comparing: null,
+    swapping: false,
+    sortedIndices: [],
+    stepCount: 0,
+    comparisons: 0,
+    swaps: 0,
+    status: 'READY: 8 UNSORTED ARRAY BARS',
+  });
+
+  for (let i = 0; i < n - 1; i++) {
+    for (let j = 0; j < n - i - 1; j++) {
+      comparisons++;
+      // Comparing state
+      steps.push({
+        array: [...arr],
+        comparing: [j, j + 1],
+        swapping: false,
+        sortedIndices: [...sorted],
+        stepCount: steps.length,
+        comparisons,
+        swaps,
+        status: `COMPARING arr[${j}]=${arr[j]} AND arr[${j + 1}]=${arr[j + 1]}`,
+      });
+
+      if (arr[j] > arr[j + 1]) {
+        swaps++;
+        const tmp = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = tmp;
+
+        // Swapped state
+        steps.push({
+          array: [...arr],
+          comparing: [j, j + 1],
+          swapping: true,
+          sortedIndices: [...sorted],
+          stepCount: steps.length,
+          comparisons,
+          swaps,
+          status: `SWAPPED: ${arr[j + 1]} <-> ${arr[j]} (INVERSION RESOLVED)`,
+        });
+      }
+    }
+    sorted.unshift(n - 1 - i);
+  }
+  sorted.unshift(0);
+
+  // Final complete state
+  steps.push({
+    array: [...arr],
+    comparing: null,
+    swapping: false,
+    sortedIndices: Array.from({ length: n }, (_, idx) => idx),
+    stepCount: steps.length,
+    comparisons,
+    swaps,
+    status: 'ARRAY FULLY SORTED IN O(n²) TIME',
+  });
+
+  return steps;
+}
+
+const BitForgeSortSandbox: React.FC<{
   bright: string;
   mid: string;
   dim: string;
   voidCol: string;
 }> = ({ bright, mid, dim, voidCol }) => {
-  const [throttle, setThrottle] = useState<number>(58);
+  const stepsRef = useRef<SortStepState[]>(buildBubbleSortSequence(INITIAL_SORT_ARRAY));
+  const [currentStepIdx, setCurrentStepIdx] = useState<number>(0);
+  const [isAutoSorting, setIsAutoSorting] = useState<boolean>(false);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const handleSlider = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = Number(e.target.value);
-    setThrottle(val);
-    if (val % 8 === 0) {
+  const current = stepsRef.current[currentStepIdx] || stepsRef.current[0];
+
+  const handleStep = () => {
+    // If auto-sorting is actively running, clear timer and pause cleanly on manual step
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    if (isAutoSorting) {
+      setIsAutoSorting(false);
+    }
+    if (currentStepIdx < stepsRef.current.length - 1) {
+      const nextIdx = currentStepIdx + 1;
+      const nextStep = stepsRef.current[nextIdx];
       try {
-        watchknightAudio.play8BitBlip(440 + val * 4);
+        const toneFreq = nextStep.swapping ? 780 : 540;
+        watchknightAudio.play8BitBlip(toneFreq);
       } catch {}
+      setCurrentStepIdx(nextIdx);
     }
   };
 
-  const setPreset = (pct: number) => {
+  const handleToggleAuto = () => {
     try {
-      watchknightAudio.play8BitBlip(680);
+      watchknightAudio.play8BitBlip(isAutoSorting ? 440 : 880);
     } catch {}
-    setThrottle(pct);
+
+    if (isAutoSorting) {
+      setIsAutoSorting(false);
+    } else {
+      // If already at end, reset to start first
+      if (currentStepIdx >= stepsRef.current.length - 1) {
+        setCurrentStepIdx(0);
+      }
+      setIsAutoSorting(true);
+    }
   };
 
-  // Reclaimed RAM math: base heap is 1840 MB, throttled down to ~420 MB
-  const reclaimedPct = Math.round(throttle * 0.77);
-  const currentHeapMB = Math.round(1840 - (1840 - 420) * (throttle / 100));
-  const suspendedTabs = Math.round(24 * (throttle / 100));
+  useEffect(() => {
+    if (!isAutoSorting) {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+      return;
+    }
+
+    intervalRef.current = setInterval(() => {
+      setCurrentStepIdx((prev) => {
+        if (prev >= stepsRef.current.length - 1) {
+          return prev;
+        }
+        const nextIdx = prev + 1;
+        const nextStep = stepsRef.current[nextIdx];
+        try {
+          const toneFreq = nextStep.swapping ? 820 : 580;
+          watchknightAudio.play8BitBlip(toneFreq);
+        } catch {}
+        return nextIdx;
+      });
+    }, 260);
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [isAutoSorting]);
+
+  // Cleanly deactivate auto-sorting state when reaching the final step
+  useEffect(() => {
+    if (currentStepIdx >= stepsRef.current.length - 1 && isAutoSorting) {
+      setIsAutoSorting(false);
+    }
+  }, [currentStepIdx, isAutoSorting]);
+
+  const handleReset = () => {
+    try {
+      watchknightAudio.play8BitBlip(380);
+    } catch {}
+    setIsAutoSorting(false);
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    setCurrentStepIdx(0);
+  };
 
   return (
     <div
       data-testid="interactive-demo-sandbox"
-      className="p-3 border flex flex-col gap-2 mt-2 select-none"
+      className="p-3 border flex flex-col gap-2.5 mt-2 select-none"
       style={{ backgroundColor: `${voidCol}f0`, borderColor: mid }}
     >
-      <div className="flex items-center justify-between text-[8px] sm:text-[9px] font-mono pb-1 border-b" style={{ borderColor: `${mid}40` }}>
-        <span className="font-bold" style={{ color: bright }}>
-          &gt; SIMULATION: BACKGROUND TAB HEAP THROTTLER (MANIFEST V3 DAEMON)
+      <div
+        className="flex items-center justify-between text-[8px] sm:text-[9px] font-mono pb-1.5 border-b"
+        style={{ borderColor: `${mid}40` }}
+      >
+        <span className="font-bold uppercase" style={{ color: bright }}>
+          Forge Lab Array Sort (8 Elements • [38, 14, 62, 19, 85, 29, 76, 48])
         </span>
-        <span className="font-mono text-[8px] font-bold" style={{ color: bright }}>
-          THROTTLE: {throttle}%
-        </span>
-      </div>
-
-      {/* Slider Controls */}
-      <div className="flex flex-col gap-1.5 p-2 border" style={{ backgroundColor: `${dim}30`, borderColor: `${mid}40` }}>
-        <div className="flex items-center justify-between text-[7.5px] font-mono">
-          <span style={{ color: mid }}>THROTTLE INTENSITY:</span>
-          <span style={{ color: bright }}>
-            {reclaimedPct}% RECLAIMED ({1840 - currentHeapMB} MB SAVED)
-          </span>
-        </div>
-        <input
-          type="range"
-          min="0"
-          max="100"
-          value={throttle}
-          onChange={handleSlider}
-          className="w-full h-2 cursor-pointer appearance-none outline-none"
-          style={{
-            backgroundColor: dim,
-            accentColor: bright,
-          }}
-          aria-label="Interactive RAM throttler slider"
-        />
-        <div className="flex items-center justify-between text-[7px] font-mono" style={{ color: mid }}>
-          <span>0% (Idle / 1,840 MB)</span>
-          <span>50% (Balanced / 1,130 MB)</span>
-          <span>100% (Aggressive Discard / 420 MB)</span>
-        </div>
-      </div>
-
-      {/* Quick Preset Buttons */}
-      <div className="grid grid-cols-3 gap-1.5">
-        {[
-          { label: '0% Idle', pct: 0 },
-          { label: '58% Optimized', pct: 58 },
-          { label: '100% Aggressive', pct: 100 },
-        ].map((item) => (
+        <div className="flex items-center gap-1.5">
           <button
-            key={item.pct}
             type="button"
-            onClick={() => setPreset(item.pct)}
-            className="p-1 border text-[7px] sm:text-[7.5px] font-pixel cursor-pointer transition-none outline-none focus-visible:outline-dashed"
-            style={
-              throttle === item.pct
-                ? { backgroundColor: bright, color: voidCol, borderColor: bright }
-                : { backgroundColor: dim, color: bright, borderColor: `${mid}60` }
-            }
+            data-testid="btn-step-sort"
+            onClick={handleStep}
+            disabled={currentStepIdx >= stepsRef.current.length - 1}
+            className="px-2 py-0.5 border text-[7.5px] sm:text-[8px] font-mono font-bold cursor-pointer transition-none outline-none focus-visible:outline-dashed disabled:opacity-40"
+            style={{ backgroundColor: dim, borderColor: bright, color: bright }}
           >
-            {item.label}
+            Step ↗
           </button>
-        ))}
+          <button
+            type="button"
+            data-testid="btn-auto-sort"
+            onClick={handleToggleAuto}
+            className="px-2 py-0.5 border text-[7.5px] sm:text-[8px] font-mono font-bold cursor-pointer transition-none outline-none focus-visible:outline-dashed"
+            style={{
+              backgroundColor: isAutoSorting ? bright : dim,
+              borderColor: bright,
+              color: isAutoSorting ? voidCol : bright,
+            }}
+          >
+            {isAutoSorting ? 'Pause' : 'Auto-Sort'}
+          </button>
+          <button
+            type="button"
+            data-testid="btn-reset-sort"
+            onClick={handleReset}
+            className="px-2 py-0.5 border text-[7.5px] sm:text-[8px] font-mono cursor-pointer transition-none outline-none focus-visible:outline-dashed"
+            style={{ backgroundColor: `${voidCol}cc`, borderColor: mid, color: bright }}
+          >
+            Reset
+          </button>
+        </div>
       </div>
 
-      {/* Simulated Tab Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-1 text-[6.5px] sm:text-[7px] font-mono">
-        {Array.from({ length: 8 }).map((_, i) => {
-          const isSuspended = i < Math.floor(suspendedTabs / 3);
+      {/* 8 Array Bars Visualization */}
+      <div
+        className="relative w-full h-[180px] sm:h-[200px] border flex items-end justify-between px-3 sm:px-6 pt-4 pb-2"
+        style={{ backgroundColor: voidCol, borderColor: `${mid}50` }}
+      >
+        {current.array.map((val, idx) => {
+          const isComparing = current.comparing?.includes(idx);
+          const isSwapping = isComparing && current.swapping;
+          const isSorted = current.sortedIndices.includes(idx);
+
+          let barBg = `${dim}bb`;
+          let barBorder = mid;
+          let textColor = `${bright}bb`;
+
+          if (isSwapping) {
+            barBg = '#FF2A85'; // crest magenta for swap
+            barBorder = '#FF2A85';
+            textColor = '#FFFFFF';
+          } else if (isComparing) {
+            barBg = '#00F0FF'; // wave cyan for comparison
+            barBorder = '#00F0FF';
+            textColor = voidCol;
+          } else if (isSorted) {
+            barBg = bright;
+            barBorder = bright;
+            textColor = voidCol;
+          }
+
+          const heightPercent = Math.max(16, (val / 85) * 85);
+
           return (
             <div
-              key={i}
-              className="p-1 border flex flex-col justify-between"
-              style={{
-                backgroundColor: isSuspended ? `${dim}50` : `${voidCol}80`,
-                borderColor: isSuspended ? `${mid}60` : bright,
-                color: isSuspended ? `${bright}80` : bright,
-              }}
+              key={`sort-bar-${val}`}
+              data-testid={`sort-bar-${idx}`}
+              className="flex flex-col items-center justify-end h-full flex-1 max-w-[34px] sm:max-w-[44px] mx-1 transition-all duration-150"
             >
-              <span>{`Tab 0${i + 1}`}</span>
-              <span className="font-bold">
-                {isSuspended ? 'Discarded • 2MB' : 'Active • 120MB'}
+              <span
+                className="font-mono text-[7px] sm:text-[8px] font-bold mb-1"
+                style={{ color: isComparing ? '#00F0FF' : textColor }}
+              >
+                {val}
+              </span>
+              <div
+                className="w-full border transition-all duration-150"
+                style={{
+                  height: `${heightPercent}%`,
+                  backgroundColor: barBg,
+                  borderColor: barBorder,
+                }}
+              />
+              <span className="font-mono text-[6.5px] sm:text-[7px] mt-1" style={{ color: mid }}>
+                [{idx}]
               </span>
             </div>
           );
         })}
       </div>
 
-      <div className="flex items-center justify-between text-[7px] sm:text-[7.5px] font-mono" style={{ color: mid }}>
-        <span>Heap: {currentHeapMB} MB / 1,840 MB Total</span>
-        <span>Daemon Wakelocks: 0 (Zero Idle CPU)</span>
+      {/* Live Telemetry Readout */}
+      <div
+        className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-[7px] sm:text-[8px] font-mono gap-1 pt-1 border-t"
+        style={{ borderColor: `${mid}40`, color: mid }}
+      >
+        <div className="flex items-center gap-3">
+          <span>
+            STEP: <strong style={{ color: bright }}>{current.stepCount}</strong> /{' '}
+            {stepsRef.current.length - 1}
+          </span>
+          <span>
+            COMPARISONS: <strong style={{ color: bright }}>{current.comparisons}</strong>
+          </span>
+          <span>
+            SWAPS: <strong style={{ color: bright }}>{current.swaps}</strong>
+          </span>
+        </div>
+        <span className="font-bold truncate" style={{ color: current.swapping ? '#FF2A85' : bright }}>
+          {current.status}
+        </span>
       </div>
     </div>
   );
 };
 
-// -------------------------------------------------------------
-// SUB-COMPONENT: Neon Vanguard Clickable Laser Target Canvas Sandbox
-// -------------------------------------------------------------
-interface ParticleSpark {
-  active: boolean;
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  life: number;
-  maxLife: number;
-  color: string;
-}
+// ----------------------------------------------------------------------------
+// MICRO-SANDBOX 2: FocusLab — Aperture Reflex Check
+// ----------------------------------------------------------------------------
+type ReflexState = 'IDLE' | 'ARMED' | 'FLASHING' | 'MEASURED' | 'TOO_EARLY';
 
-interface LaserBeam {
-  active: boolean;
-  startX: number;
-  startY: number;
-  endX: number;
-  endY: number;
-  life: number;
-  maxLife: number;
-  hit: boolean;
-}
-
-const SPARK_POOL_SIZE = 96;
-const BEAM_POOL_SIZE = 8;
-
-const NeonVanguardSandbox: React.FC<{
+const FocusLabReflexSandbox: React.FC<{
   bright: string;
   mid: string;
   dim: string;
   voidCol: string;
 }> = ({ bright, mid, dim, voidCol }) => {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [neutralizedCount, setNeutralizedCount] = useState<number>(0);
+  const [state, setState] = useState<ReflexState>('IDLE');
+  const [reactionTime, setReactionTime] = useState<number | null>(null);
+  const flashTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const flashStartTimeRef = useRef<number>(0);
 
-  // Pre-allocated zero-allocation deterministic memory pools
-  const sparksRef = useRef<ParticleSpark[]>([]);
-  const beamsRef = useRef<LaserBeam[]>([]);
-  const targetXRef = useRef<number>(140);
-  const targetVxRef = useRef<number>(1.8);
-  const targetFlashRef = useRef<number>(0);
+  const startReflexTest = () => {
+    try {
+      watchknightAudio.play8BitBlip(640);
+    } catch {}
+    if (flashTimerRef.current) clearTimeout(flashTimerRef.current);
 
-  // Initialize fixed memory pools once on component mount
-  useEffect(() => {
-    if (sparksRef.current.length === 0) {
-      const pool: ParticleSpark[] = [];
-      const colors = [bright, '#00F0FF', '#FF2A85', '#4AF626'];
-      for (let i = 0; i < SPARK_POOL_SIZE; i++) {
-        pool.push({
-          active: false,
-          x: 0,
-          y: 0,
-          vx: 0,
-          vy: 0,
-          life: 0,
-          maxLife: 20,
-          color: colors[i % colors.length],
-        });
-      }
-      sparksRef.current = pool;
-    }
+    setReactionTime(null);
+    setState('ARMED');
 
-    if (beamsRef.current.length === 0) {
-      const beamPool: LaserBeam[] = [];
-      for (let i = 0; i < BEAM_POOL_SIZE; i++) {
-        beamPool.push({
-          active: false,
-          startX: 240,
-          startY: 175,
-          endX: 0,
-          endY: 0,
-          life: 0,
-          maxLife: 8,
-          hit: false,
-        });
-      }
-      beamsRef.current = beamPool;
-    }
-  }, [bright]);
-
-  // Click / Tap on canvas to fire instant zero-alloc raycast laser
-  const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    if (rect.width <= 0 || rect.height <= 0) return;
-
-    // Correct coordinate transformation accounting for CSS stretch
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    const clickX = (e.clientX - rect.left) * scaleX;
-    const clickY = (e.clientY - rect.top) * scaleY;
-
-    const turretX = canvas.width / 2;
-    const turretY = canvas.height - 5;
-
-    // Check hit against moving target drone (centered at targetX, y=40, w=36, h=24)
-    const targetX = targetXRef.current;
-    const isHit = Math.abs(clickX - targetX) <= 22 && Math.abs(clickY - 40) <= 16;
-
-    if (isHit) {
-      targetFlashRef.current = 14;
-      setNeutralizedCount((c) => c + 1);
+    // Random delay between 1200ms and 2800ms
+    const delay = Math.floor(Math.random() * 1600) + 1200;
+    flashTimerRef.current = setTimeout(() => {
+      flashStartTimeRef.current = performance.now();
+      setState('FLASHING');
       try {
-        watchknightAudio.play8BitBlip(1420);
+        watchknightAudio.play8BitBlip(920);
       } catch {}
-    } else {
+    }, delay);
+  };
+
+  const handleRingClick = () => {
+    if (state === 'ARMED') {
+      // Clicked too early
+      if (flashTimerRef.current) clearTimeout(flashTimerRef.current);
+      setState('TOO_EARLY');
       try {
-        watchknightAudio.play8BitBlip(880);
+        watchknightAudio.play8BitBlip(180);
       } catch {}
-    }
-
-    // Activate a laser beam from pre-allocated beam pool
-    const beam = beamsRef.current.find((b) => !b.active) || beamsRef.current[0];
-    if (beam) {
-      beam.active = true;
-      beam.startX = turretX;
-      beam.startY = turretY;
-      beam.endX = clickX;
-      beam.endY = clickY;
-      beam.life = 0;
-      beam.maxLife = isHit ? 10 : 7;
-      beam.hit = isHit;
-    }
-
-    // Activate kinetic particle sparks from pre-allocated zero-alloc pool
-    const count = isHit ? 24 : 12;
-    let activated = 0;
-    const sparks = sparksRef.current;
-    const colors = isHit
-      ? ['#FF2A85', '#00F0FF', '#FFFFFF', bright]
-      : [bright, '#00F0FF', `${bright}99`];
-
-    for (let i = 0; i < sparks.length && activated < count; i++) {
-      const p = sparks[i];
-      if (!p.active) {
-        p.active = true;
-        p.x = clickX;
-        p.y = clickY;
-        const angle = Math.random() * Math.PI * 2;
-        const speed = isHit ? 2.0 + Math.random() * 4.5 : 1.2 + Math.random() * 2.8;
-        p.vx = Math.cos(angle) * speed;
-        p.vy = Math.sin(angle) * speed;
-        p.life = 0;
-        p.maxLife = 16 + Math.floor(Math.random() * 16);
-        p.color = colors[activated % colors.length];
-        activated++;
-      }
+    } else if (state === 'FLASHING') {
+      const rt = Math.round(performance.now() - flashStartTimeRef.current);
+      setReactionTime(rt);
+      setState('MEASURED');
+      try {
+        watchknightAudio.play8BitBlip(760);
+      } catch {}
+    } else if (state === 'IDLE' || state === 'TOO_EARLY' || state === 'MEASURED') {
+      startReflexTest();
     }
   };
 
   useEffect(() => {
-    let animId: number;
-
-    const render = () => {
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-
-      const w = canvas.width;
-      const h = canvas.height;
-
-      // Clear with CRT phosphor void
-      ctx.fillStyle = '#070814';
-      ctx.fillRect(0, 0, w, h);
-
-      // Subtle background grid
-      ctx.strokeStyle = `${dim}35`;
-      ctx.lineWidth = 1;
-      for (let x = 0; x < w; x += 24) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, h);
-        ctx.stroke();
-      }
-      for (let y = 0; y < h; y += 24) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(w, y);
-        ctx.stroke();
-      }
-
-      // Update target drone position
-      let tx = targetXRef.current + targetVxRef.current;
-      if (tx < 45 || tx > w - 45) {
-        targetVxRef.current = -targetVxRef.current;
-        tx = Math.max(45, Math.min(w - 45, tx));
-      }
-      targetXRef.current = tx;
-
-      // Draw bottom turret defense battery
-      const turretX = w / 2;
-      const turretY = h - 6;
-      ctx.fillStyle = mid;
-      ctx.fillRect(turretX - 16, turretY, 32, 6);
-      ctx.fillStyle = bright;
-      ctx.fillRect(turretX - 6, turretY - 6, 12, 6);
-
-      // Active Laser Beams
-      const beams = beamsRef.current;
-      for (let i = 0; i < beams.length; i++) {
-        const b = beams[i];
-        if (!b.active) continue;
-        b.life++;
-        if (b.life >= b.maxLife) {
-          b.active = false;
-          continue;
-        }
-
-        const beamAlpha = 1 - b.life / b.maxLife;
-
-        // Outer glow beam
-        ctx.strokeStyle = b.hit ? '#FF2A85' : '#00F0FF';
-        ctx.lineWidth = b.hit ? 3 : 2;
-        ctx.globalAlpha = beamAlpha * 0.85;
-        ctx.beginPath();
-        ctx.moveTo(b.startX, b.startY);
-        ctx.lineTo(b.endX, b.endY);
-        ctx.stroke();
-
-        // Core white streak
-        ctx.strokeStyle = '#FFFFFF';
-        ctx.lineWidth = 1;
-        ctx.globalAlpha = beamAlpha;
-        ctx.beginPath();
-        ctx.moveTo(b.startX, b.startY);
-        ctx.lineTo(b.endX, b.endY);
-        ctx.stroke();
-
-        ctx.globalAlpha = 1;
-      }
-
-      // Draw moving target drone
-      const isTargetFlashing = targetFlashRef.current > 0;
-      if (isTargetFlashing) {
-        targetFlashRef.current--;
-      }
-
-      const droneColor = isTargetFlashing ? '#FF2A85' : bright;
-      ctx.strokeStyle = droneColor;
-      ctx.lineWidth = isTargetFlashing ? 2 : 1.5;
-      ctx.strokeRect(tx - 18, 28, 36, 24);
-      ctx.fillStyle = isTargetFlashing ? '#FF2A8550' : `${bright}25`;
-      ctx.fillRect(tx - 18, 28, 36, 24);
-
-      // Target crosshairs
-      ctx.beginPath();
-      ctx.moveTo(tx, 22);
-      ctx.lineTo(tx, 58);
-      ctx.moveTo(tx - 24, 40);
-      ctx.lineTo(tx + 24, 40);
-      ctx.stroke();
-
-      ctx.fillStyle = droneColor;
-      ctx.font = '8px monospace';
-      ctx.fillText(isTargetFlashing ? '!HIT!' : 'Target', tx - 20, 24);
-
-      // Render kinetic sparks from zero-alloc pool
-      const sparks = sparksRef.current;
-      for (let i = 0; i < sparks.length; i++) {
-        const p = sparks[i];
-        if (!p.active) continue;
-
-        p.x += p.vx;
-        p.y += p.vy;
-        p.vx *= 0.96;
-        p.vy *= 0.96;
-        p.life++;
-
-        if (p.life >= p.maxLife) {
-          p.active = false;
-          continue;
-        }
-
-        const alpha = 1 - p.life / p.maxLife;
-        ctx.fillStyle = p.color;
-        ctx.globalAlpha = alpha;
-        ctx.fillRect(p.x - 1.5, p.y - 1.5, 3, 3);
-        ctx.globalAlpha = 1;
-      }
-
-      animId = requestAnimationFrame(render);
+    return () => {
+      if (flashTimerRef.current) clearTimeout(flashTimerRef.current);
     };
+  }, []);
 
-    animId = requestAnimationFrame(render);
-    return () => cancelAnimationFrame(animId);
-  }, [bright, dim, mid]);
+  const sampleMedian = 287;
+  const delta = reactionTime !== null ? sampleMedian - reactionTime : null;
 
   return (
     <div
       data-testid="interactive-demo-sandbox"
-      className="p-3 border flex flex-col gap-2 mt-2 select-none"
+      className="p-3 border flex flex-col gap-2.5 mt-2 select-none"
       style={{ backgroundColor: `${voidCol}f0`, borderColor: mid }}
     >
-      <div className="flex items-center justify-between text-[8px] sm:text-[9px] font-mono pb-1 border-b" style={{ borderColor: `${mid}40` }}>
-        <span className="font-bold" style={{ color: bright }}>
-          Simulation: Zero-Alloc Laser Target Canvas (120 FPS • Deterministic Pool)
+      <div
+        className="flex items-center justify-between text-[8px] sm:text-[9px] font-mono pb-1.5 border-b"
+        style={{ borderColor: `${mid}40` }}
+      >
+        <span className="font-bold uppercase" style={{ color: bright }}>
+          Aperture Reflex Check (3-Minute Visual Reaction Studio)
         </span>
-        <span className="font-mono text-[8px] font-bold" style={{ color: bright }}>
-          Targets Hit: {neutralizedCount}
-        </span>
+        <button
+          type="button"
+          data-testid="btn-start-reflex"
+          onClick={handleRingClick}
+          className="px-2 py-0.5 border text-[7.5px] sm:text-[8px] font-mono font-bold cursor-pointer transition-none outline-none focus-visible:outline-dashed"
+          style={{ backgroundColor: dim, borderColor: bright, color: bright }}
+        >
+          {state === 'ARMED'
+            ? 'Armed (Wait...)'
+            : state === 'FLASHING'
+            ? 'CLICK FLASH NOW!'
+            : 'Start Reflex Check'}
+        </button>
       </div>
 
-      <canvas
-        ref={canvasRef}
-        width={480}
-        height={180}
-        onClick={handleCanvasClick}
-        className="w-full h-[180px] border cursor-crosshair touch-none"
-        style={{ borderColor: mid, touchAction: 'none' }}
-        aria-label="Clickable zero-alloc laser target canvas"
-      />
+      {/* Interactive Aperture Ring */}
+      <div
+        data-testid="aperture-reflex-ring"
+        onClick={handleRingClick}
+        className="relative w-full h-[180px] sm:h-[200px] border flex flex-col items-center justify-center cursor-pointer transition-colors"
+        style={{
+          backgroundColor: state === 'FLASHING' ? `${bright}25` : voidCol,
+          borderColor: state === 'FLASHING' ? bright : `${mid}50`,
+        }}
+      >
+        <div
+          className={`relative rounded-full flex flex-col items-center justify-center border-2 transition-all ${
+            state === 'FLASHING' ? 'scale-110 shadow-lg' : ''
+          }`}
+          style={{
+            width: '130px',
+            height: '130px',
+            borderColor:
+              state === 'FLASHING'
+                ? '#00F0FF'
+                : state === 'TOO_EARLY'
+                ? '#FF2A85'
+                : state === 'MEASURED'
+                ? bright
+                : mid,
+            backgroundColor:
+              state === 'FLASHING'
+                ? '#00F0FF20'
+                : state === 'TOO_EARLY'
+                ? '#FF2A8520'
+                : `${dim}40`,
+            boxShadow:
+              state === 'FLASHING' ? '0 0 25px rgba(0, 240, 255, 0.6)' : 'none',
+          }}
+        >
+          {/* Inner concentric ring */}
+          <div
+            className="absolute rounded-full border border-dashed pointer-events-none"
+            style={{ width: '84px', height: '84px', borderColor: `${mid}80` }}
+          />
 
-      <div className="flex items-center justify-between text-[7px] sm:text-[7.5px] font-mono" style={{ color: mid }}>
-        <span>Click or tap canvas to fire instant raycast laser</span>
-        <span>Zero runtime heap allocations • &lt;1.2µs POSIX</span>
+          {/* Aperture Center Status */}
+          {state === 'IDLE' && (
+            <div className="text-center font-mono text-[8px] p-2" style={{ color: bright }}>
+              CLICK TO
+              <br />
+              <strong style={{ color: '#00F0FF' }}>PRIME APERTURE</strong>
+            </div>
+          )}
+          {state === 'ARMED' && (
+            <div className="text-center font-mono text-[7.5px] animate-pulse p-2" style={{ color: mid }}>
+              WAIT FOR FLASH...
+              <br />
+              (DO NOT CLICK)
+            </div>
+          )}
+          {state === 'FLASHING' && (
+            <div className="text-center font-mono text-[10px] font-bold p-2" style={{ color: '#00F0FF' }}>
+              CLICK NOW!
+            </div>
+          )}
+          {state === 'TOO_EARLY' && (
+            <div className="text-center font-mono text-[7.5px] p-2" style={{ color: '#FF2A85' }}>
+              Too early! Wait for flash
+              <br />
+              (Click to retry)
+            </div>
+          )}
+          {state === 'MEASURED' && reactionTime !== null && (
+            <div className="text-center font-mono p-1">
+              <span className="font-pixel text-base font-bold" style={{ color: bright }}>
+                {reactionTime} ms
+              </span>
+              <div
+                className="text-[6.5px] sm:text-[7px]"
+                style={{
+                  color:
+                    delta !== null && delta > 0
+                      ? '#4AF626'
+                      : delta === 0
+                      ? bright
+                      : '#FFCC00',
+                }}
+              >
+                {delta !== null && delta > 0
+                  ? `+${delta} ms faster than median`
+                  : delta === 0
+                  ? `Matches sample median (${sampleMedian} ms)`
+                  : `${Math.abs(delta!)} ms slower than median`}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="mt-2 text-[7px] font-mono" style={{ color: mid }}>
+          {state === 'ARMED' ? 'APERTURE SENSOR ARMED' : 'CLICK APERTURE RING TO TEST'}
+        </div>
+      </div>
+
+      {/* Telemetry Footer */}
+      <div
+        className="flex items-center justify-between text-[7px] sm:text-[7.5px] font-mono pt-1 border-t"
+        style={{ borderColor: `${mid}40`, color: mid }}
+      >
+        <span>
+          SAMPLE MEDIAN: <strong style={{ color: bright }}>{sampleMedian} ms</strong>
+        </span>
+        <span>
+          YOUR REACTION:{' '}
+          <strong style={{ color: reactionTime ? bright : mid }}>
+            {reactionTime ? `${reactionTime} ms` : '--'}
+          </strong>
+        </span>
+        <span>PRECISION: SUB-MS HIGH-RES TIMER</span>
       </div>
     </div>
   );
 };
 
-// -------------------------------------------------------------
-// MAIN COMPONENT: ProjectsView
-// -------------------------------------------------------------
-const FLAGSHIP_REPO_SLUGS = new Set([
-  'mental-defrag',
-  'focusguard',
-  'doclensbd',
-  'rannabanna',
-]);
+// ----------------------------------------------------------------------------
+// MICRO-SANDBOX 3: Rannabanna — Kitchen Staples Matchmaker
+// ----------------------------------------------------------------------------
+export interface PantryRecipe {
+  id: string;
+  name: string;
+  bengaliName: string;
+  cuisine: string;
+  prepTime: string;
+  ingredients: string[];
+}
 
-export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
+export const PANTRY_STAPLES = [
+  'Red Onion',
+  'Garlic',
+  'Ginger',
+  'Egg',
+  'Basmati Rice',
+  'Chicken Breast',
+];
+
+export const PANTRY_RECIPES: PantryRecipe[] = [
+  {
+    id: 'dim-bhuna',
+    name: 'Bengali Dim Bhuna',
+    bengaliName: 'ডিম ভুনা',
+    cuisine: 'Bengali Traditional',
+    prepTime: '25 min',
+    ingredients: ['Egg', 'Red Onion', 'Garlic', 'Ginger'],
+  },
+  {
+    id: 'chicken-biryani',
+    name: 'Basmati Chicken Biryani',
+    bengaliName: 'চিকেন বিরিয়ানি',
+    cuisine: 'South Asian Heritage',
+    prepTime: '45 min',
+    ingredients: ['Chicken Breast', 'Basmati Rice', 'Red Onion', 'Ginger', 'Garlic'],
+  },
+  {
+    id: 'egg-fried-rice',
+    name: 'Garlic Egg Fried Rice',
+    bengaliName: 'গার্লিক এগ ফ্রাইড রাইস',
+    cuisine: 'Pan-Asian Wok',
+    prepTime: '15 min',
+    ingredients: ['Egg', 'Basmati Rice', 'Garlic', 'Red Onion'],
+  },
+  {
+    id: 'ginger-chicken',
+    name: 'Ginger Glazed Chicken',
+    bengaliName: 'জিঞ্জার চিকেন',
+    cuisine: 'Global Stir-Fry',
+    prepTime: '20 min',
+    ingredients: ['Chicken Breast', 'Ginger', 'Garlic', 'Red Onion'],
+  },
+  {
+    id: 'dhaka-morog-polao',
+    name: 'Dhaka Morog Polao',
+    bengaliName: 'মোরগ পোলাও',
+    cuisine: 'Old Dhaka Heritage',
+    prepTime: '40 min',
+    ingredients: ['Chicken Breast', 'Basmati Rice', 'Red Onion', 'Ginger', 'Garlic'],
+  },
+];
+
+const RannabannaPantrySandbox: React.FC<{
+  bright: string;
+  mid: string;
+  dim: string;
+  voidCol: string;
+}> = ({ bright, mid, dim, voidCol }) => {
+  const [selectedStaples, setSelectedStaples] = useState<string[]>([
+    'Red Onion',
+    'Garlic',
+    'Egg',
+  ]);
+
+  const toggleStaple = (item: string) => {
+    try {
+      watchknightAudio.play8BitBlip(selectedStaples.includes(item) ? 460 : 780);
+    } catch {}
+
+    setSelectedStaples((prev) =>
+      prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item]
+    );
+  };
+
+  // Score recipes by matched ingredient count
+  const scoredRecipes = PANTRY_RECIPES.map((recipe) => {
+    const matched = recipe.ingredients.filter((ing) => selectedStaples.includes(ing));
+    const percent = Math.round((matched.length / recipe.ingredients.length) * 100);
+    return {
+      ...recipe,
+      matchedCount: matched.length,
+      matchPercent: percent,
+    };
+  }).sort((a, b) => b.matchPercent - a.matchPercent);
+
+  // Truly filter to only recipes that match at least 1 selected staple
+  const filteredRecipes = scoredRecipes.filter((r) => r.matchedCount > 0);
+
+  return (
+    <div
+      data-testid="interactive-demo-sandbox"
+      className="p-3 border flex flex-col gap-2.5 mt-2 select-none"
+      style={{ backgroundColor: `${voidCol}f0`, borderColor: mid }}
+    >
+      <div
+        className="flex items-center justify-between text-[8px] sm:text-[9px] font-mono pb-1.5 border-b"
+        style={{ borderColor: `${mid}40` }}
+      >
+        <span className="font-bold uppercase" style={{ color: bright }}>
+          Kitchen Staples Matchmaker (Tap staples to filter recipes in real time)
+        </span>
+        <button
+          type="button"
+          data-testid="btn-toggle-all-staples"
+          onClick={() => {
+            try {
+              watchknightAudio.play8BitBlip(520);
+            } catch {}
+            setSelectedStaples(
+              selectedStaples.length === PANTRY_STAPLES.length ? [] : [...PANTRY_STAPLES]
+            );
+          }}
+          className="px-1.5 py-0.5 border text-[7px] font-mono cursor-pointer transition-none outline-none focus-visible:outline-dashed"
+          style={{ backgroundColor: dim, borderColor: bright, color: bright }}
+        >
+          {selectedStaples.length === PANTRY_STAPLES.length ? 'Clear All' : 'Select All'}
+        </button>
+      </div>
+
+      {/* Ingredient Pills Bar */}
+      <div className="flex flex-wrap gap-1.5 items-center">
+        {PANTRY_STAPLES.map((staple) => {
+          const isSelected = selectedStaples.includes(staple);
+          return (
+            <button
+              key={staple}
+              type="button"
+              data-testid={`staple-pill-${staple.toLowerCase().replace(/\s+/g, '-')}`}
+              onClick={() => toggleStaple(staple)}
+              className="px-2 py-1 border font-mono text-[7.5px] sm:text-[8px] font-bold cursor-pointer transition-none outline-none focus-visible:outline-dashed flex items-center gap-1"
+              style={{
+                backgroundColor: isSelected ? bright : `${dim}40`,
+                color: isSelected ? voidCol : bright,
+                borderColor: isSelected ? bright : mid,
+              }}
+            >
+              <span>{isSelected ? '[✓]' : '[ ]'}</span>
+              <span>{staple}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Real-time Filtered Recipe Cards */}
+      {filteredRecipes.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[220px] overflow-y-auto pr-1">
+          {filteredRecipes.map((recipe) => (
+            <div
+              key={recipe.id}
+              data-testid={`pantry-recipe-card-${recipe.id}`}
+              className="p-2 border flex flex-col justify-between gap-1 transition-none"
+              style={{
+                backgroundColor: `${voidCol}95`,
+                borderColor: recipe.matchPercent === 100 ? bright : `${mid}60`,
+              }}
+            >
+              <div className="flex items-start justify-between gap-1">
+                <div>
+                  <span className="font-mono text-[7px] font-bold" style={{ color: mid }}>
+                    {recipe.cuisine} • {recipe.prepTime}
+                  </span>
+                  <h4 className="font-bold text-[8.5px] sm:text-[9px]" style={{ color: bright }}>
+                    {recipe.name}{' '}
+                    <span className="font-normal text-[7.5px]" style={{ color: `${bright}aa` }}>
+                      ({recipe.bengaliName})
+                    </span>
+                  </h4>
+                </div>
+                <span
+                  className="px-1 py-0.5 border text-[7px] font-mono font-bold whitespace-nowrap"
+                  style={{
+                    backgroundColor: recipe.matchPercent === 100 ? bright : `${dim}60`,
+                    color: recipe.matchPercent === 100 ? voidCol : bright,
+                    borderColor: bright,
+                  }}
+                >
+                  {recipe.matchPercent}% Match
+                </span>
+              </div>
+
+              <div className="flex flex-wrap gap-1 text-[6.5px] font-mono mt-0.5">
+                {recipe.ingredients.map((ing) => {
+                  const hasItem = selectedStaples.includes(ing);
+                  return (
+                    <span
+                      key={ing}
+                      className="px-1 py-0.2 border"
+                      style={{
+                        borderColor: hasItem ? `${bright}80` : `${mid}40`,
+                        color: hasItem ? bright : `${mid}99`,
+                        backgroundColor: hasItem ? `${dim}50` : 'transparent',
+                      }}
+                    >
+                      {hasItem ? '● ' : '○ '}
+                      {ing}
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div
+          className="p-4 border text-center font-mono text-[8px] flex flex-col items-center justify-center gap-1"
+          style={{ borderColor: `${mid}40`, backgroundColor: `${voidCol}80`, color: mid }}
+        >
+          <span style={{ color: bright }}>NO MATCHING RECIPES</span>
+          <span>
+            {selectedStaples.length === 0
+              ? 'No pantry staples selected. Tap ingredients above to filter recipes.'
+              : 'Select additional staples to find matching dishes.'}
+          </span>
+        </div>
+      )}
+
+      <div
+        className="flex items-center justify-between text-[7px] font-mono pt-1 border-t"
+        style={{ borderColor: `${mid}40`, color: mid }}
+      >
+        <span>
+          MATCHED RECIPES:{' '}
+          <strong style={{ color: bright }}>
+            {filteredRecipes.length} / {PANTRY_RECIPES.length}
+          </strong>
+        </span>
+        <span>LATENCY: &lt;15ms CLIENT-SIDE INDEXED QUERY</span>
+      </div>
+    </div>
+  );
+};
+
+// ----------------------------------------------------------------------------
+// MICRO-SANDBOX 4: DocLensBD — 3D Eyewear Frame & Lens Configurator
+// ----------------------------------------------------------------------------
+const EYEWEAR_FRAMES = [
+  { id: 'aviator', name: 'Titanium Aviator', style: 'Teardrop Double-Bridge' },
+  { id: 'wayfarer', name: 'Matte Wayfarer', style: 'Trapezoid Bold Acetate' },
+  { id: 'hexagon', name: 'Cyber Hexagon', style: 'Slim Geometric Wireframe' },
+  { id: 'round', name: 'Round Tortoise', style: 'Classic Pantoscopic Round' },
+];
+
+const LENS_TINTS = [
+  { id: 'clear', name: 'Clear Optical', hex: 'rgba(255, 255, 255, 0.15)' },
+  { id: 'blu', name: 'Amber BLU Filter', hex: 'rgba(255, 204, 0, 0.35)' },
+  { id: 'green', name: 'Cyber Green Polarized', hex: 'rgba(74, 246, 38, 0.35)' },
+  { id: 'smoke', name: 'Dark Smoke UV400', hex: 'rgba(10, 10, 10, 0.65)' },
+];
+
+const DocLensTryOnSandbox: React.FC<{
+  bright: string;
+  mid: string;
+  dim: string;
+  voidCol: string;
+}> = ({ bright, mid, dim, voidCol }) => {
+  const [activeFrameId, setActiveFrameId] = useState<string>('aviator');
+  const [activeTintId, setActiveTintId] = useState<string>('blu');
+  const [pupilDistance, setPupilDistance] = useState<number>(63);
+
+  const activeFrame =
+    EYEWEAR_FRAMES.find((f) => f.id === activeFrameId) || EYEWEAR_FRAMES[0];
+  const activeTint =
+    LENS_TINTS.find((t) => t.id === activeTintId) || LENS_TINTS[0];
+
+  // Scale pupillary distance (56mm - 74mm, median 63mm) to SVG face mesh coordinates (center 160, eye centers 122 & 198)
+  const halfPdSvg = (pupilDistance * 38) / 63;
+  const leftEyeX = 160 - halfPdSvg;
+  const rightEyeX = 160 + halfPdSvg;
+
+  return (
+    <div
+      data-testid="interactive-demo-sandbox"
+      className="p-3 border flex flex-col gap-2.5 mt-2 select-none"
+      style={{ backgroundColor: `${voidCol}f0`, borderColor: mid }}
+    >
+      <div
+        className="flex items-center justify-between text-[8px] sm:text-[9px] font-mono pb-1.5 border-b"
+        style={{ borderColor: `${mid}40` }}
+      >
+        <span className="font-bold uppercase" style={{ color: bright }}>
+          3D Eyewear Frame &amp; Lens Configurator (Real-Time Mesh Preview)
+        </span>
+        <div className="flex items-center gap-1 font-mono text-[7px]" style={{ color: mid }}>
+          <span>PD:</span>
+          <button
+            type="button"
+            onClick={() => {
+              try { watchknightAudio.play8BitBlip(540); } catch {}
+              setPupilDistance((prev) => Math.max(56, prev - 1));
+            }}
+            className="px-1 border cursor-pointer font-bold"
+            style={{ borderColor: mid, color: bright, backgroundColor: dim }}
+          >
+            -
+          </button>
+          <span className="font-bold px-1" style={{ color: bright }}>
+            {pupilDistance} mm
+          </span>
+          <button
+            type="button"
+            onClick={() => {
+              try { watchknightAudio.play8BitBlip(620); } catch {}
+              setPupilDistance((prev) => Math.min(74, prev + 1));
+            }}
+            className="px-1 border cursor-pointer font-bold"
+            style={{ borderColor: mid, color: bright, backgroundColor: dim }}
+          >
+            +
+          </button>
+        </div>
+      </div>
+
+      {/* Frame & Tint Selector Buttons */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div className="flex flex-wrap gap-1 items-center">
+          <span className="font-mono text-[7px] uppercase" style={{ color: mid }}>
+            Frame:
+          </span>
+          {EYEWEAR_FRAMES.map((f) => (
+            <button
+              key={f.id}
+              type="button"
+              onClick={() => {
+                try {
+                  watchknightAudio.play8BitBlip(680);
+                } catch {}
+                setActiveFrameId(f.id);
+              }}
+              className="px-1.5 py-0.5 border font-mono text-[7px] cursor-pointer transition-none outline-none focus-visible:outline-dashed"
+              style={{
+                backgroundColor: activeFrameId === f.id ? bright : `${dim}40`,
+                color: activeFrameId === f.id ? voidCol : bright,
+                borderColor: activeFrameId === f.id ? bright : mid,
+              }}
+            >
+              {f.name}
+            </button>
+          ))}
+        </div>
+
+        <div className="flex flex-wrap gap-1 items-center">
+          <span className="font-mono text-[7px] uppercase" style={{ color: mid }}>
+            Tint:
+          </span>
+          {LENS_TINTS.map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              onClick={() => {
+                try {
+                  watchknightAudio.play8BitBlip(840);
+                } catch {}
+                setActiveTintId(t.id);
+              }}
+              className="px-1.5 py-0.5 border font-mono text-[7px] cursor-pointer transition-none outline-none focus-visible:outline-dashed"
+              style={{
+                backgroundColor: activeTintId === t.id ? bright : `${dim}40`,
+                color: activeTintId === t.id ? voidCol : bright,
+                borderColor: activeTintId === t.id ? bright : mid,
+              }}
+            >
+              {t.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 3D Wireframe / Landmark Simulation Stage */}
+      <div
+        className="relative w-full h-[180px] sm:h-[200px] border flex items-center justify-center overflow-hidden"
+        style={{ backgroundColor: voidCol, borderColor: `${mid}50` }}
+      >
+        <svg
+          viewBox="0 0 320 180"
+          className="w-full h-full max-w-[400px] max-h-[190px]"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          {/* Face Silhouette Outline */}
+          <path
+            d="M 90 60 C 90 20 230 20 230 60 C 230 110 210 160 160 170 C 110 160 90 110 90 60 Z"
+            stroke={`${mid}40`}
+            strokeWidth="1.5"
+            strokeDasharray="3 3"
+          />
+
+          {/* Facial Landmark Points */}
+          <circle cx="160" cy="50" r="2" fill={`${mid}60`} />
+          <circle cx="160" cy="95" r="2" fill={`${mid}60`} />
+          <circle cx="160" cy="135" r="2" fill={`${mid}60`} />
+          <circle cx="130" cy="115" r="2" fill={`${mid}40`} />
+          <circle cx="190" cy="115" r="2" fill={`${mid}40`} />
+
+          {/* Pupil Distance Alignment Axis Line */}
+          <line
+            x1={leftEyeX}
+            y1="75"
+            x2={rightEyeX}
+            y2="75"
+            stroke="#00F0FF"
+            strokeWidth="0.6"
+            strokeDasharray="2 2"
+            opacity="0.6"
+          />
+
+          {/* Left Pupil Reticle */}
+          <circle cx={leftEyeX} cy="75" r="3" stroke="#00F0FF" strokeWidth="1" />
+          <circle cx={leftEyeX} cy="75" r="1" fill="#00F0FF" />
+          <line
+            x1={leftEyeX - 6}
+            y1="75"
+            x2={leftEyeX + 6}
+            y2="75"
+            stroke="#00F0FF"
+            strokeWidth="0.8"
+          />
+          <line
+            x1={leftEyeX}
+            y1="69"
+            x2={leftEyeX}
+            y2="81"
+            stroke="#00F0FF"
+            strokeWidth="0.8"
+          />
+
+          {/* Right Pupil Reticle */}
+          <circle cx={rightEyeX} cy="75" r="3" stroke="#00F0FF" strokeWidth="1" />
+          <circle cx={rightEyeX} cy="75" r="1" fill="#00F0FF" />
+          <line
+            x1={rightEyeX - 6}
+            y1="75"
+            x2={rightEyeX + 6}
+            y2="75"
+            stroke="#00F0FF"
+            strokeWidth="0.8"
+          />
+          <line
+            x1={rightEyeX}
+            y1="69"
+            x2={rightEyeX}
+            y2="81"
+            stroke="#00F0FF"
+            strokeWidth="0.8"
+          />
+
+          {/* Real-time PD Readout Indicator */}
+          <text
+            x="160"
+            y="52"
+            textAnchor="middle"
+            fill="#00F0FF"
+            fontSize="7"
+            fontFamily="monospace"
+            fontWeight="bold"
+          >
+            PD: {pupilDistance}mm
+          </text>
+
+          {/* Eyewear Frame Rendering based on activeFrameId */}
+          {activeFrameId === 'aviator' && (
+            <g>
+              {/* Left Lens */}
+              <path
+                d="M 100 60 C 120 58 145 60 148 75 C 145 96 115 100 100 85 C 92 75 92 65 100 60 Z"
+                fill={activeTint.hex}
+                stroke={bright}
+                strokeWidth="2"
+              />
+              {/* Right Lens */}
+              <path
+                d="M 220 60 C 200 58 175 60 172 75 C 175 96 205 100 220 85 C 228 75 228 65 220 60 Z"
+                fill={activeTint.hex}
+                stroke={bright}
+                strokeWidth="2"
+              />
+              {/* Double Bridge */}
+              <line x1="148" y1="65" x2="172" y2="65" stroke={bright} strokeWidth="1.5" />
+              <line x1="146" y1="72" x2="174" y2="72" stroke={bright} strokeWidth="1.5" />
+              {/* Temples */}
+              <line x1="94" y1="65" x2="72" y2="60" stroke={bright} strokeWidth="1.5" />
+              <line x1="226" y1="65" x2="248" y2="60" stroke={bright} strokeWidth="1.5" />
+            </g>
+          )}
+
+          {activeFrameId === 'wayfarer' && (
+            <g>
+              {/* Left Trapezoid */}
+              <polygon
+                points="95,58 150,60 144,92 105,90"
+                fill={activeTint.hex}
+                stroke={bright}
+                strokeWidth="3.5"
+              />
+              {/* Right Trapezoid */}
+              <polygon
+                points="225,58 170,60 176,92 215,90"
+                fill={activeTint.hex}
+                stroke={bright}
+                strokeWidth="3.5"
+              />
+              <line x1="150" y1="64" x2="170" y2="64" stroke={bright} strokeWidth="3" />
+              <line x1="95" y1="62" x2="70" y2="60" stroke={bright} strokeWidth="2.5" />
+              <line x1="225" y1="62" x2="250" y2="60" stroke={bright} strokeWidth="2.5" />
+            </g>
+          )}
+
+          {activeFrameId === 'hexagon' && (
+            <g>
+              {/* Left Hexagon */}
+              <polygon
+                points="95,72 110,58 140,58 150,72 140,88 110,88"
+                fill={activeTint.hex}
+                stroke={bright}
+                strokeWidth="2"
+              />
+              {/* Right Hexagon */}
+              <polygon
+                points="225,72 210,58 180,58 170,72 180,88 210,88"
+                fill={activeTint.hex}
+                stroke={bright}
+                strokeWidth="2"
+              />
+              <line x1="150" y1="72" x2="170" y2="72" stroke={bright} strokeWidth="1.5" />
+              <line x1="95" y1="72" x2="70" y2="68" stroke={bright} strokeWidth="1.5" />
+              <line x1="225" y1="72" x2="250" y2="68" stroke={bright} strokeWidth="1.5" />
+            </g>
+          )}
+
+          {activeFrameId === 'round' && (
+            <g>
+              {/* Left Round */}
+              <circle
+                cx="122"
+                cy="75"
+                r="24"
+                fill={activeTint.hex}
+                stroke={bright}
+                strokeWidth="2"
+              />
+              {/* Right Round */}
+              <circle
+                cx="198"
+                cy="75"
+                r="24"
+                fill={activeTint.hex}
+                stroke={bright}
+                strokeWidth="2"
+              />
+              <path d="M 146 72 Q 160 67 174 72" stroke={bright} strokeWidth="1.5" fill="none" />
+              <line x1="98" y1="74" x2="72" y2="70" stroke={bright} strokeWidth="1.5" />
+              <line x1="222" y1="74" x2="248" y2="70" stroke={bright} strokeWidth="1.5" />
+            </g>
+          )}
+        </svg>
+
+        <div className="absolute bottom-2 left-2 font-mono text-[7px]" style={{ color: mid }}>
+          ACTIVE: {activeFrame.name} • {activeTint.name}
+        </div>
+      </div>
+
+      <div
+        className="flex items-center justify-between text-[7px] font-mono pt-1 border-t"
+        style={{ borderColor: `${mid}40`, color: mid }}
+      >
+        <span>CATALOG: 198+ PRECISION FRAMES</span>
+        <span>FACE TRACKING: 468 MESH LANDMARKS • 60 FPS</span>
+      </div>
+    </div>
+  );
+};
+
+// ----------------------------------------------------------------------------
+// MAIN VIEW COMPONENT: ProjectsView
+// ----------------------------------------------------------------------------
+export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette, initialSelectedProjectId }) => {
   const os = useRetroOS();
 
-  const bright = palette?.bright ?? '#c2cdb4';
-  const voidCol = palette?.void ?? '#111712';
-  const mid = palette?.mid ?? '#6e7d62';
-  const dim = palette?.dim ?? '#2e3b2b';
+  const bright = palette?.bright ?? (os.phosphorMode === 'amber' ? '#d4a359' : '#c2cdb4');
+  const voidCol = palette?.void ?? (os.phosphorMode === 'amber' ? '#140f07' : '#111712');
+  const mid = palette?.mid ?? (os.phosphorMode === 'amber' ? '#8c6830' : '#6e7d62');
+  const dim = palette?.dim ?? (os.phosphorMode === 'amber' ? '#3d2b12' : '#2e3b2b');
 
-  // 1. Single Selected Project for Unfolding Case Study Reader View (null = Grid view)
-  const [selectedProject, setSelectedProject] = useState<FlagshipProject | null>(null);
+  const effectiveTargetId = initialSelectedProjectId ?? os.selectedProjectId;
 
-  // 2. Interactive Sandbox toggle state inside Case Study Detail View
-  const [isSandboxOpen, setIsSandboxOpen] = useState<boolean>(false);
+  // 1. Single Selected Project for Unfolding Case Study Reader View (null = 2x2 Grid view)
+  const [selectedProject, setSelectedProject] = useState<FlagshipProject | null>(() => {
+    if (effectiveTargetId) {
+      return (
+        FLAGSHIP_PROJECTS.find(
+          (p) =>
+            p.id === effectiveTargetId ||
+            p.index === effectiveTargetId ||
+            p.id.toLowerCase().includes(effectiveTargetId.toLowerCase()) ||
+            p.title.toLowerCase() === effectiveTargetId.toLowerCase()
+        ) ?? null
+      );
+    }
+    return null;
+  });
 
-  // 3. Compact GitHub Archive Accordion state (collapsed by default)
-  const [isAccordionOpen, setIsAccordionOpen] = useState<boolean>(false);
+  // Sync selected project whenever initialSelectedProjectId prop or os.selectedProjectId updates
+  useEffect(() => {
+    const targetId = initialSelectedProjectId ?? os.selectedProjectId;
+    if (targetId) {
+      const match = FLAGSHIP_PROJECTS.find(
+        (p) =>
+          p.id === targetId ||
+          p.index === targetId ||
+          p.id.toLowerCase().includes(targetId.toLowerCase()) ||
+          p.title.toLowerCase() === targetId.toLowerCase()
+      );
+      if (match) {
+        setSelectedProject(match);
+      }
+    }
+  }, [initialSelectedProjectId, os.selectedProjectId]);
 
-  // 4. Live Repositories state & fetch lifecycle
-  const [repos, setRepos] = useState<GitHubRepoItem[]>(FALLBACK_REPOSITORIES);
+  // 2. Interactive Sandbox toggle state inside Case Study Detail View (live by default)
+  const [isSandboxOpen, setIsSandboxOpen] = useState<boolean>(true);
   const [hoveredCardId, setHoveredCardId] = useState<string | null>(null);
 
   // Audio blip helper
@@ -1118,94 +1350,23 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
     } catch {}
   };
 
-  // Fetch additional repos with sessionStorage caching and flagship deduplication
-  useEffect(() => {
-    let isCancelled = false;
-
-    const loadAdditionalRepos = async () => {
-      if (typeof window !== 'undefined' && window.sessionStorage) {
-        try {
-          const cachedStr = sessionStorage.getItem(GITHUB_CACHE_KEY);
-          if (cachedStr) {
-            const parsed = JSON.parse(cachedStr);
-            if (Date.now() - (parsed.timestamp || 0) < GITHUB_CACHE_TTL && Array.isArray(parsed.data)) {
-              if (!isCancelled) {
-                setRepos(parsed.data);
-              }
-              return;
-            }
-          }
-        } catch {}
-      }
-
-      try {
-        const res = await fetch(
-          'https://api.github.com/users/watchknight/repos?sort=updated&per_page=10',
-          { headers: { Accept: 'application/vnd.github.v3+json' } }
-        );
-
-        if (!res.ok) throw new Error(`Status ${res.status}`);
-
-        const data = await res.json();
-        if (Array.isArray(data) && data.length > 0 && !isCancelled) {
-          const formatted: GitHubRepoItem[] = data.map((item: any) => ({
-            id: item.id,
-            name: item.name,
-            description: item.description,
-            html_url: item.html_url || `https://github.com/watchknight/${item.name}`,
-            stargazers_count: item.stargazers_count ?? 0,
-            language: item.language ?? 'Text',
-            updated_at: item.updated_at,
-            forks_count: item.forks_count ?? 0,
-          }));
-
-          // Merge fetched repos with static fallback so that required labs remain present
-          const existingNames = new Set(formatted.map((r) => r.name.toLowerCase()));
-          const merged = [...formatted];
-          for (const fb of FALLBACK_REPOSITORIES) {
-            if (!existingNames.has(fb.name.toLowerCase())) {
-              merged.push(fb);
-              existingNames.add(fb.name.toLowerCase());
-            }
-          }
-
-          setRepos(merged);
-
-          try {
-            sessionStorage.setItem(
-              GITHUB_CACHE_KEY,
-              JSON.stringify({ timestamp: Date.now(), data: merged })
-            );
-          } catch {}
-        }
-      } catch {
-        // Fallback array remains default
-      }
-    };
-
-    loadAdditionalRepos();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, []);
-
-  // Filter out the 4 flagship case studies to present strictly the 8 additional open-source labs
-  const additionalArchiveRepos = repos
-    .filter((r) => !FLAGSHIP_REPO_SLUGS.has(r.name.toLowerCase()))
-    .slice(0, 8);
-
   // Transition into Case Study Detail View with Bayer Dither
   const handleOpenDetailView = (proj: FlagshipProject) => {
     playClickSound(880);
-    setIsSandboxOpen(false);
+    setIsSandboxOpen(true);
+
+    const perform = () => {
+      setSelectedProject(proj);
+      const viewport = document.querySelector('[data-testid="retro-window-content-viewport"]');
+      if (viewport) {
+        viewport.scrollTop = 0;
+      }
+    };
 
     if (os.triggerDitherTransition) {
-      os.triggerDitherTransition(() => {
-        setSelectedProject(proj);
-      });
+      os.triggerDitherTransition(perform);
     } else {
-      setSelectedProject(proj);
+      perform();
     }
   };
 
@@ -1214,19 +1375,28 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
     playClickSound(640);
     setIsSandboxOpen(false);
 
-    if (os.triggerDitherTransition) {
-      os.triggerDitherTransition(() => {
-        setSelectedProject(null);
-      });
-    } else {
+    const perform = () => {
       setSelectedProject(null);
+      if (os.setSelectedProjectId) {
+        os.setSelectedProjectId(null);
+      }
+      const viewport = typeof document !== 'undefined' ? document.querySelector('[data-testid="retro-window-content-viewport"]') : null;
+      if (viewport) {
+        viewport.scrollTop = 0;
+      }
+    };
+
+    if (os.triggerDitherTransition) {
+      os.triggerDitherTransition(perform);
+    } else {
+      perform();
     }
   };
 
   return (
     <article
       data-testid="retro-content-projects"
-      className="flex flex-col gap-4 font-pixel select-text"
+      className="flex flex-col gap-5 font-pixel select-text"
       style={{ color: bright }}
     >
       {/* ============================================================== */}
@@ -1240,19 +1410,19 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
             style={{ borderColor: mid }}
           >
             <div className="flex items-center gap-2">
-              <span className="text-[10px] sm:text-xs" style={{ color: bright }}>
-                SELECTED ENGINEERING WORK (4 FLAGSHIP CASE STUDIES)
+              <span className="text-[10px] sm:text-xs tracking-wider" style={{ color: bright }}>
+                Selected Engineering Work
               </span>
             </div>
             <a
-              href="https://github.com/watchknight"
+              href="https://github.com/watchknight?tab=repositories"
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => playClickSound(800)}
               className="font-mono text-xs hover:underline self-start sm:self-auto outline-none focus-visible:outline-dashed"
               style={{ color: bright }}
             >
-              All 14 Repos on GitHub @watchknight
+              View All on GitHub (@watchknight)
             </a>
           </header>
 
@@ -1260,6 +1430,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
           <section
             data-testid="flagship-projects-grid"
             className="grid grid-cols-1 md:grid-cols-2 gap-[20px]"
+            style={{ padding: '20px', border: `1px solid ${mid}` }}
           >
             {FLAGSHIP_PROJECTS.map((project) => {
               const isHovered = hoveredCardId === project.id;
@@ -1269,7 +1440,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
                   data-testid={`flagship-card-${project.index}`}
                   onMouseEnter={() => setHoveredCardId(project.id)}
                   onMouseLeave={() => setHoveredCardId(null)}
-                  className="flex flex-col justify-between transition-colors cursor-pointer"
+                  className="flex flex-col lg:flex-row gap-4 justify-between transition-colors cursor-pointer"
                   style={{
                     padding: '20px',
                     border: `1px solid ${isHovered ? bright : mid}`,
@@ -1277,8 +1448,9 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
                   }}
                   onClick={() => handleOpenDetailView(project)}
                 >
-                  <div className="flex flex-col gap-3">
-                    {/* ELEMENT 1: Top row with monospace index and category tag */}
+                  {/* Left Column (42% width): 16:9 CRT Phosphor Photo Demo Thumbnail */}
+                  <div className="w-full lg:w-[42%] shrink-0 flex flex-col justify-between gap-2.5">
+                    {/* Top Row: Index and Category Tag */}
                     <div className="flex items-center justify-between font-mono text-xs font-bold tracking-wider">
                       <span style={{ color: bright }}>{project.index}</span>
                       <span
@@ -1293,80 +1465,118 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
                       </span>
                     </div>
 
-                    {/* ELEMENT 2: Project Title in bold crisp typography + 1-sentence high-impact summary in 'Plus Jakarta Sans' */}
-                    <div className="flex flex-col gap-1.5">
-                      <h2
-                        className="font-bold text-sm sm:text-base tracking-wide"
-                        style={{ color: bright }}
-                      >
-                        {project.title}
-                      </h2>
-                      <p
-                        className="font-body text-xs sm:text-[13.5px] leading-relaxed"
-                        style={{
-                          fontFamily: "'Plus Jakarta Sans', sans-serif",
-                          color: `${bright}dd`,
-                        }}
-                      >
-                        {project.summary}
-                      </p>
-                    </div>
+                    {/* 16:9 CRT Photo Demo Frame */}
+                    <CRTPhotoDemo
+                      screenshot={project.screenshot}
+                      title={project.title}
+                      category={project.category}
+                      isCardHovered={isHovered}
+                      bright={bright}
+                      mid={mid}
+                      dim={dim}
+                      voidCol={voidCol}
+                      showColorToggle={true}
+                    />
 
-                    {/* ELEMENT 3: Single key quantified outcome badge */}
-                    <div
-                      className="p-2 border text-center font-mono text-xs font-bold tracking-tight"
-                      style={{
-                        backgroundColor: `${voidCol}95`,
-                        borderColor: isHovered ? bright : `${mid}70`,
-                        color: bright,
-                      }}
-                    >
-                      {project.outcomeBadge}
+                    <div className="flex items-center justify-between font-mono text-[9px]" style={{ color: mid }}>
+                      <span>{FLAGSHIP_STACK_CAPTIONS[project.id] ?? 'React • TypeScript'}</span>
+                      <span className="hidden lg:inline">{project.year}</span>
                     </div>
                   </div>
 
-                  {/* ELEMENT 4: Bottom action row with Read Case Study, Live Demo, and GitHub */}
-                  <div
-                    className="flex items-center justify-between gap-2 pt-3 mt-4 border-t flex-wrap"
-                    style={{ borderColor: `${mid}40` }}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <button
-                      type="button"
-                      data-testid={`retro-btn-read-case-study-${project.index}`}
-                      onClick={() => handleOpenDetailView(project)}
-                      className="px-2.5 py-1.5 border font-mono font-bold text-xs uppercase cursor-pointer transition-none outline-none focus-visible:outline-dashed"
-                      style={{
-                        backgroundColor: bright,
-                        color: voidCol,
-                        borderColor: bright,
-                      }}
+                  {/* Right Column (58% width): Title, Tagline/Summary, Key Metrics Badge, Action Row */}
+                  <div className="w-full lg:w-[58%] flex flex-col justify-between gap-3 min-w-0">
+                    <div className="flex flex-col gap-2">
+                      {/* Title + 1-sentence high-impact summary in Plus Jakarta Sans */}
+                      <div className="flex flex-col gap-1.5">
+                        <div className="flex items-center justify-between gap-2">
+                          <h2
+                            className="font-bold text-sm sm:text-base tracking-wide"
+                            style={{ color: bright }}
+                          >
+                            {project.title}
+                          </h2>
+                          <span className="lg:hidden font-mono text-[9px]" style={{ color: mid }}>
+                            {project.year}
+                          </span>
+                        </div>
+                        {project.tagline && (
+                          <div
+                            className="font-mono text-xs font-semibold tracking-wide"
+                            style={{ color: mid }}
+                          >
+                            {project.tagline}
+                          </div>
+                        )}
+                        <p
+                          className="font-body leading-relaxed"
+                          style={{
+                            fontFamily: "'Plus Jakarta Sans', sans-serif",
+                            fontSize: '15.5px',
+                            lineHeight: 1.65,
+                            color: bright,
+                          }}
+                        >
+                          {project.summary}
+                        </p>
+                      </div>
+
+                      {/* Single key quantified outcome / metrics badge */}
+                      <div
+                        className="p-2 border text-center font-mono text-xs font-bold tracking-tight"
+                        style={{
+                          backgroundColor: `${voidCol}95`,
+                          borderColor: isHovered ? bright : `${mid}70`,
+                          color: bright,
+                        }}
+                      >
+                        {project.outcomeBadge}
+                      </div>
+                    </div>
+
+                    {/* Bottom action row: Read Case Study, Live Demo, GitHub */}
+                    <div
+                      className="flex items-center justify-between gap-2 pt-3 mt-2 border-t flex-wrap"
+                      style={{ borderColor: `${mid}40` }}
+                      onClick={(e) => e.stopPropagation()}
                     >
-                      Read Case Study
-                    </button>
-
-                    <div className="flex items-center gap-2 font-mono text-xs">
-                      <a
-                        href={project.demoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => playClickSound(760)}
-                        className="px-2 py-1 border hover:underline outline-none focus-visible:outline-dashed"
-                        style={{ borderColor: mid, color: bright }}
+                      <button
+                        type="button"
+                        data-testid={`retro-btn-read-case-study-${project.index}`}
+                        onClick={() => handleOpenDetailView(project)}
+                        className="px-2.5 py-1.5 min-h-[44px] flex items-center justify-center border font-mono font-bold text-xs uppercase cursor-pointer transition-none outline-none focus-visible:outline-dashed"
+                        style={{
+                          backgroundColor: bright,
+                          color: voidCol,
+                          borderColor: bright,
+                        }}
                       >
-                        Live Demo
-                      </a>
+                        Read Case Study
+                      </button>
 
-                      <a
-                        href={project.sourceUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => playClickSound(720)}
-                        className="px-2 py-1 border hover:underline outline-none focus-visible:outline-dashed"
-                        style={{ borderColor: mid, color: bright }}
-                      >
-                        GitHub
-                      </a>
+                      <div className="flex items-center gap-2 font-mono text-xs">
+                        <a
+                          href={project.demoUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => playClickSound(760)}
+                          className="px-2.5 py-1.5 min-h-[44px] flex items-center justify-center border hover:underline outline-none focus-visible:outline-dashed"
+                          style={{ borderColor: mid, color: bright }}
+                        >
+                          Live Demo
+                        </a>
+
+                        <a
+                          href={project.sourceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => playClickSound(720)}
+                          className="px-2.5 py-1.5 min-h-[44px] flex items-center justify-center border hover:underline outline-none focus-visible:outline-dashed"
+                          style={{ borderColor: mid, color: bright }}
+                        >
+                          GitHub
+                        </a>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1375,135 +1585,79 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
           </section>
 
           {/* ============================================================== */}
-          {/* TIER 3: COMPACT GITHUB ARCHIVE ACCORDION AT BOTTOM OF WORK VIEW */}
+          {/* SECTION: MORE LIVE DEPLOYED WEB APPS (3 RENDER APPLICATIONS)   */}
           {/* ============================================================== */}
           <section
-            data-testid="github-archive-accordion"
-            className="flex flex-col gap-2 pt-2 border-t"
-            style={{ borderColor: `${mid}50` }}
+            data-testid="more-live-deployed-apps"
+            className="flex flex-col gap-3 pt-2 border-t"
+            style={{ borderColor: `${mid}60` }}
           >
-            {/* Collapsible Accordion Bar */}
-            <button
-              type="button"
-              data-testid="btn-toggle-github-accordion"
-              onClick={() => {
-                playClickSound(isAccordionOpen ? 540 : 680);
-                setIsAccordionOpen((prev) => !prev);
-              }}
-              aria-expanded={isAccordionOpen}
-              className="w-full text-left p-2 border font-mono font-bold text-xs tracking-wide flex items-center justify-between cursor-pointer transition-none outline-none focus-visible:outline-dashed"
-              style={{
-                backgroundColor: isAccordionOpen ? dim : `${dim}40`,
-                borderColor: isAccordionOpen ? bright : mid,
-                color: bright,
-              }}
-            >
-              <span>
-                {isAccordionOpen
-                  ? '- Hide Additional Labs'
-                  : '+ View Additional Labs (8)'}
+            <div className="flex items-center justify-between font-bold text-xs uppercase tracking-wide">
+              <span style={{ color: bright }}>More Live Deployed Web Apps</span>
+              <span className="font-mono text-[9px]" style={{ color: mid }}>
+                Render Deployments
               </span>
-              <span className="text-[10px]" style={{ color: mid }}>
-                {isAccordionOpen ? 'COLLAPSE' : 'EXPAND TABLE'}
-              </span>
-            </button>
-
-            {/* Clean single-line table of additional @watchknight repositories */}
-            {isAccordionOpen && (
-              <div
-                data-testid="github-archive-table"
-                className="border p-2 overflow-x-auto flex flex-col gap-1.5"
-                style={{ backgroundColor: `${voidCol}cc`, borderColor: mid }}
-              >
-                <div
-                  className="grid grid-cols-12 gap-2 text-[8px] sm:text-[8.5px] font-mono uppercase pb-1 border-b font-bold"
-                  style={{ borderColor: `${mid}40`, color: mid }}
-                >
-                  <span className="col-span-4 sm:col-span-3">REPOSITORY</span>
-                  <span className="col-span-3 sm:col-span-2">STACK</span>
-                  <span className="hidden sm:inline sm:col-span-4">DESCRIPTION</span>
-                  <span className="col-span-2 sm:col-span-1 text-center">STARS</span>
-                  <span className="col-span-3 sm:col-span-2 text-right">ACTION</span>
-                </div>
-
-                <div className="flex flex-col gap-1">
-                  {additionalArchiveRepos.map((repo) => (
-                    <div
-                      key={repo.id}
-                      data-testid={`github-repo-row-${repo.name}`}
-                      className="grid grid-cols-12 gap-2 items-center p-1 border text-[7.5px] sm:text-[8px] font-mono hover:brightness-125 transition-none"
-                      style={{
-                        backgroundColor: `${dim}25`,
-                        borderColor: `${mid}35`,
-                        color: bright,
-                      }}
-                    >
-                      <span className="col-span-4 sm:col-span-3 font-bold truncate">
-                        {repo.name}
-                      </span>
-                      <span className="col-span-3 sm:col-span-2 truncate" style={{ color: `${bright}bb` }}>
-                        {repo.language || 'Code'}
-                      </span>
-                      <span className="hidden sm:inline sm:col-span-4 truncate text-[7.5px]" style={{ color: `${bright}99` }}>
-                        {repo.description || 'Public GitHub laboratory repository.'}
-                      </span>
-                      <span className="col-span-2 sm:col-span-1 text-center font-bold" style={{ color: bright }}>
-                        ★ {repo.stargazers_count}
-                      </span>
-                      <div className="col-span-3 sm:col-span-2 text-right">
-                        <a
-                          href={repo.html_url || `https://github.com/watchknight/${repo.name}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={() => playClickSound(800)}
-                          className="hover:underline font-bold px-1 py-0.5 border inline-block"
-                          style={{ borderColor: `${mid}60`, color: bright }}
-                        >
-                          GitHub ↗
-                        </a>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </section>
-
-          {/* BACKWARDS-COMPATIBLE SYSTEM SUBSYSTEMS & ARCHITECTURAL LABS */}
-          <section
-            data-testid="subsystems-labs-archive"
-            className="p-2 border flex flex-col gap-1.5"
-            style={{ backgroundColor: `${dim}20`, borderColor: `${mid}50` }}
-          >
-            <div className="flex items-center justify-between text-[7.5px] sm:text-[8px] font-bold uppercase pb-0.5 border-b" style={{ borderColor: `${mid}40` }}>
-              <span>Architecture Labs</span>
-              <span style={{ color: mid }}>Online Labs</span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[7px] sm:text-[7.5px] font-mono">
-              <div className="p-1 border" style={{ borderColor: `${mid}40`, backgroundColor: `${voidCol}60` }}>
-                <div className="font-bold" style={{ color: bright }}>1. Hyperdeck 3D Particle Engine</div>
-                <div style={{ color: `${bright}bb` }}>Volumetric wave synthesizer with 14,400+ points displaced on GPU via GLSL vertex shaders.</div>
-                <div className="text-[6.5px]" style={{ color: mid }}>Three.js • GLSL • WebGL 2.0 • GSAP</div>
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              {MORE_DEPLOYED_APPS.map((app) => (
+                <div
+                  key={app.id}
+                  data-testid={`deployed-app-card-${app.id}`}
+                  className="p-3 border flex flex-col justify-between gap-3 transition-colors"
+                  style={{
+                    backgroundColor: `${dim}20`,
+                    borderColor: `${mid}60`,
+                  }}
+                >
+                  <div className="flex flex-col gap-1.5">
+                    <h3 className="font-bold text-sm tracking-wide" style={{ color: bright }}>
+                      {app.title}
+                    </h3>
+                    <p
+                      className="font-body text-xs leading-relaxed"
+                      style={{
+                        fontFamily: "'Plus Jakarta Sans', sans-serif",
+                        color: `${bright}cc`,
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {app.tagline}
+                    </p>
+                  </div>
 
-              <div className="p-1 border" style={{ borderColor: `${mid}40`, backgroundColor: `${voidCol}60` }}>
-                <div className="font-bold" style={{ color: bright }}>2. Retro 90s OS Window Manager</div>
-                <div style={{ color: `${bright}bb` }}>Authentic cyberdeck desktop window manager with stepped transitions and phosphor optics.</div>
-                <div className="text-[6.5px]" style={{ color: mid }}>React 18 • TypeScript • TailwindCSS</div>
-              </div>
-
-              <div className="p-1 border" style={{ borderColor: `${mid}40`, backgroundColor: `${voidCol}60` }}>
-                <div className="font-bold" style={{ color: bright }}>3. Procedural Chiptune Audio Engine</div>
-                <div style={{ color: `${bright}bb` }}>Native Web Audio API 4-channel retro chiptune synthesizer and 3D spatial panner. Zero external audio files.</div>
-                <div className="text-[6.5px]" style={{ color: mid }}>Web Audio API • AnalyserNode • GSAP Ticker</div>
-              </div>
-
-              <div className="p-1 border" style={{ borderColor: `${mid}40`, backgroundColor: `${voidCol}60` }}>
-                <div className="font-bold" style={{ color: bright }}>4. Dedicated Browser Extension Studio</div>
-                <div style={{ color: `${bright}bb` }}>Keyboard-first browser productivity suite with real-time DOM inspection and secure background service workers.</div>
-                <div className="text-[6.5px]" style={{ color: mid }}>Manifest V3 • WebSockets • TypeScript</div>
-              </div>
+                  <div className="flex items-center gap-2 pt-2 border-t font-mono text-xs" style={{ borderColor: `${mid}30` }}>
+                    <a
+                      href={app.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => playClickSound(760)}
+                      className="flex-1 text-center px-2 py-1.5 border font-bold hover:underline outline-none focus-visible:outline-dashed"
+                      style={{
+                        backgroundColor: bright,
+                        color: voidCol,
+                        borderColor: bright,
+                      }}
+                    >
+                      Live App ↗
+                    </a>
+                    <a
+                      href={app.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => playClickSound(720)}
+                      className="flex-1 text-center px-2 py-1.5 border hover:underline outline-none focus-visible:outline-dashed"
+                      style={{
+                        borderColor: mid,
+                        color: bright,
+                        backgroundColor: `${voidCol}80`,
+                      }}
+                    >
+                      GitHub
+                    </a>
+                  </div>
+                </div>
+              ))}
             </div>
           </section>
         </>
@@ -1515,8 +1669,11 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
           data-testid="case-study-detail-view"
           className="flex flex-col gap-4 font-pixel select-text"
         >
-          {/* TOP NAVIGATION: Back to All Projects */}
-          <div className="flex items-center justify-between pb-2 border-b" style={{ borderColor: mid }}>
+          {/* TOP NAVIGATION: Back to All Projects, Live Demo, GitHub */}
+          <div
+            className="flex items-center justify-between pb-2 border-b flex-wrap gap-2"
+            style={{ borderColor: mid }}
+          >
             <button
               type="button"
               data-testid="btn-back-to-projects"
@@ -1530,181 +1687,266 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette }) => {
             >
               Back to All Projects
             </button>
-            <span className="font-mono text-xs" style={{ color: mid }}>
-              Case Study • {selectedProject.index} of 04
-            </span>
+
+            <div className="flex items-center gap-2 font-mono text-xs">
+              <a
+                href={selectedProject.demoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-testid="case-study-live-demo-btn"
+                onClick={() => playClickSound(840)}
+                className="px-3 py-1.5 border font-bold hover:underline outline-none focus-visible:outline-dashed"
+                style={{ backgroundColor: bright, color: voidCol, borderColor: bright }}
+              >
+                Live Demo ↗
+              </a>
+              <a
+                href={selectedProject.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-testid="case-study-github-btn"
+                onClick={() => playClickSound(740)}
+                className="px-3 py-1.5 border font-bold hover:underline outline-none focus-visible:outline-dashed"
+                style={{ borderColor: bright, color: bright }}
+              >
+                GitHub
+              </a>
+            </div>
           </div>
 
-          {/* PROJECT HEADER: Title, Role, Year, Live Demo, and GitHub Source */}
+          {/* WIDESCREEN 2-COLUMN CASE STUDY DASHBOARD LAYOUT (grid-template-columns: 1fr 1fr; gap: 32px;) */}
           <div
-            className="p-3 sm:p-4 border flex flex-col gap-3"
-            style={{ backgroundColor: `${dim}35`, borderColor: mid }}
+            data-testid="case-study-widescreen-dashboard"
+            className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-start"
+            style={{
+              gap: '32px',
+            }}
           >
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b pb-2" style={{ borderColor: `${mid}40` }}>
-              <div>
-                <span className="font-mono text-[9px] font-bold" style={{ color: mid }}>
-                  {selectedProject.index} • {selectedProject.category}
-                </span>
-                <h1 className="font-bold text-base sm:text-xl tracking-wide mt-0.5" style={{ color: bright }}>
-                  {selectedProject.title}
-                </h1>
-              </div>
-
-              <div className="flex items-center gap-2 font-mono text-xs">
-                <a
-                  href={selectedProject.demoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => playClickSound(840)}
-                  className="px-3 py-1.5 border font-bold hover:underline outline-none focus-visible:outline-dashed"
-                  style={{ backgroundColor: bright, color: voidCol, borderColor: bright }}
-                >
-                  Live Demo
-                </a>
-                <a
-                  href={selectedProject.sourceUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => playClickSound(740)}
-                  className="px-3 py-1.5 border font-bold hover:underline outline-none focus-visible:outline-dashed"
-                  style={{ borderColor: bright, color: bright }}
-                >
-                  GitHub Source
-                </a>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4 text-xs font-mono" style={{ color: `${bright}cc` }}>
-              <span>
-                ROLE: <strong style={{ color: bright }}>{selectedProject.role}</strong>
-              </span>
-              <span>
-                YEAR: <strong style={{ color: bright }}>{selectedProject.year}</strong>
-              </span>
-            </div>
-          </div>
-
-          {/* 3 HERO METRIC BOXES IN HORIZONTAL ROW */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {selectedProject.heroMetrics.map((metric, idx) => (
+            {/* 1. PROJECT HEADER & KEY METRICS (Row 1 Col 1 on Desktop, 1st on Mobile) */}
+            <div className="lg:col-start-1 lg:row-start-1 flex flex-col gap-3.5 min-w-0">
+              {/* PROJECT HEADER: Title, Category, Role, Year */}
               <div
-                key={idx}
-                className="p-3 border flex flex-col items-center justify-center text-center gap-1"
-                style={{ backgroundColor: `${voidCol}90`, borderColor: mid }}
+                className="p-3 sm:p-4 border flex flex-col gap-3"
+                style={{ backgroundColor: `${dim}35`, borderColor: mid }}
               >
-                <span className="font-pixel text-base sm:text-lg font-bold" style={{ color: bright }}>
-                  {metric.value}
-                </span>
-                <span className="font-mono text-[9px] sm:text-[10px] uppercase font-bold" style={{ color: mid }}>
-                  {metric.label}
-                </span>
-              </div>
-            ))}
-          </div>
+                <div>
+                  <span className="font-mono text-[9px] font-bold" style={{ color: mid }}>
+                    {selectedProject.index} • {selectedProject.category}
+                  </span>
+                  <h1
+                    className="font-bold text-base sm:text-xl tracking-wide mt-0.5"
+                    style={{ color: bright }}
+                  >
+                    {selectedProject.title}
+                  </h1>
+                </div>
 
-          {/* CONCISE 3-PART BREAKDOWN (Problem, How It Works, Key Results) */}
-          <div className="flex flex-col gap-3">
-            {/* 1. Problem */}
-            <div className="p-3.5 border flex flex-col gap-1.5" style={{ backgroundColor: `${dim}20`, borderColor: `${mid}60` }}>
-              <div className="font-pixel text-xs font-bold uppercase tracking-wide" style={{ color: bright }}>
-                Problem
+                <div
+                  className="flex items-center gap-4 text-xs font-mono"
+                  style={{ color: `${bright}cc` }}
+                >
+                  <span>
+                    ROLE: <strong style={{ color: bright }}>{selectedProject.role}</strong>
+                  </span>
+                  <span>
+                    YEAR: <strong style={{ color: bright }}>{selectedProject.year}</strong>
+                  </span>
+                </div>
               </div>
-              <p
-                className="font-body text-xs sm:text-[14px] leading-relaxed"
-                style={{
-                  fontFamily: "'Plus Jakarta Sans', sans-serif",
-                  color: `${bright}dd`,
-                }}
-              >
-                {selectedProject.problem}
-              </p>
+
+              {/* KEY METRICS ROW: 3 HERO METRIC BOXES IN HORIZONTAL ROW */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                {selectedProject.heroMetrics.map((metric, idx) => (
+                  <div
+                    key={`${metric.label}-${idx}`}
+                    className="p-3 border flex flex-col items-center justify-center text-center gap-1"
+                    style={{ backgroundColor: `${voidCol}90`, borderColor: mid }}
+                  >
+                    <span
+                      className="font-pixel text-base sm:text-lg font-bold"
+                      style={{ color: bright }}
+                    >
+                      {metric.value}
+                    </span>
+                    <span
+                      className="font-mono text-[9px] sm:text-[10px] uppercase font-bold"
+                      style={{ color: mid }}
+                    >
+                      {metric.label}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            {/* 2. How It Works */}
-            <div className="p-3.5 border flex flex-col gap-1.5" style={{ backgroundColor: `${dim}20`, borderColor: `${mid}60` }}>
-              <div className="font-pixel text-xs font-bold uppercase tracking-wide" style={{ color: bright }}>
-                How It Works
-              </div>
-              <p
-                className="font-body text-xs sm:text-[14px] leading-relaxed"
-                style={{
-                  fontFamily: "'Plus Jakarta Sans', sans-serif",
-                  color: `${bright}dd`,
-                }}
+            {/* 2. CRT PHOTO DEMO VIEWER (Row 1 Col 2 on Desktop, 2nd on Mobile) */}
+            <div className="lg:col-start-2 lg:row-start-1 flex flex-col gap-1.5 min-w-0">
+              <div
+                className="px-2 py-1 border flex items-center justify-between text-[10px] font-mono font-bold uppercase"
+                style={{ backgroundColor: `${dim}40`, borderColor: mid, color: bright }}
               >
-                {selectedProject.architecture}
-              </p>
+                <span>CRT Photo Demo Viewer</span>
+                <span className="text-[9px]" style={{ color: mid }}>16:9 Phosphor Display</span>
+              </div>
+              <CRTPhotoDemo
+                screenshot={selectedProject.screenshot}
+                title={selectedProject.title}
+                category={selectedProject.category}
+                bright={bright}
+                mid={mid}
+                dim={dim}
+                voidCol={voidCol}
+                showColorToggle={true}
+              />
             </div>
 
-            {/* 3. Key Results */}
-            <div className="p-3.5 border flex flex-col gap-1.5" style={{ backgroundColor: `${dim}20`, borderColor: `${mid}60` }}>
-              <div className="font-pixel text-xs font-bold uppercase tracking-wide" style={{ color: bright }}>
-                Key Results
-              </div>
-              <p
-                className="font-body text-xs sm:text-[14px] leading-relaxed"
-                style={{
-                  fontFamily: "'Plus Jakarta Sans', sans-serif",
-                  color: `${bright}dd`,
-                }}
-              >
-                {selectedProject.impact}
-              </p>
-            </div>
-          </div>
+            {/* 3. INTERACTIVE MICRO-SANDBOX (Row 2 Col 2 on Desktop, 3rd on Mobile) */}
+            <div className="lg:col-start-2 lg:row-start-2 flex flex-col gap-2 min-w-0">
+              {selectedProject.hasSandbox && (
+                <div className="flex flex-col gap-2">
+                  <div
+                    className="p-2 border flex items-center justify-between text-xs font-mono font-bold uppercase"
+                    style={{ backgroundColor: `${dim}40`, borderColor: mid, color: bright }}
+                  >
+                    <span className="flex items-center gap-1.5">
+                      <span className="w-2 h-2 inline-block border" style={{ backgroundColor: bright, borderColor: voidCol }} />
+                      Interactive Micro-Sandbox
+                    </span>
+                    <button
+                      type="button"
+                      data-testid="btn-toggle-sandbox"
+                      onClick={() => {
+                        playClickSound(isSandboxOpen ? 580 : 880);
+                        setIsSandboxOpen((prev) => !prev);
+                      }}
+                      className="px-2 py-0.5 border text-[9px] uppercase cursor-pointer outline-none focus-visible:outline-dashed"
+                      style={{
+                        backgroundColor: isSandboxOpen ? bright : dim,
+                        color: isSandboxOpen ? voidCol : bright,
+                        borderColor: bright,
+                      }}
+                    >
+                      {isSandboxOpen ? 'Hide Sandbox' : 'Show Sandbox'}
+                    </button>
+                  </div>
 
-          {/* PROGRESSIVE DISCLOSURE: OPTIONAL INTERACTIVE DEMO SANDBOX */}
-          {selectedProject.hasSandbox && (
-            <div className="pt-1 flex flex-col gap-2">
-              <button
-                type="button"
-                data-testid="btn-toggle-sandbox"
-                onClick={() => {
-                  playClickSound(isSandboxOpen ? 580 : 880);
-                  setIsSandboxOpen((prev) => !prev);
-                }}
-                className="w-full text-center p-2 border font-mono font-bold text-xs uppercase cursor-pointer transition-none outline-none focus-visible:outline-dashed"
-                style={{
-                  backgroundColor: isSandboxOpen ? bright : dim,
-                  color: isSandboxOpen ? voidCol : bright,
-                  borderColor: bright,
-                }}
-              >
-                {isSandboxOpen
-                  ? 'Close Interactive Demo'
-                  : 'Launch Interactive Demo'}
-              </button>
-
-              {isSandboxOpen && (
-                <>
-                  {selectedProject.sandboxType === 'physics' && (
-                    <MentalDefragSandbox
-                      bright={bright}
-                      mid={mid}
-                      dim={dim}
-                      voidCol={voidCol}
-                    />
+                  {isSandboxOpen && (
+                    <>
+                      {selectedProject.sandboxType === 'bitforge-sort' && (
+                        <BitForgeSortSandbox
+                          bright={bright}
+                          mid={mid}
+                          dim={dim}
+                          voidCol={voidCol}
+                        />
+                      )}
+                      {selectedProject.sandboxType === 'focuslab-reflex' && (
+                        <FocusLabReflexSandbox
+                          bright={bright}
+                          mid={mid}
+                          dim={dim}
+                          voidCol={voidCol}
+                        />
+                      )}
+                      {selectedProject.sandboxType === 'rannabanna-pantry' && (
+                        <RannabannaPantrySandbox
+                          bright={bright}
+                          mid={mid}
+                          dim={dim}
+                          voidCol={voidCol}
+                        />
+                      )}
+                      {selectedProject.sandboxType === 'doclens-tryon' && (
+                        <DocLensTryOnSandbox
+                          bright={bright}
+                          mid={mid}
+                          dim={dim}
+                          voidCol={voidCol}
+                        />
+                      )}
+                    </>
                   )}
-                  {selectedProject.sandboxType === 'throttler' && (
-                    <FocusGuardSandbox
-                      bright={bright}
-                      mid={mid}
-                      dim={dim}
-                      voidCol={voidCol}
-                    />
-                  )}
-                  {selectedProject.sandboxType === 'laser' && (
-                    <NeonVanguardSandbox
-                      bright={bright}
-                      mid={mid}
-                      dim={dim}
-                      voidCol={voidCol}
-                    />
-                  )}
-                </>
+                </div>
               )}
             </div>
-          )}
+
+            {/* 4. CONCISE BREAKDOWN: Problem, How It Works, and Key Results (Row 2 Col 1 on Desktop, 4th on Mobile) */}
+            <div className="lg:col-start-1 lg:row-start-2 flex flex-col gap-3.5 min-w-0">
+              <div className="flex flex-col gap-3.5">
+                {/* 1. Problem */}
+                <div
+                  className="p-3.5 border flex flex-col gap-1.5"
+                  style={{ backgroundColor: `${dim}20`, borderColor: `${mid}60` }}
+                >
+                  <div
+                    className="font-pixel text-xs font-bold uppercase tracking-wide"
+                    style={{ color: bright }}
+                  >
+                    Problem
+                  </div>
+                  <p
+                    className="font-body leading-relaxed"
+                    style={{
+                      fontFamily: "'Plus Jakarta Sans', sans-serif",
+                      fontSize: '16px',
+                      lineHeight: 1.65,
+                      color: bright,
+                    }}
+                  >
+                    {selectedProject.problem}
+                  </p>
+                </div>
+
+                {/* 2. How It Works */}
+                <div
+                  className="p-3.5 border flex flex-col gap-1.5"
+                  style={{ backgroundColor: `${dim}20`, borderColor: `${mid}60` }}
+                >
+                  <div
+                    className="font-pixel text-xs font-bold uppercase tracking-wide"
+                    style={{ color: bright }}
+                  >
+                    How It Works
+                  </div>
+                  <p
+                    className="font-body leading-relaxed"
+                    style={{
+                      fontFamily: "'Plus Jakarta Sans', sans-serif",
+                      fontSize: '16px',
+                      lineHeight: 1.65,
+                      color: bright,
+                    }}
+                  >
+                    {selectedProject.howItWorks}
+                  </p>
+                </div>
+
+                {/* 3. Key Results */}
+                <div
+                  className="p-3.5 border flex flex-col gap-1.5"
+                  style={{ backgroundColor: `${dim}20`, borderColor: `${mid}60` }}
+                >
+                  <div
+                    className="font-pixel text-xs font-bold uppercase tracking-wide"
+                    style={{ color: bright }}
+                  >
+                    Key Results
+                  </div>
+                  <p
+                    className="font-body leading-relaxed"
+                    style={{
+                      fontFamily: "'Plus Jakarta Sans', sans-serif",
+                      fontSize: '16px',
+                      lineHeight: 1.65,
+                      color: bright,
+                    }}
+                  >
+                    {selectedProject.keyResults}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
       )}
     </article>

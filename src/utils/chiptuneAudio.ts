@@ -151,6 +151,11 @@ export class ChiptuneAudioEngine {
     return this.isUnlocked;
   }
 
+  public unlock(): void {
+    this.isUnlocked = true;
+    this.initContext();
+  }
+
   public setMuted(muted: boolean): void {
     this.isMuted = muted;
     if (this.masterGain && this.ctx) {

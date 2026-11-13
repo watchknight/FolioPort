@@ -10,6 +10,7 @@ import { AboutMeView } from './views/AboutMeView';
 import { ProjectsView } from './views/ProjectsView';
 import { ResumeView } from './views/ResumeView';
 import { retroAudio } from '../utils/retroAudio';
+import { FLAGSHIP_PROJECTS } from '../data/projects';
 
 export interface PhosphorColorTokens {
   void?: string;
@@ -48,10 +49,20 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
   const currentActiveSection = propActiveSection ?? osContext.activeSection;
   const isClosed = propIsClosed ?? osContext.wasWindowClosed ?? false;
 
-  const brightColor = palette?.bright ?? '#c2cdb4';
-  const voidColor = palette?.void ?? '#111712';
-  const midColor = palette?.mid ?? '#6e7d62';
-  const dimColor = palette?.dim ?? '#2e3b2b';
+  const brightColor = palette?.bright ?? (osContext.phosphorMode === 'amber' ? '#d4a359' : '#c2cdb4');
+  const voidColor = palette?.void ?? (osContext.phosphorMode === 'amber' ? '#140f07' : '#111712');
+  const midColor = palette?.mid ?? (osContext.phosphorMode === 'amber' ? '#8c6830' : '#6e7d62');
+  const dimColor = palette?.dim ?? (osContext.phosphorMode === 'amber' ? '#3d2b12' : '#2e3b2b');
+
+  const resolvedPalette: PhosphorColorTokens = React.useMemo(
+    () => ({
+      bright: brightColor,
+      void: voidColor,
+      mid: midColor,
+      dim: dimColor,
+    }),
+    [brightColor, voidColor, midColor, dimColor]
+  );
 
   // Screen Reader Live Announcement generation for WCAG 2.1 AAA Accessibility
   const computeAnnouncement = useCallback(
@@ -67,6 +78,13 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
     },
     []
   );
+
+  const [highlightedProjectIndex, setHighlightedProjectIndex] = useState<number>(0);
+  const [targetCaseStudyId, setTargetCaseStudyId] = useState<string | null>(null);
+  const [imgErrors, setImgErrors] = useState<Record<number, boolean>>({});
+  const projectRowRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const caseStudyBtnRef = useRef<HTMLButtonElement | null>(null);
+  const liveAppBtnRef = useRef<HTMLAnchorElement | null>(null);
 
   const [liveAnnouncement, setLiveAnnouncement] = useState<string>(() => {
     if (propAnnouncement) return propAnnouncement;
@@ -142,9 +160,36 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
 
   const handleCopyEmail = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
+    const email = 'armabdur.rahman04@gmail.com';
     try {
-      if (typeof navigator !== 'undefined' && navigator.clipboard) {
-        navigator.clipboard.writeText('moayed.cse@gmail.com');
+      if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(email).catch(() => {
+          try {
+            if (typeof document !== 'undefined') {
+              const textArea = document.createElement('textarea');
+              textArea.value = email;
+              textArea.style.position = 'fixed';
+              textArea.style.opacity = '0';
+              textArea.style.left = '-999999px';
+              document.body.appendChild(textArea);
+              textArea.focus();
+              textArea.select();
+              document.execCommand('copy');
+              textArea.remove();
+            }
+          } catch {}
+        });
+      } else if (typeof document !== 'undefined') {
+        const textArea = document.createElement('textarea');
+        textArea.value = email;
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
+        textArea.style.left = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        textArea.remove();
       }
     } catch {}
     setIsEmailCopied(true);
@@ -155,7 +200,7 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
     copyTimerRef.current = setTimeout(() => {
       setIsEmailCopied(false);
       copyTimerRef.current = null;
-    }, 2000);
+    }, 2500);
   }, []);
 
   useEffect(() => {
@@ -171,6 +216,31 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
     }
     updateScrollMetrics();
   }, [currentActiveSection, isWindowExpanded, updateScrollMetrics]);
+
+  // Observe container & track resize to dynamically sync scrollbar metrics
+  useEffect(() => {
+    const el = scrollContainerRef.current;
+    if (!el) return;
+
+    if (typeof ResizeObserver !== 'undefined') {
+      const ro = new ResizeObserver(() => {
+        updateScrollMetrics();
+      });
+      ro.observe(el);
+      if (trackRef.current) {
+        ro.observe(trackRef.current);
+      }
+      return () => {
+        ro.disconnect();
+      };
+    } else if (typeof window !== 'undefined') {
+      const onResize = () => updateScrollMetrics();
+      window.addEventListener('resize', onResize);
+      return () => {
+        window.removeEventListener('resize', onResize);
+      };
+    }
+  }, [updateScrollMetrics]);
 
   // Focus active tab when window expands or section changes in expanded mode
   useEffect(() => {
@@ -480,15 +550,18 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
         }}
         className={`retro-os-window font-pixel select-none flex flex-col ${
           isWindowExpanded
-            ? 'retro-window-expanded-wipe absolute z-[30]'
+            ? 'retro-window-expanded-wipe absolute z-[30] !inset-[6px] md:!inset-[16px]'
             : 'relative w-full h-full'
         } ${className}`}
         style={
           isWindowExpanded
             ? {
-                inset: '20px',
+                position: 'absolute',
+                inset: '16px',
+                display: 'flex',
+                flexDirection: 'column',
                 zIndex: 30,
-                backgroundColor: '#111712',
+                backgroundColor: voidColor,
                 color: brightColor,
                 border: `2px solid ${brightColor}`,
                 boxShadow: '0 0 30px rgba(0,0,0,0.85)',
@@ -523,14 +596,14 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
             borderColor: midColor,
           }}
         >
-          {/* Left Title: Preview / Active Section Title */}
+          {/* Left Title: Quick Preview / Active Section Title */}
           <div className="flex items-center gap-1.5 min-w-0 pr-2">
             <span
               data-testid="retro-window-title-text"
-              className="font-pixel font-bold text-[9px] sm:text-[10px] tracking-wider truncate uppercase text-[#111712]"
+              className="font-pixel font-bold text-[9px] sm:text-[10px] tracking-wider truncate uppercase"
+              style={{ color: voidColor }}
             >
-              {isWindowExpanded ? activeMeta.label : 'Preview'}
-              <span className="sr-only">Preview</span>
+              {isWindowExpanded ? activeMeta.label : 'Quick Preview'}
             </span>
           </div>
 
@@ -543,7 +616,7 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
               title="Minimize Window"
               aria-label="Minimize"
               onClick={handleMinimize}
-              className="w-4 h-4 sm:w-4.5 sm:h-4.5 flex items-center justify-center font-pixel font-bold text-[8px] sm:text-[9px] border cursor-pointer active:translate-y-[1px] transition-none outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2"
+              className="w-4 h-4 sm:w-4.5 sm:h-4.5 flex items-center justify-center font-mono font-bold text-[8px] sm:text-[9px] border cursor-pointer active:translate-y-[1px] transition-none outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2"
               style={{
                 backgroundColor: brightColor,
                 color: voidColor,
@@ -560,7 +633,7 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
               title={isWindowExpanded ? 'Restore Window' : 'Maximize Window'}
               aria-label="Maximize"
               onClick={handleMaximize}
-              className="w-4 h-4 sm:w-4.5 sm:h-4.5 flex items-center justify-center font-pixel font-bold text-[8px] sm:text-[9px] border cursor-pointer active:translate-y-[1px] transition-none outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2"
+              className="w-4 h-4 sm:w-4.5 sm:h-4.5 flex items-center justify-center font-mono font-bold text-[8px] sm:text-[9px] border cursor-pointer active:translate-y-[1px] transition-none outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2"
               style={{
                 backgroundColor: brightColor,
                 color: voidColor,
@@ -577,7 +650,7 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
               title="Close Window"
               aria-label="Close"
               onClick={handleClose}
-              className="w-4 h-4 sm:w-4.5 sm:h-4.5 flex items-center justify-center font-pixel font-bold text-[8px] sm:text-[9px] border cursor-pointer active:translate-y-[1px] transition-none outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2"
+              className="w-4 h-4 sm:w-4.5 sm:h-4.5 flex items-center justify-center font-mono font-bold text-[8px] sm:text-[9px] border cursor-pointer active:translate-y-[1px] transition-none outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2"
               style={{
                 backgroundColor: brightColor,
                 color: voidColor,
@@ -593,7 +666,7 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
         {isWindowExpanded && (
           <div
             data-testid="retro-window-persistent-nav"
-            className="w-full px-2.5 sm:px-4 py-2 flex items-center justify-between border-b-2 shrink-0 text-[8px] sm:text-[9px] select-none gap-2"
+            className="w-full px-2 sm:px-4 py-1.5 sm:py-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-between border-b-2 shrink-0 text-[8px] sm:text-[9px] select-none gap-2"
             style={{
               backgroundColor: dimColor,
               borderColor: midColor,
@@ -601,13 +674,18 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
             }}
           >
             {/* Direct 1-click tab switches: 1. Work | 2. About | 3. Resume */}
-            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap" role="tablist" aria-label="Operating System Views">
-              {/* Tab 1: 1. Work */}
+            <div
+              className="grid grid-cols-3 sm:flex items-center gap-1.5 sm:gap-2 shrink-0 w-full sm:w-auto"
+              role="tablist"
+              aria-label="Operating System Views"
+            >
+              {/* Tab 1: 1. Selected Work */}
               <button
                 ref={(el) => (tabRefs.current['projects'] = el)}
                 type="button"
                 role="tab"
                 aria-selected={currentActiveSection === 'projects'}
+                aria-label="1. Selected Work"
                 tabIndex={currentActiveSection === 'projects' ? 0 : -1}
                 onClick={() => handleSectionSwitch('projects')}
                 onKeyDown={(e) => {
@@ -620,7 +698,7 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
                   }
                 }}
                 data-testid="retro-window-tab-projects"
-                className="px-2.5 sm:px-3 py-1.5 min-h-[44px] flex items-center border-2 font-pixel font-bold uppercase transition-none cursor-pointer outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2"
+                className="px-2 sm:px-3 py-1.5 min-h-[44px] flex items-center justify-center border-2 font-pixel font-bold uppercase transition-none cursor-pointer outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2 text-center"
                 style={
                   currentActiveSection === 'projects'
                     ? {
@@ -635,15 +713,17 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
                       }
                 }
               >
-                1. Work
+                <span className="hidden sm:inline">1. Selected Work</span>
+                <span className="sm:hidden">1. Work</span>
               </button>
 
-              {/* Tab 2: 2. About */}
+              {/* Tab 2: 2. About & Skills */}
               <button
                 ref={(el) => (tabRefs.current['about'] = el)}
                 type="button"
                 role="tab"
                 aria-selected={currentActiveSection === 'about'}
+                aria-label="2. About & Skills"
                 tabIndex={currentActiveSection === 'about' ? 0 : -1}
                 onClick={() => handleSectionSwitch('about')}
                 onKeyDown={(e) => {
@@ -656,7 +736,7 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
                   }
                 }}
                 data-testid="retro-window-tab-about"
-                className="px-2.5 sm:px-3 py-1.5 min-h-[44px] flex items-center border-2 font-pixel font-bold uppercase transition-none cursor-pointer outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2"
+                className="px-2 sm:px-3 py-1.5 min-h-[44px] flex items-center justify-center border-2 font-pixel font-bold uppercase transition-none cursor-pointer outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2 text-center"
                 style={
                   currentActiveSection === 'about'
                     ? {
@@ -671,15 +751,17 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
                       }
                 }
               >
-                2. About
+                <span className="hidden sm:inline">2. About &amp; Skills</span>
+                <span className="sm:hidden">2. About</span>
               </button>
 
-              {/* Tab 3: 3. Resume */}
+              {/* Tab 3: 3. Resume & Contact */}
               <button
                 ref={(el) => (tabRefs.current['resume'] = el)}
                 type="button"
                 role="tab"
                 aria-selected={currentActiveSection === 'resume'}
+                aria-label="3. Resume & Contact"
                 tabIndex={currentActiveSection === 'resume' ? 0 : -1}
                 onClick={() => handleSectionSwitch('resume')}
                 onKeyDown={(e) => {
@@ -692,7 +774,7 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
                   }
                 }}
                 data-testid="retro-window-tab-resume"
-                className="px-2.5 sm:px-3 py-1.5 min-h-[44px] flex items-center border-2 font-pixel font-bold uppercase transition-none cursor-pointer outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2"
+                className="px-2 sm:px-3 py-1.5 min-h-[44px] flex items-center justify-center border-2 font-pixel font-bold uppercase transition-none cursor-pointer outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2 text-center"
                 style={
                   currentActiveSection === 'resume'
                     ? {
@@ -707,24 +789,25 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
                       }
                 }
               >
-                3. Resume
+                <span className="hidden sm:inline">3. Resume &amp; Contact</span>
+                <span className="sm:hidden">3. Resume</span>
               </button>
             </div>
 
-            {/* Right prominent Back to Desktop button */}
+            {/* Right prominent Back to Desktop (Esc) button */}
             <button
               type="button"
               data-testid="retro-window-btn-back-desktop"
               onClick={handleClose}
-              aria-label="Back to Desktop stage"
-              className="px-2.5 sm:px-3 py-1.5 min-h-[44px] border-2 font-pixel font-bold text-[7.5px] sm:text-[8.5px] uppercase cursor-pointer active:translate-y-[1px] transition-colors outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2 shrink-0"
+              aria-label="Back to Desktop (Esc)"
+              className="px-3 py-1.5 min-h-[44px] w-full sm:w-auto flex items-center justify-center border-2 font-pixel font-bold text-[7.5px] sm:text-[8.5px] uppercase cursor-pointer active:translate-y-[1px] transition-colors outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2 shrink-0 text-center"
               style={{
                 backgroundColor: brightColor,
                 color: voidColor,
                 borderColor: brightColor,
               }}
             >
-              Back to Desktop
+              Back to Desktop (Esc)
             </button>
           </div>
         )}
@@ -736,11 +819,13 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
             ref={scrollContainerRef}
             onScroll={updateScrollMetrics}
             data-testid="retro-window-content-viewport"
-            className="retro-hidden-scrollbar flex-1 overflow-y-auto text-xs font-pixel select-text"
+            className={`retro-hidden-scrollbar flex-1 overflow-y-auto text-xs font-pixel select-text ${
+              isWindowExpanded ? '!p-4 md:!p-[clamp(24px,3vw,44px)]' : ''
+            }`}
             style={{
               backgroundColor: voidColor,
               color: brightColor,
-              padding: isWindowExpanded ? '28px 32px' : '6px 8px',
+              padding: isWindowExpanded ? 'clamp(24px, 3vw, 44px)' : '4px 6px',
               scrollBehavior: 'smooth',
               WebkitOverflowScrolling: 'touch',
               touchAction: 'pan-y',
@@ -782,63 +867,274 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
                 {currentActiveSection === 'projects' && (
                   <div
                     data-testid="quick-view-projects"
-                    className="flex flex-col h-full justify-between gap-1"
+                    className="flex flex-col min-h-full justify-between gap-1 sm:gap-1.5"
                   >
                     <div
-                      className="flex items-center justify-between text-[7px] sm:text-[7.5px] font-mono uppercase tracking-wider pb-0.5 border-b"
+                      className="flex items-center justify-between text-[7px] sm:text-[7.5px] font-mono uppercase tracking-wider pb-0.5 border-b shrink-0"
                       style={{ borderColor: `${midColor}4d`, color: midColor }}
                     >
                       <span>Selected Work (4 Projects)</span>
-                      <span>Projects</span>
+                      <span>Widescreen Quick Preview</span>
                     </div>
 
-                    <div className="flex flex-col gap-0.5 sm:gap-1 text-[7.5px] sm:text-[8px]">
-                      {[
-                        { id: 1, name: '01 Mental Defrag', tag: 'Three.js • Audio' },
-                        { id: 2, name: '02 FocusGuard', tag: 'Extension • Productivity' },
-                        { id: 3, name: '03 Neon Vanguard & POSIX', tag: 'C/C++ • Shaders' },
-                        { id: 4, name: '04 DocLensBD', tag: 'Full-Stack • Cloud' },
-                      ].map((proj) => (
-                        <div
-                          key={proj.id}
-                          role="button"
-                          tabIndex={0}
-                          data-testid={`quick-view-project-${proj.id}`}
+                    {/* WIDESCREEN 2-COLUMN SPLIT PANEL */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-2.5 flex-1 items-stretch">
+                      {/* Left Half: 4 Interactive Project Rows + Inspect Prompt */}
+                      <div className="flex flex-col gap-1 sm:gap-1.5 h-full">
+                        <div className="flex flex-col gap-1 sm:gap-1.5 flex-1 min-h-0" role="listbox" aria-label="Interactive Flagship Projects">
+                          {[
+                            { id: 1, name: '01 BitForge', tag: 'Canvas • C++' },
+                            { id: 2, name: '02 FocusLab', tag: 'Productivity • React' },
+                            { id: 3, name: '03 Rannabanna', tag: 'Vite • Bengali NLP' },
+                            { id: 4, name: '04 DocLensBD', tag: 'Cloud • Firestore' },
+                          ].map((proj, idx) => {
+                            const isHighlighted = highlightedProjectIndex === idx;
+                            return (
+                              <div
+                                key={proj.id}
+                                ref={(el) => (projectRowRefs.current[idx] = el)}
+                                role="option"
+                                aria-selected={isHighlighted}
+                                tabIndex={isHighlighted ? 0 : -1}
+                                data-testid={`quick-view-project-${proj.id}`}
+                                data-highlighted={isHighlighted ? 'true' : 'false'}
+                                onClick={() => {
+                                  setHighlightedProjectIndex(idx);
+                                  try {
+                                    retroAudio.playBlip();
+                                  } catch {}
+                                }}
+                                onDoubleClick={() => {
+                                  const targetId = FLAGSHIP_PROJECTS[idx]?.id ?? '01_BITFORGE';
+                                  if (osContext.isInsideProvider && osContext.openCaseStudy) {
+                                    osContext.openCaseStudy(targetId);
+                                  } else {
+                                    setTargetCaseStudyId(targetId);
+                                    handleMaximize();
+                                  }
+                                }}
+                                onMouseEnter={() => setHighlightedProjectIndex(idx)}
+                                onFocus={() => setHighlightedProjectIndex(idx)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    const targetId = FLAGSHIP_PROJECTS[idx]?.id ?? '01_BITFORGE';
+                                    if (osContext.isInsideProvider && osContext.openCaseStudy) {
+                                      osContext.openCaseStudy(targetId);
+                                    } else {
+                                      setTargetCaseStudyId(targetId);
+                                      handleMaximize();
+                                    }
+                                  } else if (e.key === 'ArrowDown') {
+                                    e.preventDefault();
+                                    const nextIdx = (idx + 1) % 4;
+                                    setHighlightedProjectIndex(nextIdx);
+                                    projectRowRefs.current[nextIdx]?.focus();
+                                  } else if (e.key === 'ArrowUp') {
+                                    e.preventDefault();
+                                    const prevIdx = (idx - 1 + 4) % 4;
+                                    setHighlightedProjectIndex(prevIdx);
+                                    projectRowRefs.current[prevIdx]?.focus();
+                                  } else if (e.key === 'ArrowRight') {
+                                    e.preventDefault();
+                                    caseStudyBtnRef.current?.focus();
+                                  }
+                                }}
+                                className="flex-1 min-h-[26px] sm:min-h-[30px] flex items-center justify-between px-2 sm:px-3 py-1 sm:py-1.5 border cursor-pointer transition-all outline-none focus-visible:outline-dashed focus-visible:outline-2"
+                                style={{
+                                  backgroundColor: isHighlighted ? `${dimColor}cc` : `${dimColor}40`,
+                                  borderColor: isHighlighted ? brightColor : `${midColor}40`,
+                                  boxShadow: isHighlighted ? `inset 2px 0 0 ${brightColor}` : 'none',
+                                }}
+                                aria-label={`${proj.name} ${proj.tag}. Press Enter to view case study, Arrow keys to navigate.`}
+                              >
+                                <div className="flex items-center gap-1.5 min-w-0">
+                                  <span
+                                    className="text-[7px] font-pixel shrink-0"
+                                    style={{ color: isHighlighted ? brightColor : midColor }}
+                                  >
+                                    {isHighlighted ? '►' : '•'}
+                                  </span>
+                                  <span className="font-pixel font-bold text-[7.5px] sm:text-[8px] truncate" style={{ color: brightColor }}>
+                                    {proj.name}
+                                  </span>
+                                </div>
+                                <span className="text-[6.5px] sm:text-[7px] font-mono shrink-0 ml-1" style={{ color: midColor }}>
+                                  {proj.tag}
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        {/* Docked inspect prompt at bottom of left project list */}
+                        <button
+                          type="button"
+                          data-testid="quick-view-inspect-prompt"
                           onClick={handleMaximize}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                              e.preventDefault();
-                              handleMaximize();
-                            }
+                          className="w-full text-left px-2 py-1 sm:py-1.5 border text-[7px] sm:text-[7.5px] font-mono tracking-wider flex items-center justify-between cursor-pointer outline-none transition-none focus-visible:outline-dashed focus-visible:outline-2 shrink-0"
+                          style={{
+                            backgroundColor: `${dimColor}66`,
+                            borderColor: brightColor,
+                            color: brightColor,
                           }}
-                          className="flex items-center justify-between px-2 py-0.5 border cursor-pointer hover:brightness-125 transition-all outline-none focus-visible:outline-dashed focus-visible:outline-2"
-                          style={{ backgroundColor: `${dimColor}40`, borderColor: `${midColor}40` }}
-                          aria-label={`${proj.name} ${proj.tag}. Click to expand into Level 2 reader window.`}
                         >
-                          <span className="font-pixel font-bold" style={{ color: brightColor }}>
-                            {proj.name}
+                          <span>Press Enter to inspect</span>
+                          <span className="font-mono text-[6.5px] sm:text-[7px]">Click to inspect</span>
+                        </button>
+                      </div>
+
+                      {/* Right Half: Live Mini Preview Card */}
+                      <div
+                        data-testid="quick-view-mini-card"
+                        className="flex flex-col p-1.5 border min-h-0 h-full justify-between gap-1"
+                        style={{
+                          backgroundColor: `${dimColor}33`,
+                          borderColor: `${midColor}80`,
+                        }}
+                      >
+                        {/* CRT screenshot thumbnail: flexes to fill available vertical space cleanly */}
+                        <div
+                          className="relative w-full aspect-video md:aspect-auto md:flex-1 min-h-[120px] md:min-h-0 border overflow-hidden"
+                          style={{
+                            borderColor: `${midColor}66`,
+                            backgroundColor: voidColor,
+                          }}
+                        >
+                          {imgErrors[highlightedProjectIndex] ? (
+                            <div
+                              data-testid="preview-mini-fallback"
+                              className="absolute inset-0 flex flex-col items-center justify-center p-2 text-center font-mono gap-0.5 select-none"
+                              style={{ backgroundColor: `${dimColor}60`, color: brightColor }}
+                            >
+                              <div className="text-[6px] uppercase tracking-wider" style={{ color: midColor }}>
+                                [ CRT SCREENSHOT ]
+                              </div>
+                              <div className="font-pixel text-[7.5px] font-bold">
+                                {FLAGSHIP_PROJECTS[highlightedProjectIndex]?.title ?? 'Project'}
+                              </div>
+                              <div className="text-[6px]" style={{ color: `${brightColor}aa` }}>
+                                {FLAGSHIP_PROJECTS[highlightedProjectIndex]?.category ?? 'Flagship App'}
+                              </div>
+                            </div>
+                          ) : (
+                            <img
+                              src={FLAGSHIP_PROJECTS[highlightedProjectIndex]?.screenshot ?? '/projects/bitforge.png'}
+                              alt={`${FLAGSHIP_PROJECTS[highlightedProjectIndex]?.title ?? 'Project'} CRT Thumbnail`}
+                              onError={() => setImgErrors((prev) => ({ ...prev, [highlightedProjectIndex]: true }))}
+                              className="absolute inset-0 w-full h-full object-cover object-top"
+                              style={{
+                                filter: 'grayscale(100%) contrast(115%) sepia(25%) hue-rotate(55deg)',
+                              }}
+                            />
+                          )}
+
+                          {/* Subtle CRT scanline overlay */}
+                          <div
+                            className="pointer-events-none absolute inset-0 opacity-20"
+                            style={{
+                              backgroundImage:
+                                'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.45) 50%)',
+                              backgroundSize: '100% 4px',
+                            }}
+                          />
+
+                          {/* Retro CRT corner brackets */}
+                          <span className="pointer-events-none absolute top-1 left-1.5 font-mono text-[8px] opacity-70" style={{ color: brightColor }}>
+                            +
                           </span>
-                          <span className="text-[6.5px] sm:text-[7px] font-mono" style={{ color: midColor }}>
-                            {proj.tag}
+                          <span className="pointer-events-none absolute top-1 right-1.5 font-mono text-[8px] opacity-70" style={{ color: brightColor }}>
+                            +
+                          </span>
+                          <span className="pointer-events-none absolute bottom-1 left-1.5 font-mono text-[8px] opacity-70" style={{ color: brightColor }}>
+                            +
+                          </span>
+                          <span className="pointer-events-none absolute bottom-1 right-1.5 font-mono text-[8px] opacity-70" style={{ color: brightColor }}>
+                            +
                           </span>
                         </div>
-                      ))}
-                    </div>
 
-                    <button
-                      type="button"
-                      data-testid="quick-view-inspect-prompt"
-                      onClick={handleMaximize}
-                      className="w-full text-left px-2 py-0.5 sm:py-1 border text-[7px] sm:text-[8px] font-pixel tracking-wider flex items-center justify-between cursor-pointer outline-none transition-none focus-visible:outline-dashed focus-visible:outline-2"
-                      style={{
-                        backgroundColor: `${dimColor}66`,
-                        borderColor: brightColor,
-                        color: brightColor,
-                      }}
-                    >
-                      <span>Press Enter to inspect</span>
-                      <span className="font-mono text-[6.5px] sm:text-[7px]">Click to expand</span>
-                    </button>
+                        {/* Project Info: Title, Category & 1-Line Tagline */}
+                        <div className="flex flex-col gap-0.5 pt-0.5 shrink-0">
+                          <div className="flex items-center justify-between text-[7px] sm:text-[7.5px] font-mono uppercase tracking-wider" style={{ color: midColor }}>
+                            <span className="font-pixel font-bold text-[7.5px] sm:text-[8px]" style={{ color: brightColor }}>
+                              {FLAGSHIP_PROJECTS[highlightedProjectIndex]?.index ?? '01'} {FLAGSHIP_PROJECTS[highlightedProjectIndex]?.title ?? 'BitForge'}
+                            </span>
+                            <span>{FLAGSHIP_PROJECTS[highlightedProjectIndex]?.category ?? 'Flagship App'}</span>
+                          </div>
+                          <p
+                            className="text-[7px] sm:text-[7.5px] font-mono line-clamp-1 truncate"
+                            style={{ color: `${brightColor}cc` }}
+                            title={FLAGSHIP_PROJECTS[highlightedProjectIndex]?.tagline ?? FLAGSHIP_PROJECTS[highlightedProjectIndex]?.summary}
+                          >
+                            {FLAGSHIP_PROJECTS[highlightedProjectIndex]?.tagline ?? FLAGSHIP_PROJECTS[highlightedProjectIndex]?.summary}
+                          </p>
+                        </div>
+
+                        {/* Direct Action Buttons: Open Case Study & Live App pinned at bottom */}
+                        <div className="flex items-center gap-1.5 shrink-0 pt-0.5">
+                          <button
+                            ref={caseStudyBtnRef}
+                            type="button"
+                            data-testid={`preview-btn-case-study-${FLAGSHIP_PROJECTS[highlightedProjectIndex]?.index ?? '01'}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const targetId = FLAGSHIP_PROJECTS[highlightedProjectIndex]?.id ?? '01_BITFORGE';
+                              if (osContext.isInsideProvider && osContext.openCaseStudy) {
+                                osContext.openCaseStudy(targetId);
+                              } else {
+                                try { retroAudio.playOpenWindow(); } catch {}
+                                setTargetCaseStudyId(targetId);
+                                handleMaximize();
+                              }
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === 'ArrowLeft') {
+                                e.preventDefault();
+                                projectRowRefs.current[highlightedProjectIndex]?.focus();
+                              } else if (e.key === 'ArrowRight') {
+                                e.preventDefault();
+                                liveAppBtnRef.current?.focus();
+                              }
+                            }}
+                            className="flex-1 px-1.5 py-1 min-h-[32px] sm:min-h-[26px] border text-[7px] sm:text-[7.5px] font-pixel font-bold uppercase cursor-pointer text-center outline-none transition-none focus-visible:outline-dashed focus-visible:outline-2"
+                            style={{
+                              backgroundColor: brightColor,
+                              color: voidColor,
+                              borderColor: brightColor,
+                            }}
+                          >
+                            Open Case Study
+                          </button>
+
+                          <a
+                            ref={liveAppBtnRef}
+                            href={FLAGSHIP_PROJECTS[highlightedProjectIndex]?.demoUrl ?? '#'}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            data-testid={`preview-btn-live-app-${FLAGSHIP_PROJECTS[highlightedProjectIndex]?.index ?? '01'}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              try { retroAudio.playBlip(); } catch {}
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === 'ArrowLeft') {
+                                e.preventDefault();
+                                caseStudyBtnRef.current?.focus();
+                              }
+                            }}
+                            className="flex-1 px-1.5 py-1 min-h-[32px] sm:min-h-[26px] border text-[7px] sm:text-[7.5px] font-pixel font-bold uppercase cursor-pointer text-center no-underline outline-none transition-none focus-visible:outline-dashed focus-visible:outline-2 flex items-center justify-center"
+                            style={{
+                              backgroundColor: dimColor,
+                              color: brightColor,
+                              borderColor: brightColor,
+                            }}
+                          >
+                            Live App
+                          </a>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
 
@@ -862,15 +1158,15 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
                         color: brightColor,
                       }}
                     >
-                      Full-Stack Web Architect and Systems Engineer specializing in low-level graphics and distributed architectures. Undergraduate in Computer Science &amp; Engineering at East West University, Dhaka.
+                      Full-Stack Product &amp; Web Engineer specializing in high-performance web platforms and interactive graphics. Computer Science &amp; Engineering undergraduate at East West University, Dhaka.
                     </p>
 
                     <div className="flex flex-col gap-0.5">
                       <span className="font-mono text-[6.5px] sm:text-[7px] uppercase tracking-wider" style={{ color: midColor }}>
-                        Top 5 Core Technologies:
+                        Core Stack:
                       </span>
                       <div className="flex flex-wrap gap-1">
-                        {['TypeScript', 'React/Next.js', 'Node.js', 'C/C++', 'Linux/POSIX'].map((tech) => (
+                        {['TypeScript', 'React', 'Next.js', 'Node.js', 'C++', 'Cloud Firestore'].map((tech) => (
                           <span
                             key={tech}
                             className="px-1.5 py-0.5 border text-[7px] sm:text-[7.5px] font-mono font-bold"
@@ -889,14 +1185,14 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
                     <button
                       type="button"
                       onClick={handleMaximize}
-                      className="w-full text-left px-2 py-0.5 sm:py-1 border text-[7px] sm:text-[8px] font-pixel tracking-wider flex items-center justify-between cursor-pointer outline-none transition-none focus-visible:outline-dashed focus-visible:outline-2"
+                      className="w-full text-left px-2 py-0.5 sm:py-1 border text-[7px] sm:text-[8px] font-mono tracking-wider flex items-center justify-between cursor-pointer outline-none transition-none focus-visible:outline-dashed focus-visible:outline-2"
                       style={{
                         backgroundColor: `${dimColor}66`,
                         borderColor: brightColor,
                         color: brightColor,
                       }}
                     >
-                      <span>Press Enter to expand</span>
+                      <span>Press Enter to inspect</span>
                       <span className="font-mono text-[6.5px] sm:text-[7px]">Click to expand</span>
                     </button>
                   </div>
@@ -911,73 +1207,113 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
                       className="flex items-center justify-between text-[7px] sm:text-[7.5px] font-mono uppercase tracking-wider pb-0.5 border-b"
                       style={{ borderColor: `${midColor}4d`, color: midColor }}
                     >
-                      <span>Get in Touch</span>
+                      <span>Resume &amp; Contact</span>
                       <span>Available</span>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
                       {/* 1. Copy Email */}
                       <button
                         type="button"
                         data-testid="btn-copy-email"
                         onClick={handleCopyEmail}
-                        className="px-1.5 py-1 min-h-[44px] border font-pixel font-bold text-[7.5px] sm:text-[8px] flex items-center justify-center cursor-pointer transition-none outline-none focus-visible:outline-dashed focus-visible:outline-2 text-center"
+                        title="Copy Email (armabdur.rahman04@gmail.com)"
+                        className="px-1.5 py-1 min-h-[40px] border font-pixel font-bold text-[7px] sm:text-[7.5px] flex items-center justify-center cursor-pointer transition-none outline-none focus-visible:outline-dashed focus-visible:outline-2 text-center"
                         style={{
                           backgroundColor: isEmailCopied ? brightColor : dimColor,
                           color: isEmailCopied ? voidColor : brightColor,
                           borderColor: brightColor,
                         }}
                       >
-                        {isEmailCopied ? 'Copied!' : 'Copy Email'}
+                        {isEmailCopied ? 'COPIED TO CLIPBOARD!' : 'Copy Email'}
                       </button>
 
-                      {/* 2. Download CV */}
+                      {/* 2. LinkedIn Profile */}
+                      <a
+                        href="https://www.linkedin.com/in/abdur-rahman-moayed-9225b5389/"
+                        data-legacy-url="https://linkedin.com/in/watchknight"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-testid="btn-linkedin-link"
+                        title="LinkedIn Profile"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          try { retroAudio.playBlip(); } catch {}
+                        }}
+                        className="px-1.5 py-1 min-h-[40px] border font-pixel font-bold text-[7px] sm:text-[7.5px] flex items-center justify-center cursor-pointer transition-none outline-none focus-visible:outline-dashed focus-visible:outline-2 no-underline text-center"
+                        style={{
+                          backgroundColor: dimColor,
+                          color: brightColor,
+                          borderColor: brightColor,
+                        }}
+                      >
+                        LinkedIn Profile
+                      </a>
+
+                      {/* 3. GitHub (@watchknight) */}
+                      <a
+                        href="https://github.com/watchknight"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-testid="btn-github-link"
+                        title="GitHub (@watchknight)"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          try { retroAudio.playBlip(); } catch {}
+                        }}
+                        className="px-1.5 py-1 min-h-[40px] border font-pixel font-bold text-[7px] sm:text-[7.5px] flex items-center justify-center cursor-pointer transition-none outline-none focus-visible:outline-dashed focus-visible:outline-2 no-underline text-center"
+                        style={{
+                          backgroundColor: dimColor,
+                          color: brightColor,
+                          borderColor: brightColor,
+                        }}
+                      >
+                        GitHub (@watchknight)
+                      </a>
+
+                      {/* 4. Download Resume (PDF) */}
                       <a
                         href="/resume.pdf"
                         download="Abdur_Rahman_Moayed_Resume.pdf"
                         target="_blank"
                         rel="noopener noreferrer"
                         data-testid="btn-download-cv"
+                        title="Download Resume (PDF)"
                         onClick={(e) => {
                           e.stopPropagation();
                           try { retroAudio.playOpenWindow(); } catch {}
                         }}
-                        className="px-1.5 py-1 min-h-[44px] border font-pixel font-bold text-[7.5px] sm:text-[8px] flex items-center justify-center cursor-pointer transition-none outline-none focus-visible:outline-dashed focus-visible:outline-2 no-underline text-center"
+                        className="px-1.5 py-1 min-h-[40px] border font-pixel font-bold text-[7px] sm:text-[7.5px] flex items-center justify-center cursor-pointer transition-none outline-none focus-visible:outline-dashed focus-visible:outline-2 no-underline text-center"
                         style={{
                           backgroundColor: dimColor,
                           color: brightColor,
                           borderColor: brightColor,
                         }}
                       >
-                        Download CV
-                      </a>
-
-                      {/* 3. GitHub @watchknight */}
-                      <a
-                        href="https://github.com/watchknight"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        data-testid="btn-github-link"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          try { retroAudio.playBlip(); } catch {}
-                        }}
-                        className="px-1.5 py-1 min-h-[44px] border font-pixel font-bold text-[7.5px] sm:text-[8px] flex items-center justify-center cursor-pointer transition-none outline-none focus-visible:outline-dashed focus-visible:outline-2 no-underline text-center"
-                        style={{
-                          backgroundColor: dimColor,
-                          color: brightColor,
-                          borderColor: brightColor,
-                        }}
-                      >
-                        GitHub: @watchknight
+                        Download Resume (PDF)
                       </a>
                     </div>
+
+                    {/* Instant Email Copied Confirmation */}
+                    {isEmailCopied && (
+                      <div
+                        data-testid="quick-view-email-copied"
+                        className="px-2 py-0.5 border text-[7px] font-mono font-bold animate-pulse text-center"
+                        style={{
+                          backgroundColor: brightColor,
+                          color: voidColor,
+                          borderColor: brightColor,
+                        }}
+                      >
+                        COPIED TO CLIPBOARD! armabdur.rahman04@gmail.com
+                      </div>
+                    )}
 
                     <div
                       className="flex items-center justify-between text-[6.5px] sm:text-[7px] font-mono pt-0.5 border-t"
                       style={{ borderColor: `${midColor}33`, color: midColor }}
                     >
-                      <span>moayed.cse@gmail.com</span>
+                      <span>armabdur.rahman04@gmail.com</span>
                       <span>Dhaka, Bangladesh (UTC+6)</span>
                     </div>
                   </div>
@@ -987,20 +1323,24 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
 
             {/* 2. EXPANDED MODE (Full Content for [1] ABOUT, [2] PROJECTS, [3] RESUME) */}
             {isWindowExpanded && (
-              <div data-testid="retro-window-expanded-mode" className="flex flex-col gap-4">
+              <div
+                data-testid="retro-window-expanded-mode"
+                className="w-full flex flex-col gap-4"
+                style={{ width: '100%', maxWidth: '100%' }}
+              >
                 {/* SECTION 1: ABOUT ME */}
                 {currentActiveSection === 'about' && (
-                  <AboutMeView palette={palette} />
+                  <AboutMeView palette={resolvedPalette} />
                 )}
 
                 {/* SECTION 2: MY PROJECTS */}
                 {currentActiveSection === 'projects' && (
-                  <ProjectsView palette={palette} />
+                  <ProjectsView palette={resolvedPalette} initialSelectedProjectId={targetCaseStudyId ?? osContext.selectedProjectId ?? undefined} />
                 )}
 
                 {/* SECTION 3: RESUME */}
                 {currentActiveSection === 'resume' && (
-                  <ResumeView palette={palette} />
+                  <ResumeView palette={resolvedPalette} />
                 )}
               </div>
             )}
@@ -1034,7 +1374,7 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
               onTouchStart={startStepUp}
               onTouchEnd={stopStep}
               onTouchCancel={stopStep}
-              className="h-6 sm:h-7 min-h-[28px] w-full flex items-center justify-center font-pixel font-bold text-[7px] sm:text-[8px] border-b-2 cursor-pointer active:translate-y-[1px] transition-none outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2"
+              className="h-6 sm:h-7 min-h-[28px] w-full flex items-center justify-center font-mono font-bold text-[7px] sm:text-[8px] border-b-2 cursor-pointer active:translate-y-[1px] transition-none outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2"
               style={{
                 backgroundColor: brightColor,
                 color: voidColor,
@@ -1087,7 +1427,7 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
               onTouchStart={startStepDown}
               onTouchEnd={stopStep}
               onTouchCancel={stopStep}
-              className="h-6 sm:h-7 min-h-[28px] w-full flex items-center justify-center font-pixel font-bold text-[7px] sm:text-[8px] border-t-2 cursor-pointer active:translate-y-[1px] transition-none outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2"
+              className="h-6 sm:h-7 min-h-[28px] w-full flex items-center justify-center font-mono font-bold text-[7px] sm:text-[8px] border-t-2 cursor-pointer active:translate-y-[1px] transition-none outline-none focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-[#c2cdb4] focus-visible:outline-offset-2"
               style={{
                 backgroundColor: brightColor,
                 color: voidColor,
