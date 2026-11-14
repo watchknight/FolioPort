@@ -30,12 +30,12 @@ export const LEVEL1_MENU_ITEMS: Level1ItemDef[] = [
   {
     section: 'projects',
     command: '1. Selected Work',
-    index: 0,
+    index: 1,
   },
   {
     section: 'about',
     command: '2. About & Skills',
-    index: 1,
+    index: 0,
   },
   {
     section: 'resume',
@@ -71,6 +71,7 @@ export const RetroCommandMenu: React.FC<RetroCommandMenuProps> = ({
         } catch {}
         onSelect(section, index);
       } else {
+        osContext.setActiveSection(section);
         osContext.openSection(section);
       }
     },
@@ -79,6 +80,11 @@ export const RetroCommandMenu: React.FC<RetroCommandMenuProps> = ({
 
   const handleItemHover = useCallback(
     (section: RetroSection) => {
+      // In narrow / stacked viewports (< 1024px), the preview window is stacked vertically below the menu.
+      // Changing section on mouse hover in stacked viewports causes layout oscillations / trembling.
+      if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+        return;
+      }
       if (activeSection !== section) {
         osContext.setActiveSection(section);
       }
@@ -162,14 +168,14 @@ export const RetroCommandMenu: React.FC<RetroCommandMenuProps> = ({
                   e.stopPropagation();
                   const nextIdx = (idx + 1) % LEVEL1_MENU_ITEMS.length;
                   const nextSec = LEVEL1_MENU_ITEMS[nextIdx].section;
-                  handleItemHover(nextSec);
+                  osContext.setActiveSection(nextSec);
                   itemRefs.current[nextIdx]?.focus();
                 } else if (e.key === 'ArrowUp') {
                   e.preventDefault();
                   e.stopPropagation();
                   const prevIdx = (idx - 1 + LEVEL1_MENU_ITEMS.length) % LEVEL1_MENU_ITEMS.length;
                   const prevSec = LEVEL1_MENU_ITEMS[prevIdx].section;
-                  handleItemHover(prevSec);
+                  osContext.setActiveSection(prevSec);
                   itemRefs.current[prevIdx]?.focus();
                 }
               }}

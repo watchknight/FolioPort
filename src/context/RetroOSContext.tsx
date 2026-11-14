@@ -299,17 +299,18 @@ export const RetroOSProvider: React.FC<RetroOSProviderProps> = ({
         const perform = () => {
           setActiveSectionState(section);
           setActiveIndexState(meta.index);
+          setSelectedProjectIdState(null);
           setWasWindowClosed(false);
         };
         // When expanded, switching modules triggers 340ms dither transition with swap at 170ms
-        if (ditherHandlerRef.current && isWindowExpanded && activeSection !== section) {
+        if (ditherHandlerRef.current && isWindowExpanded && (activeSection !== section || selectedProjectId !== null)) {
           triggerDitherTransition(perform);
         } else {
           perform();
         }
       }
     },
-    [soundEnabled, isWindowExpanded, activeSection, triggerDitherTransition]
+    [soundEnabled, isWindowExpanded, activeSection, selectedProjectId, triggerDitherTransition]
   );
 
   const setActiveIndex = useCallback(
@@ -376,14 +377,14 @@ export const RetroOSProvider: React.FC<RetroOSProviderProps> = ({
           setWasWindowClosed(false);
         };
         // Opening Level 2 window or switching modules triggers 340ms dither transition with swap at 170ms
-        if (ditherHandlerRef.current && (!isWindowExpanded || activeSection !== section)) {
+        if (ditherHandlerRef.current && (!isWindowExpanded || activeSection !== section || selectedProjectId !== null)) {
           triggerDitherTransition(perform);
         } else {
           perform();
         }
       }
     },
-    [soundEnabled, isWindowExpanded, activeSection, triggerDitherTransition]
+    [soundEnabled, isWindowExpanded, activeSection, selectedProjectId, triggerDitherTransition]
   );
 
   const openIndex = useCallback(

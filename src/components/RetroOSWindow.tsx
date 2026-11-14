@@ -81,6 +81,7 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
 
   const [highlightedProjectIndex, setHighlightedProjectIndex] = useState<number>(0);
   const [targetCaseStudyId, setTargetCaseStudyId] = useState<string | null>(null);
+  const [projectsResetKey, setProjectsResetKey] = useState<number>(0);
   const [imgErrors, setImgErrors] = useState<Record<number, boolean>>({});
   const projectRowRefs = useRef<(HTMLDivElement | null)[]>([]);
   const caseStudyBtnRef = useRef<HTMLButtonElement | null>(null);
@@ -113,6 +114,7 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
     if (isWindowExpanded) {
       setLiveAnnouncement(computeAnnouncement(true, currentActiveSection, false));
     } else if (justClosed) {
+      setTargetCaseStudyId(null);
       setLiveAnnouncement(computeAnnouncement(false, currentActiveSection, true));
     } else if (prevSection !== currentActiveSection) {
       setLiveAnnouncement(computeAnnouncement(false, currentActiveSection, false));
@@ -347,6 +349,11 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
   }, [onToggleExpand, osContext]);
 
   const handleClose = useCallback(() => {
+    setTargetCaseStudyId(null);
+    setProjectsResetKey((k) => k + 1);
+    if (osContext.setSelectedProjectId) {
+      osContext.setSelectedProjectId(null);
+    }
     if (onClose) {
       onClose();
     } else {
@@ -356,6 +363,11 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
 
   const handleSectionSwitch = useCallback(
     (section: RetroSection) => {
+      setTargetCaseStudyId(null);
+      setProjectsResetKey((k) => k + 1);
+      if (osContext.setSelectedProjectId) {
+        osContext.setSelectedProjectId(null);
+      }
       if (onSelectSection) {
         try {
           retroAudio.playBlip();
@@ -363,6 +375,12 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
         onSelectSection(section);
       } else {
         osContext.setActiveSection(section);
+      }
+      if (typeof document !== 'undefined') {
+        const viewport = document.querySelector('[data-testid="retro-window-content-viewport"]');
+        if (viewport) {
+          viewport.scrollTo({ top: 0, behavior: 'instant' });
+        }
       }
     },
     [onSelectSection, osContext]
@@ -1335,7 +1353,7 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
 
                 {/* SECTION 2: MY PROJECTS */}
                 {currentActiveSection === 'projects' && (
-                  <ProjectsView palette={resolvedPalette} initialSelectedProjectId={targetCaseStudyId ?? osContext.selectedProjectId ?? undefined} />
+                  <ProjectsView key={`projects-${projectsResetKey}`} palette={resolvedPalette} initialSelectedProjectId={targetCaseStudyId ?? undefined} />
                 )}
 
                 {/* SECTION 3: RESUME */}

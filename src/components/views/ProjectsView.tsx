@@ -1304,7 +1304,9 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette, initialSele
   const mid = palette?.mid ?? (os.phosphorMode === 'amber' ? '#8c6830' : '#6e7d62');
   const dim = palette?.dim ?? (os.phosphorMode === 'amber' ? '#3d2b12' : '#2e3b2b');
 
-  const effectiveTargetId = initialSelectedProjectId ?? os.selectedProjectId;
+  const effectiveTargetId = os.isInsideProvider
+    ? (os.selectedProjectId ?? undefined)
+    : (initialSelectedProjectId ?? os.selectedProjectId ?? undefined);
 
   // 1. Single Selected Project for Unfolding Case Study Reader View (null = 2x2 Grid view)
   const [selectedProject, setSelectedProject] = useState<FlagshipProject | null>(() => {
@@ -1324,7 +1326,9 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette, initialSele
 
   // Sync selected project whenever initialSelectedProjectId prop or os.selectedProjectId updates
   useEffect(() => {
-    const targetId = initialSelectedProjectId ?? os.selectedProjectId;
+    const targetId = os.isInsideProvider
+      ? os.selectedProjectId
+      : (initialSelectedProjectId ?? os.selectedProjectId);
     if (targetId) {
       const match = FLAGSHIP_PROJECTS.find(
         (p) =>
@@ -1335,9 +1339,13 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette, initialSele
       );
       if (match) {
         setSelectedProject(match);
+      } else {
+        setSelectedProject(null);
       }
+    } else {
+      setSelectedProject(null);
     }
-  }, [initialSelectedProjectId, os.selectedProjectId]);
+  }, [os.isInsideProvider, initialSelectedProjectId, os.selectedProjectId]);
 
   // 2. Interactive Sandbox toggle state inside Case Study Detail View (live by default)
   const [isSandboxOpen, setIsSandboxOpen] = useState<boolean>(true);
@@ -1357,6 +1365,9 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ palette, initialSele
 
     const perform = () => {
       setSelectedProject(proj);
+      if (os.setSelectedProjectId) {
+        os.setSelectedProjectId(proj.id);
+      }
       const viewport = document.querySelector('[data-testid="retro-window-content-viewport"]');
       if (viewport) {
         viewport.scrollTop = 0;

@@ -349,10 +349,13 @@ html[data-crt-fx="OFF"] .crt-scanlines {
 
 /* Mobile & Tablet Split Console Layout (< 1024px) */
 @media (max-width: 1023px) {
+  .crt-diorama-container {
+    justify-content: flex-start !important;
+  }
   [data-testid="crt-split-console"] {
     height: auto !important;
     min-height: auto !important;
-    flex: 1 1 auto !important;
+    flex: 0 0 auto !important;
   }
 }
 
