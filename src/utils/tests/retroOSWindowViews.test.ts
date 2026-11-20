@@ -450,6 +450,26 @@ describe('Retro 90s OS Window View Modules (Strict 4-Color Pixel UI)', () => {
       expect(html).not.toContain('data-testid="interactive-linux-cli"');
     });
 
+    it('renders Technical Capabilities & Systems Stack card and Telemetry card to balance widescreen layout and eliminate dead space', () => {
+      const html = renderToString(React.createElement(ResumeView));
+
+      // Card 2 in right column: Technical Capabilities & Systems Stack
+      expect(html).toContain('data-testid="resume-technical-stack-card"');
+      expect(html).toContain('Technical Capabilities &amp; Systems Stack');
+      expect(html).toContain('Systems &amp; Low-Level Engineering:');
+      expect(html).toContain('Browser Internals &amp; Security:');
+      expect(html).toContain('Frontend &amp; Visual Computing:');
+      expect(html).toContain('Backend, Data &amp; Cloud:');
+      expect(html).toContain('Algorithms &amp; Optimization:');
+
+      // Card 3 in right column: Academic Distinctions & Telemetry
+      expect(html).toContain('data-testid="resume-credentials-telemetry-card"');
+      expect(html).toContain('Academic Distinctions &amp; Telemetry');
+      expect(html).toContain('Merit Scholarships:');
+      expect(html).toContain('Status &amp; Coordinates');
+      expect(html).toContain('Dhaka, Bangladesh');
+    });
+
     it('processes all interactive Linux CLI commands: help, whoami, skills, projects, sudo hire moayed, clear, exit, ls, cat', () => {
       // Empty input
       expect(processCliCommand('')).toBeNull();

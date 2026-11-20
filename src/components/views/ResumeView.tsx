@@ -770,9 +770,30 @@ export const ResumeView: React.FC<ResumeViewProps> = ({ palette }) => {
                   <p className="leading-relaxed" style={{ color: `${bright}cc` }}>
                     Interactive Linux environment with real command evaluation. Type <strong style={{ color: bright }}>whoami</strong>, <strong style={{ color: bright }}>projects</strong>, <strong style={{ color: bright }}>contact</strong>, <strong style={{ color: bright }}>skills</strong>, or <strong style={{ color: bright }}>sudo hire moayed</strong>.
                   </p>
-                  <div className="flex items-center gap-1.5 pt-1 border-t" style={{ borderColor: `${mid}30` }}>
-                    <span className="text-[7.5px] uppercase" style={{ color: mid }}>SHELL:</span>
-                    <span className="text-[8px] font-bold" style={{ color: bright }}>Linux ewu-cse 6.8.0-generic x86_64</span>
+                  <div className="flex flex-wrap items-center gap-1.5 pt-1 border-t" style={{ borderColor: `${mid}30` }}>
+                    <span className="text-[7.5px] uppercase" style={{ color: mid }}>QUICK EXECUTE:</span>
+                    {(['whoami', 'projects', 'skills', 'contact', 'sudo hire moayed'] as const).map((cmd) => (
+                      <button
+                        key={cmd}
+                        type="button"
+                        onClick={() => executeCliCommand(cmd)}
+                        className="px-1.5 py-0.5 border text-[7.5px] sm:text-[8px] font-mono cursor-pointer transition-none active:translate-y-[1px]"
+                        style={{
+                          backgroundColor: `${dim}60`,
+                          borderColor: `${mid}70`,
+                          color: bright,
+                        }}
+                      >
+                        {cmd}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="flex items-center justify-between gap-1.5 pt-1 border-t text-[7.5px] sm:text-[8px]" style={{ borderColor: `${mid}30` }}>
+                    <div className="flex items-center gap-1">
+                      <span className="uppercase" style={{ color: mid }}>SHELL:</span>
+                      <span className="font-bold" style={{ color: bright }}>Linux ewu-cse 6.8.0-generic x86_64</span>
+                    </div>
+                    <span className="font-bold" style={{ color: bright }}>[ONLINE]</span>
                   </div>
                 </div>
               </>
@@ -889,6 +910,140 @@ export const ResumeView: React.FC<ResumeViewProps> = ({ palette }) => {
                 </form>
               </div>
             )}
+          </div>
+
+          {/* CARD 2: TECHNICAL CAPABILITIES & SYSTEMS STACK */}
+          <div
+            data-testid="resume-technical-stack-card"
+            className="p-3 sm:p-3.5 border flex flex-col gap-2.5"
+            style={{ backgroundColor: `${dim}40`, borderColor: mid }}
+          >
+            <div
+              className="flex items-center justify-between border-b pb-1 font-pixel text-[8.5px] sm:text-[9.5px] font-bold uppercase"
+              style={{ borderColor: `${mid}60`, color: bright }}
+            >
+              <span>Technical Capabilities &amp; Systems Stack</span>
+              <span className="font-mono text-[8px]" style={{ color: mid }}>Verified Proficiencies</span>
+            </div>
+
+            <div
+              className="flex flex-col gap-2 font-body leading-relaxed pt-0.5"
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '13.5px', lineHeight: 1.55 }}
+            >
+              <div className="flex items-start gap-2">
+                <span className="font-mono text-xs shrink-0 select-none" style={{ color: mid }}>•</span>
+                <p style={{ color: bright }}>
+                  <strong style={{ color: bright }}>Systems &amp; Low-Level Engineering:</strong>{' '}
+                  <span style={{ color: `${bright}ee` }}>
+                    C++, C, Python, Java, Operating Systems, Linux x86_64, Windows Registry (HKLM), Watchdog Daemons, Multi-process IPC, Memory Management.
+                  </span>
+                </p>
+              </div>
+
+              <div className="flex items-start gap-2">
+                <span className="font-mono text-xs shrink-0 select-none" style={{ color: mid }}>•</span>
+                <p style={{ color: bright }}>
+                  <strong style={{ color: bright }}>Browser Internals &amp; Security:</strong>{' '}
+                  <span style={{ color: `${bright}ee` }}>
+                    Chromium Manifest V3, DOM Tree-Walking, Anti-Adblock Countermeasures, Main World Contexts, declarativeNetRequest, Strict CSP Bypass.
+                  </span>
+                </p>
+              </div>
+
+              <div className="flex items-start gap-2">
+                <span className="font-mono text-xs shrink-0 select-none" style={{ color: mid }}>•</span>
+                <p style={{ color: bright }}>
+                  <strong style={{ color: bright }}>Frontend &amp; Visual Computing:</strong>{' '}
+                  <span style={{ color: `${bright}ee` }}>
+                    TypeScript, React 18, React 19, Next.js, Tailwind CSS, MediaPipe 468 FaceMesh, Web Audio API, Canvas 2D, Three.js &amp; WebGL.
+                  </span>
+                </p>
+              </div>
+
+              <div className="flex items-start gap-2">
+                <span className="font-mono text-xs shrink-0 select-none" style={{ color: mid }}>•</span>
+                <p style={{ color: bright }}>
+                  <strong style={{ color: bright }}>Backend, Data &amp; Cloud:</strong>{' '}
+                  <span style={{ color: `${bright}ee` }}>
+                    Node.js, Express, PostgreSQL, MongoDB, SQLite, Cloud Firestore, Docker, Render CI/CD, GitHub Actions.
+                  </span>
+                </p>
+              </div>
+
+              <div className="flex items-start gap-2">
+                <span className="font-mono text-xs shrink-0 select-none" style={{ color: mid }}>•</span>
+                <p style={{ color: bright }}>
+                  <strong style={{ color: bright }}>Algorithms &amp; Optimization:</strong>{' '}
+                  <span style={{ color: `${bright}ee` }}>
+                    Data Structures &amp; Algorithms, Weighted Heuristic Scoring, Set-Intersection Matchmaking, Non-linear Scaling (prep × √r), SHA-256 Tiered Caching.
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* CARD 3: ACADEMIC HONORS, CREDENTIALS & WORKSTATION TELEMETRY */}
+          <div
+            data-testid="resume-credentials-telemetry-card"
+            className="p-3 sm:p-3.5 border flex flex-col gap-2.5"
+            style={{ backgroundColor: `${dim}33`, borderColor: mid }}
+          >
+            <div
+              className="flex items-center justify-between border-b pb-1 font-pixel text-[8.5px] sm:text-[9.5px] font-bold uppercase"
+              style={{ borderColor: `${mid}60`, color: bright }}
+            >
+              <span>Academic Distinctions &amp; Telemetry</span>
+              <span className="font-mono text-[8px]" style={{ color: mid }}>EWU CSE • UTC+6</span>
+            </div>
+
+            <div
+              className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 font-mono text-[8.5px] sm:text-[9px] pt-0.5"
+            >
+              {/* Telemetry Block 1: Academic Honors */}
+              <div
+                className="p-2 border flex flex-col gap-1.5"
+                style={{ backgroundColor: `${voidCol}60`, borderColor: `${mid}40` }}
+              >
+                <span className="font-pixel text-[7.5px] uppercase font-bold" style={{ color: mid }}>
+                  Academic Distinctions
+                </span>
+                <div className="flex flex-col gap-1 leading-snug" style={{ color: `${bright}dd` }}>
+                  <div>
+                    <span className="font-bold" style={{ color: bright }}>• Merit Scholarships:</span> Class 8 (JSC) &amp; Class 10 (SSC) Board General Merit Scholarships.
+                  </div>
+                  <div>
+                    <span className="font-bold" style={{ color: bright }}>• Perfect 5.0 GPA:</span> Unbroken GPA 5.0 / 5.0 across SSC (2021), JSC (2018), PSC (2015).
+                  </div>
+                  <div>
+                    <span className="font-bold" style={{ color: bright }}>• Scholar Track:</span> B.Sc. in CSE @ East West University (2025–2029 Expected).
+                  </div>
+                </div>
+              </div>
+
+              {/* Telemetry Block 2: Workstation & Availability */}
+              <div
+                className="p-2 border flex flex-col gap-1.5"
+                style={{ backgroundColor: `${voidCol}60`, borderColor: `${mid}40` }}
+              >
+                <span className="font-pixel text-[7.5px] uppercase font-bold" style={{ color: mid }}>
+                  Status &amp; Coordinates
+                </span>
+                <div className="flex flex-col gap-1 leading-snug" style={{ color: `${bright}dd` }}>
+                  <div>
+                    <span className="font-bold" style={{ color: bright }}>• Status:</span> Available for SWE Internships &amp; Full-Stack / Systems Roles.
+                  </div>
+                  <div>
+                    <span className="font-bold" style={{ color: bright }}>• Location:</span> Dhaka, Bangladesh (23.7644° N, 90.4252° E, UTC+6).
+                  </div>
+                  <div>
+                    <span className="font-bold" style={{ color: bright }}>• Environment:</span> Ubuntu Linux x86_64 / Win11 • Git &amp; CI/CD.
+                  </div>
+                  <div>
+                    <span className="font-bold" style={{ color: bright }}>• Direct Mail:</span> Instant transmission via Dispatcher below.
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
