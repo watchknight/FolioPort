@@ -103,7 +103,7 @@ describe('Widescreen Full-Glass CRT OS Window & Interior Views Refactor', () => 
   });
 
   describe('3. WIDESCREEN ABOUT DASHBOARD (AboutMeView.tsx)', () => {
-    it('places Identity Card and Biography in left column (5fr) and 3-category Skills in right column (7fr)', () => {
+    it('places Identity Card, Biography, and Telemetry in left column (5fr) and 3-category Skills, Disciplines, and Toolchains in right column (7fr)', () => {
       const html = renderToString(React.createElement(AboutMeView));
 
       expect(html).toContain('data-testid="about-widescreen-dashboard"');
@@ -111,13 +111,20 @@ describe('Widescreen Full-Glass CRT OS Window & Interior Views Refactor', () => 
       expect(html).toContain('lg:col-span-5');
       expect(html).toContain('lg:col-span-7');
 
-      // Left column components
-      expect(html).toContain('data-testid="about-identity-card"');
-      expect(html).toContain('data-testid="about-biography-section"');
+      const [leftColumnHtml, rightColumnHtml] = html.split('lg:col-span-7');
+      expect(leftColumnHtml).toBeDefined();
+      expect(rightColumnHtml).toBeDefined();
 
-      // Right column components
-      expect(html).toContain('data-testid="skills-capability-grid"');
-      expect(html).toContain('Core Competencies:');
+      // Left column components (5fr: Identity, Bio, Telemetry)
+      expect(leftColumnHtml).toContain('data-testid="about-identity-card"');
+      expect(leftColumnHtml).toContain('data-testid="about-biography-section"');
+      expect(leftColumnHtml).toContain('data-testid="about-production-telemetry"');
+
+      // Right column components (7fr: Skills, Competencies, Disciplines, Toolchains)
+      expect(rightColumnHtml).toContain('data-testid="skills-capability-grid"');
+      expect(rightColumnHtml).toContain('Core Competencies:');
+      expect(rightColumnHtml).toContain('data-testid="about-architecture-disciplines"');
+      expect(rightColumnHtml).toContain('data-testid="about-developer-toolchains"');
     });
 
     it('renders crisp biography in Plus Jakarta Sans with max-width: 62ch', () => {

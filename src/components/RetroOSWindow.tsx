@@ -1176,15 +1176,15 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
                         color: brightColor,
                       }}
                     >
-                      Full-Stack Product &amp; Web Engineer specializing in high-performance web platforms and interactive graphics. Computer Science &amp; Engineering undergraduate at East West University, Dhaka.
+                      Software Engineer &amp; Full-Stack Product &amp; Web Engineer specializing in browser internals, systems security, and high-performance web architecture. Undergraduate Scholar in Computer Science &amp; Engineering at East West University, Dhaka.
                     </p>
 
                     <div className="flex flex-col gap-0.5">
                       <span className="font-mono text-[6.5px] sm:text-[7px] uppercase tracking-wider" style={{ color: midColor }}>
-                        Core Stack:
+                        Core Stack &amp; Competencies:
                       </span>
                       <div className="flex flex-wrap gap-1">
-                        {['TypeScript', 'React', 'Next.js', 'Node.js', 'C++', 'Cloud Firestore'].map((tech) => (
+                        {['Chromium MV3', 'TypeScript', 'React', 'Next.js', 'Node.js', 'C++', 'Cloud Firestore', 'Python', 'SQLite'].map((tech) => (
                           <span
                             key={tech}
                             className="px-1.5 py-0.5 border text-[7px] sm:text-[7.5px] font-mono font-bold"
@@ -1332,7 +1332,7 @@ export const RetroOSWindow: React.FC<RetroOSWindowProps> = ({
                       style={{ borderColor: `${midColor}33`, color: midColor }}
                     >
                       <span>armabdur.rahman04@gmail.com</span>
-                      <span>Dhaka, Bangladesh (UTC+6)</span>
+                      <span>Dhaka, Bangladesh (Remote Available)</span>
                     </div>
                   </div>
                 )}

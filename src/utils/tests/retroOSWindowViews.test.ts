@@ -1,7 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
-import { AboutMeView, CAPABILITY_COLUMNS } from '../../components/views/AboutMeView';
+import {
+  AboutMeView,
+  CAPABILITY_COLUMNS,
+  PRODUCTION_TELEMETRY,
+  ARCHITECTURE_DISCIPLINES,
+  TOOLCHAIN_CATEGORIES,
+} from '../../components/views/AboutMeView';
 import {
   ProjectsView,
   FLAGSHIP_PROJECTS,
@@ -161,6 +167,60 @@ describe('Retro 90s OS Window View Modules (Strict 4-Color Pixel UI)', () => {
       expect(htmlAmber).toContain(AMBER_PALETTE.bright);
       // Ensure name header does not hardcode old phosphor green
       expect(htmlAmber).not.toContain('text-[#c2cdb4]');
+    });
+
+    it('eliminates dead space by rendering production telemetry, architecture disciplines, and developer toolchain cards', () => {
+      const html = renderToString(React.createElement(AboutMeView));
+
+      // 1. Production Telemetry & Verified Systems
+      expect(html).toContain('data-testid="about-production-telemetry"');
+      expect(html).toContain('Production Telemetry');
+      expect(html).toContain('Verified Metrics');
+      expect(html).toContain('7');
+      expect(html).toContain('Live Web Apps');
+      expect(html).toContain('50+');
+      expect(html).toContain('Visualized Algos');
+      expect(html).toContain('&lt;1 ms');
+      expect(html).toContain('Timer Precision');
+      expect(html).toContain('60 FPS');
+      expect(html).toContain('Target Budget');
+
+      // 2. Systems & Architecture Discipline
+      expect(html).toContain('data-testid="about-architecture-disciplines"');
+      expect(html).toContain('Systems &amp; Architecture Discipline');
+      expect(html).toContain('Engineering Standards');
+      expect(html).toContain('Deterministic UI &amp; WebGL');
+      expect(html).toContain('GPU / 60 FPS');
+      expect(html).toContain('Data Sovereignty &amp; CI/CD');
+      expect(html).toContain('Full-Stack');
+
+      // 3. Workstation Environment & Toolchain
+      expect(html).toContain('data-testid="about-developer-toolchains"');
+      expect(html).toContain('Workstation Environment &amp; Toolchain');
+      expect(html).toContain('Active Tooling');
+      expect(html).toContain('Runtime &amp; Build');
+      expect(html).toContain('Platforms &amp; Cloud');
+      expect(html).toContain('Graphics &amp; Audio');
+
+      // 4. Keyboard accessibility & WCAG semantics
+      expect(html).toContain('tabindex="0"');
+      expect(html).toContain('role="article"');
+      expect(html).toContain('aria-label="7 Live Web Apps: Render CI/CD"');
+      expect(html).toContain('aria-label="Runtime &amp; Build: Node.js • Vite • TypeScript • esbuild • npm • Git"');
+    });
+
+    it('exports verified telemetry, architecture disciplines, and toolchains data models', () => {
+      expect(PRODUCTION_TELEMETRY).toHaveLength(4);
+      expect(PRODUCTION_TELEMETRY.map((p) => p.metric)).toEqual(['7', '50+', '<1 ms', '60 FPS']);
+
+      expect(ARCHITECTURE_DISCIPLINES).toHaveLength(2);
+      expect(ARCHITECTURE_DISCIPLINES[0].title).toBe('Deterministic UI & WebGL');
+      expect(ARCHITECTURE_DISCIPLINES[1].title).toBe('Data Sovereignty & CI/CD');
+
+      expect(TOOLCHAIN_CATEGORIES).toHaveLength(3);
+      expect(TOOLCHAIN_CATEGORIES[0].title).toBe('Runtime & Build');
+      expect(TOOLCHAIN_CATEGORIES[1].title).toBe('Platforms & Cloud');
+      expect(TOOLCHAIN_CATEGORIES[2].title).toBe('Graphics & Audio');
     });
   });
 
@@ -344,7 +404,7 @@ describe('Retro 90s OS Window View Modules (Strict 4-Color Pixel UI)', () => {
       const html = renderToString(React.createElement(ResumeView));
       expect(html).toContain('data-testid="academic-coursework-card"');
       expect(html).toContain('Education');
-      expect(html).toContain('B.Sc. in Computer Science &amp; Engineering (2022–2026)');
+      expect(html).toContain('B.Sc. in Computer Science &amp; Engineering (2025–2029 Expected)');
       expect(html).toContain('East West University (EWU), Dhaka, Bangladesh');
       expect(html).toContain('Operating Systems');
       expect(html).toContain('Data Structures &amp; Algorithms');
@@ -352,12 +412,13 @@ describe('Retro 90s OS Window View Modules (Strict 4-Color Pixel UI)', () => {
       expect(html).toContain('Software Engineering');
     });
 
-    it('renders Key Engineering Highlights card with 3 concise bullet points', () => {
+    it('renders Key Engineering Highlights card with verified production systems', () => {
       const html = renderToString(React.createElement(ResumeView));
       expect(html).toContain('KEY ENGINEERING HIGHLIGHTS');
-      expect(html).toContain('Architected and deployed 7 live production web applications spanning algorithm visualization (BitForge), cognitive testing (FocusLab), 3D eyewear try-on (DocLensBD), and bilingual recipe matching (Rannabanna).');
-      expect(html).toContain('Strong foundation in Data Structures, Algorithms, and Object-Oriented Programming (C++, Python, Java, TypeScript) with a focus on 60 FPS interactive UI performance.');
-      expect(html).toContain('Experienced in end-to-end full-stack delivery using React 18, Next.js, Node.js, Cloud Firestore, PostgreSQL, and automated CI/CD deployments.');
+      expect(html).toContain('PureFeed (Browser Engine &amp; Anti-Adblock Countermeasures)');
+      expect(html).toContain('FocusGuard (Multi-Layer Network &amp; OS-Level Policy Enforcement)');
+      expect(html).toContain('Rannabanna &amp; DocLensBD (Culinary Physics &amp; Computer Vision)');
+      expect(html).toContain('POSHRA &amp; Sentinel Portfolio (Scalable Commerce &amp; Systems Architecture)');
     });
 
     it('renders Download Resume (PDF) button with link to /resume.pdf', () => {

@@ -453,7 +453,7 @@ const CRTDioramaStageInner: React.FC<CRTDioramaStageProps> = ({
               color: palette.mid,
             }}
           >
-            Full-Stack Product &amp; Web Engineer • CSE at East West University, Dhaka
+            Software Engineer · Browser Internals, Systems Security &amp; Web Architecture • Full-Stack Product &amp; Web Engineer • CSE at East West University, Dhaka
           </p>
         </div>
 

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import type { PhosphorColorTokens } from '../RetroOSWindow';
 import { useRetroOS } from '../../context/RetroOSContext';
 import { watchknightAudio } from '../../audio/WatchknightAudioEngine';
+import { DirectEmailBox } from '../DirectEmailBox';
 
 export interface ResumeViewProps {
   palette?: PhosphorColorTokens;
@@ -38,6 +39,7 @@ export function processCliCommand(cmdRaw: string): CliCommandResponse | null {
         '  • whoami   - Developer identity, handle, institution & credentials',
         '  • projects - List all 7 live Render-deployed web applications',
         '  • contact  - Verified email (armabdur.rahman04@gmail.com) & LinkedIn',
+        '  • sendmail - Direct Email Dispatcher (form available directly below)',
         '  • clear    - Reset terminal screen and history buffer',
         '  • skills   - Technical capabilities & engineering stack',
       ];
@@ -49,8 +51,9 @@ export function processCliCommand(cmdRaw: string): CliCommandResponse | null {
     case 'author':
       response = [
         'Abdur Rahman Moayed (@watchknight)',
-        'B.Sc. in Computer Science & Engineering @ East West University (EWU), Dhaka, Bangladesh',
-        'Full-Stack & Systems Engineer | Coordinates: 23.7644° N, 90.4252° E (UTC+6)',
+        'Software Engineer · Browser Internals, Systems Security & Web Architecture',
+        'B.Sc. in Computer Science & Engineering @ East West University (EWU), Dhaka, Bangladesh (2025–2029 Expected)',
+        'Undergraduate Scholar: Systems Architecture, Operating Systems, Browser Internals & Distributed Web Engineering',
         'Email: armabdur.rahman04@gmail.com | LinkedIn: https://www.linkedin.com/in/abdur-rahman-moayed-9225b5389/',
       ];
       break;
@@ -58,14 +61,17 @@ export function processCliCommand(cmdRaw: string): CliCommandResponse | null {
     case 'projects':
     case 'project':
       response = [
-        'Live Deployed Systems & Web Applications (7 Live on Render):',
-        '  01. BitForge      - https://bitforge-3u2q.onrender.com',
-        '  02. FocusLab      - https://focuslab-smoa.onrender.com',
-        '  03. Rannabanna    - https://rannabanna.onrender.com',
-        '  04. DocLensBD     - https://doclensbd.onrender.com',
-        '  05. Mental Defrag - https://mental-defrag.onrender.com',
-        '  06. TrashTrail    - https://trashtrail.onrender.com',
-        '  07. POSHRA        - https://poshra.onrender.com',
+        'Technical Projects & Live Deployed Systems:',
+        '  01. PureFeed           - Browser Engine & Anti-Adblock Countermeasures (Chromium MV3, HTML5 Media)',
+        '  02. FocusGuard         - Multi-Layer Network & OS-Level Policy Enforcement (Chrome Ext, Win Registry)',
+        '  03. BitForge           - https://bitforge-3u2q.onrender.com',
+        '  04. FocusLab           - https://focuslab-smoa.onrender.com',
+        '  05. Rannabanna         - https://rannabanna.onrender.com',
+        '  06. DocLensBD          - https://doclensbd.onrender.com',
+        '  07. Mental Defrag      - https://mental-defrag.onrender.com',
+        '  08. TrashTrail         - https://trashtrail.onrender.com',
+        '  09. POSHRA             - https://poshra.onrender.com',
+        '  10. Sentinel Portfolio - Systems Architecture Portfolio (https://github.com/watchknight)',
       ];
       break;
 
@@ -80,16 +86,31 @@ export function processCliCommand(cmdRaw: string): CliCommandResponse | null {
         '  • Email:    armabdur.rahman04@gmail.com',
         '  • LinkedIn: https://www.linkedin.com/in/abdur-rahman-moayed-9225b5389/',
         '  • GitHub:   https://github.com/watchknight',
-        '  • Location: Dhaka, Bangladesh (UTC+6)',
+        '  • Location: Dhaka, Bangladesh (Remote Available)',
+        '  • Mailbox:  Direct transmission form available directly below in this Contact view.',
+      ];
+      break;
+
+    case 'sendmail':
+    case 'mailbox':
+    case 'directmail':
+    case 'mailform':
+    case 'compose':
+      response = [
+        'Direct Email Dispatcher:',
+        '  • Direct transmission form available directly below in this Contact view.',
+        '  • Recipient: armabdur.rahman04@gmail.com',
+        '  • Features:  Direct mail form with file attachment & real-time MX verification.',
       ];
       break;
 
     case 'skills':
     case 'skill':
       response = [
-        'Frontend & Interactive UI: TypeScript, React 18, Next.js, Tailwind CSS, GSAP, HTML5 Canvas, 3D Web',
-        'Backend, Data & Cloud:   Node.js, Express, Cloud Firestore, PostgreSQL, MongoDB, IndexedDB, Render',
-        'Core CSE & Languages:    Data Structures & Algorithms, C++, C, Python, Java, JavaScript, Linux',
+        'Core CSE & Systems Security: Data Structures & Algorithms, Systems Architecture, Operating Systems, Browser Internals (Chromium MV3, CSP, DOM tree-walking), C++, C, Python, Java, JavaScript (ES2024), OS hosts routing, Windows Registry (HKLM), watchdog daemons',
+        'Frontend & Interactive UI: TypeScript, React 18, React 19, Next.js, Tailwind CSS, MediaPipe 468 FaceMesh, HTML5 Media APIs, Web Audio API, Canvas 2D',
+        'Backend, Data & Cloud:   Node.js, Express, SQLite, PostgreSQL, MongoDB, Cloud Firestore, Gemini 3.8 Flash API, SHA-256 persistent caching, Render',
+        'Algorithms & Math:       Weighted heuristic scoring, set-intersection optimization, non-linear physical scaling (prep × √r), SHA-256 tiered caching pipelines',
       ];
       break;
 
@@ -101,7 +122,7 @@ export function processCliCommand(cmdRaw: string): CliCommandResponse | null {
     case './hire_moayed.sh':
       response = [
         '[AUTH GRANTED] Root authorization verified. Candidate prioritized!',
-        'Dispatched contact ping to armabdur.rahman04@gmail.com. Available for software engineering internships & full-stack roles.',
+        'Dispatched contact ping to armabdur.rahman04@gmail.com. Available for software engineering roles & systems architecture.',
       ];
       break;
 
@@ -138,7 +159,8 @@ export function processCliCommand(cmdRaw: string): CliCommandResponse | null {
     case 'cat resume.pdf':
     case 'resume':
       response = [
-        'Abdur Rahman Moayed • B.Sc. in CSE @ East West University, Dhaka, Bangladesh (2022–2026)',
+        'Abdur Rahman Moayed • B.Sc. in CSE @ East West University (EWU), Dhaka, Bangladesh (2025–2029 Expected)',
+        'Software Engineer · Browser Internals, Systems Security & Web Architecture',
         'Click the "Download Resume (PDF)" button at the top of this view to download /resume.pdf.',
       ];
       break;
@@ -148,8 +170,8 @@ export function processCliCommand(cmdRaw: string): CliCommandResponse | null {
     case 'cat about-me.md':
     case 'about':
       response = [
-        'Abdur Rahman Moayed (@watchknight) • Systems & Full-Stack Engineer.',
-        'View the "2. About & Skills" tab for the full biography and capability grid.',
+        'Abdur Rahman Moayed (@watchknight) • Software Engineer · Browser Internals, Systems Security & Web Architecture',
+        'Undergraduate Scholar @ East West University (EWU). View the "2. About & Skills" tab for the full biography and capability grid.',
       ];
       break;
 
@@ -321,9 +343,28 @@ export const ResumeView: React.FC<ResumeViewProps> = ({ palette }) => {
       return;
     }
 
+    // Ensure terminal is open when executing any command
+    setIsCliOpen(true);
+
     // Keep clean, self-contained 6-line command prompt history
     setCliHistory((prev) => [...prev, { command: result.command, output: result.output }].slice(-6));
     setCliInput('');
+
+    // If user executed sendmail/mailbox/compose, smooth-scroll to Direct Email Box
+    const normalized = cmdRaw.trim().toLowerCase();
+    if (['sendmail', 'mailbox', 'directmail', 'mailform', 'compose'].includes(normalized)) {
+      if (typeof document !== 'undefined') {
+        setTimeout(() => {
+          const el = document.getElementById('direct-email-dispatcher');
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth' });
+            const nameInput = document.getElementById('sender-name-input');
+            if (nameInput) nameInput.focus();
+          }
+        }, 120);
+      }
+    }
+
     if (focusTimeoutRef.current) clearTimeout(focusTimeoutRef.current);
     focusTimeoutRef.current = setTimeout(() => {
       if (cliInputRef.current) cliInputRef.current.focus();
@@ -541,47 +582,65 @@ export const ResumeView: React.FC<ResumeViewProps> = ({ palette }) => {
         )}
       </div>
 
-      {/* WIDESCREEN 2-COLUMN DASHBOARD (Education & Skills on Left, Interactive Terminal Panel on Right) */}
+      {/* WIDESCREEN 2-COLUMN DASHBOARD (Education & Highlights on Left, Interactive Terminal on Right) */}
       <div
         data-testid="resume-widescreen-dashboard"
         className="grid grid-cols-1 lg:grid-cols-2 gap-3.5 sm:gap-4 items-start"
       >
-        {/* LEFT COLUMN: Education & Coursework Card + Skills Table */}
+        {/* LEFT COLUMN: Education & Coursework Card + Key Engineering Highlights Card */}
         <div className="flex flex-col gap-3.5 min-w-0">
           {/* 3. EDUCATION & COURSEWORK CARD */}
           <div
             data-testid="academic-coursework-card"
-            className="p-3 sm:p-3.5 border flex flex-col gap-2"
+            className="p-3 sm:p-3.5 border flex flex-col gap-2.5"
             style={{ backgroundColor: `${dim}33`, borderColor: mid }}
           >
             <div
               className="flex items-center justify-between border-b pb-1 font-pixel text-[8.5px] sm:text-[9.5px] font-bold uppercase"
               style={{ borderColor: `${mid}60`, color: bright }}
             >
-              <span>Education &amp; Coursework</span>
+              <span>Education &amp; Coursework: Academic Distinctions</span>
               <span className="font-mono text-[8px]" style={{ color: mid }}>East West University</span>
             </div>
 
             <div
               className="flex flex-col gap-2 font-body leading-relaxed"
-              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '15px', lineHeight: 1.6 }}
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '14.5px', lineHeight: 1.6 }}
             >
               <div>
-                • <strong className="font-mono text-sm" style={{ color: mid }}>Degree:</strong>{' '}
+                • <strong className="font-mono text-xs" style={{ color: mid }}>Degree &amp; Institution:</strong>{' '}
                 <span style={{ color: bright, fontWeight: 600 }}>
-                  B.Sc. in Computer Science &amp; Engineering (2022–2026)
+                  East West University (EWU), Dhaka, Bangladesh — B.Sc. in Computer Science &amp; Engineering (2025–2029 Expected)
                 </span>
               </div>
               <div>
-                • <strong className="font-mono text-sm" style={{ color: mid }}>Institution:</strong>{' '}
-                <span style={{ color: bright }}>
-                  East West University (EWU), Dhaka, Bangladesh
+                • <strong className="font-mono text-xs" style={{ color: mid }}>Undergraduate Scholar Track:</strong>{' '}
+                <span style={{ color: `${bright}ee` }}>
+                  Specializing in Systems Architecture, Operating Systems, Browser Internals, and Distributed Web Engineering.
                 </span>
               </div>
               <div>
-                • <strong className="font-mono text-sm" style={{ color: mid }}>Core Coursework:</strong>{' '}
+                • <strong className="font-mono text-xs" style={{ color: mid }}>Academic Chronology:</strong>{' '}
                 <span style={{ color: `${bright}dd` }}>
-                  Data Structures &amp; Algorithms, Operating Systems, Database Systems, Software Engineering, and Object-Oriented Programming (C++/Java).
+                  Completed Higher Secondary Certificate (HSC Science, 2023).
+                </span>
+              </div>
+              <div>
+                • <strong className="font-mono text-xs" style={{ color: mid }}>Unbroken Board Distinction:</strong>{' '}
+                <span style={{ color: bright, fontWeight: 600 }}>
+                  Maintained consistent GPA 5.0 / 5.0 across Class 10 (SSC, 2021), Class 8 (JSC, 2018), and Class 5 (PSC, 2015) national board examinations.
+                </span>
+              </div>
+              <div>
+                • <strong className="font-mono text-xs" style={{ color: mid }}>Board General Scholarships:</strong>{' '}
+                <span style={{ color: `${bright}ee` }}>
+                  Awarded prestigious Board General Merit Scholarships in Class 8 (JSC) and Class 10 (SSC) for regional academic excellence.
+                </span>
+              </div>
+              <div>
+                • <strong className="font-mono text-xs" style={{ color: mid }}>Core Coursework &amp; Foundations:</strong>{' '}
+                <span style={{ color: `${bright}dd` }}>
+                  Systems Architecture, Operating Systems, Browser Internals, Distributed Web Engineering, Data Structures &amp; Algorithms, Database Systems, Software Engineering, and Object-Oriented Programming (C++/Java).
                 </span>
               </div>
             </div>
@@ -597,30 +656,40 @@ export const ResumeView: React.FC<ResumeViewProps> = ({ palette }) => {
               className="flex items-center justify-between border-b pb-1 font-pixel text-[8.5px] sm:text-[9.5px] font-bold uppercase"
               style={{ borderColor: `${mid}60`, color: bright }}
             >
-              <span>KEY ENGINEERING HIGHLIGHTS</span>
-              <span className="font-mono text-[8px]" style={{ color: mid }}>Production Track Record</span>
+              <span>KEY ENGINEERING HIGHLIGHTS &amp; TECHNICAL PROJECTS</span>
+              <span className="font-mono text-[8px]" style={{ color: mid }}>Verified Production Systems</span>
             </div>
 
             <div
               className="flex flex-col gap-2.5 font-body leading-relaxed pt-0.5"
-              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '14.5px', lineHeight: 1.6 }}
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '14px', lineHeight: 1.55 }}
             >
               <div className="flex items-start gap-2">
                 <span className="font-mono text-xs shrink-0 select-none" style={{ color: mid }}>•</span>
                 <p style={{ color: bright }}>
-                  Architected and deployed 7 live production web applications spanning algorithm visualization (BitForge), cognitive testing (FocusLab), 3D eyewear try-on (DocLensBD), and bilingual recipe matching (Rannabanna).
+                  <strong style={{ color: bright }}>PureFeed (Browser Engine &amp; Anti-Adblock Countermeasures):</strong>{' '}
+                  Engineered zero-latency hybrid blocker bypassing YouTube&apos;s recursive 20ms playback loop with single-entry state guard and in-player 16x acceleration. Overcame strict host CSP via Manifest V3 Main World registration with root dataset bridge; eliminated Facebook sponsored post evasion with recursive tree-walker and Unicode zero-width stripping maintaining 60fps.
                 </p>
               </div>
               <div className="flex items-start gap-2">
                 <span className="font-mono text-xs shrink-0 select-none" style={{ color: mid }}>•</span>
                 <p style={{ color: bright }}>
-                  Strong foundation in Data Structures, Algorithms, and Object-Oriented Programming (C++, Python, Java, TypeScript) with a focus on 60 FPS interactive UI performance.
+                  <strong style={{ color: bright }}>FocusGuard (Multi-Layer Network &amp; OS-Level Policy Enforcement):</strong>{' '}
+                  Architected 5-tier tamper-resistant content filter enforcing system-wide rules across Chrome, Edge, Firefox, and desktop applications. Synchronized declarativeNetRequest rules with OS hosts file (580+ domains redirected to 0.0.0.0) and enterprise registry policy locks. Built automated 60-second background watchdog daemon detecting modifications and restoring policy rules.
                 </p>
               </div>
               <div className="flex items-start gap-2">
                 <span className="font-mono text-xs shrink-0 select-none" style={{ color: mid }}>•</span>
                 <p style={{ color: bright }}>
-                  Experienced in end-to-end full-stack delivery using React 18, Next.js, Node.js, Cloud Firestore, PostgreSQL, and automated CI/CD deployments.
+                  <strong style={{ color: bright }}>Rannabanna &amp; DocLensBD (Culinary Physics &amp; Computer Vision):</strong>{' '}
+                  Designed weighted set-intersection matchmaking engine across 395+ recipes and 182 standardized ingredients with non-linear physics scaling (prep × √r) and Gemini 3.8 Flash tiered translation caching. Developed eyewear storefront with zero layout shift and MediaPipe 468-point 3D Face Mesh virtual try-on at 60 FPS.
+                </p>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="font-mono text-xs shrink-0 select-none" style={{ color: mid }}>•</span>
+                <p style={{ color: bright }}>
+                  <strong style={{ color: bright }}>POSHRA &amp; Sentinel Portfolio (Scalable Commerce &amp; Systems Architecture):</strong>{' '}
+                  Engineered end-to-end commerce interface with atomic cart state synchronization, resilient local persistence, and idempotent regional payment verification (Next.js 16, React 19, Supabase, Zustand, SSLCommerz). Crafted zero-deadspace systems portfolio featuring hardware-accelerated coordinate canvas, native Web Audio frequency synthesizer, and Raycast global command deck (Ctrl+K).
                 </p>
               </div>
             </div>
@@ -823,6 +892,9 @@ export const ResumeView: React.FC<ResumeViewProps> = ({ palette }) => {
           </div>
         </div>
       </div>
+
+      {/* 5. DIRECT EMAIL DISPATCHER (FULL-WIDTH BELOW 2-COLUMN DASHBOARD) */}
+      <DirectEmailBox palette={palette} />
     </article>
   );
 };
